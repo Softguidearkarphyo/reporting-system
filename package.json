@@ -2,10 +2,12 @@
   "name": "reporting-system",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+     "format":  "prettier --write \"src/**/*.{js,vue,ts,jsx,tsx,json,css,scss,md}\""
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -15,15 +17,13 @@
     "vuetify": "^3.8.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "sass": "^1.89.2",
-    "sass-loader": "^13.3.3"
+    "@vitejs/plugin-vue": "^5.2.4",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.0",
+    "prettier": "^3.5.3",
+    "unplugin-auto-import": "^19.3.0",
+    "unplugin-vue-components": "^28.7.0",
+    "vite": "^6.3.5"
   },
   "eslintConfig": {
     "root": true,
