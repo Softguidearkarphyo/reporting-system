@@ -37,8 +37,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineExpose } from "vue";
-import { useDisplay } from "vuetify";
+import { useDisplay } from 'vuetify';
 
 // Props
 const props = defineProps({
@@ -52,7 +51,7 @@ const props = defineProps({
 });
 
 // Emit
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue']);
 
 // Vuetify display
 const { width, xs } = useDisplay();
@@ -76,7 +75,7 @@ watch(
 );
 
 watch(model, (val) => {
-  emit("update:modelValue", val);
+  emit('update:modelValue', val);
   formattedDate.value = formatDate(val);
   menu.value = false;
 });
@@ -88,7 +87,7 @@ function onDateChange(val) {
 
 // Format date
 function formatDate(date) {
-  if (!date) return "";
+  if (!date) return '';
   const d = new Date(date);
   const day = `0${d.getDate()}`.slice(-2);
   const month = `0${d.getMonth() + 1}`.slice(-2);

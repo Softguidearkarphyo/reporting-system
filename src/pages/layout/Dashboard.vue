@@ -12,7 +12,7 @@
   </v-container>
 </template>
 <script setup>
-import SideBar from "../../components/sidebar/SideBar.vue";
-import TopNavbar from "../layout/TopNavbar.vue";
-import MainContent from "../layout/MainContent.vue";
+import SideBar from '../../components/sidebar/SideBar.vue';
+import TopNavbar from '../layout/TopNavbar.vue';
+import MainContent from '../layout/MainContent.vue';
 </script>
