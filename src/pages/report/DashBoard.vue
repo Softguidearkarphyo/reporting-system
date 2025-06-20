@@ -1,5 +1,8 @@
 <template>
   <div>
-    <h1>Dashboard</h1>
+    <BaseTitle>Dashboard</BaseTitle>
   </div>
 </template>
+<script setup>
+import BaseTitle from '../../components/bases/BaseTitle.vue';
+</script>

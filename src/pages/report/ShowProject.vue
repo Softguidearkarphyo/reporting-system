@@ -1,5 +1,5 @@
 <template>
-  <BaseTitle>Report</BaseTitle>
+  <BaseTitle>作業実績管理</BaseTitle>
   <v-row
     class="d-flex align-center"
     justify="start"
@@ -25,8 +25,6 @@
     </v-col>
 
     <v-col cols="12" md="3">
-      <BaseButton>submit</BaseButton>
-      <BaseButton>CSV</BaseButton>
       <BaseButton>Excel</BaseButton>
     </v-col>
   </v-row>
@@ -35,5 +33,6 @@
 <script setup>
 import { ref } from 'vue';
 import DatePicker from '../../components/bases/BaseDatePicker.vue';
+import BaseButton from '../../components/bases/BaseButton.vue';
 import BaseTitle from '../../components/bases/BaseTitle.vue';
 </script>

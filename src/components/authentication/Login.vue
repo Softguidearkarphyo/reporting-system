@@ -54,6 +54,7 @@
               @click="login"
               height="48"
               depressed
+              to="/report/dashboard"
             >
               LOGIN
             </v-btn>

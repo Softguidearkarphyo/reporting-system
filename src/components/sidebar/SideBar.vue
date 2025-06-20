@@ -1,39 +1,54 @@
 <template>
-  <div class="sidebar">
-    <div class="logo">
-      <!-- <a href="">LOGO</a> -->
-    </div>
-    <div class="sidebar-wrapper">
-      <v-card class="" max-width="300">
-        <v-list>
-          <v-list-item to="/report/dashboard" link>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="/report/showreport" link>
-            <v-list-item-title>Show Report</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="/report/addmember" link>
-            <v-list-item-title>Member</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="" link>
-            <v-list-item-title>Project</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="" link>
-            <v-list-item-title>Test</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="" link>
-            <v-list-item-title>Test</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item to="" link>
-            <v-list-item-title>Test</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </div>
-  </div>
+  <v-navigation-drawer v-if="drawer" app clipped>
+    <v-list v-for="navbar in navbars" :key="navbar.title" nav>
+      <v-list-item :to="navbar.path" link>
+        <v-list-item-title>{{ navbar.title }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
+<script setup>
+import { ref } from 'vue';
+const props = defineProps({ drawer: Boolean });
+
+const navbars = ref([
+  {
+    title: 'DASHBOARD',
+    path: '/report/dashboard',
+  },
+  {
+    title: 'REPORTS',
+    path: '/report/show',
+  },
+  {
+    title: 'WEEKLY WORK TIME',
+    path: '/report/member',
+  },
+  {
+    title: 'ADD MEMBER',
+    path: '/report/addmember',
+  },
+  {
+    title: 'MEMBER REPORTS',
+    path: '/report/showProject',
+  },
+  {
+    title: 'PROJECT MANPOWER',
+    path: '/report/showMenPower',
+  },
+  {
+    title: '6 MONTHS SUMMARY',
+    path: '/report/showProjectWithDate',
+  },
+  {
+    title: 'REPORTING',
+    path: '/reporting',
+  },
+]);
+</script>
+<style scoped>
+::v-deep(.v-list-item-title) {
+  font-size: 15px !important;
+  text-transform: uppercase !important;
+}
+</style>

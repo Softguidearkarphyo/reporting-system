@@ -1,15 +1,36 @@
 <template>
-  <v-card height="100">
-    <v-toolbar extended>
-      <v-toolbar-title text="Dashboard"></v-toolbar-title>
-
-      <template v-slot:append>
-        <v-btn icon="mdi-magnify">S</v-btn>
-
-        <v-btn icon="mdi-dots-vertical">S</v-btn>
-
-        <v-btn to="/" color="primary">B</v-btn>
+  <v-app-bar app dark clipped-left>
+    <v-app-bar-nav-icon @click="toggle">
+      <v-icon>mdi-view-headline</v-icon>
+    </v-app-bar-nav-icon>
+    <v-toolbar-title>SOFTGUIDE</v-toolbar-title>
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props" icon variant="text" class="ma-0 pa-0">
+          <v-app-bar-nav-icon>
+            <v-icon size="32">mdi-account-circle-outline</v-icon>
+          </v-app-bar-nav-icon>
+        </v-btn>
       </template>
-    </v-toolbar>
-  </v-card>
+
+      <v-list>
+        <v-list-item to="/" link>
+          <v-list-item-title>Log out</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-app-bar>
 </template>
+<script setup>
+import { defineProps, defineEmits } from 'vue';
+const props = defineProps({ drawer: Boolean });
+const emit = defineEmits(['update:drawer']);
+const toggle = () => {
+  emit('update:drawer', !props.drawer);
+};
+</script>
+<style scoped>
+::v-deep(.v-toolbar-title) {
+  font-weight: bold !important;
+}
+</style>

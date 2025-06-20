@@ -1,12 +1,11 @@
 <template>
   <v-container>
-    <h1>Reporting Page</h1>
-    <v-btn to="/" color="primary">Back to Home</v-btn>
+    <BaseTitle>Reporting Page</BaseTitle>
+    <BaseButton to="/report/dashboard">Back to Home</BaseButton>
   </v-container>
 </template>
 
-<script>
-export default {
-  name: 'Reporting Page',
-};
+<script setup>
+import BaseTitle from '../../components/bases/BaseTitle.vue';
+import BaseButton from '../../components/bases/BaseButton.vue';
 </script>
