@@ -2,8 +2,9 @@
   <div>
     <BaseTitle>作業実績管理の会員登録</BaseTitle>
     <v-container>
-      <v-text-field label="ユーザＩＤ"></v-text-field>
-      <v-text-field label="ユーザ氏名"></v-text-field>
+      <label>test</label>
+      <BaseField />
+      <!-- <v-text-field label="ユーザ氏名"></v-text-field> -->
       <BaseButton>submit</BaseButton>
     </v-container>
     <BaseTitle>ユーザＩテーブル</BaseTitle>
@@ -31,6 +32,7 @@
 import { ref } from 'vue';
 import BaseButton from '../../components/bases/BaseButton.vue';
 import BaseTitle from '../../components/bases/BaseTitle.vue';
+import BaseField from '../../components/bases/BaseField.vue';
 
 const desserts = ref([
   {
