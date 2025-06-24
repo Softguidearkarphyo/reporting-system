@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app dark clipped-left>
+  <v-app-bar class="gradient-bar" app dark clipped-left>
     <v-app-bar-nav-icon @click="toggle">
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
@@ -32,5 +32,10 @@ const toggle = () => {
 <style scoped>
 ::v-deep(.v-toolbar-title) {
   font-weight: bold !important;
+  color: #000000;
+}
+.gradient-bar {
+  background: linear-gradient(90deg, #1f7a8c, #489fb5) !important;
+  color: rgb(0, 0, 0) !important;
 }
 </style>

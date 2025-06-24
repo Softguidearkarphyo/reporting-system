@@ -2,7 +2,7 @@
   <v-app>
     <v-main
       class="d-flex justify-center align-center"
-      style="height: 100vh; background: #e3f2fd"
+      style="height: 100vh; background: #f5e7d5"
     >
       <v-card
         class="pa-6"
@@ -20,7 +20,7 @@
 
         <v-form>
           <div class="d-flex align-center mb-5">
-            <v-icon class="mr-3" color="#1976d2" size="22">mdi-account</v-icon>
+            <v-icon class="mr-3" color="#70e000" size="22">mdi-account</v-icon>
             <v-text-field
               label="Username"
               type="text"
@@ -33,7 +33,7 @@
           </div>
 
           <div class="d-flex align-center mb-6">
-            <v-icon class="mr-3" color="#1976d2" size="22">mdi-lock</v-icon>
+            <v-icon class="mr-3" color="#70e000" size="22">mdi-lock</v-icon>
             <v-text-field
               label="Password"
               type="password"
@@ -73,15 +73,19 @@ function login() {
 
 <style scoped>
 .gradient-icon {
-  background: linear-gradient(45deg, #2196f3, #21cbf3);
+  background: linear-gradient(90deg, #70e000 0%, #ccff33 50%, #70e000 100%);
+
+  /* background: linear-gradient(45deg, #2196f3, #21cbf3); */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 1px 1px rgba(33, 150, 243, 0.5));
 }
 
 .gradient-btn {
-  background: linear-gradient(90deg, #2196f3, #21cbf3);
-  color: white !important;
+  background: linear-gradient(-90deg, #70e000, #ccff33) !important;
+  /* background: linear-gradient(90deg, #2196f3, #21cbf3); */
+  color: #748cab !important;
+
   transition: background 0.3s ease;
 }
 

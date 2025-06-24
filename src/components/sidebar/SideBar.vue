@@ -5,16 +5,36 @@
     clipped
     :temporary="$vuetify.display.smAndDown"
   >
-    <v-list v-for="navbar in navbars" :key="navbar.title" nav>
-      <v-list-item :to="navbar.path" link exact>
-        <v-list-item-title>{{ navbar.title }}</v-list-item-title>
+    <v-list nav>
+      <v-list-item
+        v-for="(item, index) in navbars"
+        :key="index"
+        :to="item.path"
+        link
+        exact
+      >
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
+      <v-menu :location="location">
+        <template v-slot:activator="{ props }">
+          <v-list-item v-bind="props">
+            <v-list-item-title>test</v-list-item-title>
+          </v-list-item>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>test</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script setup>
 import { ref } from 'vue';
 const props = defineProps({ drawer: Boolean });
+const location = ref('end');
 
 const navbars = ref([
   {
@@ -55,5 +75,6 @@ const navbars = ref([
 ::v-deep(.v-list-item-title) {
   font-size: 15px !important;
   text-transform: uppercase !important;
+  font-weight: bold !important;
 }
 </style>
