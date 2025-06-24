@@ -1,7 +1,12 @@
 <template>
-  <v-navigation-drawer v-if="drawer" app clipped>
+  <v-navigation-drawer
+    :model-value="props.drawer"
+    app
+    clipped
+    :temporary="$vuetify.display.smAndDown"
+  >
     <v-list v-for="navbar in navbars" :key="navbar.title" nav>
-      <v-list-item :to="navbar.path" link>
+      <v-list-item :to="navbar.path" link exact>
         <v-list-item-title>{{ navbar.title }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -13,35 +18,35 @@ const props = defineProps({ drawer: Boolean });
 
 const navbars = ref([
   {
-    title: 'DASHBOARD',
+    title: 'dashboard',
     path: '/report/dashboard',
   },
   {
-    title: 'REPORTS',
+    title: 'reports',
     path: '/report/show',
   },
   {
-    title: 'WEEKLY WORK TIME',
+    title: 'weekly work time',
     path: '/report/member',
   },
   {
-    title: 'ADD MEMBER',
+    title: 'add member',
     path: '/report/addmember',
   },
   {
-    title: 'MEMBER REPORTS',
+    title: 'member reports',
     path: '/report/showProject',
   },
   {
-    title: 'PROJECT MANPOWER',
+    title: 'project menpower',
     path: '/report/showMenPower',
   },
   {
-    title: '6 MONTHS SUMMARY',
+    title: '6 months summary',
     path: '/report/showProjectWithDate',
   },
   {
-    title: 'REPORTING',
+    title: 'reporting',
     path: '/reporting',
   },
 ]);

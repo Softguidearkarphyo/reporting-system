@@ -4,6 +4,7 @@ import { createVuetify } from 'vuetify';
 import router from './routes/route';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import './assets/fonts/font.css';
 import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 
