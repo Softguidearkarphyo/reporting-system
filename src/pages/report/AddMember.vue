@@ -4,8 +4,7 @@
     <v-container>
       <label>test</label>
       <BaseField />
-      <!-- <v-text-field label="ユーザ氏名"></v-text-field> -->
-      <BaseButton>submit</BaseButton>
+      <BaseButton color="btntheme">submit</BaseButton>
     </v-container>
     <BaseTitle>ユーザＩテーブル</BaseTitle>
     <v-table>

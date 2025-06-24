@@ -43,3 +43,8 @@ defineProps({
 });
 const attrs = useAttrs();
 </script>
+<style scoped>
+::v-deep(.v-btn__content) {
+  color: white !important;
+}
+</style>

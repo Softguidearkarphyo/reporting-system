@@ -1,5 +1,3 @@
-// src/plugins/vuetify.js
-
 import { createVuetify } from 'vuetify';
 import 'vuetify/styles';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
@@ -22,7 +20,7 @@ const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#ffee32',
+          btntheme: '#03c9d7',
           secondary: '#75e900',
         },
       },

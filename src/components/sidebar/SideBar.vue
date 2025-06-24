@@ -17,16 +17,24 @@
       </v-list-item>
       <v-menu :location="location">
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props">
-            <v-list-item-title>test</v-list-item-title>
+          <v-list-item value="reporting" v-bind="props">
+            <v-list-item-title>REPORTING</v-list-item-title>
           </v-list-item>
         </template>
 
-        <v-list>
-          <v-list-item>
-            <v-list-item-title>test</v-list-item-title>
-          </v-list-item>
-        </v-list>
+        <v-sheet rounded="md" width="200" elevation="10">
+          <v-list class="py-0" lines="one" density="compact">
+            <v-list-item
+              v-for="(item, index) in secNavbars"
+              :key="index"
+              :to="item.path"
+              link
+              exact
+            >
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
       </v-menu>
     </v-list>
   </v-navigation-drawer>
@@ -65,6 +73,9 @@ const navbars = ref([
     title: '6 months summary',
     path: '/report/showProjectWithDate',
   },
+]);
+
+const secNavbars = ref([
   {
     title: 'reporting',
     path: '/reporting',
@@ -75,6 +86,19 @@ const navbars = ref([
 ::v-deep(.v-list-item-title) {
   font-size: 15px !important;
   text-transform: uppercase !important;
-  font-weight: bold !important;
+}
+::v-deep(.v-list-item:hover:not(.v-list-item--active)) {
+  background-color: rgba(3, 201, 215, 0.2);
+  color: #03c9d7 !important;
+}
+
+::v-deep(.v-list-item.v-list-item--active) {
+  background-color: #03c9d7 !important;
+  color: white;
+}
+
+::v-deep(.v-list-item.v-list-item--active:hover) {
+  background-color: #03c9d7 !important;
+  color: white;
 }
 </style>
