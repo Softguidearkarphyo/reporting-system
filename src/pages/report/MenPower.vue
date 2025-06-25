@@ -4,7 +4,7 @@
     <v-text-field label="test"></v-text-field>
     <v-text-field label="test"></v-text-field>
     <v-text-field label="test"></v-text-field>
-    <BaseButton color="btntheme">submit</BaseButton>
+    <BaseButton color="main">submit</BaseButton>
   </v-container>
 </template>
 <script setup>

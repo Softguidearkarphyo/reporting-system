@@ -17,6 +17,6 @@ defineProps({
 
 <style scoped>
 h3 {
-  color: rgb(0, 0, 0);
+  color: black;
 }
 </style>

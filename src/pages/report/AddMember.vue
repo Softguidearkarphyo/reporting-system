@@ -4,7 +4,7 @@
     <v-container>
       <label>test</label>
       <BaseField />
-      <BaseButton color="btntheme">submit</BaseButton>
+      <BaseButton color="main">submit</BaseButton>
     </v-container>
     <BaseTitle>ユーザＩテーブル</BaseTitle>
     <v-table>

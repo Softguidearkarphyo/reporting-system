@@ -8,9 +8,13 @@ import WorkingTime from '../pages/report/WorkingTime.vue';
 import MemberReport from '../pages/report/MemberReport.vue';
 import MenPower from '../pages/report/MenPower.vue';
 import ShowProject from '../pages/report/ShowProject.vue';
-
-import ReportingPage from '../pages/reporting-system/ReportingPage.vue';
+import MemberList from '../pages/reporting-system/MemberList.vue';
+import Leave from '../pages/reporting-system/MemberLeave.vue';
+import Reporting from '../pages/reporting-system/ReportingPage.vue';
+import Addleave from '../pages/report/AddLeave.vue';
+import Fine from '../pages/report/MemberFine.vue';
 import Login from '../components/authentication/Login.vue';
+import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
 
 const routes = [
@@ -29,6 +33,21 @@ const routes = [
         component: DashBoard,
       },
       {
+        path: '/report/memberlist',
+        name: 'memberlist',
+        component: MemberList,
+      },
+      {
+        path: '/report/leave',
+        name: 'leave',
+        component: Leave,
+      },
+      {
+        path: '/report/reporting',
+        name: 'reporting',
+        component: Reporting,
+      },
+      {
         path: '/report/show',
         name: 'report',
         component: ReportPage,
@@ -42,6 +61,16 @@ const routes = [
         path: '/report/addmember',
         name: 'addmember',
         component: AddMember,
+      },
+      {
+        path: '/report/addleave',
+        name: 'addleave',
+        component: Addleave,
+      },
+      {
+        path: '/report/memberfine',
+        name: 'memberfine',
+        component: Fine,
       },
       {
         path: '/report/showProject',
@@ -58,12 +87,12 @@ const routes = [
         name: 'showproject',
         component: ShowProject,
       },
+      {
+        path: '/profile',
+        name: 'profile',
+        component: Profile,
+      },
     ],
-  },
-  {
-    name: 'reporting',
-    path: '/reporting',
-    component: ReportingPage,
   },
 ];
 

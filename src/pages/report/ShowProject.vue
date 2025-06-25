@@ -25,7 +25,7 @@
     </v-col>
 
     <v-col cols="12" md="3">
-      <BaseButton color="btntheme">Excel</BaseButton>
+      <BaseButton color="main">Excel</BaseButton>
     </v-col>
   </v-row>
 </template>

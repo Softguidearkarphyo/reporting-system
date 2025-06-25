@@ -7,29 +7,19 @@
         </v-app-bar-nav-icon>
       </v-btn>
     </template>
-    <v-sheet rounded="md" width="200" elevation="10" class="mt-2">
+    <v-sheet rounded="md" width="150" elevation="10" class="mt-2">
       <v-list class="py-0" lines="one" density="compact">
-        <v-list-item value="profile">
-          <template v-slot:prepend> </template>
-          <v-list-item-title class="pl-4 text-body-1"
+        <v-list-item to="/profile" value="profile">
+          <template v-slot:prepend>
+            <v-icon class="profile">mdi-account</v-icon>
+          </template>
+          <v-list-item-title class="pl-2 text-body-1"
             >My Profile</v-list-item-title
           >
         </v-list-item>
-        <v-list-item value="account">
-          <template v-slot:prepend> </template>
-          <v-list-item-title class="pl-4 text-body-1"
-            >My Account</v-list-item-title
-          >
-        </v-list-item>
-        <v-list-item value="task">
-          <template v-slot:prepend> </template>
-          <v-list-item-title class="pl-4 text-body-1"
-            >My Task</v-list-item-title
-          >
-        </v-list-item>
       </v-list>
-      <div class="pt-4 pb-4 px-5 text-center">
-        <v-btn to="/" class="logout" variant="outlined" block link
+      <div class="pt-2 pb-2 px-3 text-center">
+        <v-btn to="/" color="accent" variant="outlined" block link
           >Logout</v-btn
         >
       </div>
@@ -37,11 +27,27 @@
   </v-menu>
 </template>
 <style scoped>
-.logout {
-  color: red;
-}
-::v-deep(.v-list-item:hover) {
+.v-list-item:hover:not(.v-list-item--active) {
   background-color: rgba(3, 201, 215, 0.2);
   color: #03c9d7 !important;
+}
+.v-list-item.v-list-item--active {
+  background-color: #03c9d7 !important;
+  color: white;
+}
+
+.v-list-item.v-list-item--active:hover {
+  background-color: #03c9d7 !important;
+  color: white;
+}
+.v-list-item-title,
+.v-btn {
+  font-size: 14px !important;
+}
+.profile {
+  font-size: 20px !important;
+}
+::v-deep(.v-list-item__spacer) {
+  display: none !important;
 }
 </style>
