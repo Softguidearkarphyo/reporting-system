@@ -6,6 +6,7 @@
     :disabled="disabled"
     v-bind="attrs"
     :rounded="round"
+    :width="width"
   >
     <template v-if="icon" #prepend>
       <v-icon dark left>{{ icon }}</v-icon>
@@ -39,6 +40,10 @@ defineProps({
   round: {
     type: String,
     default: 'xs',
+  },
+  width: {
+    type: String,
+    default: undefined,
   },
 });
 const attrs = useAttrs();

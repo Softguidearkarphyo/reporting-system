@@ -1,8 +1,5 @@
 <template>
-  <v-container>
-    <BaseTitle>Reporting Page</BaseTitle>
-    <BaseButton to="/report/dashboard">Back to Home</BaseButton>
-  </v-container>
+  <BaseTitle>Reporting Page</BaseTitle>
 </template>
 
 <script setup>

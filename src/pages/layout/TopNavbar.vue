@@ -4,21 +4,36 @@
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>
+    <v-app-bar-nav-icon @click="toggleTheme">
+      <v-icon size="25" v-if="!isDark">mdi-weather-sunny</v-icon>
+      <v-icon size="20" v-else>mdi-moon-waning-crescent</v-icon>
+    </v-app-bar-nav-icon>
     <ProfileIcon />
   </v-app-bar>
 </template>
 <script setup>
 import ProfileIcon from '../../components/navbar/ProfileIcon.vue';
 import { defineProps, defineEmits } from 'vue';
+import { useTheme } from 'vuetify';
+import { computed } from 'vue';
 const props = defineProps({ drawer: Boolean });
 const emit = defineEmits(['update:drawer']);
 const toggle = () => {
   emit('update:drawer', !props.drawer);
 };
+const theme = useTheme();
+const isDark = computed(() => theme.global.name.value === 'dark');
+
+const toggleTheme = () => {
+  theme.global.name.value = isDark.value ? 'light' : 'dark';
+};
 </script>
 <style scoped>
 ::v-deep(.v-toolbar-title) {
   font-weight: bold !important;
-  color: #000000;
+  color: #2ecc71;
+}
+::v-deep(.v-icon) {
+  color: #fb9678 !important;
 }
 </style>

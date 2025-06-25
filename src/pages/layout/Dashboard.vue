@@ -12,3 +12,8 @@ import MainContent from '../layout/MainContent.vue';
 import { ref } from 'vue';
 const drawer = ref(true);
 </script>
+<style scoped>
+::v-deep(.v-main) {
+  background-color: #e3f2fd !important;
+}
+</style>

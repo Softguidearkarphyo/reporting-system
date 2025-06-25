@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AddLeave: typeof import('./pages/report/AddLeave.vue')['default']
     AddMember: typeof import('./pages/report/AddMember.vue')['default']
     Auth: typeof import('./pages/authentication/Auth.vue')['default']
     BaseButton: typeof import('./components/bases/BaseButton.vue')['default']
@@ -22,8 +23,12 @@ declare module 'vue' {
     HomePage: typeof import('./pages/HomePage.vue')['default']
     Login: typeof import('./components/authentication/Login.vue')['default']
     MainContent: typeof import('./pages/layout/MainContent.vue')['default']
+    MemberFine: typeof import('./pages/report/MemberFine.vue')['default']
+    MemberLeave: typeof import('./pages/reporting-system/MemberLeave.vue')['default']
+    MemberList: typeof import('./pages/reporting-system/MemberList.vue')['default']
     MemberReport: typeof import('./pages/report/MemberReport.vue')['default']
     MenPower: typeof import('./pages/report/MenPower.vue')['default']
+    Profile: typeof import('./pages/authentication/Profile.vue')['default']
     ProfileIcon: typeof import('./components/navbar/ProfileIcon.vue')['default']
     ReportingPage: typeof import('./pages/reporting-system/ReportingPage.vue')['default']
     ReportPage: typeof import('./pages/report/ReportPage.vue')['default']

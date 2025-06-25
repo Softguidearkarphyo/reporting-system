@@ -19,9 +19,17 @@ const vuetify = createVuetify({
     defaultTheme: 'light',
     themes: {
       light: {
+        dark: false,
         colors: {
-          btntheme: '#03c9d7',
-          secondary: '#75e900',
+          main: '#03c9d7',
+          accent: '#FB9678',
+        },
+      },
+      dark: {
+        dark: true,
+        colors: {
+          main: '#03c9d7',
+          accent: '#FB9678',
         },
       },
     },
