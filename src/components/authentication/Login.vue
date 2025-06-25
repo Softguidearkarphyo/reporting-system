@@ -2,7 +2,7 @@
   <v-app>
     <v-main
       class="d-flex justify-center align-center"
-      style="height: 100vh; background: #f5e7d5"
+      style="height: 100vh; background: #e3f2fd"
     >
       <v-card
         class="pa-6"
@@ -20,11 +20,11 @@
 
         <v-form>
           <div class="d-flex align-center mb-5">
-            <v-icon class="mr-3" color="#70e000" size="22">mdi-account</v-icon>
+           <v-icon class="mr-3 mt-5" color="#03c9d7" size="22">mdi-account</v-icon>
             <v-text-field
-              label="Username"
+              label="USERNAME"
               type="text"
-              variant="underlined"
+              variant="plain"
               dense
               autocomplete="username"
               hide-details
@@ -33,11 +33,11 @@
           </div>
 
           <div class="d-flex align-center mb-6">
-            <v-icon class="mr-3" color="#70e000" size="22">mdi-lock</v-icon>
+             <v-icon class="mr-3 mt-5" color="#03c9d7" size="22">mdi-lock</v-icon>
             <v-text-field
-              label="Password"
+              label="PASSWORD"
               type="password"
-              variant="underlined"
+              variant="plain"
               dense
               autocomplete="current-password"
               hide-details
@@ -73,49 +73,53 @@ function login() {
 
 <style scoped>
 .gradient-icon {
-  background: linear-gradient(90deg, #70e000 0%, #ccff33 50%, #70e000 100%);
-
-  /* background: linear-gradient(45deg, #2196f3, #21cbf3); */
+   background: linear-gradient(90deg, #02e2f1, #5de6f0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 1px rgba(33, 150, 243, 0.5));
+  filter: drop-shadow(0 1px 1px #02e2f1(33, 150, 243, 0.5));
 }
 
 .gradient-btn {
-  background: linear-gradient(-90deg, #70e000, #ccff33) !important;
-  /* background: linear-gradient(90deg, #2196f3, #21cbf3); */
-  color: #748cab !important;
-
-  transition: background 0.3s ease;
+  background:#5de6f0 !important;
+  color: #f8f8f8 !important;
+  /* transition: background 0.3s ease; */
 }
-
 .gradient-btn:hover {
   background: linear-gradient(90deg, #1976d2, #1e88e5);
 }
 
 /* Input fields with bottom-only border */
-.custom-input .v-input__control {
+::v-deep(.custom-input .v-field__field) {
+  padding: 0 !important;             /* built-in padding ဖျောက် */
+  border-bottom: 1px solid #121313;  /* အခြေခံ border */
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Focus ထိုးတဲ့အခါ underline ထူအောင် */
+::v-deep(.custom-input .v-field--focused .v-field__field) {
+  border-bottom: 3px solid #03c9d7!important;
+}
+
+/* Vuetify ထည့်ထားသမျှအလွန် မလိုတဲ့ decoration တွေဖျောက် */
+::v-deep(.custom-input .v-field__outline),
+::v-deep(.custom-input .v-field__overlay),
+::v-deep(.custom-input .v-field__field::before),
+::v-deep(.custom-input .v-field__field::after) {
   border: none !important;
-  border-bottom: 2px solid #bbb !important;
-  border-radius: 0 !important;
-  background-color: transparent !important;
   box-shadow: none !important;
-  transition: border-color 0.3s ease;
+  background: none !important;
+  content: none !important;
+}
+/* Label color changes */
+::v-deep(.custom-input .v-label) {
+  color: black !important;
+  font-weight: 400;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+::v-deep(.custom-input .v-field.v-field--focused .v-label) {
+  color: #03c9d7 !important;
 }
 
-.custom-input.v-input--is-focused .v-input__control {
-  border-bottom-color: #1976d2 !important;
-  box-shadow: none !important;
-  background-color: transparent !important;
-}
-
-.custom-input .v-label {
-  color: #1976d2 !important;
-  font-weight: 600;
-}
-
-.custom-input input::placeholder {
-  color: #999;
-  opacity: 1;
-}
 </style>
