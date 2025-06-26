@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app dark clipped-left>
+  <v-app-bar color="side" app dark clipped-left>
     <v-app-bar-nav-icon @click="toggle">
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>

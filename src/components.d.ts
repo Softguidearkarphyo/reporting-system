@@ -28,6 +28,7 @@ declare module 'vue' {
     MemberList: typeof import('./pages/reporting-system/MemberList.vue')['default']
     MemberReport: typeof import('./pages/report/MemberReport.vue')['default']
     MenPower: typeof import('./pages/report/MenPower.vue')['default']
+    ParentCard: typeof import('./components/card/ParentCard.vue')['default']
     Profile: typeof import('./pages/authentication/Profile.vue')['default']
     ProfileIcon: typeof import('./components/navbar/ProfileIcon.vue')['default']
     ReportingPage: typeof import('./pages/reporting-system/ReportingPage.vue')['default']
@@ -36,7 +37,9 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ShowProject: typeof import('./pages/report/ShowProject.vue')['default']
     SideBar: typeof import('./components/sidebar/SideBar.vue')['default']
+    TableCard: typeof import('./components/card/TableCard.vue')['default']
     TopNavbar: typeof import('./pages/layout/TopNavbar.vue')['default']
+    WidgetCard: typeof import('./components/card/WidgetCard.vue')['default']
     WorkingTime: typeof import('./pages/report/WorkingTime.vue')['default']
   }
 }

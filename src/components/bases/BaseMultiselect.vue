@@ -1,15 +1,17 @@
 <template>
-  <div>
+  <div class="align-center mb-5">
     <v-select
       v-bind="attrs"
-      v-on="$listeners"
       :items="items"
       :label="label"
       :multiple="multiple"
       :chips="chips"
       :clearable="clearable"
-      :style="{ width: width }"
+      :style="{ width }"
     >
+      <template v-slot:prepend>
+        <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+      </template>
       <slot />
     </v-select>
   </div>
@@ -19,7 +21,6 @@ import { useAttrs } from 'vue';
 defineProps({
   label: {
     type: String,
-    default: 'Select',
   },
   multiple: {
     type: Boolean,
@@ -35,7 +36,12 @@ defineProps({
   },
   width: {
     type: String,
-    default: '300px',
+    default: '400px',
+  },
+  prependIcon: [String, Object],
+  prependIconColor: {
+    type: String,
+    default: 'main',
   },
 });
 const attrs = useAttrs();

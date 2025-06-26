@@ -1,12 +1,7 @@
 <template>
-  <div class="d-flex align-center mb-5">
-    <v-icon class="mr-3 mt-5" size="22" :color="prependIconColor">{{
-      prependIcon
-    }}</v-icon>
-
+  <div class="align-center mb-5">
     <v-text-field
       v-bind="$attrs"
-      v-on="$listeners"
       class="custom-input"
       :label="label"
       :type="type"
@@ -15,7 +10,12 @@
       variant="plain"
       dense
       hide-details
+      :style="{ width }"
     >
+      <template v-slot:prepend>
+        <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+      </template>
+      <slot />
     </v-text-field>
   </div>
 </template>
@@ -27,12 +27,16 @@ defineProps({
     type: String,
     default: 'text',
   },
+  width: {
+    type: String,
+    default: '400px',
+  },
   autocomplete: String,
   maxlength: [Number, String],
   prependIcon: [String, Object],
   prependIconColor: {
     type: String,
-    default: '#03c9d7',
+    default: 'main',
   },
 });
 </script>
