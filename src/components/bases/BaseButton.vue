@@ -19,7 +19,7 @@ import { useAttrs } from 'vue';
 defineProps({
   color: {
     type: String,
-    default: 'primary',
+    default: 'main',
   },
   variant: {
     type: String,

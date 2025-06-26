@@ -30,8 +30,8 @@
       </v-col>
 
       <v-col cols="12" md="3">
-        <BaseButton color="main">submit</BaseButton>
-        <BaseButton color="main">excel</BaseButton>
+        <BaseButton>submit</BaseButton>
+        <BaseButton>excel</BaseButton>
       </v-col>
     </v-row>
   </v-card>

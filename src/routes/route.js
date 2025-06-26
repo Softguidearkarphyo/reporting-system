@@ -13,6 +13,7 @@ import Leave from '../pages/reporting-system/MemberLeave.vue';
 import Reporting from '../pages/reporting-system/ReportingPage.vue';
 import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
+import AddProject from '../pages/report/AddProject.vue';
 import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
@@ -58,6 +59,21 @@ const routes = [
         component: WorkingTime,
       },
       {
+        path: '/report/showProject',
+        name: 'showProject',
+        component: MemberReport,
+      },
+      {
+        path: '/report/showMenPower',
+        name: 'menpower',
+        component: MenPower,
+      },
+      {
+        path: '/report/showProjectWithDate',
+        name: 'showproject',
+        component: ShowProject,
+      },
+      {
         path: '/report/addmember',
         name: 'addmember',
         component: AddMember,
@@ -73,19 +89,9 @@ const routes = [
         component: Fine,
       },
       {
-        path: '/report/showProject',
-        name: 'showProject',
-        component: MemberReport,
-      },
-      {
-        path: '/report/showMenPower',
-        name: 'menpower',
-        component: MenPower,
-      },
-      {
-        path: '/report/showProjectWithDate',
-        name: 'showproject',
-        component: ShowProject,
+        path: '/report/addproject',
+        name: 'addproject',
+        component: AddProject,
       },
       {
         path: '/profile',

@@ -27,7 +27,7 @@
             <template v-slot:prepend>
               <v-icon>mdi-cog</v-icon>
             </template>
-            <v-list-item-title>Admin Setting</v-list-item-title>
+            <v-list-item-title>Admin Settings</v-list-item-title>
           </v-list-item>
         </template>
         <v-list-item
@@ -87,21 +87,6 @@ const settings = ref([
     icon: 'mdi-account-clock-outline',
   },
   {
-    title: 'add member',
-    path: '/report/addmember',
-    icon: 'mdi-account-plus-outline',
-  },
-  {
-    title: 'add leave',
-    path: '/report/addleave',
-    icon: 'mdi-account-plus-outline',
-  },
-  {
-    title: 'member fine',
-    path: '/report/memberfine',
-    icon: 'mdi-account-plus-outline',
-  },
-  {
     title: 'member reports',
     path: '/report/showProject',
     icon: 'mdi-account-details-outline',
@@ -116,6 +101,26 @@ const settings = ref([
     path: '/report/showProjectWithDate',
     icon: 'mdi mdi-clock-fast',
   },
+  {
+    title: 'add project',
+    path: '/report/addproject',
+    icon: 'mdi-web',
+  },
+  {
+    title: 'add member',
+    path: '/report/addmember',
+    icon: 'mdi-account-plus-outline',
+  },
+  {
+    title: 'add leave',
+    path: '/report/addleave',
+    icon: 'mdi-account-arrow-right-outline',
+  },
+  {
+    title: 'member fine',
+    path: '/report/memberfine',
+    icon: 'mdi-account-alert-outline',
+  },
 ]);
 </script>
 <style scoped>
@@ -125,7 +130,7 @@ const settings = ref([
   margin-left: 10px !important;
 }
 .v-list-item:hover:not(.v-list-item--active) {
-  background-color: rgba(3, 201, 215, 0.2);
+  background-color: #03c9d733 !important;
   color: #03c9d7 !important;
 }
 

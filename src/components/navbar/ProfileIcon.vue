@@ -19,7 +19,7 @@
         </v-list-item>
       </v-list>
       <div class="pt-2 pb-2 px-3 text-center">
-        <v-btn to="/" color="accent" variant="outlined" block link
+        <v-btn to="/" size="small" color="accent" variant="outlined" block link
           >Logout</v-btn
         >
       </div>
@@ -40,8 +40,7 @@
   background-color: #03c9d7 !important;
   color: white;
 }
-.v-list-item-title,
-.v-btn {
+.v-list-item-title {
   font-size: 14px !important;
 }
 .profile {

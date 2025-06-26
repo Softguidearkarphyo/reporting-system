@@ -24,16 +24,23 @@ const toggle = () => {
 const theme = useTheme();
 const isDark = computed(() => theme.global.name.value === 'dark');
 
-const toggleTheme = () => {
-  theme.global.name.value = isDark.value ? 'light' : 'dark';
+const init = () => {
+  const savedTheme = localStorage.getItem('app-theme');
+  if (savedTheme) theme.global.name.value = savedTheme;
 };
+const toggleTheme = () => {
+  const newTheme = isDark.value ? 'light' : 'dark';
+  theme.global.name.value = newTheme;
+  localStorage.setItem('app-theme', newTheme);
+};
+onMounted(init);
 </script>
 <style scoped>
-::v-deep(.v-toolbar-title) {
+.v-toolbar-title {
   font-weight: bold !important;
-  color: #2ecc71;
+  color: #018a94;
 }
 ::v-deep(.v-icon) {
-  color: #fb9678 !important;
+  color: #018a94 !important;
 }
 </style>

@@ -22,14 +22,14 @@ const vuetify = createVuetify({
         dark: false,
         colors: {
           main: '#03c9d7',
-          accent: '#FB9678',
+          accent: '#018a94',
         },
       },
       dark: {
         dark: true,
         colors: {
           main: '#03c9d7',
-          accent: '#FB9678',
+          accent: '#018a94',
         },
       },
     },

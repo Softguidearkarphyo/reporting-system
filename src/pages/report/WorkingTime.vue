@@ -25,7 +25,7 @@
     </v-col>
 
     <v-col cols="12" md="3">
-      <BaseButton color="main">submit</BaseButton>
+      <BaseButton>submit</BaseButton>
     </v-col>
   </v-row>
 </template>

@@ -1,18 +1,23 @@
 <template>
-  <v-text-field
-    v-bind="$attrs"
-    v-on="$listeners"
-    class="custom-input"
-    :label="label"
-    :type="type"
-    :autocomplete="autocomplete"
-    :maxlength="maxlength"
-    :prepend-inner-icon="prependIcon"
-    :append-icon="appendIcon"
-    variant="plain"
-    dense
-    hide-details
-  />
+  <div class="d-flex align-center mb-5">
+    <v-icon class="mr-3 mt-5" size="22" :color="prependIconColor">{{
+      prependIcon
+    }}</v-icon>
+
+    <v-text-field
+      v-bind="$attrs"
+      v-on="$listeners"
+      class="custom-input"
+      :label="label"
+      :type="type"
+      :autocomplete="autocomplete"
+      :maxlength="maxlength"
+      variant="plain"
+      dense
+      hide-details
+    >
+    </v-text-field>
+  </div>
 </template>
 
 <script setup>
@@ -24,9 +29,12 @@ defineProps({
   },
   autocomplete: String,
   maxlength: [Number, String],
-  prependIcon: String,
-  appendIcon: String,
-})
+  prependIcon: [String, Object],
+  prependIconColor: {
+    type: String,
+    default: '#03c9d7',
+  },
+});
 </script>
 
 <style scoped>
@@ -37,7 +45,7 @@ defineProps({
   box-shadow: none !important;
 }
 ::v-deep(.custom-input .v-field--focused .v-field__field) {
-  border-bottom: 3px solid #03c9d7!important;
+  border-bottom: 2px solid #03c9d7 !important;
 }
 ::v-deep(.custom-input .v-field__outline),
 ::v-deep(.custom-input .v-field__overlay),
@@ -48,10 +56,17 @@ defineProps({
   background: none !important;
   content: none !important;
 }
+::v-deep(.v-label) {
+  text-transform: uppercase !important;
+}
+::v-deep(.custom-input .v-field.v-field--focused .v-label) {
+  color: #03c9d7 !important;
+}
 ::v-deep(.custom-input .v-label) {
   color: black !important;
   font-weight: 400;
   font-size: 13px;
+  transition: color 0.3s ease;
 }
 ::v-deep(.custom-input .v-field.v-field--focused .v-label) {
   color: #03c9d7 !important;

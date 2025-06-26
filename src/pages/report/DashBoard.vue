@@ -1,7 +1,6 @@
 <template>
   <div>
     <BaseTitle>Dashboard</BaseTitle>
-    <BaseMultiselect></BaseMultiselect>
   </div>
 </template>
 <script setup>

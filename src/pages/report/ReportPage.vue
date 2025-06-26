@@ -25,9 +25,9 @@
     </v-col>
 
     <v-col cols="12" md="3">
-      <BaseButton color="main">submit</BaseButton>
-      <BaseButton color="main">CSV</BaseButton>
-      <BaseButton color="main">Excel</BaseButton>
+      <BaseButton>submit</BaseButton>
+      <BaseButton>CSV</BaseButton>
+      <BaseButton>Excel</BaseButton>
     </v-col>
   </v-row>
 </template>
