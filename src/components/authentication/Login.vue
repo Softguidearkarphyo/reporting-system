@@ -17,7 +17,6 @@
             <v-icon size="36" class="gradient-icon">mdi-lock</v-icon>
           </v-avatar>
         </div>
-
         <v-form @submit.prevent="handleLogin">
           <BaseTextField
             v-model="username"
@@ -81,10 +80,9 @@ export default {
       this.error = '';
       try {
         await this.login(this.username, this.password);
-        this.$router.push('/dashboard');
+        this.$router.push('/reporiting-system/dashboard');
       } catch (e) {
         if (axios.isAxiosError(e)) {
-          alret('oops');
           if (e.response) {
             this.error = e.response.data.message || 'Login failed';
           } else if (e.request) {

@@ -1,7 +1,7 @@
 <template>
   <div class="align-center mb-5">
     <v-text-field
-      v-bind="$attrs"
+      v-model="internalValue"
       class="custom-input"
       :label="label"
       :type="inputType"
@@ -31,6 +31,10 @@
 
 <script setup>
 const props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    default: '',
+  },
   label: String,
   type: {
     type: String,
@@ -58,7 +62,6 @@ const props = defineProps({
   },
 });
 import { ref, computed, watch } from 'vue';
-const emit = defineEmits(['update:modelValue']);
 const isVisible = ref(false);
 const showToggle = computed(() => props.type === 'password');
 
@@ -71,6 +74,12 @@ const inputType = computed(() => {
 function toggleVisibility() {
   isVisible.value = !isVisible.value;
 }
+
+const emit = defineEmits(['update:modelValue']);
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val),
+});
 </script>
 
 <style scoped>
