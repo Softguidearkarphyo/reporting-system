@@ -18,8 +18,9 @@
           </v-avatar>
         </div>
 
-        <v-form>
+        <v-form @submit.prevent="handleLogin">
           <BaseTextField
+            v-model="username"
             label="username"
             type="text"
             variant="plain"
@@ -29,6 +30,7 @@
             hide-details
           ></BaseTextField>
           <BaseTextField
+            v-model="password"
             label="password"
             type="password"
             variant="plain"
@@ -39,9 +41,7 @@
           ></BaseTextField>
 
           <v-card-actions class="justify-center pa-0">
-            <BaseButton to="/report/dashboard" @click="login" width="100%"
-              >LOGIN</BaseButton
-            >
+            <BaseButton type="submit" width="100%">LOGIN</BaseButton>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -49,13 +49,54 @@
   </v-app>
 </template>
 
-<script setup>
-import BaseTextField from '../bases/BaseTextField.vue';
-import BaseButton from '../bases/BaseButton.vue';
+<script>
+import { useAuthStore } from '@/stores/auth/auth.js';
+import { mapActions, mapGetters } from 'pinia';
+import axios from 'axios';
 
-function login() {
-  alert('Login clicked!');
-}
+export default {
+  name: 'Login',
+
+  data() {
+    return {
+      username: '',
+      password: '',
+      error: '',
+    };
+  },
+  computed: {
+    ...mapGetters(useAuthStore, [
+      'loginStaff',
+      'isLoggedIn',
+      'staffName',
+      'staffRole',
+    ]),
+  },
+
+  methods: {
+    ...mapActions(useAuthStore, ['login']),
+    async handleLogin() {
+      this.error = '';
+      try {
+        await this.login(this.username, this.password);
+        this.$router.push('/dashboard');
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          alret('oops');
+          if (e.response) {
+            this.error = e.response.data.message || 'Login failed';
+          } else if (e.request) {
+            this.error = 'API server not responding';
+          } else {
+            this.error = 'Login error: ' + e.message;
+          }
+        } else {
+          this.error = 'Unexpected login error';
+        }
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>

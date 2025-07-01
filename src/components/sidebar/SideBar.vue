@@ -55,22 +55,22 @@ const group = ref(true);
 const navbars = ref([
   {
     title: 'dashboard',
-    path: '/report/dashboard',
+    path: '/dashboard',
     icon: 'mdi-view-dashboard-outline',
   },
   {
     title: 'member lists',
-    path: '/report/memberlist',
+    path: 'member-list',
     icon: 'mdi-account-group-outline',
   },
   {
     title: 'leave records',
-    path: '/report/leave',
+    path: '/leave',
     icon: 'mdi-account-cancel-outline',
   },
   {
     title: 'reporting',
-    path: '/report/reporting',
+    path: '/reporting',
     icon: 'mdi-timer-plus-outline',
   },
 ]);
@@ -78,47 +78,47 @@ const navbars = ref([
 const settings = ref([
   {
     title: 'reports',
-    path: '/report/show',
+    path: '/show',
     icon: 'mdi-chart-line',
   },
   {
     title: 'weekly work time',
-    path: '/report/member',
+    path: '/member',
     icon: 'mdi-account-clock-outline',
   },
   {
     title: 'member reports',
-    path: '/report/showProject',
+    path: '/showProject',
     icon: 'mdi-account-details-outline',
   },
   {
     title: 'project menpower',
-    path: '/report/showMenPower',
+    path: '/showMenPower',
     icon: 'mdi-account-multiple-outline',
   },
   {
     title: '6 months summary',
-    path: '/report/showProjectWithDate',
+    path: '/showProjectWithDate',
     icon: 'mdi mdi-clock-fast',
   },
   {
     title: 'add project',
-    path: '/report/addproject',
+    path: '/addproject',
     icon: 'mdi-web',
   },
   {
     title: 'add member',
-    path: '/report/addmember',
+    path: '/addmember',
     icon: 'mdi-account-plus-outline',
   },
   {
     title: 'add leave',
-    path: '/report/addleave',
+    path: '/addleave',
     icon: 'mdi-account-arrow-right-outline',
   },
   {
     title: 'member fine',
-    path: '/report/memberfine',
+    path: '/memberfine',
     icon: 'mdi-account-alert-outline',
   },
 ]);

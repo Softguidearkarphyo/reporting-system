@@ -19,13 +19,34 @@
         </v-list-item>
       </v-list>
       <div class="pt-2 pb-2 px-3 text-center">
-        <v-btn to="/" size="small" color="accent" variant="outlined" block link
+        <v-btn
+          @click="handleLogout"
+          size="small"
+          color="accent"
+          variant="outlined"
+          block
+          link
           >Logout</v-btn
         >
       </div>
     </v-sheet>
   </v-menu>
 </template>
+<script>
+import { useAuthStore } from '@/stores/auth/auth.js';
+import { mapActions } from 'pinia';
+// import axios from 'axios';
+
+export default {
+  methods: {
+    ...mapActions(useAuthStore, ['logout']),
+    async handleLogout() {
+      await this.logout();
+      this.$router.push('/'); // Redirect to home or login
+    },
+  },
+};
+</script>
 <style scoped>
 .v-list-item:hover:not(.v-list-item--active) {
   background-color: rgba(3, 201, 215, 0.2);

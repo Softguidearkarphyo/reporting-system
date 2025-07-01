@@ -6,7 +6,6 @@
 
     <v-text-field
       v-bind="$attrs"
-      v-on="$listeners"
       class="custom-input"
       :label="label"
       :type="type"

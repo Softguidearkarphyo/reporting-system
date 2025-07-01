@@ -25,8 +25,9 @@ const routes = [
     component: AuthPage,
   },
   {
-    path: '/report/dashboard',
+    path: '/dashboard',
     component: Dashboard,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -34,69 +35,82 @@ const routes = [
         component: DashBoard,
       },
       {
-        path: '/report/memberlist',
+        path: 'member-list',
         name: 'memberlist',
         component: MemberList,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/leave',
+        path: 'leave',
         name: 'leave',
         component: Leave,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/reporting',
+        path: 'reporting',
         name: 'reporting',
         component: Reporting,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/show',
+        path: 'show',
         name: 'report',
         component: ReportPage,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/member',
+        path: 'member',
         name: 'member',
         component: WorkingTime,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/showProject',
+        path: 'showProject',
         name: 'showProject',
         component: MemberReport,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/showMenPower',
+        path: 'showMenPower',
         name: 'menpower',
         component: MenPower,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/showProjectWithDate',
+        path: 'showProjectWithDate',
         name: 'showproject',
         component: ShowProject,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/addmember',
+        path: 'addmember',
         name: 'addmember',
         component: AddMember,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/addleave',
+        path: 'addleave',
         name: 'addleave',
         component: Addleave,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/memberfine',
+        path: 'memberfine',
         name: 'memberfine',
         component: Fine,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/report/addproject',
+        path: 'addproject',
         name: 'addproject',
         component: AddProject,
+        meta: { requiresAuth: true },
       },
       {
-        path: '/profile',
+        path: 'profile',
         name: 'profile',
         component: Profile,
+        meta: { requiresAuth: true },
       },
     ],
   },
@@ -105,6 +119,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// ✅ login guard
+router.beforeEach((to, from, next) => {
+  alert('Login guard triggered');
+  const isLoggedIn = !!localStorage.getItem('token');
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;
