@@ -1,15 +1,17 @@
 <template>
-  <div>
+  <div class="align-center mb-5">
     <v-select
       v-bind="attrs"
-      v-on="$listeners"
       :items="items"
       :label="label"
       :multiple="multiple"
       :chips="chips"
       :clearable="clearable"
-      :style="{ width: width }"
+      :style="{ width }"
     >
+      <template v-slot:prepend>
+        <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+      </template>
       <slot />
     </v-select>
   </div>
@@ -19,8 +21,9 @@ import { useAttrs } from 'vue';
 defineProps({
   label: {
     type: String,
-    default: 'Select',
+    default: 'select',
   },
+  items: [String, Object],
   multiple: {
     type: Boolean,
     default: false,
@@ -35,7 +38,12 @@ defineProps({
   },
   width: {
     type: String,
-    default: '300px',
+    default: '400px',
+  },
+  prependIcon: [String, Object],
+  prependIconColor: {
+    type: String,
+    default: 'main',
   },
 });
 const attrs = useAttrs();
@@ -43,5 +51,20 @@ const attrs = useAttrs();
 <style scoped>
 .v-select {
   color: black;
+}
+::v-deep(.v-field-label) {
+  text-transform: uppercase !important;
+  font-weight: 400;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+::v-deep(.v-field.v-field--focused .v-field__append-inner) {
+  color: #03c9d7 !important;
+}
+::v-deep(.v-field.v-field--focused .v-field-label) {
+  color: #03c9d7 !important;
+}
+::v-deep(.v-field.v-field--focused .v-field__outline) {
+  color: #03c9d7 !important;
 }
 </style>

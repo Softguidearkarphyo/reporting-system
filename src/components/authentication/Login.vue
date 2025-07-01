@@ -28,6 +28,7 @@
             autocomplete="username"
             prependIcon="mdi-account"
             hide-details
+            width="371px"
           ></BaseTextField>
           <BaseTextField
             v-model="password"
@@ -38,6 +39,7 @@
             autocomplete="current-password"
             prependIcon="mdi-lock"
             hide-details
+            width="371px"
           ></BaseTextField>
 
           <v-card-actions class="justify-center pa-0">

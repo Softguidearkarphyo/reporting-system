@@ -9,7 +9,7 @@ import MemberReport from '../pages/report/MemberReport.vue';
 import MenPower from '../pages/report/MenPower.vue';
 import ShowProject from '../pages/report/ShowProject.vue';
 import MemberList from '../pages/reporting-system/MemberList.vue';
-import Leave from '../pages/reporting-system/MemberLeave.vue';
+import Leave from '../pages/reporting-system/LeaveRecord.vue';
 import Reporting from '../pages/reporting-system/ReportingPage.vue';
 import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';

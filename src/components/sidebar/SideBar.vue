@@ -4,6 +4,7 @@
     app
     clipped
     :temporary="$vuetify.display.smAndDown"
+    color="side"
   >
     <v-list nav>
       <v-list-item
@@ -124,6 +125,9 @@ const settings = ref([
 ]);
 </script>
 <style scoped>
+/* .v-list-item {
+  color: #11142d !important;
+} */
 .v-list-item-title {
   font-size: 13px !important;
   text-transform: uppercase !important;

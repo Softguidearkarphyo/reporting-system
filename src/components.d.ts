@@ -14,6 +14,7 @@ declare module 'vue' {
     Auth: typeof import('./pages/authentication/Auth.vue')['default']
     BaseButton: typeof import('./components/bases/BaseButton.vue')['default']
     BaseCard: typeof import('./components/bases/BaseCard.vue')['default']
+    BaseCheckbox: typeof import('./components/bases/BaseCheckbox.vue')['default']
     BaseDatePicker: typeof import('./components/bases/BaseDatePicker.vue')['default']
     BaseField: typeof import('./components/bases/BaseField.vue')['default']
     BaseMultiselect: typeof import('./components/bases/BaseMultiselect.vue')['default']
@@ -21,6 +22,7 @@ declare module 'vue' {
     BaseTitle: typeof import('./components/bases/BaseTitle.vue')['default']
     Dashboard: typeof import('./pages/layout/Dashboard.vue')['default']
     DashBoard: typeof import('./pages/report/DashBoard.vue')['default']
+    LeaveRecord: typeof import('./pages/reporting-system/LeaveRecord.vue')['default']
     Login: typeof import('./components/authentication/Login.vue')['default']
     MainContent: typeof import('./pages/layout/MainContent.vue')['default']
     MemberFine: typeof import('./pages/report/MemberFine.vue')['default']
@@ -28,6 +30,7 @@ declare module 'vue' {
     MemberList: typeof import('./pages/reporting-system/MemberList.vue')['default']
     MemberReport: typeof import('./pages/report/MemberReport.vue')['default']
     MenPower: typeof import('./pages/report/MenPower.vue')['default']
+    ParentCard: typeof import('./components/card/ParentCard.vue')['default']
     Profile: typeof import('./pages/authentication/Profile.vue')['default']
     ProfileIcon: typeof import('./components/navbar/ProfileIcon.vue')['default']
     ReportingPage: typeof import('./pages/reporting-system/ReportingPage.vue')['default']
@@ -36,7 +39,9 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ShowProject: typeof import('./pages/report/ShowProject.vue')['default']
     SideBar: typeof import('./components/sidebar/SideBar.vue')['default']
+    TableCard: typeof import('./components/card/TableCard.vue')['default']
     TopNavbar: typeof import('./pages/layout/TopNavbar.vue')['default']
+    WidgetCard: typeof import('./components/card/WidgetCard.vue')['default']
     WorkingTime: typeof import('./pages/report/WorkingTime.vue')['default']
   }
 }
