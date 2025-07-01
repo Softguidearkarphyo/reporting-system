@@ -36,7 +36,7 @@ const vuetify = createVuetify({
           accent: '#018a94',
           dark: '#11142D',
           surface: '#f6f6f6',
-          side: '#00000',
+          side: '#000000',
         },
       },
     },

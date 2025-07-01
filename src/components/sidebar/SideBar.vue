@@ -56,22 +56,22 @@ const group = ref(true);
 const navbars = ref([
   {
     title: 'dashboard',
-    path: '/dashboard',
+    path: '/reporiting-system/dashboard',
     icon: 'mdi-view-dashboard-outline',
   },
   {
     title: 'member lists',
-    path: 'member-list',
+    path: '/reporiting-system/member-lists',
     icon: 'mdi-account-group-outline',
   },
   {
     title: 'leave records',
-    path: '/leave',
+    path: '/reporiting-system/leaves',
     icon: 'mdi-account-cancel-outline',
   },
   {
     title: 'reporting',
-    path: '/reporting',
+    path: '/reporiting-system/reporting',
     icon: 'mdi-timer-plus-outline',
   },
 ]);
@@ -79,47 +79,47 @@ const navbars = ref([
 const settings = ref([
   {
     title: 'reports',
-    path: '/show',
+    path: '/reporiting-system/show',
     icon: 'mdi-chart-line',
   },
   {
     title: 'weekly work time',
-    path: '/member',
-    icon: 'mdi-account-clock-outline',
+    path: '/reporiting-system/members',
+    icon: '/reporiting-system/mdi-account-clock-outline',
   },
   {
     title: 'member reports',
-    path: '/showProject',
+    path: '/reporiting-system/show-projects',
     icon: 'mdi-account-details-outline',
   },
   {
     title: 'project menpower',
-    path: '/showMenPower',
+    path: '/reporiting-system/show-men-power',
     icon: 'mdi-account-multiple-outline',
   },
   {
     title: '6 months summary',
-    path: '/showProjectWithDate',
+    path: '/reporiting-system/show-project-date',
     icon: 'mdi mdi-clock-fast',
   },
   {
     title: 'add project',
-    path: '/addproject',
+    path: '/reporiting-system/add-projects',
     icon: 'mdi-web',
   },
   {
     title: 'add member',
-    path: '/addmember',
+    path: '/reporiting-system/add-members',
     icon: 'mdi-account-plus-outline',
   },
   {
     title: 'add leave',
-    path: '/addleave',
+    path: '/reporiting-system/add-leaves',
     icon: 'mdi-account-arrow-right-outline',
   },
   {
     title: 'member fine',
-    path: '/memberfine',
+    path: '/reporiting-system/member-fine',
     icon: 'mdi-account-alert-outline',
   },
 ]);

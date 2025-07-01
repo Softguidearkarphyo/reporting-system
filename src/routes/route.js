@@ -25,89 +25,90 @@ const routes = [
     component: AuthPage,
   },
   {
-    path: '/dashboard',
+    path: '/reporiting-system/dashboard',
     component: Dashboard,
     meta: { requiresAuth: true },
     children: [
       {
         path: '',
-        name: 'dashoard',
+        name: '/reporiting-system/dashoard',
         component: DashBoard,
+        meta: { requiresAuth: true },
       },
       {
-        path: 'member-list',
-        name: 'memberlist',
+        path: '/reporiting-system/member-lists',
+        name: 'member-lists',
         component: MemberList,
         meta: { requiresAuth: true },
       },
       {
-        path: 'leave',
-        name: 'leave',
+        path: '/reporiting-system/leaves',
+        name: 'leaves',
         component: Leave,
         meta: { requiresAuth: true },
       },
       {
-        path: 'reporting',
+        path: '/reporiting-system/reporting',
         name: 'reporting',
         component: Reporting,
         meta: { requiresAuth: true },
       },
       {
-        path: 'show',
+        path: '/reporiting-system/show',
         name: 'report',
         component: ReportPage,
         meta: { requiresAuth: true },
       },
       {
-        path: 'member',
-        name: 'member',
+        path: '/reporiting-system/members',
+        name: 'members',
         component: WorkingTime,
         meta: { requiresAuth: true },
       },
       {
-        path: 'showProject',
-        name: 'showProject',
+        path: '/reporiting-system/show-projects',
+        name: 'show-project',
         component: MemberReport,
         meta: { requiresAuth: true },
       },
       {
-        path: 'showMenPower',
-        name: 'menpower',
+        path: '/reporiting-system/show-men-powers',
+        name: 'men-power',
         component: MenPower,
         meta: { requiresAuth: true },
       },
       {
-        path: 'showProjectWithDate',
-        name: 'showproject',
+        path: '/reporiting-system/show-project-date',
+        name: 'show-project',
         component: ShowProject,
         meta: { requiresAuth: true },
       },
       {
-        path: 'addmember',
-        name: 'addmember',
+        path: '/reporiting-system/add-members',
+        name: 'add-members',
         component: AddMember,
         meta: { requiresAuth: true },
       },
       {
-        path: 'addleave',
-        name: 'addleave',
+        path: '/reporiting-system/add-leaves',
+        name: 'add-leaves',
         component: Addleave,
         meta: { requiresAuth: true },
       },
       {
-        path: 'memberfine',
-        name: 'memberfine',
+        path: '/reporiting-system/member-fine',
+        name: 'member-fine',
         component: Fine,
         meta: { requiresAuth: true },
       },
       {
-        path: 'addproject',
-        name: 'addproject',
+        path: '/reporiting-system/add-projects',
+        name: 'add-projects',
         component: AddProject,
         meta: { requiresAuth: true },
       },
       {
-        path: 'profile',
+        path: '/reporiting-system/profile',
         name: 'profile',
         component: Profile,
         meta: { requiresAuth: true },
@@ -123,7 +124,6 @@ const router = createRouter({
 
 // ✅ login guard
 router.beforeEach((to, from, next) => {
-  alert('Login guard triggered');
   const isLoggedIn = !!localStorage.getItem('token');
   if (to.meta.requiresAuth && !isLoggedIn) {
     next('/login');
