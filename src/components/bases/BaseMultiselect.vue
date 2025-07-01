@@ -21,7 +21,9 @@ import { useAttrs } from 'vue';
 defineProps({
   label: {
     type: String,
+    default: 'select',
   },
+  items: [String, Object],
   multiple: {
     type: Boolean,
     default: false,
@@ -49,5 +51,20 @@ const attrs = useAttrs();
 <style scoped>
 .v-select {
   color: black;
+}
+::v-deep(.v-field-label) {
+  text-transform: uppercase !important;
+  font-weight: 400;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+::v-deep(.v-field.v-field--focused .v-field__append-inner) {
+  color: #03c9d7 !important;
+}
+::v-deep(.v-field.v-field--focused .v-field-label) {
+  color: #03c9d7 !important;
+}
+::v-deep(.v-field.v-field--focused .v-field__outline) {
+  color: #03c9d7 !important;
 }
 </style>

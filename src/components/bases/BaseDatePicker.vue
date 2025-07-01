@@ -1,70 +1,83 @@
 <template>
-  <v-menu v-model="menu" :close-on-content-click="false" location="center">
+  <v-menu
+    v-model="menu"
+    min-width="auto"
+    :close-on-content-click="false"
+    transition="scale-transition"
+    offset-y
+    location="center"
+  >
     <template v-slot:activator="{ props }">
       <v-text-field
+        :ref="refName"
         v-bind="props"
         v-model="formattedDate"
-        :label="label"
-        :readonly="true"
-        :style="style"
-        :error-messages="errorMessages"
-        :hide-details="isHideDetails"
-        prepend-inner-icon="mdi-calendar"
-        :class="customClass"
-      />
+        :style="{ width }"
+        readonly
+        @click="menu = true"
+      >
+        <template v-slot:prepend>
+          <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+        </template>
+      </v-text-field>
     </template>
-
-    <div class="position-relative">
+    <div>
       <v-date-picker
-        v-model="model"
-        :color="color"
-        :width="xs ? width - 30 : 'auto'"
-        height="auto"
+        hide-header
+        :style="{ minWidth: minWidth, maxWidth: maxWidth, width: width }"
         show-adjacent-months
-        title=""
-        @update:model-value="onDateChange"
-      />
-      <v-btn
-        class="position-absolute top-0 right-0"
-        color="white"
-        icon="mdi-close"
-        size="small"
-        variant="text"
-        @click="menu = false"
-      ></v-btn>
+        hide-details
+        @update:model-value="onDateSelected"
+        color="main"
+      >
+      </v-date-picker>
     </div>
   </v-menu>
 </template>
-
 <script setup>
-import { useDisplay } from 'vuetify';
+import { ref, watch } from 'vue';
 
-// Props
 const props = defineProps({
-  modelValue: [String, Date],
   label: String,
   color: String,
-  errorMessages: [String, Array],
-  isHideDetails: { type: Boolean, default: true },
-  style: Object,
-  customClass: String,
+  minWidth: {
+    type: String,
+    default: '190px',
+  },
+  maxWidth: {
+    type: String,
+    default: '310px',
+  },
+  width: {
+    type: String,
+    default: '400px',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  refName: {
+    type: String,
+    default: null,
+  },
+  tableName: {
+    type: String,
+    default: 'bodyDataTable',
+  },
+  prependIcon: [String, Object],
+  prependIconColor: {
+    type: String,
+    default: 'main',
+  },
 });
 
-// Emit
 const emit = defineEmits(['update:modelValue']);
 
-// Vuetify display
-const { width, xs } = useDisplay();
-
-// Refs
-const model = ref(props.modelValue ? new Date(props.modelValue) : null);
-const formattedDate = ref(formatDate(model.value));
 const menu = ref(false);
+const model = ref(props.modelValue ? new Date(props.modelValue) : null);
 
-// Expose ref if needed
-defineExpose({ model });
+const formattedDate = ref(formatDate(model.value));
 
-// Watcher for syncing props and local state
 watch(
   () => props.modelValue,
   (val) => {
@@ -74,28 +87,22 @@ watch(
   { immediate: true }
 );
 
-watch(model, (val) => {
+function onDateSelected(val) {
+  model.value = val;
   emit('update:modelValue', val);
   formattedDate.value = formatDate(val);
   menu.value = false;
-});
-
-// Handle date change
-function onDateChange(val) {
-  model.value = val;
 }
 
-// Format date
 function formatDate(date) {
   if (!date) return '';
   const d = new Date(date);
-  const day = `0${d.getDate()}`.slice(-2);
-  const month = `0${d.getMonth() + 1}`.slice(-2);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 }
 </script>
-
 <style scoped>
 .v-overlay__content:has(> .v-date-picker) {
   min-width: auto !important;
@@ -103,9 +110,8 @@ function formatDate(date) {
 .v-picker-title {
   padding: 0 !important;
 }
-@media only screen and (max-width: 600px) {
-  .v-overlay__content:has(> .v-date-picker) {
-    left: 0 !important;
-  }
+::v-deep(.v-date-picker-month__day-btn:hover) {
+  background-color: #00bcd4 !important;
+  color: white !important;
 }
 </style>
