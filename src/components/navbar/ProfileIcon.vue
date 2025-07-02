@@ -22,7 +22,7 @@
         <v-btn
           @click="handleLogout"
           size="small"
-          color="accent"
+          color="secondary"
           variant="outlined"
           block
           link

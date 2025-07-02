@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2" class="mb-4" rounded="lg" color="side">
+  <v-card elevation="2" class="mb-4" rounded="lg" color="surface">
     <v-card-text>
       <v-form>
         <v-container>

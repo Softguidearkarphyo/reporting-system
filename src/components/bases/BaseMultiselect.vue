@@ -43,7 +43,7 @@ defineProps({
   prependIcon: [String, Object],
   prependIconColor: {
     type: String,
-    default: 'main',
+    default: 'primary',
   },
 });
 const attrs = useAttrs();

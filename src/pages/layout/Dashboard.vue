@@ -14,6 +14,6 @@ const drawer = ref(true);
 </script>
 <style scoped>
 ::v-deep(.v-main) {
-  background-color: #f6f6f6 !important;
+  background-color: var(--v-theme-background) !important;
 }
 </style>
