@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="2" class="mb-4" rounded="lg" color="side">
     <v-card-text>
-      <v-form v-model="valid">
+      <v-form>
         <v-container>
           <slot />
         </v-container>

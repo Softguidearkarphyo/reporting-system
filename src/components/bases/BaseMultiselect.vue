@@ -49,9 +49,6 @@ defineProps({
 const attrs = useAttrs();
 </script>
 <style scoped>
-.v-select {
-  color: black;
-}
 ::v-deep(.v-field-label) {
   text-transform: uppercase !important;
   font-weight: 400;

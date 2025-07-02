@@ -12,7 +12,6 @@
             autocomplete="test"
             prependIcon="mdi-account"
             hide-details
-            :rules="rules"
             required
           ></BaseTextField>
         </v-col>
@@ -21,7 +20,6 @@
             :items="['Red', 'Green', 'Blue']"
             label="test"
             prependIcon="mdi-account"
-            :rules="rules"
             required
           ></BaseMultiselect>
         </v-col>
@@ -29,7 +27,6 @@
           <BaseDatePicker
             label="test"
             prependIcon="mdi-calendar-month"
-            :rules="rules"
             required
           ></BaseDatePicker>
         </v-col>

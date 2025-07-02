@@ -56,22 +56,22 @@ const group = ref(true);
 const navbars = ref([
   {
     title: 'dashboard',
-    path: '/reporiting-system/dashboard',
+    path: '/reporting-system/dashboard',
     icon: 'mdi-view-dashboard-outline',
   },
   {
     title: 'member lists',
-    path: '/reporiting-system/member-lists',
+    path: '/reporting-system/member-lists',
     icon: 'mdi-account-group-outline',
   },
   {
     title: 'leave records',
-    path: '/reporiting-system/leaves',
+    path: '/reporting-system/leaves',
     icon: 'mdi-account-cancel-outline',
   },
   {
     title: 'reporting',
-    path: '/reporiting-system/reporting',
+    path: '/reporting-system/reporting',
     icon: 'mdi-timer-plus-outline',
   },
 ]);
@@ -79,47 +79,47 @@ const navbars = ref([
 const settings = ref([
   {
     title: 'reports',
-    path: '/reporiting-system/show',
+    path: '/reporting-system/show',
     icon: 'mdi-chart-line',
   },
   {
     title: 'weekly work time',
-    path: '/reporiting-system/members',
-    icon: '/reporiting-system/mdi-account-clock-outline',
+    path: '/reporting-system/members',
+    icon: 'mdi-account-clock-outline',
   },
   {
     title: 'member reports',
-    path: '/reporiting-system/show-projects',
+    path: '/reporting-system/show-projects',
     icon: 'mdi-account-details-outline',
   },
   {
     title: 'project menpower',
-    path: '/reporiting-system/show-men-power',
+    path: '/reporting-system/show-men-powers',
     icon: 'mdi-account-multiple-outline',
   },
   {
     title: '6 months summary',
-    path: '/reporiting-system/show-project-date',
+    path: '/reporting-system/show-project-date',
     icon: 'mdi mdi-clock-fast',
   },
   {
     title: 'add project',
-    path: '/reporiting-system/add-projects',
+    path: '/reporting-system/add-projects',
     icon: 'mdi-web',
   },
   {
     title: 'add member',
-    path: '/reporiting-system/add-members',
+    path: '/reporting-system/add-members',
     icon: 'mdi-account-plus-outline',
   },
   {
     title: 'add leave',
-    path: '/reporiting-system/add-leaves',
+    path: '/reporting-system/add-leaves',
     icon: 'mdi-account-arrow-right-outline',
   },
   {
     title: 'member fine',
-    path: '/reporiting-system/member-fine',
+    path: '/reporting-system/member-fine',
     icon: 'mdi-account-alert-outline',
   },
 ]);

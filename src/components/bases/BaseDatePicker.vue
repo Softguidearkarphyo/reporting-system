@@ -114,4 +114,7 @@ function formatDate(date) {
   background-color: #00bcd4 !important;
   color: white !important;
 }
+::v-deep(.v-field__outline::after) {
+  border-bottom: 2px solid #00bcd4 !important;
+}
 </style>

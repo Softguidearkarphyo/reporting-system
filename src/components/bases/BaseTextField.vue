@@ -12,10 +12,9 @@
             : 'mdi-eye-outline'
           : null
       "
-      :rules="rules"
       :autocomplete="autocomplete"
       :maxlength="maxlength"
-      variant="underlined"
+      variant="plain"
       @click:append-inner="toggleVisibility"
       dense
       hide-details
@@ -43,10 +42,6 @@ const props = defineProps({
   width: {
     type: String,
     default: '400px',
-  },
-  rules: {
-    type: Array,
-    default: () => [],
   },
   autocomplete: String,
   maxlength: [Number, String],
@@ -83,9 +78,9 @@ const internalValue = computed({
 </script>
 
 <style scoped>
-::v-deep(.custom-input .v-field__field) ::v-deep(.v-field--variant-underlined) {
+::v-deep(.custom-input .v-field__field) {
   padding: 0 !important;
-  border-bottom: 1px solid #121313;
+  border-bottom: 1px solid;
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -108,7 +103,6 @@ const internalValue = computed({
   color: #03c9d7 !important;
 }
 ::v-deep(.custom-input .v-label) {
-  color: black !important;
   font-weight: 400;
   font-size: 13px;
   transition: color 0.3s ease;
