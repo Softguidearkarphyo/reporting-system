@@ -8,19 +8,22 @@
     location="center"
   >
     <template v-slot:activator="{ props }">
-      <v-text-field
-        :ref="refName"
-        v-bind="props"
-        v-model="formattedDate"
-        :style="{ width }"
-        readonly
-        @click="menu = true"
-      >
-        <template v-slot:prepend>
-          <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
-        </template>
-      </v-text-field>
+      <div class="mx-auto" :style="{ width }">
+        <v-text-field
+          :ref="refName"
+          v-bind="props"
+          :label="label"
+          v-model="formattedDate"
+          readonly
+          @click="menu = true"
+        >
+          <template v-slot:prepend>
+            <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+          </template>
+        </v-text-field>
+      </div>
     </template>
+
     <div>
       <v-date-picker
         hide-header
@@ -29,11 +32,11 @@
         hide-details
         @update:model-value="onDateSelected"
         color="main"
-      >
-      </v-date-picker>
+      />
     </div>
   </v-menu>
 </template>
+
 <script setup>
 import { ref, watch } from 'vue';
 
@@ -55,6 +58,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  modelValue: {
+    type: [String, Date],
+    required: false,
   },
   refName: {
     type: String,

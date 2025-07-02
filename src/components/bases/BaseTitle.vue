@@ -1,5 +1,5 @@
 <template>
-  <h3 class="ml-2 mt-2">
+  <h3 class="mt-2">
     <slot />
     <v-chip v-if="id" class="ma-2" label x-small>{{ id }}</v-chip>
   </h3>
