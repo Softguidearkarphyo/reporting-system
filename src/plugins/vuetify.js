@@ -31,6 +31,7 @@ const vuetify = createVuetify({
           surface: '#ffffff',
           dark: '#11142D',
           'on-surface': '#11142D',
+          error: '#B00020',
         },
       },
       dark: {
@@ -42,6 +43,7 @@ const vuetify = createVuetify({
           dark: '#11142D',
           surface: '#010724',
           'on-surface': '#FFFFFF',
+          error: '#B00020',
         },
       },
     },

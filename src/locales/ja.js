@@ -1,4 +1,12 @@
 export default {
+  common: {
+    search: '検索',
+    deleteConfirmTitle: '削除のご確認',
+    deleteConfirmText:
+      'これを削除してもよろしいですか？ # この操作は元に戻せません。',
+    deleteBtnCancelText: 'キャンセル',
+    deleteBtnText: '削除',
+  },
   sidebar: {
     dashboard: 'ダッシュボード',
     memberlists: 'メンバーリスト',
@@ -17,5 +25,21 @@ export default {
   },
   message: {
     dashboard: 'ダッシュボード',
+  },
+  memberList: {
+    title: 'メンバー一覧',
+    table: {
+      name: '名前',
+      position: '役職',
+      phone: '電話番号',
+      email: 'メールアドレス',
+      address: '住所',
+      action: '操作',
+    },
+    pagination: {
+      range: '{total} 件中 {start} ～ {end} 件を表示',
+    },
+    deleteConfirmText:
+      'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
   },
 };

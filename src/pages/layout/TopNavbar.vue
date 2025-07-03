@@ -4,8 +4,8 @@
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>
-    <v-app-bar-nav-icon>
-      <v-icon @click="setLang">mdi-translate</v-icon>
+    <v-app-bar-nav-icon @click="setLang">
+      <v-icon>mdi-translate</v-icon>
     </v-app-bar-nav-icon>
     <ProfileIcon />
   </v-app-bar>
