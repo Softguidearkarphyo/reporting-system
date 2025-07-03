@@ -49,16 +49,16 @@ export default {
 </script>
 <style scoped>
 .v-list-item:hover:not(.v-list-item--active) {
-  background-color: rgba(3, 201, 215, 0.2);
-  color: #03c9d7 !important;
+  background-color: rgba(var(--v-theme-primary), 0.2);
+  color: rgb(var(--v-theme-primary)) !important;
 }
 .v-list-item.v-list-item--active {
-  background-color: #03c9d7 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white;
 }
 
 .v-list-item.v-list-item--active:hover {
-  background-color: #03c9d7 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white;
 }
 .v-list-item-title {

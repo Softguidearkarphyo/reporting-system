@@ -116,10 +116,16 @@ function formatDate(date) {
   padding: 0 !important;
 }
 ::v-deep(.v-date-picker-month__day-btn:hover) {
-  background-color: #00bcd4 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white !important;
 }
 ::v-deep(.v-field__outline::after) {
-  border-bottom: 2px solid #00bcd4 !important;
+  border-bottom: 2px solid rgb(var(--v-theme-primary)) !important;
+}
+::v-deep(.v-label) {
+  font-weight: 400;
+  font-size: 13px;
+  transition: color 0.3s ease;
+  text-transform: uppercase !important;
 }
 </style>

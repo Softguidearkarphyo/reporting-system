@@ -26,7 +26,7 @@ const vuetify = createVuetify({
         dark: false,
         colors: {
           primary: colorThemes[savedColor].light,
-          secondary: '#018a94',
+          secondary: colorThemes[savedColor].secondaryLight,
           background: '#f6f6f6',
           surface: '#ffffff',
           dark: '#11142D',
@@ -38,7 +38,7 @@ const vuetify = createVuetify({
         dark: true,
         colors: {
           primary: colorThemes[savedColor].dark,
-          secondary: '#016a74',
+          secondary: colorThemes[savedColor].secondaryDark,
           background: '#f6f6f6',
           dark: '#11142D',
           surface: '#010724',

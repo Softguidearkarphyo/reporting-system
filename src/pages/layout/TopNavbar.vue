@@ -35,9 +35,9 @@ function setLang() {
 <style scoped>
 .v-toolbar-title {
   font-weight: bold !important;
-  color: #018a94;
+  color: rgb(var(--v-theme-secondary));
 }
 ::v-deep(.v-icon) {
-  color: #018a94 !important;
+  color: rgb(var(--v-theme-secondary)) !important;
 }
 </style>

@@ -132,6 +132,7 @@ const setTheme = (colorName) => {
       colors: {
         ...theme.themes.value.light.colors,
         primary: colorThemes[colorName].light,
+        secondary: colorThemes[colorName].secondaryLight,
       },
     },
     dark: {
@@ -139,6 +140,7 @@ const setTheme = (colorName) => {
       colors: {
         ...theme.themes.value.dark.colors,
         primary: colorThemes[colorName].dark,
+        secondary: colorThemes[colorName].secondaryDark,
       },
     },
   };
@@ -250,17 +252,17 @@ const settings = computed(() => [
   margin-left: 10px !important;
 }
 .v-list-item:hover:not(.v-list-item--active) {
-  background-color: #03c9d733 !important;
-  color: #03c9d7 !important;
+  background-color: rgba(var(--v-theme-primary), 0.2) !important;
+  color: rgb(var(--v-theme-primary)) !important;
 }
 
 .v-list-item.v-list-item--active {
-  background-color: #03c9d7 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white;
 }
 
 .v-list-item.v-list-item--active:hover {
-  background-color: #03c9d7 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white;
 }
 .v-icon {

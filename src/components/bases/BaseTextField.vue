@@ -85,7 +85,7 @@ const internalValue = computed({
   box-shadow: none !important;
 }
 ::v-deep(.custom-input .v-field--focused .v-field__field) {
-  border-bottom: 2px solid #03c9d7 !important;
+  border-bottom: 2px solid rgb(var(--v-theme-primary)) !important;
 }
 ::v-deep(.custom-input .v-field__outline),
 ::v-deep(.custom-input .v-field__overlay),
@@ -100,7 +100,7 @@ const internalValue = computed({
   text-transform: uppercase !important;
 }
 ::v-deep(.custom-input .v-field.v-field--focused .v-label) {
-  color: #03c9d7 !important;
+  color: rgb(var(--v-theme-primary)) !important;
 }
 ::v-deep(.custom-input .v-label) {
   font-weight: 400;
