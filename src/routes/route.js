@@ -125,8 +125,10 @@ const router = createRouter({
 // ✅ login guard
 router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('token');
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next('/login');
+  if (to.path === '/login' && isLoggedIn) {
+    next('/');
+  } else if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/');
   } else {
     next();
   }
