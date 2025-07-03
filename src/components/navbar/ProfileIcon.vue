@@ -9,7 +9,7 @@
     </template>
     <v-sheet rounded="md" width="150" elevation="10" class="mt-2">
       <v-list class="py-0" lines="one" density="compact">
-        <v-list-item to="/profile" value="profile">
+        <v-list-item to="/reporting-system/profile" value="profile">
           <template v-slot:prepend>
             <v-icon class="profile">mdi-account</v-icon>
           </template>
@@ -22,7 +22,7 @@
         <v-btn
           @click="handleLogout"
           size="small"
-          color="accent"
+          color="secondary"
           variant="outlined"
           block
           link

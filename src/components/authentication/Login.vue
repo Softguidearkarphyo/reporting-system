@@ -80,7 +80,7 @@ export default {
       this.error = '';
       try {
         await this.login(this.username, this.password);
-        this.$router.push('/reporiting-system/dashboard');
+        this.$router.push('/reporting-system/dashboard');
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response) {

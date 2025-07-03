@@ -4,6 +4,10 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import '@mdi/font/css/materialdesignicons.css';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import { colorThemes } from '../custom-theme/color';
+
+const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+const savedColor = localStorage.getItem('selectedColor') || 'teal';
 
 const vuetify = createVuetify({
   components,
@@ -16,30 +20,32 @@ const vuetify = createVuetify({
     },
   },
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: savedTheme,
     themes: {
       light: {
         dark: false,
         colors: {
-          main: '#03c9d7',
-          accent: '#018a94',
+          primary: colorThemes[savedColor].light,
+          secondary: '#018a94',
+          background: '#f6f6f6',
+          surface: '#ffffff',
           dark: '#11142D',
-          surface: '#f6f6f6',
-          side: '#ffffff',
           'on-surface': '#11142D',
         },
       },
       dark: {
         dark: true,
         colors: {
-          main: '#03c9d7',
-          accent: '#018a94',
+          primary: colorThemes[savedColor].dark,
+          secondary: '#016a74',
+          background: '#f6f6f6',
           dark: '#11142D',
-          surface: '#f6f6f6',
-          side: '#000000',
+          surface: '#010724',
+          'on-surface': '#FFFFFF',
         },
       },
     },
   },
 });
+
 export default vuetify;

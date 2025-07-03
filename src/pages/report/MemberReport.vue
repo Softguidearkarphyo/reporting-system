@@ -44,7 +44,7 @@ import BaseButton from '../../components/bases/BaseButton.vue';
 import BaseTitle from '../../components/bases/BaseTitle.vue';
 </script>
 <style>
-::v-ddep(.v-card) {
+::v-deep(.v-card) {
   background-color: white !important;
 }
 </style>

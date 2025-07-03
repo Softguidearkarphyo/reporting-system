@@ -28,7 +28,7 @@
         show-adjacent-months
         hide-details
         @update:model-value="onDateSelected"
-        color="main"
+        color="primary"
       >
       </v-date-picker>
     </div>
@@ -67,7 +67,7 @@ const props = defineProps({
   prependIcon: [String, Object],
   prependIconColor: {
     type: String,
-    default: 'main',
+    default: 'primary',
   },
 });
 
@@ -113,5 +113,8 @@ function formatDate(date) {
 ::v-deep(.v-date-picker-month__day-btn:hover) {
   background-color: #00bcd4 !important;
   color: white !important;
+}
+::v-deep(.v-field__outline::after) {
+  border-bottom: 2px solid #00bcd4 !important;
 }
 </style>
