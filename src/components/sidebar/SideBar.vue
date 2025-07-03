@@ -93,10 +93,22 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-app-bar-nav-icon @click="toggleTheme" color="secondary">
-          <v-icon size="25" v-if="!isDark">mdi-weather-sunny</v-icon>
-          <v-icon size="20" v-else>mdi-moon-waning-crescent</v-icon>
-        </v-app-bar-nav-icon>
+        <v-btn
+          variant="outlined"
+          class="rounded-lg mx-1 border-2 text-capitalize"
+          color="secondary"
+          @click="setLightTheme"
+        >
+          <v-icon size="25">mdi-weather-sunny</v-icon>
+        </v-btn>
+        <v-btn
+          variant="outlined"
+          class="rounded-lg mx-1 border-2 text-capitalize"
+          color="secondary"
+          @click="setDarkTheme"
+        >
+          <v-icon size="20">mdi-moon-waning-crescent</v-icon>
+        </v-btn>
       </div>
     </template>
   </v-navigation-drawer>
@@ -145,16 +157,18 @@ onMounted(() => {
   setTheme(selectedColor.value);
 });
 
-const isDark = computed(() => theme.global.name.value === 'dark');
-
 const init = () => {
   const savedTheme = localStorage.getItem('app-theme');
   if (savedTheme) theme.global.name.value = savedTheme;
 };
-const toggleTheme = () => {
-  const newTheme = isDark.value ? 'light' : 'dark';
-  theme.global.name.value = newTheme;
-  localStorage.setItem('app-theme', newTheme);
+const setLightTheme = () => {
+  theme.global.name.value = 'light';
+  localStorage.setItem('app-theme', 'light');
+};
+
+const setDarkTheme = () => {
+  theme.global.name.value = 'dark';
+  localStorage.setItem('app-theme', 'dark');
 };
 onMounted(init);
 
@@ -165,17 +179,17 @@ const navbars = computed(() => [
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    title: 'member lists',
+    title: t('sidebar.memberlists'),
     path: '/reporting-system/member-lists',
     icon: 'mdi-account-group-outline',
   },
   {
-    title: 'leave records',
+    title: t('sidebar.leaverecords'),
     path: '/reporting-system/leaves',
     icon: 'mdi-account-cancel-outline',
   },
   {
-    title: 'reporting',
+    title: t('sidebar.reporting'),
     path: '/reporting-system/reporting',
     icon: 'mdi-timer-plus-outline',
   },
@@ -183,47 +197,47 @@ const navbars = computed(() => [
 
 const settings = computed(() => [
   {
-    title: 'reports',
+    title: t('sidebar.reports'),
     path: '/reporting-system/show',
     icon: 'mdi-chart-line',
   },
   {
-    title: 'weekly work time',
+    title: t('sidebar.weeklyworktime'),
     path: '/reporting-system/members',
     icon: 'mdi-account-clock-outline',
   },
   {
-    title: 'member reports',
+    title: t('sidebar.memberreports'),
     path: '/reporting-system/show-projects',
     icon: 'mdi-account-details-outline',
   },
   {
-    title: 'project menpower',
+    title: t('sidebar.projectmenpower'),
     path: '/reporting-system/show-men-powers',
     icon: 'mdi-account-multiple-outline',
   },
   {
-    title: '6 months summary',
+    title: t('sidebar.sixmonthssummary'),
     path: '/reporting-system/show-project-date',
     icon: 'mdi mdi-clock-fast',
   },
   {
-    title: 'add project',
+    title: t('sidebar.addproject'),
     path: '/reporting-system/add-projects',
     icon: 'mdi-web',
   },
   {
-    title: 'add member',
+    title: t('sidebar.addmember'),
     path: '/reporting-system/add-members',
     icon: 'mdi-account-plus-outline',
   },
   {
-    title: 'add leave',
+    title: t('sidebar.addleave'),
     path: '/reporting-system/add-leaves',
     icon: 'mdi-account-arrow-right-outline',
   },
   {
-    title: 'member fine',
+    title: t('sidebar.memberfine'),
     path: '/reporting-system/member-fine',
     icon: 'mdi-account-alert-outline',
   },

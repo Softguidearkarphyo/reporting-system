@@ -19,6 +19,7 @@ declare module 'vue' {
     BaseField: typeof import('./components/bases/BaseField.vue')['default']
     BaseMultiselect: typeof import('./components/bases/BaseMultiselect.vue')['default']
     BasePassword: typeof import('./components/bases/BasePassword.vue')['default']
+    BaseSelect: typeof import('./components/bases/BaseSelect.vue')['default']
     BaseTextField: typeof import('./components/bases/BaseTextField.vue')['default']
     BaseTitle: typeof import('./components/bases/BaseTitle.vue')['default']
     Dashboard: typeof import('./pages/layout/Dashboard.vue')['default']
