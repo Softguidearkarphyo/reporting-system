@@ -4,6 +4,7 @@
     class="mb-6 overflow-hidden"
     rounded="lg"
     :style="{ width }"
+    color="surface"
   >
     <v-card-item>
       <v-card-title class="text-18">Widget</v-card-title>

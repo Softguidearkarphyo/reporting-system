@@ -4,7 +4,7 @@
     app
     clipped
     :temporary="$vuetify.display.smAndDown"
-    color="side"
+    color="surface"
   >
     <v-list nav>
       <v-list-item
@@ -28,7 +28,9 @@
             <template v-slot:prepend>
               <v-icon>mdi-cog</v-icon>
             </template>
-            <v-list-item-title>Admin Settings</v-list-item-title>
+            <v-list-item-title>{{
+              $t('sidebar.adminsetting')
+            }}</v-list-item-title>
           </v-list-item>
         </template>
         <v-list-item
@@ -46,16 +48,119 @@
         </v-list-item>
       </v-list-group>
     </v-list>
+    <template v-slot:append>
+      <v-list-subheader class="mx-4 font-weight-bold">
+        <v-icon left>mdi-palette</v-icon>
+        Theme
+      </v-list-subheader>
+      <div class="d-flex align-center pa-2 gap-2">
+        <v-menu offset-y>
+          <template #activator="{ props: paletteProps }">
+            <v-btn
+              v-bind="paletteProps"
+              variant="outlined"
+              class="rounded-lg mx-1 border-2 text-capitalize"
+              color="secondary"
+            >
+              <v-icon>mdi-palette-outline</v-icon>
+              <v-icon
+                v-if="selectedColor"
+                :color="colorThemes[selectedColor].light"
+                class="ml-2"
+              >
+                mdi-circle
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-list class="py-0" lines="one" density="compact" min-width="120">
+            <v-list-item
+              v-for="(color, name) in colorThemes"
+              :key="name"
+              @click="setTheme(name)"
+              :class="{ 'v-list-item--active': selectedColor === name }"
+            >
+              <template #prepend>
+                <v-icon
+                  :color="color.light"
+                  :class="{ 'selected-theme-icon': selectedColor === name }"
+                >
+                  mdi-circle
+                </v-icon>
+              </template>
+              <v-list-item-title class="text-capitalize ml-2">
+                {{ name }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-app-bar-nav-icon @click="toggleTheme" color="secondary">
+          <v-icon size="25" v-if="!isDark">mdi-weather-sunny</v-icon>
+          <v-icon size="20" v-else>mdi-moon-waning-crescent</v-icon>
+        </v-app-bar-nav-icon>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 <script setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useTheme } from 'vuetify';
+import { colorThemes } from '../../custom-theme/color';
+const { t } = useI18n();
 const props = defineProps({ drawer: Boolean });
 const group = ref(true);
 
-const navbars = ref([
+const theme = useTheme();
+const selectedColor = ref(localStorage.getItem('selectedColor') || 'teal');
+
+const setTheme = (colorName) => {
+  const newThemes = {
+    light: {
+      ...theme.themes.value.light,
+      colors: {
+        ...theme.themes.value.light.colors,
+        primary: colorThemes[colorName].light,
+      },
+    },
+    dark: {
+      ...theme.themes.value.dark,
+      colors: {
+        ...theme.themes.value.dark.colors,
+        primary: colorThemes[colorName].dark,
+      },
+    },
+  };
+
+  theme.themes.value = newThemes;
+
+  selectedColor.value = colorName;
+  localStorage.setItem('selectedColor', colorName);
+
+  requestAnimationFrame(() => {
+    theme.global.name.value = theme.global.name.value;
+  });
+};
+
+onMounted(() => {
+  setTheme(selectedColor.value);
+});
+
+const isDark = computed(() => theme.global.name.value === 'dark');
+
+const init = () => {
+  const savedTheme = localStorage.getItem('app-theme');
+  if (savedTheme) theme.global.name.value = savedTheme;
+};
+const toggleTheme = () => {
+  const newTheme = isDark.value ? 'light' : 'dark';
+  theme.global.name.value = newTheme;
+  localStorage.setItem('app-theme', newTheme);
+};
+onMounted(init);
+
+const navbars = computed(() => [
   {
-    title: 'dashboard',
+    title: t('sidebar.dashboard'),
     path: '/reporting-system/dashboard',
     icon: 'mdi-view-dashboard-outline',
   },
@@ -76,7 +181,7 @@ const navbars = ref([
   },
 ]);
 
-const settings = ref([
+const settings = computed(() => [
   {
     title: 'reports',
     path: '/reporting-system/show',
@@ -125,9 +230,6 @@ const settings = ref([
 ]);
 </script>
 <style scoped>
-/* .v-list-item {
-  color: #11142d !important;
-} */
 .v-list-item-title {
   font-size: 13px !important;
   text-transform: uppercase !important;

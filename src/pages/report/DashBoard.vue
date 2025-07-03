@@ -1,6 +1,7 @@
 <template>
   <div>
-    <BaseTitle>Dashboard</BaseTitle>
+    <BaseTitle>{{ $t('message.dashboard') }}</BaseTitle>
+    <h1></h1>
     <WidgetCard></WidgetCard>
   </div>
 </template>

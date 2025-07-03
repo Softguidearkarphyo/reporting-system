@@ -1,0 +1,369 @@
+  <ParentCard style="max-width: 1400px" class="mx-auto">
+        <v-container class="" fluid>
+          <BaseTitle class="text-center"> 作業実績管理の会員登録 </BaseTitle>
+          <div style="max-width: 80%; width: 100%" class="mx-lg-auto">
+            <v-row class="px-4 py-4">
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="English Name"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Japanese Name"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Username"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Password"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Address"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Phone Number"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseSelect
+                  label="Position"
+                  :items="position"
+                  prependIcon="mdi-account"
+                  item-title="name"
+                  :width="'360px'"
+                  item-value="id"
+                >
+                </BaseSelect>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseSelect
+                  label="Role"
+                  :items="role"
+                  prependIcon="mdi-account"
+                  item-title="name"
+                  :width="'360px'"
+                  item-value="id"
+                >
+                </BaseSelect>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Email"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseDatePicker
+                  label="Permanet Date"
+                  prependIcon="mdi-calendar-month"
+                  :width="'360px'"
+                  required
+                ></BaseDatePicker>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseSelect
+                  label="Ref Person"
+                  :items="role"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  item-title="name"
+                  item-value="id"
+                >
+                </BaseSelect>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseTextField
+                  label="Ref Phone Number"
+                  type="text"
+                  variant="plain"
+                  dense
+                  autocomplete="test"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  hide-details
+                  required
+                ></BaseTextField>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseSelect
+                  label="Project"
+                  :items="role"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  item-title="name"
+                  item-value="id"
+                >
+                </BaseSelect>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6" class="d-flex justify-center">
+                <BaseSelect
+                  label="Sort Key"
+                  :items="sortKey"
+                  prependIcon="mdi-account"
+                  :width="'360px'"
+                  item-title="value"
+                  item-value="id"
+                >
+                </BaseSelect>
+              </v-col>
+              <v-col cols="12" lg="6" xl="6">
+                <div class="justify-end">
+                  <BaseButton type="submit" style="width: 200px">
+                    LOGIN
+                  </BaseButton>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+        </v-container>
+      </ParentCard>
+
+
+
+
+
+        <!-- <ParentCard style="max-width: 1300px" class="mx-auto">
+        <BaseTitle class="text-center"> 作業実績管理の会員登録 </BaseTitle>
+        <v-container class="d-flex justify-center" fluid>
+          <v-row style="max-width: 80%" class="px-6 py-4">
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="English Name"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Japanese Name"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Username"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Password"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Address"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Phone Number"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseSelect
+                label="Position"
+                :items="position"
+                prependIcon="mdi-account"
+                item-title="name"
+                :width="'360px'"
+                item-value="id"
+              >
+              </BaseSelect>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseSelect
+                label="Role"
+                :items="role"
+                prependIcon="mdi-account"
+                item-title="name"
+                :width="'360px'"
+                item-value="id"
+              >
+              </BaseSelect>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Email"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseDatePicker
+                label="perment_date"
+                prependIcon="mdi-calendar-month"
+                :width="'360px'"
+                required
+              ></BaseDatePicker>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseSelect
+                label="Ref Person"
+                :items="role"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseTextField
+                label="Ref Phone Number"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                hide-details
+                required
+              ></BaseTextField>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <BaseSelect
+                label="Project"
+                :items="role"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </v-col>
+            <v-col class="bg-primary" cols="12" lg="6" xl="6">
+              <BaseSelect
+                label="Sort Key"
+                :items="sortKey"
+                prependIcon="mdi-account"
+                :width="'360px'"
+                item-title="value"
+                item-value="id"
+              >
+              </BaseSelect>
+            </v-col>
+            <v-col cols="12" lg="6" xl="6">
+              <div class="bg-primary justify-end">
+                <BaseButton type="submit" style="width: 200px">
+                  LOGIN
+                </BaseButton>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </ParentCard> -->

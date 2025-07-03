@@ -49,11 +49,11 @@ const props = defineProps({
   appendIcon: [String, Object],
   appendIconColor: {
     type: String,
-    default: 'main',
+    default: 'primary',
   },
   prependIconColor: {
     type: String,
-    default: 'main',
+    default: 'primary',
   },
 });
 import { ref, computed, watch } from 'vue';
@@ -106,5 +106,8 @@ const internalValue = computed({
   font-weight: 400;
   font-size: 13px;
   transition: color 0.3s ease;
+}
+::v-deep(input:-webkit-autofill) {
+  transition: background-color 9999s ease-in-out 0s;
 }
 </style>

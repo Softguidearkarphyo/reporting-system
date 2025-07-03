@@ -14,7 +14,7 @@ const drawer = ref(true);
 </script>
 <style scoped>
 ::v-deep(.v-main) {
-  background-color: #f6f6f6 !important;
+  background-color: var(--v-theme-background) !important;
 }
 .Vue-Toastification__toast {
   min-width: 290px !important;

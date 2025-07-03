@@ -31,8 +31,9 @@
         show-adjacent-months
         hide-details
         @update:model-value="onDateSelected"
-        color="main"
-      />
+        color="primary"
+      >
+      </v-date-picker>
     </div>
   </v-menu>
 </template>
@@ -74,7 +75,7 @@ const props = defineProps({
   prependIcon: [String, Object],
   prependIconColor: {
     type: String,
-    default: 'main',
+    default: 'primary',
   },
 });
 
