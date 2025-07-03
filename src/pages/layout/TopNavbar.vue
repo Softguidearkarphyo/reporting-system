@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="surface" app dark clipped-left>
+  <v-app-bar color="surface" flat clipped-left>
     <v-app-bar-nav-icon @click="toggle">
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
@@ -39,5 +39,11 @@ function setLang() {
 }
 ::v-deep(.v-icon) {
   color: rgb(var(--v-theme-secondary)) !important;
+}
+.v-theme--light .v-app-bar {
+  border-bottom: 1px solid rgba(97, 97, 97, 0.336) !important;
+}
+.v-theme--dark .v-app-bar {
+  border-bottom: 1px solid rgba(173, 173, 173, 0.336) !important;
 }
 </style>

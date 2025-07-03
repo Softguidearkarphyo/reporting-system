@@ -42,7 +42,7 @@ export default {
     ...mapActions(useAuthStore, ['logout']),
     async handleLogout() {
       await this.logout();
-      this.$router.push('/'); // Redirect to home or login
+      this.$router.push('/');
     },
   },
 };

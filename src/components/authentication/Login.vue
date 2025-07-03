@@ -14,7 +14,7 @@
       >
         <div class="d-flex justify-center mb-5">
           <v-avatar size="64" color="transparent">
-            <v-icon size="36" class="gradient-icon">mdi-lock</v-icon>
+            <v-icon size="36" color="primary">mdi-lock</v-icon>
           </v-avatar>
         </div>
         <v-form @submit.prevent="handleLogin">
@@ -99,15 +99,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.gradient-icon {
-  background: linear-gradient(90deg, #02e2f1, #5de6f0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 1px #02e2f1(33, 150, 243, 0.5));
-}
-
-.gradient-btn:hover {
-  background: linear-gradient(90deg, #1976d2, #1e88e5);
-}
-</style>
+<style scoped></style>
