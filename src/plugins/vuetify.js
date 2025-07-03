@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives';
 import { colorThemes } from '../custom-theme/color';
 
 const savedTheme = localStorage.getItem('selectedTheme') || 'light';
-const savedColor = localStorage.getItem('selectedColor') || 'teal';
+const savedColor = localStorage.getItem('selectedColor') || 'limeGreen';
 
 const vuetify = createVuetify({
   components,
