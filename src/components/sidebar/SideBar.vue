@@ -123,7 +123,7 @@ const props = defineProps({ drawer: Boolean });
 const group = ref(true);
 
 const theme = useTheme();
-const selectedColor = ref(localStorage.getItem('selectedColor') || 'teal');
+const selectedColor = ref(localStorage.getItem('selectedColor') || 'limeGreen');
 
 const setTheme = (colorName) => {
   const newThemes = {
