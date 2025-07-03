@@ -1,6 +1,5 @@
 // Import yup
 import * as yup from 'yup';
-
 // Export reusable schemas
 export const loginSchema = yup.object({
   email: yup
@@ -23,22 +22,45 @@ export const registerSchema = yup.object({
     .required('Confirm your password'),
 });
 
-export const memberCreateSchema = yup.object({
-  eng_name: yup.string().required('English name is required'),
-  jp_name: yup.string().required('Japanese name is required'),
-  username: yup.string().required('Username is required'),
-  password: yup.string().required('Password is required').min(6),
-  address: yup.string().required('Address is required'),
-  ph_number: yup.string().required('Phone number is required'),
-  position: yup.string().required('Position is required'),
-  role: yup.string().required('Role is required'),
-  email: yup.string().required('Email is required').email('Invalid email'),
-  perment_date: yup
-    .string()
-    .required('Permanent date is required')
-    .matches(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
-  ref_person: yup.string().nullable(),
-  ref_ph_number: yup.string().nullable(),
-  project: yup.string().required('Project is required'),
-  sort_key: yup.string().required('Sort key is required'),
-});
+export function getMemberCreateSchema(t) {
+  return yup.object({
+    eng_name: yup
+      .string()
+      .required(t('validation.required', { field: t('form.eng_name') })),
+    jp_name: yup
+      .string()
+      .required(t('validation.required', { field: t('form.jp_name') })),
+    username: yup
+      .string()
+      .required(t('validation.required', { field: t('form.username') })),
+    password: yup
+      .string()
+      .required(t('validation.required', { field: t('form.password') }))
+      .min(6, t('validation.min', { field: t('form.password'), min: 6 })),
+    address: yup
+      .string()
+      .required(t('validation.required', { field: t('form.address') })),
+    ph_number: yup
+      .string()
+      .required(t('validation.required', { field: t('form.ph_number') })),
+    position: yup
+      .string()
+      .required(t('validation.required', { field: t('form.position') })),
+    role: yup
+      .string()
+      .required(t('validation.required', { field: t('form.role') })),
+    email: yup
+      .string()
+      .required(t('validation.required', { field: t('form.email') }))
+      .email(t('validation.email', { field: t('form.email') })),
+    permanent_date: yup.string().nullable(),
+    ref_person: yup.string().nullable(),
+    ref_ph_number: yup.string().nullable(),
+    project: yup
+      .string()
+      .required(t('validation.required', { field: t('form.project') })),
+    sort_key: yup
+      .string()
+      .required(t('validation.required', { field: t('form.sort_key') })),
+  });
+}

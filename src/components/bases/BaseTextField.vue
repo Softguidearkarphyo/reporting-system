@@ -1,7 +1,7 @@
 <template>
   <div class="align-center mb-5">
     <v-text-field
-      v-model="internalValue"
+      v-bind="$attrs"
       class="custom-input"
       :label="label"
       :type="inputType"
@@ -17,7 +17,7 @@
       variant="plain"
       @click:append-inner="toggleVisibility"
       dense
-      hide-details
+      hide-details="auto"
       :style="{ width }"
     >
       <template v-slot:prepend>
@@ -29,11 +29,9 @@
 </template>
 
 <script setup>
+defineOptions({ inheritAttrs: false });
+
 const props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: '',
-  },
   label: String,
   type: {
     type: String,
@@ -69,12 +67,6 @@ const inputType = computed(() => {
 function toggleVisibility() {
   isVisible.value = !isVisible.value;
 }
-
-const emit = defineEmits(['update:modelValue']);
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val),
-});
 </script>
 
 <style scoped>

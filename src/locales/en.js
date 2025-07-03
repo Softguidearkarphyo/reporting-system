@@ -42,4 +42,26 @@ export default {
     deleteConfirmText:
       'Are you sure to delete this member? # This action cannot be undone.',
   },
+  form: {
+    eng_name: 'English Name',
+    jp_name: 'Japanese Name',
+    username: 'Username',
+    password: 'Password',
+    address: 'Address',
+    ph_number: 'Phone Number',
+    position: 'Position',
+    role: 'Role',
+    email: 'Email',
+    permanent_date: 'Permanent Date',
+    ref_person: 'Reference Person',
+    ref_ph_number: 'Reference Phone',
+    project: 'Project',
+    sort_key: 'Sort Key',
+  },
+  validation: {
+    required: '{field} is required',
+    email: '{field} must be a valid email',
+    min: '{field} must be at least {min} characters',
+    date_format: '{field} must be in YYYY-MM-DD format',
+  },
 };

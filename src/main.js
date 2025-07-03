@@ -8,12 +8,12 @@ import './assets/fonts/font.css';
 import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css';
 import toastification from './plugins/toastification';
+import veeValidatePlugin from './plugins/vee-validate';
 import './assets/toast.css';
 
 import { createI18n } from 'vue-i18n';
 import en from './locales/en';
 import ja from './locales/ja';
-
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
@@ -28,6 +28,7 @@ app.use(router);
 app.use(vuetify);
 app.use(createPinia());
 app.use(toastification);
+app.use(veeValidatePlugin);
 app.use(i18n);
 app.config.globalProperties.$axios = api;
 app.mount('#app');

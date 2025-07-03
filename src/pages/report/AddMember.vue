@@ -2,257 +2,253 @@
   <v-container>
     <BaseTitle class="mb-4"> 作業実績管理の会員登録 </BaseTitle>
     <ParentCard class="pa-6">
-      <v-form ref="form" @submit.prevent="handleSubmit">
-        <v-row class="px-4 py-4">
-          <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="engName"
-              name="eng_name"
-              label="English Name"
-              type="text"
-              variant="plain"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+      <Form
+        ref="formRef"
+        :validation-schema="memberCreateSchema"
+        @submit="submit"
+        v-slot="{ meta }"
+      >
+        <v-row class="mx-auto px-4 py-4">
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="eng_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.eng_name')"
+                type="text"
+                variant="plain"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="jp_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.jp_name')"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="username" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.username')"
+                type="text"
+                variant="plain"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="password" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.password')"
+                type="password"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="address" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.address')"
+                type="text"
+                variant="plain"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="ph_number" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.ph_number')"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="jpName"
-              name="jpName"
-              label="Japanese Name"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="position" v-slot="{ field, errorMessage }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('form.position')"
+                :items="position"
+                prependIcon="mdi-account"
+                item-title="name"
+                :width="'320px'"
+                item-value="id"
+                :error-messages="errorMessage"
+              >
+              </BaseSelect>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="username"
-              name="username"
-              label="Username"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="role" v-slot="{ field, errorMessage }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('form.role')"
+                :items="role"
+                prependIcon="mdi-account"
+                item-title="name"
+                :width="'320px'"
+                item-value="id"
+                :error-messages="errorMessage"
+              >
+              </BaseSelect>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="password"
-              name="password"
-              label="Password"
-              type="password"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="email" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.email')"
+                type="email"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="address"
-              name="address"
-              label="Address"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="permanent_date" v-slot="{ field, errorMessage }">
+              <BaseDatePicker
+                v-bind="field"
+                :label="t('form.permanent_date')"
+                prependIcon="mdi-calendar-month"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseDatePicker>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="ph_number"
-              name="ph_number"
-              label="Phone Number"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="ref_person" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.ref_person')"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseSelect
-              v-model="selectedPosition"
-              name="selectedPosition"
-              label="Position"
-              :items="position"
-              prependIcon="mdi-account"
-              item-title="name"
-              :width="'320px'"
-              item-value="id"
-            >
-            </BaseSelect>
+            <Field name="ref_ph_number" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-bind="field"
+                :label="t('form.ref_ph_number')"
+                name="ref_ph_number"
+                type="text"
+                variant="plain"
+                dense
+                autocomplete="test"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseSelect
-              v-model="selectedRole"
-              name="selectedRole"
-              label="Role"
-              :items="role"
-              prependIcon="mdi-account"
-              item-title="name"
-              :width="'320px'"
-              item-value="id"
-            >
-            </BaseSelect>
+            <Field name="project" v-slot="{ field, errorMessage }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('form.project')"
+                :items="project"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+                :error-messages="errorMessage"
+              >
+              </BaseSelect>
+            </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="email"
-              name="email"
-              label="Email"
-              type="email"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
+            <Field name="sort_key" v-slot="{ field, errorMessage }">
+              <BaseSelect
+                v-model="field.sort_key"
+                v-bind="field"
+                :label="t('form.sort_key')"
+                :items="sortKey"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                item-title="value"
+                item-value="id"
+                :error-messages="errorMessage"
+              >
+              </BaseSelect>
+            </Field>
           </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <BaseDatePicker
-              v-model="selectedDate"
-              name="perment_date"
-              label="Permanet Date"
-              prependIcon="mdi-calendar-month"
-              :width="'320px'"
-              required
-            ></BaseDatePicker>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="ref_person"
-              name="ref_person"
-              label="Ref Person"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <BaseTextField
-              v-model="ref_ph_number"
-              name="ref_ph_number"
-              label="Ref Phone Number"
-              type="text"
-              variant="plain"
-              dense
-              autocomplete="test"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              hide-details
-              required
-            ></BaseTextField>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <BaseSelect
-              v-model="selectedProject"
-              name="project"
-              label="Project"
-              :items="project"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <BaseSelect
-              v-model="selectedSortKey"
-              name="sort_key"
-              label="Sort Key"
-              :items="sortKey"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              item-title="value"
-              item-value="id"
-            >
-            </BaseSelect>
-          </v-col>
-          <v-col cols="12" lg="4">
+          <v-col class="justify-center" cols="12" lg="4">
             <div
-              class="d-flex justify-end"
+              class="d-flex justify-center"
               :style="width > 1280 ? 'width: 320px' : ''"
             >
-              <BaseButton type="submit" style="width: 200px">
+              <BaseButton
+                :disabled="!meta.valid"
+                type="submit"
+                style="width: 200px"
+              >
                 Submit
               </BaseButton>
             </div>
           </v-col>
         </v-row>
-      </v-form>
+      </Form>
     </ParentCard>
   </v-container>
 </template>
 <script setup>
+import { ref } from 'vue';
 import { position, role, sortKey, project } from '@/utils/data';
 import { useDisplay } from 'vuetify';
 import { useMemberStore } from '@/stores/member/member.js';
-const { width } = useDisplay();
+import { useI18n } from 'vue-i18n';
+import { getMemberCreateSchema } from '@/plugins/validations/common-validations';
+const { t } = useI18n();
+const memberCreateSchema = computed(() => getMemberCreateSchema(t));
 const memberStore = useMemberStore();
-const engName = ref('');
-const jpName = ref('');
-const username = ref('');
-const password = ref('');
-const address = ref('');
-const ph_number = ref(null);
-const selectedPosition = ref(null);
-const selectedRole = ref(null);
-const email = ref(null);
-const selectedDate = ref(null);
-const ref_person = ref('');
-const ref_ph_number = ref(null);
-const selectedProject = ref('');
-const selectedSortKey = ref(null);
-const handleSubmit = async () => {
-  const payload = {
-    eng_name: engName.value,
-    jp_name: jpName.value,
-    username: username.value,
-    password: password.value,
-    address: address.value,
-    ph_number: ph_number.value,
-    position: selectedPosition.value,
-    role: selectedRole.value,
-    email: email.value,
-    perment_date: new Date(selectedDate.value).toISOString().slice(0, 10),
-    ref_person: ref_person.value,
-    ref_ph_number: ref_ph_number.value,
-    project: selectedProject.value,
-    sort_key: selectedSortKey.value,
-  };
+const { width } = useDisplay();
 
-  await memberStore.createMember(payload);
+const formRef = ref(null);
+const submit = async (values) => {
+  console.log('Form submitted:', values);
+  await memberStore.createMember(values);
+  formRef.value?.resetForm();
 };
 </script>
-<style scoped></style>

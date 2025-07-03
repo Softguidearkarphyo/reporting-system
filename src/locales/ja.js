@@ -42,4 +42,26 @@ export default {
     deleteConfirmText:
       'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
   },
+  form: {
+    eng_name: '英語名',
+    jp_name: '日本語名',
+    username: 'ユーザー名',
+    password: 'パスワード',
+    address: '住所',
+    ph_number: '電話番号',
+    position: 'ポジション',
+    role: '役割',
+    email: 'メールアドレス',
+    permanent_date: '入社日',
+    ref_person: '紹介者',
+    ref_ph_number: '紹介者の電話番号',
+    project: 'プロジェクト',
+    sort_key: 'ソートキー',
+  },
+  validation: {
+    required: '{field}は必須項目です',
+    email: '{field}は有効なメールアドレスを入力してください',
+    min: '{field}は{min}文字以上で入力してください',
+    date_format: '{field}はYYYY-MM-DD形式で入力してください',
+  },
 };
