@@ -13,6 +13,7 @@
         v-bind="props"
         v-model="formattedDate"
         :style="{ width }"
+        :label="label"
         readonly
         @click="menu = true"
       >
@@ -63,6 +64,10 @@ const props = defineProps({
   tableName: {
     type: String,
     default: 'bodyDataTable',
+  },
+  modelValue: {
+    type: [String, Date],
+    required: false,
   },
   prependIcon: [String, Object],
   prependIconColor: {

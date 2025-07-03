@@ -7,6 +7,8 @@ import api from './plugins/axios';
 import './assets/fonts/font.css';
 import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css';
+import toastification from './plugins/toastification';
+import './assets/toast.css';
 
 import { createI18n } from 'vue-i18n';
 import en from './locales/en';
@@ -25,6 +27,7 @@ const app = createApp(App);
 app.use(router);
 app.use(vuetify);
 app.use(createPinia());
+app.use(toastification);
 app.use(i18n);
 app.config.globalProperties.$axios = api;
 app.mount('#app');

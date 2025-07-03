@@ -1,11 +1,9 @@
 <template>
-  <div class="align-center mb-5">
-    <v-select
-      v-bind="attrs"
-      :items="items"
-      :label="label"
-      :style="{ width }"
-    >
+  <div class="align-center">
+    <v-select v-bind="attrs" :items="items" :label="label" :style="{ width }">
+      <template v-slot:prepend>
+        <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+      </template>
     </v-select>
   </div>
 </template>
@@ -20,6 +18,11 @@ defineProps({
   width: {
     type: String,
     default: '400px',
+  },
+  prependIcon: [String, Object],
+  prependIconColor: {
+    type: String,
+    default: 'primary',
   },
 });
 const attrs = useAttrs();
