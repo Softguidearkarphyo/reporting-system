@@ -33,9 +33,7 @@
 </template>
 
 <script setup>
-import { Form, Field } from 'vee-validate';
 import * as yup from 'yup';
-import { getMemberCreateSchema } from '@/plugins/validations/common-validations';
 
 const memberCreateSchema = yup.object({
   eng_name: yup.string().required('English name is required'),

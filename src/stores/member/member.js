@@ -2,27 +2,11 @@ import { defineStore } from 'pinia';
 import api from '@/plugins/axios';
 import { toast } from '@/utils/toast';
 export const useMemberStore = defineStore('member', () => {
-  // const toast = useToast();
   const members = ref([]);
   const getMembers = computed(() => members.value);
   const setMembers = (data) => {
     members.value = data;
   };
-  const createMember = async (payload) => {
-    try {
-      const response = await api.post(
-        '/reporting-system/staff/create',
-        payload
-      );
-      setMembers(response);
-      toast.success('Member Created Successfully.');
-      return response;
-    } catch (error) {
-      toast.error('Fail to Create Member');
-      return error;
-    }
-  };
-
   const fetchMember = async (payload) => {
     try {
       const response = await api.post('/reporting-system/staff/get', payload);
@@ -30,6 +14,34 @@ export const useMemberStore = defineStore('member', () => {
       return response;
     } catch (error) {
       toast.error('Fail to Fetch Members');
+      return error;
+    }
+  };
+
+  const createMember = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/staff/create',
+        payload
+      );
+      toast.success('Member Created Successfully.');
+      return response;
+    } catch (error) {
+      toast.error('Fail to Create Member.');
+      return error;
+    }
+  };
+
+  const updateMember = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/staff/update',
+        payload
+      );
+      toast.success('Member Updated Successfully.');
+      return response;
+    } catch (error) {
+      toast.error('Fail to Update Member.');
       return error;
     }
   };
@@ -52,8 +64,9 @@ export const useMemberStore = defineStore('member', () => {
     members,
     getMembers,
     setMembers,
-    createMember,
     fetchMember,
+    createMember,
+    updateMember,
     deleteMember,
   };
 });
