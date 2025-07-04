@@ -1,4 +1,3 @@
-// src/stores/auth.js
 import { defineStore } from 'pinia';
 import api from '@/plugins/axios';
 
@@ -16,15 +15,13 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(username, password) {
       const res = await api.post('/login', { username, password });
-      //   const res = await this.$axios.post('/login', { username, password });
       this.token = res.data.token;
       this.staff = res.data.staff;
       localStorage.setItem('token', this.token);
-      localStorage.setItem('staff-role', this.staff.role);
     },
 
     async fetchStaff() {
-      const res = await api.get('/staff');
+      const res = await api.get('/user');
       this.staff = res.data;
     },
 
@@ -32,7 +29,6 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.staff = null;
       localStorage.removeItem('token');
-      localStorage.removeItem('staff-role');
     },
   },
 });

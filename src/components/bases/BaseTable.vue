@@ -8,6 +8,9 @@
       fixed-header
       v-bind="$attrs"
       :show-select="checkbox"
+      :header-props="{
+        style: 'background-color: rgb(var(--v-theme-primary)); color: white',
+      }"
     >
       <template
         v-for="header in headers"
@@ -21,22 +24,20 @@
       <template v-slot:bottom>
         <div v-if="pagination" class="text-center">
           <v-row class="d-flex justify-space-between align-center">
-            <v-col cols="2">
-              <div class="d-flex justify-start">
-                <BaseSelect
-                  :model-value="itemsPerPage"
-                  :items="itemsPerPageSelectItems"
-                  variant="filled"
-                  density="comfortable"
-                  dense
-                  class="mb-n3"
-                  width="200px"
-                  label=""
-                  @update:model-value="itemsPerPage = parseInt($event, 10)"
-                ></BaseSelect>
-              </div>
+            <v-col>
+              <BaseSelect
+                :model-value="itemsPerPage"
+                :items="itemsPerPageSelectItems"
+                variant="filled"
+                density="comfortable"
+                dense
+                class="mb-n3 ml-n3"
+                width="200px"
+                label=""
+                @update:model-value="itemsPerPage = parseInt($event, 10)"
+              ></BaseSelect>
             </v-col>
-            <v-col cols="4">
+            <v-col>
               <div class="text-subtitle-2">
                 {{
                   t('memberList.pagination.range', {
@@ -47,7 +48,7 @@
                 }}
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col>
               <div class="d-flex justify-end">
                 <v-pagination
                   v-model="page"
@@ -115,7 +116,6 @@ const totalItems = computed(() => props.items?.length);
 
 <style>
 .v-data-table th .v-data-table-header__content span {
-  font-weight: bold;
   font-size: 1rem;
 }
 .v-data-table .v-btn.edit-btn:hover {

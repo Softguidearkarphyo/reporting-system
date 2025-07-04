@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="d-flex justify-space-between align-center mb-3 mt-n2">
+  <v-container>
+    <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
       <div style="width: 300px">
         <v-text-field
@@ -15,13 +15,12 @@
         </v-text-field>
       </div>
     </div>
-    <ParentCard class="side">
+    <v-card class="side rounded-lg">
       <BaseTable
         :headers="headers"
         :items="items"
         :height="windowHeight"
         :items-count="itemsCount"
-        class="mt-n4"
       >
         <template #item.position="{ item }">
           <div
@@ -58,7 +57,7 @@
           </div>
         </template>
       </BaseTable>
-    </ParentCard>
+    </v-card>
     <BaseConfirmDelete
       v-model="confirmDelete"
       :title="t('common.deleteConfirmTitle')"
@@ -73,7 +72,7 @@
         deleteTarget = undefined;
       "
     ></BaseConfirmDelete>
-  </div>
+  </v-container>
 </template>
 
 <script setup>
@@ -81,6 +80,7 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { useMemberStore } from '@/stores/member/member.js';
 import { position } from '@/utils/data';
+import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
 
 const { t, locale } = useI18n();
@@ -88,7 +88,6 @@ const authStore = useAuthStore();
 const memberStore = useMemberStore();
 const router = useRouter();
 const role = authStore.staffRole;
-
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
@@ -97,7 +96,7 @@ const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
-  return [
+  const tmpHeaders = [
     {
       title: t('memberList.table.name'),
       key: isJapanese ? 'jp_name' : 'eng_name',
@@ -123,14 +122,17 @@ const headers = computed(() => {
       key: 'address',
       sortable: false,
     },
-    {
+  ];
+  if (role === ADMIN) {
+    tmpHeaders.push({
       title: t('memberList.table.action'),
       key: 'action',
       align: 'center',
       sortable: false,
       width: '10%',
-    },
-  ];
+    });
+  }
+  return tmpHeaders;
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {
