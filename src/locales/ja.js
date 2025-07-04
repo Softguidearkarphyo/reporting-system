@@ -6,6 +6,11 @@ export default {
       'これを削除してもよろしいですか？ # この操作は元に戻せません。',
     deleteBtnCancelText: 'キャンセル',
     deleteBtnText: '削除',
+    noDataText: 'データはありません。',
+    submit: '保存 ',
+    pagination: {
+      range: '{total} 件中 {start} ～ {end} 件を表示',
+    },
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -41,6 +46,22 @@ export default {
     },
     deleteConfirmText:
       'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
+  },
+  addProject: {
+    title1: 'プロジェクト登録',
+    title2: 'プロジェクトリスト',
+    table: {
+      code: 'コード',
+      name: '名前',
+      action: '操作',
+    },
+    deleteConfirmText:
+      'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
+    form: {
+      code: 'コード',
+      eng_name: '英語名',
+      jp_name: '日本語名',
+    },
   },
   addMember: {
     title: 'メンバー登録',

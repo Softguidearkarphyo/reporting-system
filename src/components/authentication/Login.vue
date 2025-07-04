@@ -28,6 +28,7 @@
             prependIcon="mdi-account"
             hide-details
             width="371px"
+            class="mb-7"
           ></BaseTextField>
           <BaseTextField
             v-model="password"
@@ -39,6 +40,7 @@
             prependIcon="mdi-lock"
             hide-details
             width="371px"
+            class="mb-10"
           ></BaseTextField>
 
           <v-card-actions class="justify-center pa-0">

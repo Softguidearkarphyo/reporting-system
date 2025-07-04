@@ -1,11 +1,16 @@
 export default {
   common: {
-    search: 'Search',
+    search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
       'Are you sure to delete? # This action cannot be undone.',
     deleteBtnCancelText: 'cancel',
     deleteBtnText: 'delete',
+    noDataText: 'No data available',
+    submit: 'Submit',
+    pagination: {
+      range: 'showing {start} - {end} of {total} records',
+    },
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -36,11 +41,27 @@ export default {
       address: 'Address',
       action: 'Action',
     },
+    deleteConfirmText:
+      'Are you sure to delete this member? # This action cannot be undone.',
+  },
+  addProject: {
+    title1: 'Project Registration',
+    title2: 'Project List',
+    table: {
+      code: 'Code',
+      name: 'Name',
+      action: 'Action',
+    },
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
     deleteConfirmText:
       'Are you sure to delete this member? # This action cannot be undone.',
+    form: {
+      code: 'Code',
+      eng_name: 'English Name',
+      jp_name: 'Japanese Name',
+    },
   },
   addMember: {
     title: 'Member Create',

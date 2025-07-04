@@ -11,6 +11,7 @@
       :header-props="{
         style: 'background-color: rgb(var(--v-theme-primary)); color: white',
       }"
+      :no-data-text="noDataMessageText"
     >
       <template
         v-for="header in headers"
@@ -40,7 +41,7 @@
             <v-col>
               <div class="text-subtitle-2">
                 {{
-                  t('memberList.pagination.range', {
+                  t('common.pagination.range', {
                     start: startItem,
                     end: endItem,
                     total: totalItems,
@@ -90,6 +91,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  noDataMessage: {
+    type: String,
+    required: false,
+  },
 });
 const { t } = useI18n();
 const page = ref(1);
@@ -112,6 +117,9 @@ const endItem = computed(() => {
   return end > totalItems.value ? totalItems.value : end;
 });
 const totalItems = computed(() => props.items?.length);
+const noDataMessageText = computed(() => {
+  return props.noDataMessage || t('common.noDataText');
+});
 </script>
 
 <style>

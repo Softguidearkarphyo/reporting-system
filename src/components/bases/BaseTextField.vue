@@ -5,22 +5,19 @@
     color="primary"
     :label="label"
     :type="inputType"
-    :append-inner-icon="
-      showToggle
-        ? isVisible
-          ? 'mdi-eye-off-outline'
-          : 'mdi-eye-outline'
-        : null
-    "
     :autocomplete="autocomplete"
     :maxlength="maxlength"
     variant="underlined"
-    @click:append-inner="toggleVisibility"
     dense
     :style="{ width }"
   >
     <template v-slot:prepend>
       <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+    </template>
+    <template v-if="showToggle" v-slot:append-inner>
+      <v-icon color="primary" @click="toggleVisibility" size="small">{{
+        isVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+      }}</v-icon>
     </template>
     <slot />
   </v-text-field>
@@ -70,8 +67,6 @@ function toggleVisibility() {
 <style scoped>
 ::v-deep(.v-label) {
   text-transform: uppercase !important;
-}
-.custom-input .v-label {
   font-weight: 400;
   font-size: 13px;
   transition: color 0.3s ease;
