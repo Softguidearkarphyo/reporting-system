@@ -27,7 +27,7 @@ export default {
     dashboard: 'ダッシュボード',
   },
   memberList: {
-    title: 'メンバー一覧',
+    title: 'メンバーリスト',
     table: {
       name: '名前',
       position: '役職',

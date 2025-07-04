@@ -10,6 +10,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import toastification from './plugins/toastification';
 import veeValidatePlugin from './plugins/vee-validate';
 import './assets/toast.css';
+import './assets/common.css';
 
 import { createI18n } from 'vue-i18n';
 import en from './locales/en';

@@ -2,15 +2,23 @@ import { ref } from 'vue';
 export const position = ref([
   {
     id: 1,
-    name: 'Manager',
+    name: 'CEO',
+    color: '#2979FF33',
   },
   {
     id: 2,
-    name: 'Senior',
+    name: 'Manager',
+    color: '#00E67633',
   },
   {
     id: 3,
+    name: 'Senior',
+    color: '#7C4DFF33',
+  },
+  {
+    id: 4,
     name: 'Junior',
+    color: '#FF525233',
   },
 ]);
 export const role = ref([

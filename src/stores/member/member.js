@@ -23,10 +23,37 @@ export const useMemberStore = defineStore('member', () => {
     }
   };
 
+  const fetchMember = async (payload) => {
+    try {
+      const response = await api.post('/reporting-system/staff/get', payload);
+      setMembers(response.data);
+      return response;
+    } catch (error) {
+      toast.error('Fail to Fetch Members');
+      return error;
+    }
+  };
+
+  const deleteMember = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/staff/delete',
+        payload
+      );
+      toast.success('Member Deleted Successfully.');
+      return response;
+    } catch (error) {
+      toast.error('Fail to Delete Member');
+      return error;
+    }
+  };
+
   return {
     members,
     getMembers,
     setMembers,
     createMember,
+    fetchMember,
+    deleteMember,
   };
 });
