@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-4"> 作業実績管理の会員登録 </BaseTitle>
+    <BaseTitle class="mb-4"> {{ t('addMember.title') }} </BaseTitle>
     <ParentCard class="pa-6">
       <Form
         ref="formRef"
@@ -12,8 +12,9 @@
           <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="eng_name" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.eng_name')"
+                :label="t('addMember.form.eng_name')"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-account"
@@ -25,8 +26,9 @@
           <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="jp_name" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.jp_name')"
+                :label="t('addMember.form.jp_name')"
                 type="text"
                 variant="plain"
                 dense
@@ -40,8 +42,9 @@
           <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="username" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.username')"
+                :label="t('addMember.form.username')"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-account"
@@ -53,8 +56,9 @@
           <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="password" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.password')"
+                :label="t('addMember.form.password')"
                 type="password"
                 variant="plain"
                 dense
@@ -66,10 +70,25 @@
             </Field>
           </v-col>
           <v-col cols="12" class="justify-center" md="6" lg="4">
+            <Field name="staff_no" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMember.form.staff_no')"
+                type="text"
+                variant="plain"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="address" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.address')"
+                :label="t('addMember.form.address')"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-account"
@@ -81,8 +100,9 @@
           <v-col cols="12" class="justify-center" md="6" lg="4">
             <Field name="ph_number" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.ph_number')"
+                :label="t('addMember.form.ph_number')"
                 type="text"
                 variant="plain"
                 dense
@@ -98,7 +118,7 @@
               <BaseSelect
                 v-model="field.value"
                 v-bind="field"
-                :label="t('form.position')"
+                :label="t('addMember.form.position')"
                 :items="position"
                 prependIcon="mdi-account"
                 item-title="name"
@@ -114,7 +134,7 @@
               <BaseSelect
                 v-model="field.value"
                 v-bind="field"
-                :label="t('form.role')"
+                :label="t('addMember.form.role')"
                 :items="role"
                 prependIcon="mdi-account"
                 item-title="name"
@@ -128,8 +148,9 @@
           <v-col cols="12" md="6" lg="4">
             <Field name="email" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.email')"
+                :label="t('addMember.form.email')"
                 type="email"
                 variant="plain"
                 dense
@@ -143,8 +164,9 @@
           <v-col cols="12" md="6" lg="4">
             <Field name="permanent_date" v-slot="{ field, errorMessage }">
               <BaseDatePicker
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.permanent_date')"
+                :label="t('addMember.form.permanent_date')"
                 prependIcon="mdi-calendar-month"
                 :width="'320px'"
                 :error-messages="errorMessage"
@@ -154,8 +176,9 @@
           <v-col cols="12" md="6" lg="4">
             <Field name="ref_person" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.ref_person')"
+                :label="t('addMember.form.ref_person')"
                 type="text"
                 variant="plain"
                 dense
@@ -169,8 +192,9 @@
           <v-col cols="12" md="6" lg="4">
             <Field name="ref_ph_number" v-slot="{ field, errorMessage }">
               <BaseTextField
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.ref_ph_number')"
+                :label="t('addMember.form.ref_ph_number')"
                 name="ref_ph_number"
                 type="text"
                 variant="plain"
@@ -187,7 +211,7 @@
               <BaseSelect
                 v-model="field.value"
                 v-bind="field"
-                :label="t('form.project')"
+                :label="t('addMember.form.project')"
                 :items="project"
                 prependIcon="mdi-account"
                 :width="'320px'"
@@ -201,9 +225,9 @@
           <v-col cols="12" md="6" lg="4">
             <Field name="sort_key" v-slot="{ field, errorMessage }">
               <BaseSelect
-                v-model="field.sort_key"
+                v-model="field.value"
                 v-bind="field"
-                :label="t('form.sort_key')"
+                :label="t('addMember.form.sort_key')"
                 :items="sortKey"
                 prependIcon="mdi-account"
                 :width="'320px'"
@@ -214,19 +238,14 @@
               </BaseSelect>
             </Field>
           </v-col>
-          <v-col class="justify-center" cols="12" lg="4">
-            <div
-              class="d-flex justify-center"
-              :style="width > 1280 ? 'width: 320px' : ''"
+          <v-col cols="12">
+            <BaseButton
+              :disabled="!meta.valid"
+              type="submit"
+              style="width: 200px"
             >
-              <BaseButton
-                :disabled="!meta.valid"
-                type="submit"
-                style="width: 200px"
-              >
-                Submit
-              </BaseButton>
-            </div>
+              Submit
+            </BaseButton>
           </v-col>
         </v-row>
       </Form>
@@ -234,21 +253,61 @@
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue';
 import { position, role, sortKey, project } from '@/utils/data';
-import { useDisplay } from 'vuetify';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useI18n } from 'vue-i18n';
-import { getMemberCreateSchema } from '@/plugins/validations/common-validations';
+import { memberSchema } from '@/plugins/validations/add-member.js';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 const { t } = useI18n();
-const memberCreateSchema = computed(() => getMemberCreateSchema(t));
-const memberStore = useMemberStore();
-const { width } = useDisplay();
-
 const formRef = ref(null);
+const isEditMode = ref(false);
+const memberCreateSchema = computed(() => memberSchema(t, isEditMode.value));
+const memberStore = useMemberStore();
+const route = useRoute();
+const router = useRouter();
+const memberId = route.params.memberId;
+watch(
+  () => route.params.memberId,
+  async (val) => {
+    if (val) {
+      isEditMode.value = true;
+      const res = await memberStore.fetchMember({ id: val });
+      const data = res?.data?.[0];
+      formRef.value?.setValues({
+        eng_name: data.eng_name,
+        jp_name: data.jp_name,
+        username: data.username,
+        password: '',
+        staff_no: data.staff_no,
+        address: data.address,
+        ph_number: data.ph_number,
+        position: data.position,
+        role: data.role,
+        email: data.email,
+        permanent_date: data.permanent_date,
+        ref_person: data.ref_person,
+        ref_ph_number: data.ref_ph_number,
+        project: data.project,
+        sort_key: data.sort_key,
+      });
+    } else {
+      isEditMode.value = false;
+    }
+  },
+  { immediate: true }
+);
+
 const submit = async (values) => {
-  console.log('Form submitted:', values);
-  await memberStore.createMember(values);
-  formRef.value?.resetForm();
+  let res;
+  if (memberId) {
+    const payload = { ...values, id: memberId };
+    res = await memberStore.updateMember(payload);
+  } else {
+    res = await memberStore.createMember(values);
+  }
+  if (res?.data?.status === 200) {
+    router.push({ name: 'member-lists' });
+  }
 };
 </script>

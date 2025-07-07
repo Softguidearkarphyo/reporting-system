@@ -7,11 +7,12 @@
     offset-y
     location="center"
   >
-    <template v-slot:activator="{ props }">
+    <template v-slot:activator="{ props: activatorProps }">
       <v-text-field
         :ref="refName"
-        v-bind="props"
-        v-model="formattedDate"
+        v-bind="{ ...activatorProps, ...$attrs }"
+        :model-value="$attrs.modelValue ?? $attrs.value"
+        @update:model-value="$emit('update:modelValue', $event)"
         :style="{ width }"
         :label="label"
         readonly
@@ -30,15 +31,13 @@
         hide-details
         @update:model-value="onDateSelected"
         color="primary"
-      >
-      </v-date-picker>
+      />
     </div>
   </v-menu>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
-
 const props = defineProps({
+  modelValue: [String, Date],
   label: String,
   color: String,
   minWidth: {
@@ -81,21 +80,17 @@ const emit = defineEmits(['update:modelValue']);
 const menu = ref(false);
 const model = ref(props.modelValue ? new Date(props.modelValue) : null);
 
-const formattedDate = ref(formatDate(model.value));
-
 watch(
   () => props.modelValue,
   (val) => {
     model.value = val ? new Date(val) : null;
-    formattedDate.value = formatDate(model.value);
   },
   { immediate: true }
 );
 
 function onDateSelected(val) {
   model.value = val;
-  emit('update:modelValue', val);
-  formattedDate.value = formatDate(val);
+  emit('update:modelValue', formatDate(val));
   menu.value = false;
 }
 
@@ -105,7 +100,7 @@ function formatDate(date) {
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+  return `${year}-${month}-${day}`;
 }
 </script>
 <style scoped>

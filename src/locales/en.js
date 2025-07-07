@@ -1,11 +1,16 @@
 export default {
   common: {
-    search: 'Search',
+    search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
       'Are you sure to delete? # This action cannot be undone.',
     deleteBtnCancelText: 'cancel',
     deleteBtnText: 'delete',
+    noDataText: 'No data available',
+    submit: 'Submit',
+    pagination: {
+      range: 'showing {start} - {end} of {total} records',
+    },
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -36,27 +41,47 @@ export default {
       address: 'Address',
       action: 'Action',
     },
+    deleteConfirmText:
+      'Are you sure to delete this member? # This action cannot be undone.',
+  },
+  addProject: {
+    title1: 'Project Registration',
+    title2: 'Project List',
+    table: {
+      code: 'Code',
+      name: 'Name',
+      action: 'Action',
+    },
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
     deleteConfirmText:
       'Are you sure to delete this member? # This action cannot be undone.',
+    form: {
+      code: 'Code',
+      eng_name: 'English Name',
+      jp_name: 'Japanese Name',
+    },
   },
-  form: {
-    eng_name: 'English Name',
-    jp_name: 'Japanese Name',
-    username: 'Username',
-    password: 'Password',
-    address: 'Address',
-    ph_number: 'Phone Number',
-    position: 'Position',
-    role: 'Role',
-    email: 'Email',
-    permanent_date: 'Permanent Date',
-    ref_person: 'Reference Person',
-    ref_ph_number: 'Reference Phone',
-    project: 'Project',
-    sort_key: 'Sort Key',
+  addMember: {
+    title: 'Member Create',
+    form: {
+      eng_name: 'English Name',
+      jp_name: 'Japanese Name',
+      username: 'Username',
+      password: 'Password',
+      staff_no: 'Staff ID',
+      address: 'Address',
+      ph_number: 'Phone Number',
+      position: 'Position',
+      role: 'Role',
+      email: 'Email',
+      permanent_date: 'Permanent Date',
+      ref_person: 'Reference Person',
+      ref_ph_number: 'Reference Phone',
+      project: 'Project',
+      sort_key: 'Sort Key',
+    },
   },
   validation: {
     required: '{field} is required',

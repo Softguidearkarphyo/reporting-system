@@ -22,7 +22,7 @@
       </v-list-item>
 
       <!-- Admin Setting  -->
-      <v-list-group v-model="group" no-action>
+      <v-list-group v-if="role === ADMIN" v-model="group" no-action>
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props" rounded density="compact" class="mb-1">
             <template v-slot:prepend>
@@ -118,9 +118,14 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 import { colorThemes } from '../../custom-theme/color';
+import { useAuthStore } from '@/stores/auth/auth.js';
+import { ADMIN } from '@/utils/constant';
+
 const { t } = useI18n();
+const authStore = useAuthStore();
 const props = defineProps({ drawer: Boolean });
 const group = ref(true);
+const role = ref(authStore.staffRole);
 
 const theme = useTheme();
 const selectedColor = ref(localStorage.getItem('selectedColor') || 'limeGreen');

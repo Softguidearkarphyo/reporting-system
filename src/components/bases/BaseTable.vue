@@ -8,6 +8,10 @@
       fixed-header
       v-bind="$attrs"
       :show-select="checkbox"
+      :header-props="{
+        style: 'background-color: rgb(var(--v-theme-primary)); color: white',
+      }"
+      :no-data-text="noDataMessageText"
     >
       <template
         v-for="header in headers"
@@ -21,25 +25,23 @@
       <template v-slot:bottom>
         <div v-if="pagination" class="text-center">
           <v-row class="d-flex justify-space-between align-center">
-            <v-col cols="2">
-              <div class="d-flex justify-start">
-                <BaseSelect
-                  :model-value="itemsPerPage"
-                  :items="itemsPerPageSelectItems"
-                  variant="filled"
-                  density="comfortable"
-                  dense
-                  class="mb-n3"
-                  width="200px"
-                  label=""
-                  @update:model-value="itemsPerPage = parseInt($event, 10)"
-                ></BaseSelect>
-              </div>
+            <v-col>
+              <BaseSelect
+                :model-value="itemsPerPage"
+                :items="itemsPerPageSelectItems"
+                variant="filled"
+                density="comfortable"
+                dense
+                class="mb-n3 ml-n3"
+                width="200px"
+                label=""
+                @update:model-value="itemsPerPage = parseInt($event, 10)"
+              ></BaseSelect>
             </v-col>
-            <v-col cols="4">
+            <v-col>
               <div class="text-subtitle-2">
                 {{
-                  t('memberList.pagination.range', {
+                  t('common.pagination.range', {
                     start: startItem,
                     end: endItem,
                     total: totalItems,
@@ -47,7 +49,7 @@
                 }}
               </div>
             </v-col>
-            <v-col cols="6">
+            <v-col>
               <div class="d-flex justify-end">
                 <v-pagination
                   v-model="page"
@@ -89,6 +91,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  noDataMessage: {
+    type: String,
+    required: false,
+  },
 });
 const { t } = useI18n();
 const page = ref(1);
@@ -111,11 +117,13 @@ const endItem = computed(() => {
   return end > totalItems.value ? totalItems.value : end;
 });
 const totalItems = computed(() => props.items?.length);
+const noDataMessageText = computed(() => {
+  return props.noDataMessage || t('common.noDataText');
+});
 </script>
 
 <style>
 .v-data-table th .v-data-table-header__content span {
-  font-weight: bold;
   font-size: 1rem;
 }
 .v-data-table .v-btn.edit-btn:hover {
