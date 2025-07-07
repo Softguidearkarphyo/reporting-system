@@ -12,13 +12,9 @@
           {{ t('message.error404Text') }}<br />
           {{ t('message.error404Text2') }}
         </p>
-        <v-btn
-          color="primary"
-          variant="flat"
-          rounded="xl"
-          to="/reporting-system/dashboard"
-          >Go back</v-btn
-        >
+        <v-btn color="primary" variant="flat" rounded="xl" @click="backHome">{{
+          t('message.backhome')
+        }}</v-btn>
       </div>
     </div>
   </v-app>
@@ -29,19 +25,27 @@ import { useI18n } from 'vue-i18n';
 
 import { onMounted } from 'vue';
 import { useTheme } from 'vuetify';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { t, locale } = useI18n();
 const theme = useTheme();
 onMounted(() => {
   const savedTheme = localStorage.getItem('app-theme');
+  const token = localStorage.getItem('token');
   const savedLang = localStorage.getItem('lang');
-  if (savedTheme === 'dark' || savedTheme === 'light') {
+  if (savedTheme === 'dark' && token) {
     theme.global.name.value = savedTheme;
   }
   if (savedLang) {
     locale.value = savedLang;
   }
 });
+
+const backHome = () => {
+  const isLoggedIn = !!localStorage.getItem('token');
+  router.push(isLoggedIn ? '/reporting-system/dashboard' : '/');
+};
 </script>
 
 <style scoped>

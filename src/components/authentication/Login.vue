@@ -64,6 +64,10 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth/auth.js';
 
+import { onMounted } from 'vue';
+import { useTheme } from 'vuetify';
+
+const theme = useTheme();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -72,6 +76,9 @@ const { loginStaff, isLoggedIn, staffName, staffRole } = authStore;
 const username = ref('');
 const password = ref('');
 const error = ref('');
+onMounted(() => {
+  theme.global.name.value = 'light';
+});
 
 const handleLogin = async () => {
   error.value = '';

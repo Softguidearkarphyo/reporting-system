@@ -2,7 +2,7 @@ export const colorThemes = {
   limeGreen: {
     light: '#99cc00',
     dark: '#99cc00',
-    secondaryLight: '#99cc00', // brighter than #d9ff66
+    secondaryLight: '#99cc00',
     secondaryDark: '#b3e600',
   },
   teal: {
@@ -26,7 +26,13 @@ export const colorThemes = {
   leafGreen: {
     light: '#6cb00f',
     dark: '#6cb00f',
-    secondaryLight: '#6cb00f', // brighter than #b2f42d
+    secondaryLight: '#6cb00f',
     secondaryDark: '#88b209',
+  },
+  pink: {
+    light: '#f5a6b9',
+    dark: '#f5a6b9',
+    secondaryLight: '#ff758f',
+    secondaryDark: '#ff758f',
   },
 };
