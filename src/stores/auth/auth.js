@@ -1,34 +1,58 @@
 import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    staff: null,
-    token: localStorage.getItem('token') || null,
-  }),
-  getters: {
-    loginStaff: (state) => state.staff,
-    isLoggedIn: (state) => !!state.token,
-    staffName: (state) => (state.staff ? state.staff.name : ''),
-    staffRole: (state) => (state.staff ? state.staff.role : ''),
-  },
-  actions: {
-    async login(username, password) {
+export const useAuthStore = defineStore('auth', () => {
+  // State
+  const token = ref(localStorage.getItem('token') || null);
+  const staff = ref(null);
+
+  // Getters
+  const loginStaff = computed(() => staff.value);
+  const isLoggedIn = computed(() => !!token.value);
+  const staffName = computed(() => (staff.value ? staff.value.name : ''));
+  const staffRole = computed(() => (staff.value ? staff.value.role : ''));
+
+  // Actions
+  async function login(username, password) {
+    try {
       const res = await api.post('/login', { username, password });
-      this.token = res.data.token;
-      this.staff = res.data.staff;
-      localStorage.setItem('token', this.token);
-    },
+      token.value = res.data.token;
+      staff.value = res.data.staff;
+      localStorage.setItem('token', token.value);
+      localStorage.setItem('staff-role', staff.value.role);
+    } catch (error) {
+      // handle or rethrow error so component can handle
+      throw error;
+    }
+  }
 
-    async fetchStaff() {
+  async function fetchStaff() {
+    try {
       const res = await api.get('/user');
-      this.staff = res.data;
-    },
+      staff.value = res.data;
+    } catch (error) {
+      // handle or rethrow error so component can handle
+      throw error;
+    }
+  }
 
-    logout() {
-      this.token = null;
-      this.staff = null;
-      localStorage.removeItem('token');
-    },
-  },
+  function logout() {
+    token.value = null;
+    staff.value = null;
+    localStorage.removeItem('token');
+    localStorage.removeItem('staff-role');
+  }
+
+  return {
+    token,
+    staff,
+    loginStaff,
+    isLoggedIn,
+    staffName,
+    staffRole,
+    login,
+    fetchStaff,
+    logout,
+  };
 });
