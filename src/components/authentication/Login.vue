@@ -50,52 +50,39 @@
   </v-app>
 </template>
 
-<script>
-import { useAuthStore } from '@/stores/auth/auth.js';
-import { mapActions, mapGetters } from 'pinia';
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth/auth.js';
 
-export default {
-  name: 'Login',
+const router = useRouter();
+const authStore = useAuthStore();
 
-  data() {
-    return {
-      username: '',
-      password: '',
-      error: '',
-    };
-  },
-  computed: {
-    ...mapGetters(useAuthStore, [
-      'loginStaff',
-      'isLoggedIn',
-      'staffName',
-      'staffRole',
-    ]),
-  },
+const { loginStaff, isLoggedIn, staffName, staffRole } = authStore;
 
-  methods: {
-    ...mapActions(useAuthStore, ['login']),
-    async handleLogin() {
-      this.error = '';
-      try {
-        await this.login(this.username, this.password);
-        this.$router.push('/reporting-system/dashboard');
-      } catch (e) {
-        if (axios.isAxiosError(e)) {
-          if (e.response) {
-            this.error = e.response.data.message || 'Login failed';
-          } else if (e.request) {
-            this.error = 'API server not responding';
-          } else {
-            this.error = 'Login error: ' + e.message;
-          }
-        } else {
-          this.error = 'Unexpected login error';
-        }
+const username = ref('');
+const password = ref('');
+const error = ref('');
+
+const handleLogin = async () => {
+  error.value = '';
+  try {
+    await authStore.login(username.value, password.value);
+    router.push('/reporting-system/dashboard');
+  } catch (e) {
+    if (axios.isAxiosError(e)) {
+      if (e.response) {
+        error.value = e.response.data.message || 'Login failed';
+      } else if (e.request) {
+        error.value = 'API server not responding';
+      } else {
+        error.value = 'Login error: ' + e.message;
       }
-    },
-  },
+    } else {
+      error.value = 'Unexpected login error';
+    }
+  }
 };
 </script>
 
