@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+const japaneseCharacter = /^[\u3040-\u30FF\u4E00-\u9FFFー\s]+$/;
 export function memberSchema(t, isEditMode = false) {
   return yup.object({
     eng_name: yup
@@ -10,6 +11,10 @@ export function memberSchema(t, isEditMode = false) {
       .string()
       .required(
         t('validation.required', { field: t('addMember.form.jp_name') })
+      )
+      .matches(
+        japaneseCharacter,
+        t('validation.jp_character', { field: t('addMember.form.jp_name') })
       ),
     username: yup
       .string()

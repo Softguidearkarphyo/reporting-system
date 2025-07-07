@@ -86,6 +86,7 @@ export default {
   validation: {
     required: '{field} is required',
     email: '{field} must be a valid email',
+    jp_character: '{field} must contain only Japanese characters',
     min: '{field} must be at least {min} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
   },
