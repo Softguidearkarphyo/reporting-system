@@ -8,13 +8,12 @@
         <v-row justify="center">
           <v-col cols="12" xs="10" sm="8" md="6" lg="4" xl="3">
             <v-card
-              class="pa-4 pa-sm-6 w-100"
+              class="pa-6"
               elevation="10"
               rounded="lg"
-              style="
-                box-shadow: 0 10px 30px rgba(33, 150, 243, 0.2);
-                max-width: 420px;
-              "
+              width="100%"
+              max-width="420"
+              style="box-shadow: 0 10px 30px rgba(33, 150, 243, 0.2)"
             >
               <div class="d-flex justify-center mb-5">
                 <v-avatar size="64" color="transparent">
@@ -31,7 +30,8 @@
                   autocomplete="username"
                   prependIcon="mdi-account"
                   hide-details
-                  width="100%"
+                  width="371px"
+                  class="mb-7"
                 ></BaseTextField>
                 <BaseTextField
                   v-model="password"
@@ -42,7 +42,8 @@
                   autocomplete="current-password"
                   prependIcon="mdi-lock"
                   hide-details
-                  width="100%"
+                  width="371px"
+                  class="mb-10"
                 ></BaseTextField>
 
                 <v-card-actions class="justify-center pa-0">

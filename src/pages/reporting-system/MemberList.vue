@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="d-flex justify-space-between align-center mb-3 mt-n2">
+  <v-container>
+    <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
       <div style="width: 300px">
         <v-text-field
@@ -15,20 +15,30 @@
         </v-text-field>
       </div>
     </div>
-    <ParentCard class="side">
-      <BaseTable :headers="headers" :items="items" :height="windowHeight" :items-count="itemsCount" class="mt-n4">
+    <v-card class="side rounded-lg">
+      <BaseTable
+        :headers="headers"
+        :items="items"
+        :height="windowHeight"
+        :items-count="itemsCount"
+      >
         <template #item.position="{ item }">
-          <div class="rounded-pill py-1 px-1 text-center mx-auto" :style="{backgroundColor: item.position_color, width: '75px', fontSize: '11px'}">{{item.position}}</div>
+          <div
+            class="rounded-pill py-1 px-1 text-center mx-auto"
+            :style="{
+              backgroundColor: item.position?.color,
+              width: '75px',
+              fontSize: '11px',
+            }"
+          >
+            {{ item.position?.name }}
+          </div>
         </template>
         <template #item.action="{ item }">
           <div class="d-flex justify-end">
             <BaseButton
               elevation="0"
-              @click.stop="
-                drawer = true;
-                title = 'edit';
-                id = item.id;
-              "
+              @click.stop="pushToEdit(item.id)"
               color=""
               class="edit-btn"
               size="small"
@@ -42,14 +52,12 @@
               class="delete-btn"
               size="small"
             >
-              <v-icon>
-                mdi-trash-can</v-icon
-              >
+              <v-icon> mdi-trash-can</v-icon>
             </BaseButton>
           </div>
         </template>
       </BaseTable>
-    </ParentCard>
+    </v-card>
     <BaseConfirmDelete
       v-model="confirmDelete"
       :title="t('common.deleteConfirmTitle')"
@@ -59,56 +67,72 @@
         confirmDelete = false;
         deleteMember();
       "
-      @no="confirmDelete = false; deleteTarget = undefined"
+      @no="
+        confirmDelete = false;
+        deleteTarget = undefined;
+      "
     ></BaseConfirmDelete>
-  </div>
+  </v-container>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
-//dummy data
-import staffs from './data/staffs.js';
+import { useI18n } from 'vue-i18n';
+import { useAuthStore } from '@/stores/auth/auth.js';
+import { useMemberStore } from '@/stores/member/member.js';
+import { position } from '@/utils/data';
+import { ADMIN } from '@/utils/constant';
+import { useRouter } from 'vue-router';
 
 const { t, locale } = useI18n();
-const confirmDelete = ref(false)
-const deleteTarget = ref(undefined)
-const search = ref('')
+const authStore = useAuthStore();
+const memberStore = useMemberStore();
+const router = useRouter();
+const role = authStore.staffRole;
+const confirmDelete = ref(false);
+const deleteTarget = ref(undefined);
+const search = ref('');
+const items = ref([]);
+const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
+let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
-  return [
+  const tmpHeaders = [
     {
       title: t('memberList.table.name'),
-      key: isJapanese ? "jp_name" : "eng_name",
+      key: isJapanese ? 'jp_name' : 'eng_name',
     },
     {
       title: t('memberList.table.position'),
-      key: "position",
-      align: "center",
+      key: 'position',
+      align: 'center',
       sortable: false,
-    }, 
+    },
     {
       title: t('memberList.table.phone'),
-      key: "ph_number",
+      key: 'ph_number',
       sortable: false,
     },
     {
       title: t('memberList.table.email'),
-      key: "email",
+      key: 'email',
       sortable: false,
     },
     {
       title: t('memberList.table.address'),
-      key: "address",
+      key: 'address',
       sortable: false,
     },
-    {
+  ];
+  if (role === ADMIN) {
+    tmpHeaders.push({
       title: t('memberList.table.action'),
-      key: "action",
-      align: "center",
+      key: 'action',
+      align: 'center',
       sortable: false,
-      width: "10%",
-    },
-  ]
+      width: '10%',
+    });
+  }
+  return tmpHeaders;
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {
@@ -118,45 +142,51 @@ if (window.innerWidth > 1366) {
   windowHeight = window.innerHeight / 1.8;
   itemsCount = 5;
 }
-const positionColor = {
-  ceo : '#2979FF33',
-  manager: '#00E67633',
-  senior: '#FFA72633',
-  junior: '#FF525233',
-  designer: '#7C4DFF33'
-}
 
-const tmpStaffs = staffs?.map(item => ({...item, position_color: positionColor[item.position?.toLocaleLowerCase()] || '#B7410E50'}))
-const items = ref([...tmpStaffs])
-items.value?.sort((a, b) => {
-  if (!a.sort_key) return 1;
-  if (!b.sort_key) return -1;
-  return a.sort_key - b.sort_key;
-});
-const originalItems = [...items.value]
-
-const showConfirmDelete = (id) => {
-  if (id) {
-    deleteTarget.value = id;
-  }
-  confirmDelete.value = true;
+const fetch = async () => {
+  await memberStore.fetchMember();
+  const tmpMembers = memberStore.getMembers?.map((member) => ({
+    ...member,
+    position:
+      position.value?.find((pos) => pos.id === member.position) ||
+      fallbackColor,
+  }));
+  tmpMembers?.sort((a, b) => {
+    if (!a.sort_key) return 1;
+    if (!b.sort_key) return -1;
+    return a.sort_key - b.sort_key;
+  });
+  items.value = [...tmpMembers];
+  originalItems = [...items.value];
 };
 
-const deleteMember = () => {
-  console.log('this id: '+ deleteTarget.value + ' will be deleted');
-}
+fetch();
+
+const showConfirmDelete = (id) => {
+  deleteTarget.value = id;
+  confirmDelete.value = true;
+};
+const deleteMember = async () => {
+  await memberStore.deleteMember({ id: deleteTarget.value });
+  deleteTarget.value = undefined;
+  fetch();
+};
+const pushToEdit = (id) => {
+  router.push({ name: 'edit-members', params: { memberId: id } });
+};
 
 watch(
-  () => search.value, 
+  () => search.value,
   (newVal) => {
     if (newVal) {
-      items.value = originalItems.filter(item =>
-      Object.values(item).some(val =>
-        String(val).toLowerCase().includes(newVal.toLowerCase())
-      ))
+      items.value = originalItems.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(newVal.toLowerCase())
+        )
+      );
     } else {
-      items.value = [...originalItems]
+      items.value = [...originalItems];
     }
   }
-)
+);
 </script>

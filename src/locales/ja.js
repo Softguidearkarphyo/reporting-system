@@ -6,6 +6,11 @@ export default {
       'これを削除してもよろしいですか？ # この操作は元に戻せません。',
     deleteBtnCancelText: 'キャンセル',
     deleteBtnText: '削除',
+    noDataText: 'データはありません。',
+    submit: '保存 ',
+    pagination: {
+      range: '{total} 件中 {start} ～ {end} 件を表示',
+    },
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -27,7 +32,7 @@ export default {
     dashboard: 'ダッシュボード',
   },
   memberList: {
-    title: 'メンバー一覧',
+    title: 'メンバーリスト',
     table: {
       name: '名前',
       position: '役職',
@@ -41,5 +46,47 @@ export default {
     },
     deleteConfirmText:
       'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
+  },
+  addProject: {
+    title1: 'プロジェクト登録',
+    title2: 'プロジェクトリスト',
+    table: {
+      code: 'コード',
+      name: '名前',
+      action: '操作',
+    },
+    deleteConfirmText:
+      'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
+    form: {
+      code: 'コード',
+      eng_name: '英語名',
+      jp_name: '日本語名',
+    },
+  },
+  addMember: {
+    title: 'メンバー登録',
+    form: {
+      eng_name: '英語名',
+      jp_name: '日本語名',
+      username: 'ユーザー名',
+      password: 'パスワード',
+      address: '住所',
+      staff_no: 'スタッフID',
+      ph_number: '電話番号',
+      position: 'ポジション',
+      role: '役割',
+      email: 'メールアドレス',
+      permanent_date: '入社日',
+      ref_person: '紹介者',
+      ref_ph_number: '紹介者の電話番号',
+      project: 'プロジェクト',
+      sort_key: 'ソートキー',
+    },
+  },
+  validation: {
+    required: '{field}は必須項目です',
+    email: '{field}は有効なメールアドレスを入力してください',
+    min: '{field}は{min}文字以上で入力してください',
+    date_format: '{field}はYYYY-MM-DD形式で入力してください',
   },
 };

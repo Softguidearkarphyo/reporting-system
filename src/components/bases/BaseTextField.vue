@@ -1,39 +1,32 @@
 <template>
-  <div class="align-center mb-5">
-    <v-text-field
-      v-model="internalValue"
-      class="custom-input"
-      :label="label"
-      :type="inputType"
-      :append-inner-icon="
-        showToggle
-          ? isVisible
-            ? 'mdi-eye-off-outline'
-            : 'mdi-eye-outline'
-          : null
-      "
-      :autocomplete="autocomplete"
-      :maxlength="maxlength"
-      variant="plain"
-      @click:append-inner="toggleVisibility"
-      dense
-      hide-details
-      :style="{ width }"
-    >
-      <template v-slot:prepend>
-        <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
-      </template>
-      <slot />
-    </v-text-field>
-  </div>
+  <v-text-field
+    v-bind="$attrs"
+    class="custom-input"
+    color="primary"
+    :label="label"
+    :type="inputType"
+    :autocomplete="autocomplete"
+    :maxlength="maxlength"
+    variant="underlined"
+    dense
+    :style="{ width }"
+  >
+    <template v-slot:prepend>
+      <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+    </template>
+    <template v-if="showToggle" v-slot:append-inner>
+      <v-icon color="primary" @click="toggleVisibility" size="small">{{
+        isVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+      }}</v-icon>
+    </template>
+    <slot />
+  </v-text-field>
 </template>
 
 <script setup>
+defineOptions({ inheritAttrs: false });
+
 const props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: '',
-  },
   label: String,
   type: {
     type: String,
@@ -69,40 +62,11 @@ const inputType = computed(() => {
 function toggleVisibility() {
   isVisible.value = !isVisible.value;
 }
-
-const emit = defineEmits(['update:modelValue']);
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val),
-});
 </script>
 
 <style scoped>
-::v-deep(.custom-input .v-field__field) {
-  padding: 0 !important;
-  border-bottom: 1px solid;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-::v-deep(.custom-input .v-field--focused .v-field__field) {
-  border-bottom: 2px solid rgb(var(--v-theme-primary)) !important;
-}
-::v-deep(.custom-input .v-field__outline),
-::v-deep(.custom-input .v-field__overlay),
-::v-deep(.custom-input .v-field__field::before),
-::v-deep(.custom-input .v-field__field::after) {
-  border: none !important;
-  box-shadow: none !important;
-  background: none !important;
-  content: none !important;
-}
 ::v-deep(.v-label) {
   text-transform: uppercase !important;
-}
-::v-deep(.custom-input .v-field.v-field--focused .v-label) {
-  color: rgb(var(--v-theme-primary)) !important;
-}
-::v-deep(.custom-input .v-label) {
   font-weight: 400;
   font-size: 13px;
   transition: color 0.3s ease;

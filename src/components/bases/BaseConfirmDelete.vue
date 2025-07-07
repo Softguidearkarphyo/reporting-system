@@ -1,20 +1,32 @@
 <template>
   <div class="text-center pa-4">
     <v-dialog v-bind="$attrs" max-width="400" persistent>
-      <v-card>
-        <v-card-title class="bg-error d-flex align-center"
+      <v-card class="rounded-15">
+        <v-card-title
+          class="bg-error d-flex align-center"
+          style="font-size: 15px"
           ><v-icon class="mr-2 icon">{{ icon }}</v-icon
           >{{ dialogTitle }}</v-card-title
         >
         <v-card-text>
-          <div v-for="(txt, index) in dialogText" :key="index">{{ txt }}</div>
+          <div
+            v-for="(txt, index) in dialogText"
+            :key="index"
+            style="font-size: 13px"
+          >
+            {{ txt }}
+          </div>
         </v-card-text>
         <template v-slot:actions>
           <v-spacer></v-spacer>
-
-          <v-btn @click="$emit('no')"> {{ t('common.deleteBtnCancelText') }} </v-btn>
-
-          <v-btn @click="$emit('yes')" class="text-error">
+          <v-btn @click="$emit('no')" style="font-size: 13px">
+            {{ t('common.deleteBtnCancelText') }}
+          </v-btn>
+          <v-btn
+            @click="$emit('yes')"
+            class="text-error"
+            style="font-size: 13px"
+          >
             {{ mainBtnText }}
           </v-btn>
         </template>
@@ -24,12 +36,12 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   icon: {
     type: String,
-    default: "mdi-alert-circle-outline",
+    default: 'mdi-alert-circle-outline',
   },
   text: {
     type: String,
@@ -45,40 +57,40 @@ const props = defineProps({
   },
 });
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const dialogTitle = computed(() => {
-  return props.title || t('common.deleteConfirmTitle')
-})
+  return props.title || t('common.deleteConfirmTitle');
+});
 const dialogText = computed(() => {
-  const text = props.text || t('common.deleteConfirmText')
-  return text.includes(' # ') ? text.split(' # ') : [text]
-})
+  const text = props.text || t('common.deleteConfirmText');
+  return text.includes(' # ') ? text.split(' # ') : [text];
+});
 const mainBtnText = computed(() => {
-  return props.mainBtn || t('common.deleteBtnText')
-})
+  return props.mainBtn || t('common.deleteBtnText');
+});
 </script>
 
 <style>
 @keyframes alertPulse {
-    0% {
-        transform: scale(1) rotate(0deg);
-    }
-    30% {
-        transform: scale(1.2) rotate(0deg);
-    }
-    40% {
-        transform: scale(1.2) rotate(15deg);
-    }
-    50% {
-        transform: scale(1.2) rotate(-15deg);
-    }
-    60% {
-        transform: scale(1.2) rotate(0deg);
-    }
-    100% {
-        transform: scale(1) rotate(0deg);
-    }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  40% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(-15deg);
+  }
+  60% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .icon {
@@ -89,4 +101,3 @@ const mainBtnText = computed(() => {
   text-transform: none !important;
 }
 </style>
-

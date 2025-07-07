@@ -90,6 +90,12 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporting-system/edit-members/:memberId',
+        name: 'edit-members',
+        component: AddMember,
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/reporting-system/add-leaves',
         name: 'add-leaves',
         component: Addleave,
