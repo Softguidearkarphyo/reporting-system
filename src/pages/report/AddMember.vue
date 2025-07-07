@@ -17,7 +17,7 @@
                 :label="t('addMember.form.eng_name')"
                 type="text"
                 variant="plain"
-                prependIcon="mdi-account"
+                prependIcon="mdi-format-letter-case"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -33,7 +33,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-ideogram-cjk"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -63,7 +63,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-onepassword"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -77,7 +77,7 @@
                 :label="t('addMember.form.staff_no')"
                 type="text"
                 variant="plain"
-                prependIcon="mdi-account"
+                prependIcon="mdi-pound-box"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -91,7 +91,7 @@
                 :label="t('addMember.form.address')"
                 type="text"
                 variant="plain"
-                prependIcon="mdi-account"
+                prependIcon="mdi-map-marker"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -107,7 +107,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-phone"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -120,7 +120,7 @@
                 v-bind="field"
                 :label="t('addMember.form.position')"
                 :items="position"
-                prependIcon="mdi-account"
+                prependIcon="mdi-seat"
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
@@ -136,7 +136,7 @@
                 v-bind="field"
                 :label="t('addMember.form.role')"
                 :items="role"
-                prependIcon="mdi-account"
+                prependIcon="mdi-account-supervisor"
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
@@ -155,7 +155,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-email"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -183,7 +183,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-account-plus"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -200,7 +200,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-account"
+                prependIcon="mdi-phone-plus"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -213,7 +213,7 @@
                 v-bind="field"
                 :label="t('addMember.form.project')"
                 :items="project"
-                prependIcon="mdi-account"
+                prependIcon="mdi-format-list-checkbox"
                 :width="'320px'"
                 item-title="name"
                 item-value="id"
@@ -229,7 +229,7 @@
                 v-bind="field"
                 :label="t('addMember.form.sort_key')"
                 :items="sortKey"
-                prependIcon="mdi-account"
+                prependIcon="mdi-sort"
                 :width="'320px'"
                 item-title="value"
                 item-value="id"
@@ -244,7 +244,7 @@
               type="submit"
               style="width: 200px"
             >
-              Submit
+              {{ t('common.submit') }}
             </BaseButton>
           </v-col>
         </v-row>

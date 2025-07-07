@@ -85,6 +85,7 @@ export default {
   },
   validation: {
     required: '{field}は必須項目です',
+    jp_character: '{field}は日本語の文字のみで入力してください',
     email: '{field}は有効なメールアドレスを入力してください',
     min: '{field}は{min}文字以上で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
