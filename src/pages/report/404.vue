@@ -35,7 +35,9 @@ const theme = useTheme();
 onMounted(() => {
   const savedTheme = localStorage.getItem('app-theme');
   const savedLang = localStorage.getItem('lang');
-  theme.global.name.value = savedTheme ? 'dark' : 'light';
+  if (savedTheme === 'dark' || savedTheme === 'light') {
+    theme.global.name.value = savedTheme;
+  }
   if (savedLang) {
     locale.value = savedLang;
   }
