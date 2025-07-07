@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchStaff() {
     try {
-      const res = await api.get('/staff');
+      const res = await api.get('/user');
       staff.value = res.data;
     } catch (error) {
       // handle or rethrow error so component can handle
