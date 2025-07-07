@@ -27,9 +27,12 @@ export default {
     addmember: 'add member',
     addleave: 'add leave',
     memberfine: 'member fine',
+    staffcard: 'staff card',
+    memberskill: 'member skill',
   },
   message: {
-    dashboard: 'Dashboard',
+    error404Text: "It looks like you're lost...",
+    error404Text2: "That's a trouble?",
   },
   memberList: {
     title: 'Member List',

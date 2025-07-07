@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    404: typeof import('./pages/report/404.vue')['default']
     AddLeave: typeof import('./pages/report/AddLeave.vue')['default']
     AddMember: typeof import('./pages/report/AddMember.vue')['default']
     AddProject: typeof import('./pages/report/AddProject.vue')['default']
@@ -31,6 +32,7 @@ declare module 'vue' {
     MemberLeave: typeof import('./pages/report/MemberLeave.vue')['default']
     MemberList: typeof import('./pages/reporting-system/MemberList.vue')['default']
     MemberReport: typeof import('./pages/report/MemberReport.vue')['default']
+    MemeberSkill: typeof import('./pages/report/MemeberSkill.vue')['default']
     MenPower: typeof import('./pages/report/MenPower.vue')['default']
     ParentCard: typeof import('./components/card/ParentCard.vue')['default']
     Profile: typeof import('./pages/authentication/Profile.vue')['default']
@@ -41,6 +43,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ShowProject: typeof import('./pages/report/ShowProject.vue')['default']
     SideBar: typeof import('./components/sidebar/SideBar.vue')['default']
+    StaffCard: typeof import('./pages/report/StaffCard.vue')['default']
     TopNavbar: typeof import('./pages/layout/TopNavbar.vue')['default']
     WidgetCard: typeof import('./components/card/WidgetCard.vue')['default']
     WorkingTime: typeof import('./pages/report/WorkingTime.vue')['default']

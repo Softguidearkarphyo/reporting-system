@@ -248,6 +248,16 @@ const settings = computed(() => [
     path: '/reporting-system/member-fine',
     icon: 'mdi-account-alert-outline',
   },
+  {
+    title: t('sidebar.staffcard'),
+    path: '/reporting-system/staff-card',
+    icon: 'mdi-account-card-outline',
+  },
+  {
+    title: t('sidebar.memberskill'),
+    path: '/reporting-system/member-skill',
+    icon: 'mdi-account-box-outline',
+  },
 ]);
 </script>
 <style scoped>

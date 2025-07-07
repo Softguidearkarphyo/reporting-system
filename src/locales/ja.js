@@ -27,9 +27,12 @@ export default {
     addmember: 'メンバー追加',
     addleave: '休暇追加',
     memberfine: 'メンバー罰金',
+    staffcard: 'スタッフカード',
+    memberskill: 'メンバースキル',
   },
   message: {
-    dashboard: 'ダッシュボード',
+    error404Text: '道に迷ってしまったようですね...',
+    error404Text2: 'それは困ったこと？',
   },
   memberList: {
     title: 'メンバーリスト',

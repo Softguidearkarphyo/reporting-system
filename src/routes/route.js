@@ -14,6 +14,9 @@ import Reporting from '../pages/reporting-system/ReportingPage.vue';
 import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
 import AddProject from '../pages/report/AddProject.vue';
+import NotFound from '../pages/report/404.vue';
+import StaffCard from '../pages/report/StaffCard.vue';
+import MemberSkill from '../pages/report/MemeberSkill.vue';
 import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
@@ -114,12 +117,29 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporting-system/staff-card',
+        name: 'staff-card',
+        component: StaffCard,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporting-system/member-skill',
+        name: 'member-skill',
+        component: MemberSkill,
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/reporting-system/profile',
         name: 'profile',
         component: Profile,
         meta: { requiresAuth: true },
       },
     ],
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: NotFound,
   },
 ];
 
