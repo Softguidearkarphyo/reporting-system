@@ -9,12 +9,13 @@
         v-slot="{ meta }"
       >
         <v-row class="mx-auto px-4 py-4">
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="eng_name" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.eng_name')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-format-letter-case"
@@ -23,12 +24,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="jp_name" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.jp_name')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 dense
@@ -39,12 +41,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="username" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.username')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-account"
@@ -53,12 +56,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="password" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.password')"
+                class="mx-auto"
                 type="password"
                 variant="plain"
                 dense
@@ -69,12 +73,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="staff_no" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.staff_no')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-pound-box"
@@ -83,12 +88,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="address" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.address')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 prependIcon="mdi-map-marker"
@@ -97,12 +103,13 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="ph_number" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.ph_number')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 dense
@@ -119,6 +126,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.position')"
+                class="mx-auto"
                 :items="position"
                 prependIcon="mdi-seat"
                 item-title="name"
@@ -135,6 +143,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.role')"
+                class="mx-auto"
                 :items="role"
                 prependIcon="mdi-account-supervisor"
                 item-title="name"
@@ -151,6 +160,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.email')"
+                class="mx-auto"
                 type="email"
                 variant="plain"
                 dense
@@ -167,6 +177,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.permanent_date')"
+                class="mx-auto"
                 prependIcon="mdi-calendar-month"
                 :width="'320px'"
                 :error-messages="errorMessage"
@@ -179,6 +190,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.ref_person')"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 dense
@@ -195,7 +207,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.ref_ph_number')"
-                name="ref_ph_number"
+                class="mx-auto"
                 type="text"
                 variant="plain"
                 dense
@@ -212,6 +224,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.project')"
+                class="mx-auto"
                 :items="project"
                 prependIcon="mdi-format-list-checkbox"
                 :width="'320px'"
@@ -228,6 +241,7 @@
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.sort_key')"
+                class="mx-auto"
                 :items="sortKey"
                 prependIcon="mdi-sort"
                 :width="'320px'"
@@ -239,13 +253,15 @@
             </Field>
           </v-col>
           <v-col cols="12">
-            <BaseButton
-              :disabled="!meta.valid"
-              type="submit"
-              style="width: 200px"
-            >
-              {{ t('common.submit') }}
-            </BaseButton>
+            <div class="d-flex justify-center">
+              <BaseButton
+                :disabled="!meta.valid"
+                type="submit"
+                style="width: 200px"
+              >
+                {{ t('common.submit') }}
+              </BaseButton>
+            </div>
           </v-col>
         </v-row>
       </Form>
