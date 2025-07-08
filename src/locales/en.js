@@ -36,6 +36,10 @@ export default {
     error404Text2: 'the page you are looking for could not be found.',
     backhome: 'Go Home',
   },
+  login: {
+    username: 'Username',
+    password: 'Password',
+  },
   memberList: {
     title: 'Member List',
     table: {
@@ -101,9 +105,12 @@ export default {
   },
   validation: {
     required: '{field} is required',
+    username_mismatch: 'Username does not match',
+    password_mismatch: 'Password does not match',
     email: '{field} must be a valid email',
     jp_character: '{field} must contain only Japanese characters',
     min: '{field} must be at least {min} characters',
+    max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
   },
 };

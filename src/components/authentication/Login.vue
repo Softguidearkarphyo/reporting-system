@@ -20,36 +20,45 @@
                   <v-icon size="36" color="primary">mdi-lock</v-icon>
                 </v-avatar>
               </div>
-              <v-form @submit.prevent="handleLogin">
-                <BaseTextField
-                  v-model="username"
-                  label="username"
-                  type="text"
-                  variant="plain"
-                  dense
-                  autocomplete="username"
-                  prependIcon="mdi-account"
-                  hide-details
-                  width="371px"
-                  class="mb-7"
-                ></BaseTextField>
-                <BaseTextField
-                  v-model="password"
-                  label="password"
-                  type="password"
-                  variant="plain"
-                  dense
-                  autocomplete="current-password"
-                  prependIcon="mdi-lock"
-                  hide-details
-                  width="371px"
-                  class="mb-10"
-                ></BaseTextField>
+              <Form
+                @submit="handleLogin"
+                :validation-schema="loginCreateSchema"
+              >
+                <Field name="username" v-slot="{ field, errorMessage }">
+                  <BaseTextField
+                    v-bind="field"
+                    v-model="username"
+                    :label="t('login.username')"
+                    type="text"
+                    variant="plain"
+                    dense
+                    autocomplete="username"
+                    prependIcon="mdi-account"
+                    width="371px"
+                    class="mb-7"
+                    :error-messages="errorMessage || apiErrors.username"
+                  ></BaseTextField>
+                </Field>
+                <Field name="password" v-slot="{ field, errorMessage }">
+                  <BaseTextField
+                    v-bind="field"
+                    v-model="password"
+                    :label="t('login.password')"
+                    type="password"
+                    variant="plain"
+                    dense
+                    autocomplete="current-password"
+                    prependIcon="mdi-lock"
+                    width="371px"
+                    class="mb-10"
+                    :error-messages="errorMessage || apiErrors.password"
+                  ></BaseTextField>
+                </Field>
 
                 <v-card-actions class="justify-center pa-0">
                   <BaseButton type="submit" width="100%">LOGIN</BaseButton>
                 </v-card-actions>
-              </v-form>
+              </Form>
             </v-card>
           </v-col>
         </v-row>
@@ -63,10 +72,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth/auth.js';
-
+import { loginSchema } from '@/plugins/validations/login.js';
 import { onMounted } from 'vue';
 import { useTheme } from 'vuetify';
-
+import { useI18n } from 'vue-i18n';
+const { t, locale } = useI18n();
 const theme = useTheme();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -76,16 +86,38 @@ const { loginStaff, isLoggedIn, staffName, staffRole } = authStore;
 const username = ref('');
 const password = ref('');
 const error = ref('');
+const apiErrors = reactive({
+  username: '',
+  password: '',
+});
+
+const isEditMode = ref(false);
+const loginCreateSchema = computed(() => loginSchema(t, isEditMode.value));
 onMounted(() => {
   theme.global.name.value = 'light';
+  const savedLang = localStorage.getItem('lang');
+  if (savedLang) {
+    locale.value = savedLang;
+  }
 });
 
 const handleLogin = async () => {
   error.value = '';
+  apiErrors.username = '';
+  apiErrors.password = '';
   try {
     await authStore.login(username.value, password.value);
     router.push('/reporting-system/dashboard');
   } catch (e) {
+    if (e.response?.status === 422) {
+      if (e.response.data?.message) {
+        apiErrors.username = t('validation.username_mismatch');
+      }
+    } else if (e.response?.status === 401) {
+      if (e.response.data?.message) {
+        apiErrors.password = t('validation.password_mismatch');
+      }
+    }
     if (axios.isAxiosError(e)) {
       if (e.response) {
         error.value = e.response.data.message || 'Login failed';

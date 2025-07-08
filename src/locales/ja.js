@@ -36,6 +36,10 @@ export default {
     error404Text2: 'お探しのページは見つかりませんでした。',
     backhome: '戻る',
   },
+  login: {
+    username: 'ユーザー名',
+    password: 'パスワード',
+  },
   memberList: {
     title: 'メンバーリスト',
     table: {
@@ -101,9 +105,12 @@ export default {
   },
   validation: {
     required: '{field}は必須項目です',
+    username_mismatch: 'ユーザー名が一致しません',
+    password_mismatch: 'パスワードが一致しません',
     jp_character: '{field}は日本語の文字のみで入力してください',
     email: '{field}は有効なメールアドレスを入力してください',
     min: '{field}は{min}文字以上で入力してください',
+    max: '{field}は{max}文字以内で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
   },
 };
