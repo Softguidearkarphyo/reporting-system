@@ -1,15 +1,16 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-3"> {{ t('addProject.title1') }} </BaseTitle>
-    <ParentCard class="pa-6">
+    <BaseTitle class="mb-3">
+      {{ t('addProject.title1') }}
+    </BaseTitle>
+    <ParentCard class="pa-2">
       <Form
         ref="formRef"
         :validation-schema="projectCreateSchema"
         @submit="submit"
-        v-slot="{ meta }"
       >
-        <v-row class="mx-auto px-4 py-4">
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+        <v-row class="mx-auto">
+          <v-col cols="12" md="6" lg="3">
             <Field name="code" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
@@ -17,13 +18,13 @@
                 :label="t('addProject.form.code')"
                 type="text"
                 variant="plain"
+                width="90%"
                 prependIcon="mdi-pound-box"
-                :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="3">
             <Field name="eng_name" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
@@ -31,13 +32,13 @@
                 :label="t('addProject.form.eng_name')"
                 type="text"
                 variant="plain"
+                width="90%"
                 prependIcon="mdi-format-letter-case"
-                :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="justify-center" md="6" lg="4">
+          <v-col cols="12" md="6" lg="3">
             <Field name="jp_name" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
@@ -45,28 +46,25 @@
                 :label="t('addProject.form.jp_name')"
                 type="text"
                 variant="plain"
-                dense
+                width="90%"
                 autocomplete="test"
                 prependIcon="mdi-ideogram-cjk"
-                :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" class="ml-n2">
-            <BaseButton
-              :disabled="!meta.valid"
-              type="submit"
-              style="width: 200px"
-            >
-              {{ t('common.submit') }}
-            </BaseButton>
+          <v-col cols="11" class="ml-2 ml-md-n7 mr-lg-0" md="6" lg="3">
+            <div class="d-flex justify-end">
+              <BaseButton type="submit" style="width: 200px">
+                {{ t('common.submit') }}
+              </BaseButton>
+            </div>
           </v-col>
         </v-row>
       </Form>
     </ParentCard>
 
-    <div class="d-flex justify-space-between align-center mb-3 mt-10">
+    <div class="d-flex justify-space-between align-center mt-3">
       <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
       <div>
         <BaseTextField
@@ -84,8 +82,8 @@
       <BaseTable
         :headers="headers"
         :items="items"
-        :height="windowHeight"
         :items-count="itemsCount"
+        :style="{ minHeight: windowHeight }"
       >
         <template #item.position="{ item }">
           <div
@@ -103,7 +101,7 @@
           <div class="d-flex justify-end">
             <BaseButton
               elevation="0"
-              @click.stop="pushToEdit(item.id)"
+              @click.stop="scrollToEdit(item.id)"
               color=""
               class="edit-btn"
               size="small"
@@ -123,6 +121,19 @@
         </template>
       </BaseTable>
     </v-card>
+    <BaseConfirmDelete
+      v-model="confirmDelete"
+      :text="t('addProject.deleteConfirmText')"
+      :class="{ 'd-none': !confirmDelete }"
+      @yes="
+        confirmDelete = false;
+        deleteProject();
+      "
+      @no="
+        confirmDelete = false;
+        deleteTarget = undefined;
+      "
+    ></BaseConfirmDelete>
   </v-container>
 </template>
 <script setup>
@@ -138,7 +149,11 @@ const projectStore = useProjectStore();
 const projectCreateSchema = computed(() => getProjectCreateSchema(t));
 const role = authStore.staffRole;
 const formRef = ref(null);
+const isEditMode = ref(false);
 const search = ref('');
+const confirmDelete = ref(false);
+const deleteTarget = ref(undefined);
+const updateTarget = ref(undefined);
 const items = ref([]);
 let originalItems = [];
 const headers = computed(() => {
@@ -175,6 +190,7 @@ if (window.innerWidth > 1366) {
 }
 
 const fetch = async () => {
+  formRef.value?.resetForm();
   await projectStore.fetchProject();
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
@@ -182,10 +198,39 @@ const fetch = async () => {
 
 fetch();
 
+const scrollToEdit = async (id) => {
+  await projectStore.fetchProject({ id });
+  const data = projectStore.getProjects?.[0];
+  isEditMode.value = true;
+  if (data) {
+    formRef.value?.setValues({
+      code: data.code,
+      eng_name: data.eng_name,
+      jp_name: data.jp_name,
+    });
+    updateTarget.value = data.id;
+  }
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
+const showConfirmDelete = (id) => {
+  deleteTarget.value = id;
+  confirmDelete.value = true;
+};
+const deleteProject = async () => {
+  await projectStore.deleteProject({ id: deleteTarget.value });
+  deleteTarget.value = undefined;
+  fetch();
+};
 const submit = async (values) => {
-  console.log('Form submitted:', values);
-  await projectStore.createProject(values);
-  formRef.value?.resetForm();
+  if (isEditMode.value) {
+    await projectStore.updateProject({ id: updateTarget.value, ...values });
+  } else {
+    await projectStore.createProject(values);
+  }
+  fetch();
 };
 
 watch(

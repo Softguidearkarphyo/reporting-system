@@ -66,8 +66,9 @@ export const useProjectStore = defineStore('project', () => {
     projects,
     getProjects,
     setProjects,
-    createProject,
     fetchProject,
+    createProject,
+    updateProject,
     deleteProject,
   };
 });

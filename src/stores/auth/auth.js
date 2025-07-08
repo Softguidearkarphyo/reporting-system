@@ -20,7 +20,6 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = res.data.token;
       staff.value = res.data.staff;
       localStorage.setItem('token', token.value);
-      localStorage.setItem('staff-role', staff.value.role);
     } catch (error) {
       // handle or rethrow error so component can handle
       throw error;
@@ -41,7 +40,6 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null;
     staff.value = null;
     localStorage.removeItem('token');
-    localStorage.removeItem('staff-role');
   }
 
   return {

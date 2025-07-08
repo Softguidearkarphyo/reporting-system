@@ -1,3 +1,6 @@
 .rounded-15 {
   border-radius: 15px !important;
 }
+.v-icon {
+  opacity: 1 !important;
+}

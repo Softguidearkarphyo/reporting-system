@@ -50,9 +50,6 @@ export default {
       address: '住所',
       action: '操作',
     },
-    pagination: {
-      range: '{total} 件中 {start} ～ {end} 件を表示',
-    },
     deleteConfirmText:
       'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
   },
@@ -64,13 +61,13 @@ export default {
       name: '名前',
       action: '操作',
     },
-    deleteConfirmText:
-      'このメンバーを削除してもよろしいですか？ # この操作は元に戻せません。',
     form: {
       code: 'コード',
       eng_name: '英語名',
       jp_name: '日本語名',
     },
+    deleteConfirmText:
+      'このプロジェクトを削除してもよろしいですか？ # この操作は元に戻せません。',
   },
   addMember: {
     title: 'メンバー登録',
@@ -108,6 +105,7 @@ export default {
     username_mismatch: 'ユーザー名が一致しません',
     password_mismatch: 'パスワードが一致しません',
     jp_character: '{field}は日本語の文字のみで入力してください',
+    eng_char_num: '{field}は日英語の文字と数字のみで入力してください',
     email: '{field}は有効なメールアドレスを入力してください',
     min: '{field}は{min}文字以上で入力してください',
     max: '{field}は{max}文字以内で入力してください',

@@ -60,7 +60,6 @@
     </v-card>
     <BaseConfirmDelete
       v-model="confirmDelete"
-      :title="t('common.deleteConfirmTitle')"
       :text="t('memberList.deleteConfirmText')"
       :class="{ 'd-none': !confirmDelete }"
       @yes="

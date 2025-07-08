@@ -71,6 +71,8 @@ export default {
       eng_name: 'English Name',
       jp_name: 'Japanese Name',
     },
+    deleteConfirmText:
+      'Are you sure to delete this project? # This action cannot be undone.',
   },
   addMember: {
     title: 'Member Create',
@@ -109,6 +111,7 @@ export default {
     password_mismatch: 'Password does not match',
     email: '{field} must be a valid email',
     jp_character: '{field} must contain only Japanese characters',
+    eng_char_num: '{field} must contain only English characters and numbers',
     min: '{field} must be at least {min} characters',
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',

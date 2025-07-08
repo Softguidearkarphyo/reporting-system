@@ -6,7 +6,6 @@
         ref="formRef"
         :validation-schema="memberCreateSchema"
         @submit="submit"
-        v-slot="{ meta }"
       >
         <v-row class="mx-auto px-4 py-4">
           <v-col cols="12" md="6" lg="4">
@@ -254,11 +253,7 @@
           </v-col>
           <v-col cols="12">
             <div class="d-flex justify-center">
-              <BaseButton
-                :disabled="!meta.valid"
-                type="submit"
-                style="width: 200px"
-              >
+              <BaseButton type="submit" style="width: 200px">
                 {{ t('common.submit') }}
               </BaseButton>
             </div>
