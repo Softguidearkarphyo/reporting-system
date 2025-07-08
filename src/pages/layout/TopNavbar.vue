@@ -12,7 +12,6 @@
 </template>
 <script setup>
 import ProfileIcon from '../../components/navbar/ProfileIcon.vue';
-import { defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 const props = defineProps({ drawer: Boolean });

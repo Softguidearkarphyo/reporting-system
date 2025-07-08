@@ -86,6 +86,17 @@ export default {
       sort_key: 'ソートキー',
     },
   },
+  addMemberSkill: {
+    title: 'メンバースキル作成',
+    form: {
+      name: '名前',
+      role: '役割',
+      team: 'チーム',
+      permanent_date: '正社員日付',
+      japanese_level: '日本語レベル',
+      experience: '経験',
+    },
+  },
   validation: {
     required: '{field}は必須項目です',
     jp_character: '{field}は日本語の文字のみで入力してください',

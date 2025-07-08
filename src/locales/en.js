@@ -86,6 +86,17 @@ export default {
       sort_key: 'Sort Key',
     },
   },
+  addMemberSkill: {
+    title: 'Member Skill Create',
+    form: {
+      name: 'Name',
+      role: 'Role',
+      team: 'Team',
+      permanent_date: 'Permanent Date',
+      japanese_level: 'Japanese Level',
+      experience: 'Experience',
+    },
+  },
   validation: {
     required: '{field} is required',
     email: '{field} must be a valid email',
