@@ -32,6 +32,9 @@ function setLang() {
 }
 </script>
 <style scoped>
+.v-app-bar {
+  position: fixed !important;
+}
 .v-toolbar-title {
   font-weight: bold !important;
   color: rgb(var(--v-theme-secondary));

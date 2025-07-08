@@ -271,6 +271,11 @@ const settings = computed(() => [
 ]);
 </script>
 <style scoped>
+.v-navigation-drawer {
+  position: fixed !important;
+  height: 93vh !important;
+}
+
 .v-theme--dark .color {
   border: 1px solid rgba(173, 173, 173, 0.336) !important;
 }
