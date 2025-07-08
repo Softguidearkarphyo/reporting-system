@@ -201,6 +201,11 @@ const navbars = computed(() => [
     icon: 'mdi-account-cancel-outline',
   },
   {
+    title: t('sidebar.memberskill'),
+    path: '/reporting-system/member-skill',
+    icon: 'mdi-account-box-outline',
+  },
+  {
     title: t('sidebar.reporting'),
     path: '/reporting-system/reporting',
     icon: 'mdi-timer-plus-outline',
@@ -259,9 +264,9 @@ const settings = computed(() => [
     icon: 'mdi-account-card-outline',
   },
   {
-    title: t('sidebar.memberskill'),
-    path: '/reporting-system/member-skill',
-    icon: 'mdi-account-box-outline',
+    title: t('sidebar.addskill'),
+    path: '/reporting-system/add-skill',
+    icon: 'mdi-account-box-plus-outline',
   },
 ]);
 </script>

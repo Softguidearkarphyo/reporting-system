@@ -29,6 +29,7 @@ export default {
     memberfine: 'メンバー罰金',
     staffcard: 'スタッフカード',
     memberskill: 'メンバースキル',
+    addskill: 'スキルを追加',
   },
   message: {
     error404Text: '申し訳ありませんが、',

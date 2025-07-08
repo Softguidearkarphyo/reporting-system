@@ -12,6 +12,7 @@ declare module 'vue' {
     AddLeave: typeof import('./pages/report/AddLeave.vue')['default']
     AddMember: typeof import('./pages/report/AddMember.vue')['default']
     AddProject: typeof import('./pages/report/AddProject.vue')['default']
+    AddSkill: typeof import('./pages/report/AddSkill.vue')['default']
     Auth: typeof import('./pages/authentication/Auth.vue')['default']
     BaseButton: typeof import('./components/bases/BaseButton.vue')['default']
     BaseCheckbox: typeof import('./components/bases/BaseCheckbox.vue')['default']
