@@ -72,7 +72,12 @@
               </v-icon>
             </v-btn>
           </template>
-          <v-list class="py-0" lines="one" density="compact" min-width="120">
+          <v-list
+            class="py-0 color"
+            lines="one"
+            density="compact"
+            min-width="120"
+          >
             <v-list-item
               v-for="(color, name) in colorThemes"
               :key="name"
@@ -196,6 +201,11 @@ const navbars = computed(() => [
     icon: 'mdi-account-cancel-outline',
   },
   {
+    title: t('sidebar.memberskill'),
+    path: '/reporting-system/member-skill',
+    icon: 'mdi-account-box-outline',
+  },
+  {
     title: t('sidebar.reporting'),
     path: '/reporting-system/reporting',
     icon: 'mdi-timer-plus-outline',
@@ -254,13 +264,17 @@ const settings = computed(() => [
     icon: 'mdi-account-card-outline',
   },
   {
-    title: t('sidebar.memberskill'),
-    path: '/reporting-system/member-skill',
-    icon: 'mdi-account-box-outline',
+    title: t('sidebar.addskill'),
+    path: '/reporting-system/add-skill',
+    icon: 'mdi-account-box-plus-outline',
   },
 ]);
 </script>
 <style scoped>
+.v-theme--dark .color {
+  border: 1px solid rgba(173, 173, 173, 0.336) !important;
+}
+
 .v-list-item-title {
   font-size: 13px !important;
   text-transform: uppercase !important;

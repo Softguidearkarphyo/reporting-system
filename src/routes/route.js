@@ -17,6 +17,7 @@ import AddProject from '../pages/report/AddProject.vue';
 import NotFound from '../pages/report/404.vue';
 import StaffCard from '../pages/report/StaffCard.vue';
 import MemberSkill from '../pages/report/MemeberSkill.vue';
+import AddSkill from '../pages/report/AddSkill.vue';
 import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
@@ -42,6 +43,12 @@ const routes = [
         path: '/reporting-system/member-lists',
         name: 'member-lists',
         component: MemberList,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporting-system/member-skill',
+        name: 'member-skill',
+        component: MemberSkill,
         meta: { requiresAuth: true },
       },
       {
@@ -123,9 +130,9 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/reporting-system/member-skill',
-        name: 'member-skill',
-        component: MemberSkill,
+        path: '/reporting-system/add-skill',
+        name: 'add-skill',
+        component: AddSkill,
         meta: { requiresAuth: true },
       },
       {

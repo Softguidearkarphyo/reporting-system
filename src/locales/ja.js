@@ -29,10 +29,12 @@ export default {
     memberfine: 'メンバー罰金',
     staffcard: 'スタッフカード',
     memberskill: 'メンバースキル',
+    addskill: 'スキルを追加',
   },
   message: {
-    error404Text: '道に迷ってしまったようですね...',
-    error404Text2: 'それは困ったこと？',
+    error404Text: '申し訳ありませんが、',
+    error404Text2: 'お探しのページは見つかりませんでした。',
+    backhome: '戻る',
   },
   memberList: {
     title: 'メンバーリスト',

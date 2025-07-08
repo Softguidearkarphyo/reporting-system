@@ -7,7 +7,7 @@
         </v-app-bar-nav-icon>
       </v-btn>
     </template>
-    <v-sheet rounded="md" width="150" elevation="10" class="mt-2">
+    <v-sheet rounded="md" width="150" elevation="10" class="mt-2 color">
       <v-list class="py-0" lines="one" density="compact">
         <v-list-item to="/reporting-system/profile" value="profile">
           <template v-slot:prepend>
@@ -48,6 +48,9 @@ export default {
 };
 </script>
 <style scoped>
+.v-theme--dark .color {
+  border: 1px solid rgba(173, 173, 173, 0.336) !important;
+}
 .v-list-item:hover:not(.v-list-item--active) {
   background-color: rgba(var(--v-theme-primary), 0.2);
   color: rgb(var(--v-theme-primary)) !important;

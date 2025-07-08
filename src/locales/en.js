@@ -29,10 +29,12 @@ export default {
     memberfine: 'member fine',
     staffcard: 'staff card',
     memberskill: 'member skill',
+    addskill: 'add skill',
   },
   message: {
-    error404Text: "It looks like you're lost...",
-    error404Text2: "That's a trouble?",
+    error404Text: 'We apologize,',
+    error404Text2: 'the page you are looking for could not be found.',
+    backhome: 'Go Home',
   },
   memberList: {
     title: 'Member List',
