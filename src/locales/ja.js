@@ -110,5 +110,6 @@ export default {
     min: '{field}は{min}文字以上で入力してください',
     max: '{field}は{max}文字以内で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
+    unique: '{field} は重複しています',
   },
 };

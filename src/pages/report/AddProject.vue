@@ -146,7 +146,9 @@ import { ADMIN } from '@/utils/constant';
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
-const projectCreateSchema = computed(() => getProjectCreateSchema(t));
+const projectCreateSchema = computed(() =>
+  getProjectCreateSchema(t, checkPrjCodes.value)
+);
 const role = authStore.staffRole;
 const formRef = ref(null);
 const isEditMode = ref(false);
@@ -154,8 +156,9 @@ const search = ref('');
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const updateTarget = ref(undefined);
-const items = ref([]);
+const checkPrjCodes = ref([]);
 let originalItems = [];
+const items = ref([]);
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
@@ -194,6 +197,7 @@ const fetch = async () => {
   await projectStore.fetchProject();
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
+  checkPrjCodes.value = originalItems?.map((prj) => prj.code);
 };
 
 fetch();
@@ -203,6 +207,9 @@ const scrollToEdit = async (id) => {
   const data = projectStore.getProjects?.[0];
   isEditMode.value = true;
   if (data) {
+    checkPrjCodes.value = originalItems
+      ?.filter((prj) => prj.id !== id)
+      ?.map((prj) => prj.code);
     formRef.value?.setValues({
       code: data.code,
       eng_name: data.eng_name,

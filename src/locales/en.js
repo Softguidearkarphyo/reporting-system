@@ -115,5 +115,6 @@ export default {
     min: '{field} must be at least {min} characters',
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
+    unique: '{field} already exists',
   },
 };

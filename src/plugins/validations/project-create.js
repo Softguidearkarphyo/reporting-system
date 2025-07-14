@@ -3,11 +3,18 @@ import { object, string } from 'yup';
 const japaneseCharacter = /^[\u3040-\u30FF\u4E00-\u9FFFー\s]+$/;
 const englishCharNum = /^[A-Za-z0-9 ]+$/;
 
-export function getProjectCreateSchema(t) {
+export function getProjectCreateSchema(t, checkPrjCodes = []) {
   return object({
-    code: string().required(
-      t('validation.required', { field: t('addProject.form.code') })
-    ),
+    code: string()
+      .required(t('validation.required', { field: t('addProject.form.code') }))
+      .test(
+        'unique',
+        t('validation.unique', { field: t('addProject.form.code') }),
+        function (value) {
+          if (!value) return true;
+          return !checkPrjCodes?.includes(value);
+        }
+      ),
     eng_name: string()
       .required(
         t('validation.required', { field: t('addProject.form.eng_name') })
