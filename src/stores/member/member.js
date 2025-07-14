@@ -27,7 +27,8 @@ export const useMemberStore = defineStore('member', () => {
       toast.success('Member Created Successfully.');
       return response;
     } catch (error) {
-      toast.error('Fail to Create Member.');
+      const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];
+      toast.error(errorMsg);
       return error;
     }
   };

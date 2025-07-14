@@ -68,10 +68,6 @@ export function memberSchema(t, isEditMode = false) {
       .required(
         t('validation.required', { field: t('addMember.form.project') })
       ),
-    sort_key: yup
-      .string()
-      .required(
-        t('validation.required', { field: t('addMember.form.sort_key') })
-      ),
+    sort_key: yup.string().nullable(),
   });
 }
