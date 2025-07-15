@@ -191,18 +191,18 @@ const navbars = computed(() => [
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    title: t('sidebar.memberlists'),
-    path: '/reporting-system/member-lists',
+    title: t('sidebar.employeelists'),
+    path: '/reporting-system/employee-lists',
     icon: 'mdi-account-group-outline',
   },
   {
     title: t('sidebar.leaverecords'),
-    path: '/reporting-system/leaves',
+    path: '/reporting-system/leave-records',
     icon: 'mdi-account-cancel-outline',
   },
   {
-    title: t('sidebar.memberskill'),
-    path: '/reporting-system/member-skill',
+    title: t('sidebar.employeecompetency'),
+    path: '/reporting-system/employee-competency',
     icon: 'mdi-account-box-outline',
   },
   {
@@ -220,12 +220,12 @@ const settings = computed(() => [
   },
   {
     title: t('sidebar.weeklyworktime'),
-    path: '/reporting-system/members',
+    path: '/reporting-system/weekly-work-time',
     icon: 'mdi-account-clock-outline',
   },
   {
-    title: t('sidebar.memberreports'),
-    path: '/reporting-system/show-projects',
+    title: t('sidebar.employeereports'),
+    path: '/reporting-system/employee-reports',
     icon: 'mdi-account-details-outline',
   },
   {
@@ -239,33 +239,33 @@ const settings = computed(() => [
     icon: 'mdi mdi-clock-fast',
   },
   {
-    title: t('sidebar.addproject'),
-    path: '/reporting-system/add-projects',
+    title: t('sidebar.newproject'),
+    path: '/reporting-system/new-projects',
     icon: 'mdi-web',
   },
   {
-    title: t('sidebar.addmember'),
-    path: '/reporting-system/add-members',
+    title: t('sidebar.newemployee'),
+    path: '/reporting-system/new-employee',
     icon: 'mdi-account-plus-outline',
   },
   {
-    title: t('sidebar.addleave'),
-    path: '/reporting-system/add-leaves',
+    title: t('sidebar.newemployeeleave'),
+    path: '/reporting-system/new-employee-leave',
     icon: 'mdi-account-arrow-right-outline',
   },
   {
-    title: t('sidebar.memberfine'),
-    path: '/reporting-system/member-fine',
+    title: t('sidebar.newfinerecord'),
+    path: '/reporting-system/new-fine-record',
     icon: 'mdi-account-alert-outline',
   },
   {
-    title: t('sidebar.staffcard'),
-    path: '/reporting-system/staff-card',
+    title: t('sidebar.newemployeecard'),
+    path: '/reporting-system/new-employee-card',
     icon: 'mdi-account-card-outline',
   },
   {
-    title: t('sidebar.addskill'),
-    path: '/reporting-system/add-skill',
+    title: t('sidebar.newemployeeskills'),
+    path: '/reporting-system/new-employee-skills',
     icon: 'mdi-account-box-plus-outline',
   },
 ]);

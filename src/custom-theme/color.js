@@ -8,8 +8,8 @@ export const colorThemes = {
   teal: {
     light: '#03c9d7',
     dark: '#03a9b7',
-    secondaryLight: '#018a94',
-    secondaryDark: '#016a74',
+    secondaryLight: '#03c9d7',
+    secondaryDark: '#03c9d7',
   },
   green: {
     light: '#4CAF50',

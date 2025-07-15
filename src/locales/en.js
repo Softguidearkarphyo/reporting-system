@@ -14,22 +14,22 @@ export default {
   },
   sidebar: {
     dashboard: 'dashboard',
-    memberlists: 'member lists',
+    employeelists: 'employee lists',
     leaverecords: 'leave records',
     reporting: 'reporting',
     adminsetting: 'admin setting',
     reports: 'reports',
     weeklyworktime: 'weekly work time',
-    memberreports: 'memeber report',
+    employeereports: 'employee report',
     projectmenpower: 'project menpower',
     sixmonthssummary: '6 months summary',
-    addproject: 'add project',
-    addmember: 'add member',
-    addleave: 'add leave',
-    memberfine: 'member fine',
-    staffcard: 'staff card',
-    memberskill: 'member skill',
-    addskill: 'add skill',
+    newproject: 'new project',
+    newemployee: 'new employee',
+    newemployeeleave: 'new employee leave',
+    newfinerecord: 'new fine record',
+    newemployeecard: 'new employee card',
+    newemployeeskills: 'new employee skills',
+    employeecompetency: 'employee competency',
   },
   message: {
     error404Text: 'We apologize,',
@@ -41,7 +41,7 @@ export default {
     password: 'Password',
   },
   memberList: {
-    title: 'Member List',
+    title: 'Employee Lists',
     table: {
       name: 'Name',
       position: 'Position',
@@ -55,7 +55,7 @@ export default {
   },
   addProject: {
     title1: 'Project Registration',
-    title2: 'Project List',
+    title2: 'Project Lists',
     table: {
       code: 'Code',
       name: 'Name',
@@ -75,7 +75,7 @@ export default {
       'Are you sure to delete this project? # This action cannot be undone.',
   },
   addMember: {
-    title: 'Member Create',
+    title: 'Employee Registration',
     form: {
       eng_name: 'English Name',
       jp_name: 'Japanese Name',
@@ -95,7 +95,7 @@ export default {
     },
   },
   addMemberSkill: {
-    title: 'Member Skill Create',
+    title: 'Employee Competency Form',
     form: {
       name: 'Name',
       role: 'Role',

@@ -18,7 +18,6 @@ declare module 'vue' {
     BaseCheckbox: typeof import('./components/bases/BaseCheckbox.vue')['default']
     BaseConfirmDelete: typeof import('./components/bases/BaseConfirmDelete.vue')['default']
     BaseDatePicker: typeof import('./components/bases/BaseDatePicker.vue')['default']
-    BaseField: typeof import('./components/bases/BaseField.vue')['default']
     BaseMultiselect: typeof import('./components/bases/BaseMultiselect.vue')['default']
     BaseSelect: typeof import('./components/bases/BaseSelect.vue')['default']
     BaseTable: typeof import('./components/bases/BaseTable.vue')['default']
