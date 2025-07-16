@@ -46,6 +46,7 @@
               <v-icon> mdi-pencil </v-icon>
             </BaseButton>
             <BaseButton
+              v-if="authStore.loginStaff?.id !== item.id"
               elevation="0"
               @click.stop="showConfirmDelete(item.id)"
               color=""
@@ -54,6 +55,7 @@
             >
               <v-icon> mdi-trash-can</v-icon>
             </BaseButton>
+            <div v-else style="width: 50%"></div>
           </div>
         </template>
       </BaseTable>
