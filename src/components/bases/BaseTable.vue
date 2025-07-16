@@ -8,9 +8,6 @@
       fixed-header
       v-bind="$attrs"
       :show-select="checkbox"
-      :header-props="{
-        style: 'background-color: rgb(var(--v-theme-primary)); color: white',
-      }"
       :no-data-text="noDataMessageText"
     >
       <template
@@ -68,8 +65,6 @@
 </template>
 
 <script setup>
-import BaseTitle from './BaseTitle.vue';
-import BaseSelect from './BaseSelect.vue';
 import { useI18n } from 'vue-i18n';
 
 const filteredItems = ref([]);
