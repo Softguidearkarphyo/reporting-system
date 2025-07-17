@@ -1,35 +1,50 @@
 <template>
   <div class="text-center pa-4">
-    <v-dialog v-bind="$attrs" max-width="400" persistent>
-      <v-card class="rounded-15">
-        <v-card-title
-          class="bg-error d-flex align-center"
-          style="font-size: 15px"
-          ><v-icon class="mr-2 icon">{{ icon }}</v-icon
-          >{{ dialogTitle }}</v-card-title
-        >
+    <v-dialog v-bind="$attrs" max-width="350" persistent>
+      <v-card class="rounded pa-4">
         <v-card-text>
           <div
             v-for="(txt, index) in dialogText"
             :key="index"
-            style="font-size: 13px"
+            style="font-size: 13px; text-align: center"
           >
             {{ txt }}
           </div>
         </v-card-text>
-        <template v-slot:actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="$emit('no')" style="font-size: 13px">
-            {{ t('common.deleteBtnCancelText') }}
-          </v-btn>
+
+        <div style="text-align: center">
           <v-btn
+            color="green"
+            icon
             @click="$emit('yes')"
-            class="text-error"
-            style="font-size: 13px"
+            size="large"
+            class="mx-4"
+            style="
+              min-width: 60px;
+              height: 30px;
+              border-radius: 3px;
+              background-color: #4caf50;
+            "
           >
-            {{ mainBtnText }}
+            <v-icon>mdi-check</v-icon>
           </v-btn>
-        </template>
+
+          <v-btn
+            color="red"
+            icon
+            @click="$emit('no')"
+            size="large"
+            class="mx-4"
+            style="
+              min-width: 60px;
+              height: 30px;
+              border-radius: 3px;
+              background-color: #f44336;
+            "
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -59,15 +74,9 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const dialogTitle = computed(() => {
-  return props.title || t('common.deleteConfirmTitle');
-});
 const dialogText = computed(() => {
   const text = props.text || t('common.deleteConfirmText');
   return text.includes(' # ') ? text.split(' # ') : [text];
-});
-const mainBtnText = computed(() => {
-  return props.mainBtn || t('common.deleteBtnText');
 });
 </script>
 
@@ -91,13 +100,5 @@ const mainBtnText = computed(() => {
   100% {
     transform: scale(1) rotate(0deg);
   }
-}
-
-.icon {
-  display: inline-block;
-  animation: alertPulse 1.5s ease-in-out infinite;
-}
-.v-dialog__actions .v-btn {
-  text-transform: none !important;
 }
 </style>

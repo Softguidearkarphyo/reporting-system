@@ -5,6 +5,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { colorThemes } from '../custom-theme/color';
+import { tablerIcon } from '../plugins/tablerIcon.js';
 
 const savedTheme = localStorage.getItem('selectedTheme') || 'light';
 const savedColor = localStorage.getItem('selectedColor') || 'limeGreen';
@@ -17,6 +18,7 @@ const vuetify = createVuetify({
     aliases,
     sets: {
       mdi,
+      tabler: tablerIcon,
     },
   },
   theme: {
@@ -28,8 +30,8 @@ const vuetify = createVuetify({
           primary: colorThemes[savedColor].light,
           secondary: colorThemes[savedColor].secondaryLight,
           background: '#f6f6f6',
-          surface: '#ffffff',
-          font: '#11142D',
+          surface: '#ffffffff',
+          font: '#eb4715ff',
           login: 'e3f2fd',
           dark: '#11142D',
           'on-surface': '#11142D',

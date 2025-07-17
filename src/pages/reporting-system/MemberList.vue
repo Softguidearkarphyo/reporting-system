@@ -3,16 +3,16 @@
     <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
       <div style="width: 300px">
-        <v-text-field
+        <BaseTextField
           v-model="search"
           :label="t('common.search')"
-          variant="underlined"
-          color="primary"
-        >
-          <template #prepend>
-            <v-icon color="primary" class="mr-n2">mdi-magnify</v-icon>
-          </template>
-        </v-text-field>
+          type="text"
+          variant="plain"
+          dense
+          autocomplete="test"
+          prependIcon="mdi-magnify"
+          :width="'300px'"
+        ></BaseTextField>
       </div>
     </div>
     <v-card class="side rounded-lg">
@@ -29,31 +29,41 @@
               backgroundColor: item.position?.color,
               width: '75px',
               fontSize: '11px',
+              color: 'red',
             }"
           >
-            {{ item.position?.name }}
+            <span>{{ item.position?.name }}</span>
           </div>
         </template>
         <template #item.action="{ item }">
-          <div class="d-flex justify-end">
+          <div class="d-flex justify-center">
             <BaseButton
               elevation="0"
               @click.stop="pushToEdit(item.id)"
               color=""
               class="edit-btn"
               size="small"
+              :style="{ width }"
             >
-              <v-icon> mdi-pencil </v-icon>
+              <v-icon icon="tabler:IconEdit" size="20" color="primary" />
             </BaseButton>
             <BaseButton
+              v-if="authStore.loginStaff?.id !== item.id"
               elevation="0"
               @click.stop="showConfirmDelete(item.id)"
               color=""
               class="delete-btn"
               size="small"
+              :style="{ width }"
             >
-              <v-icon> mdi-trash-can</v-icon>
+              <v-icon
+                icon="tabler:IconCopyX"
+                size="20"
+                style="color: #ff0000"
+              />
+              <!-- <v-icon> mdi-trash-can</v-icon> -->
             </BaseButton>
+            <div v-else style="width: 50%"></div>
           </div>
         </template>
       </BaseTable>
@@ -91,6 +101,7 @@ const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
+const width = '50px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const headers = computed(() => {
@@ -189,3 +200,8 @@ watch(
   }
 );
 </script>
+<style>
+.small-text-field label {
+  font-size: 13px;
+}
+</style>

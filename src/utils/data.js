@@ -3,7 +3,7 @@ export const position = ref([
   {
     id: 1,
     name: 'CEO',
-    color: '#2979FF33',
+    color: '#005eff33',
   },
   {
     id: 2,

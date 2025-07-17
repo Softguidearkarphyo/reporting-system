@@ -16,7 +16,8 @@
         density="compact"
       >
         <template v-slot:prepend>
-          <v-icon>{{ item.icon }}</v-icon>
+          <!-- <v-icon>{{ item.icon }}</v-icon> -->
+          <v-icon :icon="item.icon" size="20" />
         </template>
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
@@ -26,7 +27,7 @@
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props" rounded density="compact" class="mb-1">
             <template v-slot:prepend>
-              <v-icon>mdi-cog</v-icon>
+              <v-icon icon="tabler:IconSettings" size="20" />
             </template>
             <v-list-item-title>{{
               $t('sidebar.adminsetting')
@@ -42,7 +43,9 @@
           density="compact"
         >
           <template v-slot:prepend>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon :icon="item.icon" size="20" />
+            <!-- <v-icon>{{ item.icon }}</v-icon> -->
+            <!-- <v-icon icon="tabler:IconEdit" size="20" color="primary" /> -->
           </template>
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
@@ -188,27 +191,27 @@ const navbars = computed(() => [
   {
     title: t('sidebar.dashboard'),
     path: '/reporting-system/dashboard',
-    icon: 'mdi-view-dashboard-outline',
+    icon: 'tabler:IconLayoutDashboard',
   },
   {
-    title: t('sidebar.memberlists'),
-    path: '/reporting-system/member-lists',
-    icon: 'mdi-account-group-outline',
+    title: t('sidebar.employeelists'),
+    path: '/reporting-system/employee-lists',
+    icon: 'tabler:IconUsersGroup',
   },
   {
     title: t('sidebar.leaverecords'),
-    path: '/reporting-system/leaves',
-    icon: 'mdi-account-cancel-outline',
+    path: '/reporting-system/leave-records',
+    icon: 'tabler:IconFileReport',
   },
   {
-    title: t('sidebar.memberskill'),
-    path: '/reporting-system/member-skill',
-    icon: 'mdi-account-box-outline',
+    title: t('sidebar.employeecompetency'),
+    path: '/reporting-system/employee-competency',
+    icon: 'tabler:IconAward',
   },
   {
     title: t('sidebar.reporting'),
     path: '/reporting-system/reporting',
-    icon: 'mdi-timer-plus-outline',
+    icon: 'tabler:IconReport',
   },
 ]);
 
@@ -216,57 +219,57 @@ const settings = computed(() => [
   {
     title: t('sidebar.reports'),
     path: '/reporting-system/show',
-    icon: 'mdi-chart-line',
+    icon: 'tabler:IconReportAnalytics',
   },
   {
     title: t('sidebar.weeklyworktime'),
-    path: '/reporting-system/members',
-    icon: 'mdi-account-clock-outline',
+    path: '/reporting-system/weekly-work-time',
+    icon: 'tabler:IconClockPause',
   },
   {
-    title: t('sidebar.memberreports'),
-    path: '/reporting-system/show-projects',
-    icon: 'mdi-account-details-outline',
+    title: t('sidebar.employeereports'),
+    path: '/reporting-system/employee-reports',
+    icon: 'tabler:IconUserStar',
   },
   {
     title: t('sidebar.projectmenpower'),
     path: '/reporting-system/show-men-powers',
-    icon: 'mdi-account-multiple-outline',
+    icon: 'tabler:IconUserHexagon',
   },
   {
     title: t('sidebar.sixmonthssummary'),
     path: '/reporting-system/show-project-date',
-    icon: 'mdi mdi-clock-fast',
+    icon: 'tabler:IconHexagonNumber6',
   },
   {
-    title: t('sidebar.addproject'),
-    path: '/reporting-system/add-projects',
-    icon: 'mdi-web',
+    title: t('sidebar.newproject'),
+    path: '/reporting-system/new-projects',
+    icon: 'tabler:IconWorldPlus',
   },
   {
-    title: t('sidebar.addmember'),
-    path: '/reporting-system/add-members',
-    icon: 'mdi-account-plus-outline',
+    title: t('sidebar.newemployee'),
+    path: '/reporting-system/new-employee',
+    icon: 'tabler:IconUsersPlus',
   },
   {
-    title: t('sidebar.addleave'),
-    path: '/reporting-system/add-leaves',
-    icon: 'mdi-account-arrow-right-outline',
+    title: t('sidebar.newemployeeleave'),
+    path: '/reporting-system/new-employee-leave',
+    icon: 'tabler:IconTextPlus',
   },
   {
-    title: t('sidebar.memberfine'),
-    path: '/reporting-system/member-fine',
-    icon: 'mdi-account-alert-outline',
+    title: t('sidebar.newfinerecord'),
+    path: '/reporting-system/new-fine-record',
+    icon: 'tabler:IconFolderPlus',
   },
   {
-    title: t('sidebar.staffcard'),
-    path: '/reporting-system/staff-card',
-    icon: 'mdi-account-card-outline',
+    title: t('sidebar.newemployeecard'),
+    path: '/reporting-system/new-employee-card',
+    icon: 'tabler:IconLibraryPlus',
   },
   {
-    title: t('sidebar.addskill'),
-    path: '/reporting-system/add-skill',
-    icon: 'mdi-account-box-plus-outline',
+    title: t('sidebar.newemployeeskills'),
+    path: '/reporting-system/new-employee-skills',
+    icon: 'tabler:IconCubePlus',
   },
 ]);
 </script>
