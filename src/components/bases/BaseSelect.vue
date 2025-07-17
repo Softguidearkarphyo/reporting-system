@@ -3,6 +3,8 @@
     <v-select
       v-bind="attrs"
       :items="items"
+      :item-value="itemValue"
+      :item-title="itemText"
       :label="label"
       :style="{ width }"
       @update:modelValue="handleChange"
@@ -21,6 +23,14 @@ defineProps({
     default: 'select',
   },
   items: [String, Object],
+  itemValue: {
+    type: String,
+    default: 'id',
+  },
+  itemText: {
+    type: String,
+    default: 'name',
+  },
   width: {
     type: String,
     default: '400px',
