@@ -30,6 +30,7 @@ export default {
     staffcard: 'staff card',
     memberskill: 'member skill',
     addskill: 'add skill',
+    theme: 'Theme',
   },
   message: {
     error404Text: 'We apologize,',

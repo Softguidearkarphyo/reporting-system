@@ -1,6 +1,12 @@
 <template>
   <div class="align-center">
-    <v-select v-bind="attrs" :items="items" :label="label" :style="{ width }">
+    <v-select
+      v-bind="attrs"
+      :items="items"
+      :label="label"
+      :style="{ width }"
+      @update:modelValue="handleChange"
+    >
       <template v-slot:prepend>
         <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
       </template>
@@ -26,6 +32,10 @@ defineProps({
   },
 });
 const attrs = useAttrs();
+const emit = defineEmits(['change']);
+const handleChange = (value) => {
+  emit('change', value);
+};
 </script>
 <style scoped>
 ::v-deep(.v-field-label) {

@@ -49,9 +49,9 @@
       </v-list-group>
     </v-list>
     <template v-slot:append>
-      <v-list-subheader class="mx-4 font-weight-bold">
-        <v-icon left>mdi-palette</v-icon>
-        Theme
+      <v-list-subheader class="mx-4 font-weight-bold text-font">
+        <v-icon left color="primary">mdi-palette</v-icon>
+        {{ $t('sidebar.theme') }}
       </v-list-subheader>
       <div class="d-flex align-center pa-2 gap-2">
         <v-menu offset-y>

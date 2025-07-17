@@ -30,6 +30,7 @@ export default {
     staffcard: 'スタッフカード',
     memberskill: 'メンバースキル',
     addskill: 'スキルを追加',
+    theme: 'テーマ',
   },
   message: {
     error404Text: '申し訳ありませんが、',

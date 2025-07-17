@@ -4,7 +4,7 @@ import router from './routes/route';
 import { createPinia } from 'pinia';
 import api from './plugins/axios';
 import { initPlugin } from './plugins/init';
-
+import 'croppie/croppie.css';
 import './assets/fonts/font.css';
 import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css';
