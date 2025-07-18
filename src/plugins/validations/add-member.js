@@ -63,11 +63,7 @@ export function memberSchema(t, isEditMode = false) {
       ),
     ref_person: yup.string().nullable(),
     ref_ph_number: yup.string().nullable(),
-    project: yup
-      .string()
-      .required(
-        t('validation.required', { field: t('addMember.form.project') })
-      ),
+    project: yup.array().nullable(),
     sort_key: yup.string().nullable(),
   });
 }

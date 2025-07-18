@@ -99,11 +99,16 @@ export default {
     title: 'Employee Competency Form',
     form: {
       name: 'Name',
-      role: 'Role',
-      team: 'Team',
-      permanent_date: 'Permanent Date',
+      project: 'Project',
+      position: 'position',
+      grade: 'grade',
+      join_date: 'Join Date',
       japanese_level: 'Japanese Level',
-      experience: 'Experience',
+      sg_experience: 'SG Experience',
+      prev_experience: 'Previous Experience',
+      total_experience: 'Total Experience',
+      responsibility: 'Responsibility',
+      expertise: 'Expertise',
     },
   },
   validation: {
@@ -111,14 +116,14 @@ export default {
     username_mismatch: 'Username does not match',
     password_mismatch: 'Password does not match',
     email: '{field} must be a valid email',
-    jp_character: '{field} must contain only Japanese characters',
+    jp_character: 'Name must contain only Japanese characters',
     eng_char_num: '{field} must contain only English characters and numbers',
     min: '{field} must be at least {min} characters',
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
   },
-   workingTime: {
+  workingTime: {
     title1: 'User Management',
     title2: 'Working Times',
     number: 'No',
@@ -126,6 +131,6 @@ export default {
     workingHours: 'Working Hours',
     start_date: 'Start Date',
     end_date: 'End Date',
-    hour: 'hrs'
+    hour: 'hrs',
   },
 };

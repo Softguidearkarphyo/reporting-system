@@ -1,5 +1,5 @@
 <template>
-  <div class="align-center mb-5">
+  <div class="align-center">
     <v-select
       v-bind="attrs"
       :items="items"
@@ -26,7 +26,7 @@ defineProps({
   items: [String, Object],
   multiple: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   chips: {
     type: Boolean,

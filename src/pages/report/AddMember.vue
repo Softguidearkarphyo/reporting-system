@@ -66,7 +66,7 @@
                 variant="plain"
                 dense
                 autocomplete="test"
-                prependIcon="mdi-onepassword"
+                prependIcon="mdi-lock-outline"
                 :width="'320px'"
                 :error-messages="errorMessage"
               ></BaseTextField>
@@ -218,20 +218,19 @@
             </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
-            <Field name="project" v-slot="{ field, errorMessage }">
-              <BaseSelect
+            <Field name="project" v-slot="{ field }">
+              <BaseMultiselect
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.project')"
                 class="mx-auto"
                 :items="project"
-                prependIcon="mdi-format-list-checkbox"
+                prependIcon="mdi-microsoft-teams"
                 :width="'320px'"
                 item-title="name"
                 item-value="id"
-                :error-messages="errorMessage"
               >
-              </BaseSelect>
+              </BaseMultiselect>
             </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
@@ -299,7 +298,7 @@ watch(
         permanent_date: data.permanent_date,
         ref_person: data.ref_person,
         ref_ph_number: data.ref_ph_number,
-        project: data.project,
+        project: data.staff_project?.map((p) => p.project_id) || [],
         sort_key: data.sort_key,
       });
     } else {
