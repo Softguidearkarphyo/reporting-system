@@ -113,4 +113,14 @@ export default {
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
     unique: '{field} は重複しています',
   },
+   workingTime: {
+    title1: 'ユーザー管理',
+    title2: 'Working Times',
+    number: 'No',
+    staffName: '職員氏名',
+    workingHours: '作業時間',
+    start_date: '開始日',
+    end_date: '終了日',
+    hour: '時'
+  },
 };
