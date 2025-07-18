@@ -2,14 +2,12 @@
   <v-app>
     <TopNavbar v-model:drawer="drawer" />
     <SideBar :drawer="drawer" />
-    <MainContent />
+    <SettingBar v-model:setting="setting" />
+    <MainContent v-model:setting="setting" />
   </v-app>
 </template>
 <script setup>
-import SideBar from '../../components/sidebar/SideBar.vue';
-import TopNavbar from '../layout/TopNavbar.vue';
-import MainContent from '../layout/MainContent.vue';
-import { ref } from 'vue';
 const drawer = ref(true);
+const setting = ref(false);
 </script>
 <style scoped></style>

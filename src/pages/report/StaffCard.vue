@@ -16,7 +16,7 @@
                 class="mx-auto"
                 :items="memberList"
                 item-value="id"
-                item-text="name"
+                item-title="name"
                 prependIcon="mdi-account"
                 :width="'400px'"
                 @change="selectMember"
