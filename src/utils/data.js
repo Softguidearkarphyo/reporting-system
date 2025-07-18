@@ -3,22 +3,22 @@ export const position = ref([
   {
     id: 1,
     name: 'CEO',
-    color: '#005eff33',
+    color: '#ffb600',
   },
   {
     id: 2,
     name: 'Assistant Manager',
-    color: '#00E67633',
+    color: '#119da4',
   },
   {
     id: 3,
     name: 'Senior Developer',
-    color: '#7C4DFF33',
+    color: '#540b0e',
   },
   {
     id: 4,
     name: 'PHP Developer',
-    color: '#7C4DFF33',
+    color: '#fe7f2d',
   },
   {
     id: 5,
