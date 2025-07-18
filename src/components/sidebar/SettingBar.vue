@@ -22,18 +22,41 @@
         cols="4"
         class="d-flex justify-center"
       >
-        <v-btn
-          variant="outlined"
-          @click="setTheme(name)"
-          :class="{ 'selected-theme': selectedColor === name }"
-          icon
-          color="secondary"
-          class="rounded-lg border-2 w-100 h-80"
-        >
-          <v-avatar :color="color.light" size="23"></v-avatar>
-        </v-btn>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn
+            variant="text"
+            @click="setTheme(name)"
+            :class="{ 'selected-theme': selectedColor === name }"
+            icon
+            color="secondary"
+          >
+            <v-avatar :color="color.light" size="23"
+              ><svg
+                v-if="selectedColor === name"
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon-tabler icon-tabler-check"
+                width="18px"
+                height="18px"
+                viewBox="0 0 25 23"
+                stroke-width="3"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                color="white"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M5 12l5 5l10 -10"></path>
+              </svg>
+            </v-avatar>
+          </v-btn>
+        </v-sheet>
       </v-col>
     </v-row>
+    <v-list-subheader class="mx-4 font-weight-bold text-font">
+      <v-icon left color="primary">mdi-palette</v-icon>
+      Theme Direction
+    </v-list-subheader>
   </v-navigation-drawer>
 </template>
 <script setup>
@@ -88,5 +111,9 @@ onMounted(init);
 .v-navigation-drawer {
   position: fixed !important;
   height: 100vh !important;
+}
+.v-sheet {
+  border: 1px solid rgba(var(--v-theme-font), 0.1) !important;
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
 }
 </style>

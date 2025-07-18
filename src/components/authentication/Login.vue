@@ -13,7 +13,7 @@
               rounded="lg"
               width="100%"
               max-width="420"
-              style="box-shadow: 0 10px 30px rgba(33, 150, 243, 0.2)"
+              style="box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08)"
             >
               <div class="d-flex justify-center mb-5">
                 <v-avatar size="64" color="transparent">
