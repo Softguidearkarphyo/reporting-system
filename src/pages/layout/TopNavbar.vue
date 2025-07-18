@@ -4,6 +4,10 @@
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>
+    <v-app-bar-nav-icon @click="toggleTheme" color="secondary">
+      <v-icon size="25" v-if="!isDark">mdi-weather-sunny</v-icon>
+      <v-icon size="20" v-else>mdi-moon-waning-crescent</v-icon>
+    </v-app-bar-nav-icon>
     <v-app-bar-nav-icon @click="setLang">
       <v-icon>mdi-translate</v-icon>
     </v-app-bar-nav-icon>
@@ -12,15 +16,30 @@
 </template>
 <script setup>
 import ProfileIcon from '../../components/navbar/ProfileIcon.vue';
+import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 const props = defineProps({ drawer: Boolean });
 const emit = defineEmits(['update:drawer']);
+const theme = useTheme();
 const toggle = () => {
   emit('update:drawer', !props.drawer);
 };
 const currentLang = ref(localStorage.getItem('lang') || locale.value);
 locale.value = currentLang.value;
+
+const isDark = computed(() => theme.global.name.value === 'dark');
+
+const init = () => {
+  const savedTheme = localStorage.getItem('app-theme');
+  if (savedTheme) theme.global.name.value = savedTheme;
+};
+const toggleTheme = () => {
+  const newTheme = isDark.value ? 'light' : 'dark';
+  theme.global.name.value = newTheme;
+  localStorage.setItem('app-theme', newTheme);
+};
+onMounted(init);
 
 watch(currentLang, (newLang) => {
   locale.value = newLang;

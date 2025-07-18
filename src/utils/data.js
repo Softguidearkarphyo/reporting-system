@@ -7,17 +7,27 @@ export const position = ref([
   },
   {
     id: 2,
-    name: 'Manager',
+    name: 'Assistant Manager',
     color: '#00E67633',
   },
   {
     id: 3,
-    name: 'Senior',
+    name: 'Senior Developer',
     color: '#7C4DFF33',
   },
   {
     id: 4,
-    name: 'Junior',
+    name: 'PHP Developer',
+    color: '#7C4DFF33',
+  },
+  {
+    id: 5,
+    name: 'Junior Developer',
+    color: '#7C4DFF33',
+  },
+  {
+    id: 6,
+    name: 'Junior PHP Developer',
     color: '#FF525233',
   },
 ]);

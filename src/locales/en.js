@@ -30,7 +30,7 @@ export default {
     newemployeecard: 'new employee card',
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
-    theme: 'Theme',
+    theme: 'Theme Color',
   },
   message: {
     error404Text: 'We apologize,',
@@ -118,7 +118,7 @@ export default {
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
   },
-   workingTime: {
+  workingTime: {
     title1: 'User Management',
     title2: 'Working Times',
     number: 'No',
@@ -126,6 +126,6 @@ export default {
     workingHours: 'Working Hours',
     start_date: 'Start Date',
     end_date: 'End Date',
-    hour: 'hrs'
+    hour: 'hrs',
   },
 };

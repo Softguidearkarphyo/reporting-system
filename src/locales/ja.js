@@ -30,7 +30,7 @@ export default {
     newemployeecard: 'スタッフカード',
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
-    theme: 'テーマ',
+    theme: 'テーマカラー',
   },
   message: {
     error404Text: '申し訳ありませんが、',
@@ -113,7 +113,7 @@ export default {
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
     unique: '{field} は重複しています',
   },
-   workingTime: {
+  workingTime: {
     title1: 'ユーザー管理',
     title2: 'Working Times',
     number: 'No',
@@ -121,6 +121,6 @@ export default {
     workingHours: '作業時間',
     start_date: '開始日',
     end_date: '終了日',
-    hour: '時'
+    hour: '時',
   },
 };
