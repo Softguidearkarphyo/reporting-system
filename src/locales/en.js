@@ -118,4 +118,14 @@ export default {
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
   },
+   workingTime: {
+    title1: 'User Management',
+    title2: 'Working Times',
+    number: 'No',
+    staffName: 'Staff Name',
+    workingHours: 'Working Hours',
+    start_date: 'Start Date',
+    end_date: 'End Date',
+    hour: 'hrs'
+  },
 };
