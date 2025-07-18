@@ -8,6 +8,7 @@ export default {
     deleteBtnText: 'delete',
     noDataText: 'No data available',
     submit: 'Submit',
+    saveSetting: 'Save this setting',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
@@ -58,7 +59,7 @@ export default {
     title1: 'Project Registration',
     title2: 'Project Lists',
     table: {
-      code: 'Code',
+      cd: 'Code',
       name: 'Name',
       action: 'Action',
     },
@@ -68,7 +69,7 @@ export default {
     deleteConfirmText:
       'Are you sure to delete this member? # This action cannot be undone.',
     form: {
-      code: 'Code',
+      cd: 'Code',
       eng_name: 'English Name',
       jp_name: 'Japanese Name',
     },
@@ -111,13 +112,26 @@ export default {
       expertise: 'Expertise',
     },
   },
+  workHourReport: {
+    title: 'Work Performance Management',
+    form: {
+      employee: 'Employee',
+      project: 'Project',
+      task: 'Task',
+      auto: 'Auto',
+      manual: 'Manual',
+      period: 'Start Time ~ Finish Time',
+      startTime: 'Start Time',
+      finishTime: 'Finish Time',
+    },
+  },
   validation: {
     required: '{field} is required',
     username_mismatch: 'Username does not match',
     password_mismatch: 'Password does not match',
     email: '{field} must be a valid email',
-    jp_character: 'Name must contain only Japanese characters',
-    eng_char_num: '{field} must contain only English characters and numbers',
+    jp_character: '{field} must contain only Japanese chars',
+    eng_char_num: '{field} must contain only English chars and numbers',
     min: '{field} must be at least {min} characters',
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
