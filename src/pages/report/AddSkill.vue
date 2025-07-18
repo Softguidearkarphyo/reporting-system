@@ -11,7 +11,7 @@
               :label="t('addMemberSkill.form.name')"
               class="mx-auto"
               :items="memberList"
-              prependIcon="mdi-star"
+              prependIcon="mdi-account"
               :width="'320px'"
               item-title="value"
               item-value="id"

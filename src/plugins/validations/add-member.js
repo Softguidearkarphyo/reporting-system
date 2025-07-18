@@ -32,7 +32,11 @@ export function memberSchema(t, isEditMode = false) {
             t('validation.min', { field: t('addMember.form.password'), min: 6 })
           )
       : yup.string().nullable(),
-    staff_no: yup.string().nullable(),
+    staff_no: yup
+      .string()
+      .required(
+        t('validation.required', { field: t('addMember.form.staff_no') })
+      ),
     address: yup
       .string()
       .required(
