@@ -31,6 +31,7 @@ export default {
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
     theme: 'Theme',
+    show_project: 'Show Project'
   },
   message: {
     error404Text: 'We apologize,',
@@ -118,4 +119,14 @@ export default {
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
   },
+  showProject: {
+    title: 'Work performance management',
+    end_date: 'End Date',
+    week_date: 'Week Date',
+    table: {
+      user_id: 'UserId',
+      user_name: 'User Name',
+      total_working_hour: 'Total Working Hour',
+    },
+  }
 };

@@ -141,6 +141,12 @@ const routes = [
         component: Profile,
         meta: { requiresAuth: true },
       },
+      {
+        path: '/reporting-system/show-project-search',
+        name: 'show-project-date',
+        component: ShowProject,
+        meta: { requiresAuth: true },
+      },
     ],
   },
   {
