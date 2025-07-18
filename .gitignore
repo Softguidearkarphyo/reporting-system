@@ -2,6 +2,8 @@
 node_modules
 /dist
 component.ts
+package-lock.json
+components.d.ts
 
 # local env files
 .env.local

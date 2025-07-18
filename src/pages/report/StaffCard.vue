@@ -14,7 +14,9 @@
               <BaseSelect
                 :label="t('addMemberSkill.form.name')"
                 class="mx-auto"
-                :items="items"
+                :items="memberList"
+                item-value="id"
+                item-title="name"
                 prependIcon="mdi-account"
                 :width="'400px'"
                 @change="selectMember"
@@ -24,7 +26,7 @@
               <v-btn @click="downloadCard"> Download </v-btn>
             </v-col>
             <v-col cols="3">
-              <v-btn> Reset </v-btn>
+              <!-- <v-btn @click="resetImage"> Reset </v-btn> -->
             </v-col>
           </v-row>
         </v-card-actions>
@@ -134,7 +136,7 @@ import axios from 'axios';
 import { useI18n } from 'vue-i18n';
 import { position } from '@/utils/data';
 import { useMemberStore } from '@/stores/member/member.js';
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const memberStore = useMemberStore();
 const imageFile = ref(null);
 const originalImageUrl = ref('');
@@ -147,33 +149,51 @@ const cropper = ref(null);
 const enhancementType = ref('general');
 const enhancementStrength = ref(50);
 const cardImage = ref(null);
-const items = ref([]);
 const members = ref([]);
-const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
+const selectedId = ref(null);
 
 onMounted(() => {
   fetchData();
 });
 
+const memberList = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return (
+    memberStore.getMembers?.map((member) => ({
+      id: member.id,
+      name: isJapanese ? member.jp_name : member.eng_name,
+    })) || []
+  );
+});
+
 const fetchData = async () => {
   try {
     await memberStore.fetchMember();
-    items.value = memberStore.getMembers?.map((member) => member.eng_name);
   } catch (error) {
     console.error('Error fetching members:', error);
-    items.value = [];
   }
 };
 
-const selectMember = async () => {
+const selectMember = async (id) => {
   try {
-    const members = memberStore.getMembers || [];
-    const tmpMembers = members.map((member) => ({
-      ...member,
-      position:
-        position.value?.find((pos) => pos.id === member.position) ||
-        fallbackColor,
-    }));
+    const fetchedMembers = memberStore.getMembers || [];
+    const selectedMember = fetchedMembers.find((member) => member.id === id);
+
+    if (!selectedMember) {
+      members.value = [];
+      return;
+    }
+    const tmpMembers = [
+      {
+        id: selectedMember.id,
+        eng_name: selectedMember.eng_name,
+        jp_name: selectedMember.jp_name,
+        staff_no: selectedMember.staff_no,
+        position:
+          position.value?.find((pos) => pos.id === selectedMember.position)
+            ?.name || [],
+      },
+    ];
     members.value = tmpMembers;
   } catch (error) {
     console.error('Error selecting members:', error);

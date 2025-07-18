@@ -2,10 +2,10 @@
   <div ref="exportCard" class="staff_card" crossorigin="anonymous">
     <div class="row">
       <div col="12">
-        <div class="sg-header">
+        <!-- <div class="sg-header">
           <p class="sg-text">SoftGuide</p>
           <p class="sg-team">Software Development Team</p>
-        </div>
+        </div> -->
         <div
           @dragover.prevent="handleDragOver"
           @drop="handleDrop"
@@ -15,22 +15,22 @@
         </div>
         <div v-for="member in members" :key="member.id" :value="member">
           <div class="info1">
-            <p type="text" name="img_jpn_name1" id="img_jpn_name1">
-              {{ member.jp_name }}
-            </p>
             <p type="text" name="img_name1" id="img_name1">
               {{ member.eng_name }}
             </p>
+            <p type="text" name="img_jpn_name1" id="img_jpn_name1">
+              {{ member.jp_name }}
+            </p>
           </div>
           <div class="info1_id">
-            <p id="img_position1_label">Position :</p>
+            <!-- <p id="img_position1_label">Position :</p> -->
             <p type="text" name="img_position1" id="img_position1">
               {{ member.position }}
             </p>
-            <p id="img_e_id_1_label">
-              ID<span class="id_label">:</span>{{ member.staff_no }}
+            <!-- <p id="img_e_id_1_label">ID<span class="id_label">:</span></p> -->
+            <p type="text" name="img_e_id_1" id="img_e_id_1">
+              {{ member.staff_no }}
             </p>
-            <p type="text" name="img_e_id_1" id="img_e_id_1"></p>
           </div>
         </div>
       </div>
@@ -47,12 +47,13 @@ const props = defineProps({
   members: {
     type: Array,
     default: () => [],
+    required: true,
   },
 });
+
 function handleDragOver(event) {
   event.preventDefault();
 }
-console.log(props.members, 'props');
 
 function handleDrop(event) {
   event.preventDefault();
@@ -88,8 +89,8 @@ defineExpose({ downloadAsImage });
 </script>
 
 <style scoped>
-.staff_card {
-  background-image: url('/card.jpg');
+/* .staff_card {
+  background-image: url('/staffcard.png');
   background-size: 298px 397px;
   width: 295px;
   height: 400px;
@@ -98,9 +99,9 @@ defineExpose({ downloadAsImage });
 }
 .row > div[col='12'] {
   padding: 1px;
-}
+} */
 
-.sg-header {
+/* .sg-header {
   text-align: center;
   width: 295px;
   margin-top: 52px;
@@ -123,12 +124,10 @@ defineExpose({ downloadAsImage });
   -moz-osx-font-smoothing: grayscale !important;
 }
 
-.info1,
-.info2 {
-  position: absolute;
+.info1 {
   top: 240px;
   width: 100%;
-  margin-left: 15px;
+  margin-left: 0px;
 }
 #img_position1_label {
   position: absolute;
@@ -142,7 +141,7 @@ defineExpose({ downloadAsImage });
 #img_position1 {
   position: absolute;
   top: 306px;
-  margin-left: 82px;
+  margin-left: 120px;
   font-size: 12.5px !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
@@ -157,12 +156,12 @@ defineExpose({ downloadAsImage });
   -moz-osx-font-smoothing: grayscale !important;
 }
 .id_label {
-  margin-left: 37px;
+  margin-left: 41px;
 }
 #img_e_id_1 {
   position: absolute;
   top: 334px;
-  margin-left: 83px;
+  margin-left: 120px;
   font-size: 12.5px !important;
 }
 
@@ -180,17 +179,71 @@ defineExpose({ downloadAsImage });
 
 #img_jpn_name1,
 #img_name1 {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: bold;
   margin: 0 0 5px;
   color: white;
   display: flex;
   justify-content: center;
+  text-transform: uppercase;
 }
 
 #img_position1,
 #img_e_id_1 {
   font-size: 11px;
   color: white;
+} */
+.staff_card {
+  background-image: url('/staffcard.png');
+  background-size: 298px 397px;
+  width: 295px;
+  height: 400px;
+  background-repeat: no-repeat;
+  margin: auto;
+}
+.row > div[col='12'] {
+  padding: 1px;
+}
+
+#img_position1 {
+  position: absolute;
+  top: 288px;
+  margin-left: 120px;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+.id_label {
+  margin-left: 41px;
+}
+#img_e_id_1 {
+  position: absolute;
+  top: 308px;
+  margin-left: 120px;
+}
+
+.pre_photo1_div {
+  width: 113px;
+  height: 113px;
+  margin-left: 91px;
+  margin-top: 95px;
+}
+
+#img_jpn_name1,
+#img_name1 {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0 5px;
+  color: #116b11;
+  display: flex;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+#img_position1,
+#img_e_id_1 {
+  color: #116b11;
+  text-transform: uppercase;
+  font-size: 9.5px !important;
+  font-weight: bold;
 }
 </style>
