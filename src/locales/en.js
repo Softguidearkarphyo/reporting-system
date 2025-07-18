@@ -30,7 +30,7 @@ export default {
     newemployeecard: 'new employee card',
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
-    theme: 'Theme',
+    theme: 'Theme Color',
   },
   message: {
     error404Text: 'We apologize,',
