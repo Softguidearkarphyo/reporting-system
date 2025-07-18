@@ -15,7 +15,7 @@
         ></BaseTextField>
       </div>
     </div>
-    <v-card class="side rounded-lg">
+    <ParentCard>
       <BaseTable
         :headers="headers"
         :items="items"
@@ -67,7 +67,7 @@
           </span>
         </template>
       </BaseTable>
-    </v-card>
+    </ParentCard>
     <BaseConfirmDelete
       v-model="confirmDelete"
       :text="t('memberList.deleteConfirmText')"

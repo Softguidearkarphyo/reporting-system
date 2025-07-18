@@ -4,8 +4,8 @@
       v-bind="attrs"
       :items="items"
       :label="label"
-      :multiple="multiple"
-      :chips="chips"
+      multiple
+      chips
       :clearable="clearable"
       :style="{ width }"
     >
@@ -24,14 +24,6 @@ defineProps({
     default: 'select',
   },
   items: [String, Object],
-  multiple: {
-    type: Boolean,
-    default: true,
-  },
-  chips: {
-    type: Boolean,
-    default: false,
-  },
   clearable: {
     type: Boolean,
     default: false,

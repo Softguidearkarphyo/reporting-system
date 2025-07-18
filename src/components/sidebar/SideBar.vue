@@ -15,6 +15,7 @@
         link
         exact
         density="compact"
+        class="mb-1"
       >
         <template v-slot:prepend>
           <v-icon :icon="item.icon" size="20" />

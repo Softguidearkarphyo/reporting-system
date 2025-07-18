@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
+import { profileImgPath } from '@/utils/helper';
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -18,10 +19,12 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const res = await api.post('/login', { username, password });
       token.value = res.data.token;
-      staff.value = res.data.staff;
+      staff.value = res.data.staff.eng_name;
+      sessionStorage.setItem('username', staff.value);
+      const profileImg = profileImgPath(username);
+      sessionStorage.setItem('profileImg', profileImg);
       localStorage.setItem('token', token.value);
     } catch (error) {
-      // handle or rethrow error so component can handle
       throw error;
     }
   }
@@ -40,6 +43,8 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null;
     staff.value = null;
     localStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('profileImg');
   }
 
   return {
