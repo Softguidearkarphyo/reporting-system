@@ -24,11 +24,11 @@
       >
         <template #item.position="{ item }">
           <div
-            class="rounded-pill py-1 px-1 text-center mx-auto"
+            class="rounded-pill py-1 text-center mx-auto"
             :style="{
               backgroundColor: item.position?.color,
-              width: '75px',
-              fontSize: '11px',
+              width: '120px',
+              fontSize: '10px',
               color: 'white',
             }"
           >
@@ -37,7 +37,7 @@
         </template>
 
         <template #item.action="{ item }">
-          <span class="d-flex justify-center">
+          <span class="d-flex justify-center p-0">
             <BaseButton
               elevation="0"
               @click.stop="pushToEdit(item.id)"
@@ -101,7 +101,7 @@ const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
-const width = '50px';
+const width = '30px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const headers = computed(() => {
@@ -207,4 +207,9 @@ watch(
 .small-text-field label {
   font-size: 13px;
 }
+/* .edit-btn,
+.delete-btn {
+  min-width: 0 !important;
+  padding: 0 !important;
+} */
 </style>

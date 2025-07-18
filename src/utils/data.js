@@ -13,22 +13,42 @@ export const position = ref([
   {
     id: 3,
     name: 'Senior Developer',
-    color: '#540b0e',
+    color: '#003b36',
   },
   {
     id: 4,
-    name: 'PHP Developer',
-    color: '#fe7f2d',
+    name: 'PYTHON Developer',
+    color: '#38040e',
   },
   {
     id: 5,
-    name: 'Junior Developer',
-    color: '#7C4DFF33',
+    name: 'PHP Developer',
+    color: '#0466c8',
   },
   {
     id: 6,
     name: 'Junior PHP Developer',
-    color: '#FF525233',
+    color: '#fe7f2d',
+  },
+  {
+    id: 7,
+    name: 'Junior Developer',
+    color: '#941b0c',
+  },
+  {
+    id: 8,
+    name: 'Senior PHP Developer',
+    color: '#4e148c',
+  },
+  {
+    id: 9,
+    name: 'Senior Ruby Developer',
+    color: '#a4133c',
+  },
+  {
+    id: 10,
+    name: 'Senior JAVA Developer',
+    color: '#02c39a',
   },
 ]);
 export const role = ref([

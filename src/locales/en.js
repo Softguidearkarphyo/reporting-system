@@ -42,7 +42,7 @@ export default {
     password: 'Password',
   },
   memberList: {
-    title: 'Employee Lists',
+    title: 'EMPLYOEE LISTS',
     table: {
       name: 'Name',
       position: 'Position',
