@@ -3,6 +3,7 @@
     :model-value="props.drawer"
     app
     clipped
+    elevation="0"
     :temporary="$vuetify.display.smAndDown"
     color="surface"
   >
@@ -282,6 +283,7 @@ const settings = computed(() => [
 .v-navigation-drawer {
   position: fixed !important;
   height: 93vh !important;
+  z-index: 0 !important;
 }
 
 .v-theme--dark .color {
