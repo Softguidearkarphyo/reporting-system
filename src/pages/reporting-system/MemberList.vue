@@ -29,14 +29,15 @@
               backgroundColor: item.position?.color,
               width: '75px',
               fontSize: '11px',
-              color: 'red',
+              color: 'white',
             }"
           >
             <span>{{ item.position?.name }}</span>
           </div>
         </template>
+
         <template #item.action="{ item }">
-          <div class="d-flex justify-center">
+          <span class="d-flex justify-center">
             <BaseButton
               elevation="0"
               @click.stop="pushToEdit(item.id)"
@@ -57,14 +58,13 @@
               :style="{ width }"
             >
               <v-icon
-                icon="tabler:IconCopyX"
+                icon="tabler:IconTrash"
                 size="20"
                 style="color: #ff0000"
               />
-              <!-- <v-icon> mdi-trash-can</v-icon> -->
             </BaseButton>
             <div v-else style="width: 50%"></div>
-          </div>
+          </span>
         </template>
       </BaseTable>
     </v-card>
@@ -108,7 +108,7 @@ const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('memberList.table.name'),
+      title: t('memberList.table.name').toUpperCase(),
       key: isJapanese ? 'jp_name' : 'eng_name',
     },
     {
@@ -142,7 +142,10 @@ const headers = computed(() => {
       width: '10%',
     });
   }
-  return tmpHeaders;
+  return tmpHeaders.map((header) => ({
+    ...header,
+    title: header.title.toUpperCase(),
+  }));
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {

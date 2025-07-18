@@ -53,7 +53,9 @@
     </v-list>
     <template v-slot:append>
       <v-list-subheader class="mx-4 font-weight-bold text-font">
-        <v-icon left color="primary">mdi-palette</v-icon>
+        <!-- <v-icon left color="primary">mdi-palette</v-icon> -->
+        <v-icon icon="tabler:IconPaletteFilled" size="20" color="primary" />
+
         {{ $t('sidebar.theme') }}
       </v-list-subheader>
       <div class="d-flex align-center pa-2 gap-2">
@@ -65,7 +67,8 @@
               class="rounded-lg mx-1 border-2 text-capitalize"
               color="secondary"
             >
-              <v-icon>mdi-palette-outline</v-icon>
+              <v-icon icon="tabler:IconPalette" size="20" />
+              <!-- <v-icon>mdi-palette-outline</v-icon> -->
               <v-icon
                 v-if="selectedColor"
                 :color="colorThemes[selectedColor].light"

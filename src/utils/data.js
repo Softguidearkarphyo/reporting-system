@@ -3,22 +3,22 @@ export const position = ref([
   {
     id: 1,
     name: 'CEO',
-    color: '#005eff33',
+    color: '#ffb600',
   },
   {
     id: 2,
     name: 'Manager',
-    color: '#00E67633',
+    color: '#119da4',
   },
   {
     id: 3,
     name: 'Senior',
-    color: '#7C4DFF33',
+    color: '#540b0e',
   },
   {
     id: 4,
     name: 'Junior',
-    color: '#FF525233',
+    color: '#fe7f2d',
   },
 ]);
 export const role = ref([

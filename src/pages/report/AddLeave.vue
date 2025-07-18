@@ -1,57 +1,148 @@
 <template>
-  <Form
-    :validation-schema="memberCreateSchema"
-    @submit="submit"
-    v-slot="{ meta }"
-  >
-    <div class="mb-4">
-      <Field name="eng_name" v-slot="{ field, errorMessage }">
-        <v-text-field
-          v-bind="field"
-          :error-messages="errorMessage"
-          label="English Name"
-          data-testid="eng-name-field"
-        />
-      </Field>
-    </div>
+  <v-container class="py-6">
+    <v-row>
+      <v-col cols="12">
+        <v-radio-group v-model="employeeType" inline>
+          <v-radio label="New Employee" value="new" />
+          <v-radio label="Existing Employee" value="existing" />
+        </v-radio-group>
+      </v-col>
+    </v-row>
 
-    <div class="mb-4">
-      <Field name="jp_name" v-slot="{ field, errorMessage }">
+    <!-- New Employee Form -->
+    <v-row v-if="employeeType === 'new'" class="my-4">
+      <v-col cols="12" md="4">
+        <v-text-field v-model="newEmp.name" label="Employee Name" />
+      </v-col>
+      <v-col cols="12" md="4">
         <v-text-field
-          v-bind="field"
-          :error-messages="errorMessage"
-          label="Japanese Name"
-          data-testid="jp-name-field"
+          v-model="newEmp.pernentDate"
+          label="Pernent Date (YYYY-MM)"
+          type="month"
         />
-      </Field>
-    </div>
+      </v-col>
+      <v-col cols="12" md="4" class="d-flex align-center">
+        <v-btn color="primary" @click="submitNewEmployee">Submit</v-btn>
+      </v-col>
+    </v-row>
 
-    <v-btn type="submit" color="primary" :disabled="!meta.valid" class="mt-4">
-      Submit
-    </v-btn>
-  </Form>
+    <!-- Existing Employee Form -->
+    <v-row v-if="employeeType === 'existing'" class="my-4">
+      <v-col cols="12" md="3">
+        <v-text-field v-model="existingEmp.name" label="Employee Name" />
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-text-field
+          v-model="existingEmp.leaveDate"
+          type="date"
+          label="Leave Date"
+        />
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-select
+          v-model="existingEmp.leaveTime"
+          :items="['Full Day', 'Half Day (Morning)', 'Half Day (Afternoon)']"
+          label="Leave Time"
+        />
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-select
+          v-model="existingEmp.otTime"
+          :items="['None', '1 hour', '2 hours', '3+ hours']"
+          label="OT Time"
+        />
+      </v-col>
+      <v-col cols="12" class="text-right">
+        <v-btn color="primary" @click="submitExistingEmployee">Submit</v-btn>
+      </v-col>
+    </v-row>
+
+    <!-- Table -->
+    <v-row>
+      <v-col cols="12">
+        {{ headers }}
+        <v-data-table
+          :headers="headers"
+          :items="employeeTable"
+          class="elevation-1"
+          item-value="name"
+        >
+          <template #item.pernentDate="{ item }">
+            {{ formatDate(item.pernentDate) }}
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import * as yup from 'yup';
+import { ref } from 'vue';
 
-const memberCreateSchema = yup.object({
-  eng_name: yup.string().required('English name is required'),
-  jp_name: yup.string().required('Japanese name is required'),
+const employeeType = ref('new');
+
+const newEmp = ref({
+  name: '',
+  pernentDate: '',
 });
 
-const submit = (values) => {
-  console.log('Form submitted:', values);
-  alert(JSON.stringify(values, null, 2));
-};
-</script>
+const existingEmp = ref({
+  name: '',
+  leaveDate: '',
+  leaveTime: '',
+  otTime: '',
+});
 
-<style scoped>
-.debug-info {
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
-  font-family: monospace;
-  margin-bottom: 1rem;
+const employeeTable = ref([]);
+
+const headers = [
+  { text: 'Name', value: 'name' },
+  { text: 'Pernent Date', value: 'pernentDate' },
+  { text: 'Calculated Leave', value: 'getcalleave' },
+];
+
+function submitNewEmployee() {
+  if (!newEmp.value.name || !newEmp.value.pernentDate) {
+    alert('Please fill all fields');
+    return;
+  }
+
+  const month = Number(newEmp.value.pernentDate.split('-')[1]);
+  alert(month);
+  const remainingMonths = 12 - month + 1;
+  const leave = Math.round(((remainingMonths * 10) / 12) * 2) / 2;
+
+  employeeTable.value.push({
+    name: newEmp.value.name,
+    pernentDate: newEmp.value.pernentDate,
+    getcalleave: leave,
+  });
+
+  // Reset
+  newEmp.value.name = '';
+  newEmp.value.pernentDate = '';
 }
-</style>
+
+function submitExistingEmployee() {
+  if (!existingEmp.value.name || !existingEmp.value.leaveDate) {
+    alert('Please fill all fields');
+    return;
+  }
+
+  console.log('Existing Leave Info:', { ...existingEmp.value });
+
+  // Reset
+  existingEmp.value.name = '';
+  existingEmp.value.leaveDate = '';
+  existingEmp.value.leaveTime = '';
+  existingEmp.value.otTime = '';
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+  });
+}
+</script>
