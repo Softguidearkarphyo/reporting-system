@@ -1,6 +1,10 @@
 <template>
-  <v-app-bar color="surface" elevation="0" flat clipped-left>
-    <v-app-bar-nav-icon @click="toggle">
+  <v-app-bar color="surface" elevation="0" height="70" flat clipped-left>
+    <v-app-bar-nav-icon
+      @click="emit('toggle')"
+      class="hidden-lg-and-up ms-md-3 ms-sm-5 ms-3 text-muted"
+      variant="flat"
+    >
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>
@@ -20,11 +24,9 @@ import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 const props = defineProps({ drawer: Boolean });
-const emit = defineEmits(['update:drawer']);
 const theme = useTheme();
-const toggle = () => {
-  emit('update:drawer', !props.drawer);
-};
+const emit = defineEmits(['toggle']);
+
 const currentLang = ref(localStorage.getItem('lang') || locale.value);
 locale.value = currentLang.value;
 

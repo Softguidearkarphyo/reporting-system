@@ -11,13 +11,20 @@ export function profileImgPath(name) {
   }
 
   const svg = `
-    <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" fill="#bab9b9"/>
-      <text x="16" y="16"
-        font-size="14" fill="#495057"
-        x="16" y="16"
-        text-anchor="middle" dominant-baseline="central">${initials}</text>
-    </svg>`;
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+      <circle mb="20"  fill="#bab9b9"/>
+      <text 
+        x="50%" 
+        y="50%" 
+        text-anchor="middle" 
+        text-align='center'
+        dominant-baseline="central"
+        font-size="16" 
+        fill="#495057"
+        font-family="Arial, sans-serif"
+        font-weight="bold"
+      >${initials}</text>
+  </svg>`;
 
   return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
 }

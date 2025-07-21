@@ -1,55 +1,69 @@
 <template>
   <v-navigation-drawer
-    :model-value="props.drawer"
+    :model-value="drawer"
     app
     clipped
     elevation="0"
-    :temporary="$vuetify.display.smAndDown"
+    width="280"
     color="surface"
+    left
+    expand-on-hover
   >
-    <v-list>
-      <v-list-item
-        v-for="(item, index) in navbars"
-        :key="index"
-        :to="item.path"
-        link
-        exact
-        density="compact"
-        class="mb-1"
-      >
-        <template v-slot:prepend>
-          <v-icon :icon="item.icon" size="20" />
-        </template>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
-      </v-list-item>
-
-      <!-- Admin Setting  -->
-      <v-list-group v-if="role === ADMIN" v-model="group" no-action>
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" rounded density="compact" class="mb-1">
+    <div class="scroll-container">
+      <PerfectScrollbar>
+        <v-list class="nav-list">
+          <v-list-item
+            v-for="(item, index) in navbars"
+            :key="index"
+            :to="item.path"
+            link
+            exact
+            density="compact"
+            class="mb-1"
+            rounded
+          >
             <template v-slot:prepend>
-              <v-icon icon="tabler:IconSettings" size="20" />
+              <v-icon :icon="item.icon" size="20" />
             </template>
-            <v-list-item-title>{{
-              $t('sidebar.adminsetting')
-            }}</v-list-item-title>
+            <v-list-item-title class="px-2">{{ item.title }}</v-list-item-title>
           </v-list-item>
-        </template>
-        <v-list-item
-          v-for="(item, index) in settings"
-          :key="index"
-          :to="item.path"
-          link
-          exact
-          density="compact"
-        >
-          <template v-slot:prepend>
-            <v-icon :icon="item.icon" size="20" />
-          </template>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
+
+          <!-- Admin Setting  -->
+          <v-list-group v-if="role === ADMIN" v-model="group" no-action>
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                rounded
+                density="compact"
+                class="mb-1"
+              >
+                <template v-slot:prepend>
+                  <v-icon icon="tabler:IconSettings" size="20" />
+                </template>
+                <v-list-item-title class="px-2">{{
+                  $t('sidebar.adminsetting')
+                }}</v-list-item-title>
+              </v-list-item>
+            </template>
+            <v-list-item
+              v-for="(item, index) in settings"
+              :key="index"
+              :to="item.path"
+              link
+              exact
+              density="compact"
+            >
+              <template v-slot:prepend>
+                <v-icon :icon="item.icon" size="20" />
+              </template>
+              <v-list-item-title class="px-2">{{
+                item.title
+              }}</v-list-item-title>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </PerfectScrollbar>
+    </div>
   </v-navigation-drawer>
 </template>
 <script setup>
@@ -60,7 +74,7 @@ import { ADMIN } from '@/utils/constant';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const props = defineProps({ drawer: Boolean });
+defineProps({ drawer: Boolean });
 const group = ref(true);
 const role = ref(authStore.staffRole);
 
@@ -151,9 +165,25 @@ const settings = computed(() => [
 ]);
 </script>
 <style scoped>
-.v-navigation-drawer {
+.navigation-drawer-fixed {
   position: fixed !important;
+  top: 0;
+  bottom: 0;
   height: 100vh !important;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.scroll-container {
+  height: calc(100vh - 170px) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.nav-list {
+  padding: 16px;
 }
 
 .v-theme--dark .color {

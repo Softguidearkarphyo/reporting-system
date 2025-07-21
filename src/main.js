@@ -12,8 +12,9 @@ import toastification from './plugins/toastification';
 import veeValidatePlugin from './plugins/vee-validate';
 import './assets/toast.css';
 import './assets/common.css';
-
+import './assets/scrollbar.css';
 import { createI18n } from 'vue-i18n';
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import en from './locales/en';
 import ja from './locales/ja';
 const i18n = createI18n({
@@ -28,6 +29,7 @@ const i18n = createI18n({
 const app = createApp(App);
 app.use(router);
 app.use(vuetify);
+app.component('PerfectScrollbar', PerfectScrollbar);
 app.use(createPinia());
 app.use(toastification);
 app.use(veeValidatePlugin);

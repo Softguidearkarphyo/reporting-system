@@ -3,14 +3,14 @@
     location="right"
     app
     clipped
-    width="320"
+    width="300"
     elevation="0"
     :model-value="props.setting"
     temporary
     @update:model-value="(val) => emit('update:setting', val)"
     color="surface"
   >
-    <v-list-subheader class="mx-4 font-weight-bold text-font">
+    <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       {{ $t('sidebar.theme') }}
     </v-list-subheader>
@@ -53,7 +53,7 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-list-subheader class="mx-4 font-weight-bold text-font">
+    <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Theme Direction
     </v-list-subheader>
@@ -115,5 +115,12 @@ onMounted(init);
 .v-sheet {
   border: 1px solid rgba(var(--v-theme-font), 0.1) !important;
   box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+}
+.v-list-subheader {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.v-sheet:hover {
+  scale: 1.06;
 }
 </style>
