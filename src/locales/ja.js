@@ -31,6 +31,8 @@ export default {
     newemployeecard: 'スタッフカード',
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
+    theme: 'テーマ',
+    show_project: 'プロジェクトを表示'
     theme: 'テーマカラー',
   },
   message: {
@@ -126,6 +128,16 @@ export default {
     max: '{field}は{max}文字以内で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
     unique: '{field} は重複しています',
+  },
+  showProject: {
+    title: '作業実績管理',
+    end_date: '終了日',
+    week_date: '週期間',
+    table: {
+      user_id: '職員',
+      user_name: '職員氏名',
+      total_working_hour: '作業時間',
+    },
   },
   workingTime: {
     title1: 'ユーザー管理',

@@ -31,6 +31,8 @@ export default {
     newemployeecard: 'new employee card',
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
+    theme: 'Theme',
+    show_project: 'Show Project'
     theme: 'Theme Color',
   },
   message: {
@@ -136,6 +138,16 @@ export default {
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
+  },
+  showProject: {
+    title: 'Work performance management',
+    end_date: 'End Date',
+    week_date: 'Week Date',
+    table: {
+      user_id: 'UserId',
+      user_name: 'User Name',
+      total_working_hour: 'Total Working Hour',
+    },
   },
   workingTime: {
     title1: 'User Management',

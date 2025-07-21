@@ -93,6 +93,12 @@ export const project = ref([
     name: 'Jabee',
   },
 ]);
+export const week_date = ref([
+  { id: 1, name: 'one_week', },
+  { id: 2, name: 'two_week', },
+  { id: 3, name: 'three_week', },
+  { id: 4, name: 'four_week', },
+]);
 
 export const dedicatedPosition = ref([
   {
