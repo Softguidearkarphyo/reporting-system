@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <TopNavbar v-model:drawer="drawer" />
+    <TopNavbar @toggle="drawer = !drawer" />
     <SideBar :drawer="drawer" />
     <SettingBar v-model:setting="setting" />
     <MainContent v-model:setting="setting" />

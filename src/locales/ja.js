@@ -7,7 +7,8 @@ export default {
     deleteBtnCancelText: 'キャンセル',
     deleteBtnText: '削除',
     noDataText: 'データはありません。',
-    submit: '保存 ',
+    submit: '保存',
+    saveSetting: 'この設定を保存する',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
@@ -32,6 +33,7 @@ export default {
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
     show_project: 'プロジェクトを表示'
+    theme: 'テーマカラー',
   },
   message: {
     error404Text: '申し訳ありませんが、',
@@ -59,12 +61,12 @@ export default {
     title1: 'プロジェクト登録',
     title2: 'プロジェクトリスト',
     table: {
-      code: 'コード',
+      cd: 'コード',
       name: '名前',
       action: '操作',
     },
     form: {
-      code: 'コード',
+      cd: 'コード',
       eng_name: '英語名',
       jp_name: '日本語名',
     },
@@ -102,6 +104,19 @@ export default {
       experience: '経験',
     },
   },
+  workHourReport: {
+    title: '作業実績管理',
+    form: {
+      employee: '職員名',
+      project: 'プロジェクト',
+      task: '作業',
+      auto: '自動設定',
+      manual: '手動設定',
+      period: '開始時間 ～ 終了時間',
+      startTime: '開始時間',
+      finishTime: '終了時間',
+    },
+  },
   validation: {
     required: '{field}は必須項目です',
     username_mismatch: 'ユーザー名が一致しません',
@@ -123,5 +138,15 @@ export default {
       user_name: '職員氏名',
       total_working_hour: '作業時間',
     },
-  }
+  },
+  workingTime: {
+    title1: 'ユーザー管理',
+    title2: 'Working Times',
+    number: 'No',
+    staffName: '職員氏名',
+    workingHours: '作業時間',
+    start_date: '開始日',
+    end_date: '終了日',
+    hour: '時',
+  },
 };

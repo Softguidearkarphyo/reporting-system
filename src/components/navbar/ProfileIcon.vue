@@ -1,9 +1,14 @@
 <template>
   <v-menu>
     <template v-slot:activator="{ props }">
-      <v-btn v-bind="props" icon variant="text" class="ma-0 pa-0">
+      <v-btn v-bind="props" icon variant="text" class="ma-0 pa-0 me-1">
         <v-app-bar-nav-icon>
-          <v-icon size="32">mdi-account-circle-outline</v-icon>
+          <img
+            :src="profileImage"
+            alt="Profile"
+            v-if="profileImage"
+            class="profileImage"
+          />
         </v-app-bar-nav-icon>
       </v-btn>
     </template>
@@ -32,19 +37,31 @@
     </v-sheet>
   </v-menu>
 </template>
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth/auth.js';
-import { mapActions } from 'pinia';
-// import axios from 'axios';
+import { profileImgPath } from '@/utils/helper';
 
-export default {
-  methods: {
-    ...mapActions(useAuthStore, ['logout']),
-    async handleLogout() {
-      await this.logout();
-      this.$router.push('/');
-    },
-  },
+const router = useRouter();
+const authStore = useAuthStore();
+const profileImage = ref('');
+
+onMounted(() => {
+  const storedImg = sessionStorage.getItem('profileImg');
+  if (storedImg) {
+    profileImage.value = storedImg;
+  } else {
+    const username = sessionStorage.getItem('username');
+    if (username) {
+      profileImage.value = profileImgPath(username);
+    }
+  }
+});
+
+const handleLogout = async () => {
+  await authStore.logout();
+  router.push('/');
 };
 </script>
 <style scoped>
@@ -67,9 +84,16 @@ export default {
 .v-list-item-title {
   font-size: 14px !important;
 }
-.profile {
-  font-size: 20px !important;
+.profileImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 ::v-deep(.v-list-item__spacer) {
   display: none !important;
 }

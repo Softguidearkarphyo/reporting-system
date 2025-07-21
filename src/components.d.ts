@@ -43,6 +43,7 @@ declare module 'vue' {
     ReportPage: typeof import('./pages/report/ReportPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SettingBar: typeof import('./components/sidebar/SettingBar.vue')['default']
     ShowProject: typeof import('./pages/report/ShowProject.vue')['default']
     SideBar: typeof import('./components/sidebar/SideBar.vue')['default']
     StaffCard: typeof import('./pages/report/StaffCard.vue')['default']
