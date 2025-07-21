@@ -5,6 +5,7 @@
       :items="items"
       :label="label"
       :style="{ width }"
+      variant="underlined"
       @update:modelValue="handleChange"
     >
       <template v-slot:prepend>

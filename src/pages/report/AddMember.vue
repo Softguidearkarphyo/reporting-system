@@ -219,7 +219,7 @@
           </v-col>
           <v-col cols="12" md="6" lg="4">
             <Field name="project" v-slot="{ field }">
-              <BaseMultiselect
+              <BaseMultiSelect
                 v-model="field.value"
                 v-bind="field"
                 :label="t('addMember.form.project')"
@@ -230,7 +230,7 @@
                 item-title="name"
                 item-value="id"
               >
-              </BaseMultiselect>
+              </BaseMultiSelect>
             </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">

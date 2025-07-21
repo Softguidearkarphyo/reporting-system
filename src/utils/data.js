@@ -93,6 +93,12 @@ export const project = ref([
     name: 'Jabee',
   },
 ]);
+export const week_date = ref([
+  { id: 1, name: 'one_week' },
+  { id: 2, name: 'two_week' },
+  { id: 3, name: 'three_week' },
+  { id: 4, name: 'four_week' },
+]);
 
 export const dedicatedPosition = ref([
   {
@@ -192,10 +198,14 @@ export const periods = ref([
   {
     id: 1,
     name: '8:30 ~ 12:00',
+    startTime: '8:30',
+    finishTime: '12:00',
   },
   {
     id: 2,
     name: '1:00 ~ 5:30',
+    startTime: '1:00',
+    finishTime: '5:30',
   },
 ]);
 export const timeSlots = ref([

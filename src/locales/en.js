@@ -8,10 +8,13 @@ export default {
     deleteBtnText: 'delete',
     noDataText: 'No data available',
     submit: 'Submit',
-    saveSetting: 'Save this setting',
+    autoFill: 'Apply settings',
+    saveSetting: 'Save setting',
+    download: 'Download',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
+    all: 'All',
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -31,6 +34,8 @@ export default {
     newemployeecard: 'new employee card',
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
+    theme: 'Theme',
+    show_project: 'Show Project',
     theme: 'Theme Color',
   },
   message: {
@@ -114,6 +119,7 @@ export default {
   },
   workHourReport: {
     title: 'Work Performance Management',
+    warnDateRequiredText: 'Please select at least one day',
     form: {
       employee: 'Employee',
       project: 'Project',
@@ -136,6 +142,16 @@ export default {
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
+  },
+  showProject: {
+    title: 'Work performance management',
+    end_date: 'End Date',
+    week_date: 'Week Date',
+    table: {
+      user_id: 'UserId',
+      user_name: 'User Name',
+      total_working_hour: 'Total Working Hour',
+    },
   },
   workingTime: {
     title1: 'User Management',

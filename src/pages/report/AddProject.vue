@@ -70,7 +70,6 @@
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
-          variant="underlined"
           color="primary"
           width="300px"
           prepend-icon="mdi-magnify"

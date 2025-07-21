@@ -21,7 +21,7 @@
         </v-col>
         <v-col cols="12" md="6" lg="4">
           <Field name="project" v-slot="{ field }">
-            <BaseMultiselect
+            <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.project')"
@@ -32,7 +32,7 @@
               item-title="name"
               item-value="id"
             >
-            </BaseMultiselect>
+            </BaseMultiSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
@@ -140,7 +140,7 @@
         </v-col>
         <v-col cols="12" md="6" lg="4">
           <Field name="responsibility" v-slot="{ field }">
-            <BaseMultiselect
+            <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.responsibility')"
@@ -151,7 +151,7 @@
               item-title="value"
               item-value="id"
             >
-            </BaseMultiselect>
+            </BaseMultiSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
@@ -246,7 +246,6 @@
 </template>
 
 <script setup>
-import BaseMultiselect from '@/components/bases/BaseMultiselect.vue';
 import {
   skillList,
   symbols,
