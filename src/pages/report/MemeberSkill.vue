@@ -1,230 +1,195 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-4"> {{ t('addMemberSkill.title') }} </BaseTitle>
-    <v-form ref="staffForm" v-model="formValid">
-      <!-- Basic Info Section -->
-      <ParentCard class="pa-4 mb-4">
-        <!-- <v-card-title>Staff Information</v-card-title> -->
-        <v-row>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="name" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.name')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-account"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="role" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.role')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-account-supervisor"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="team" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.team')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-microsoft-teams"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="permanent_date" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.permanent_date')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-calendar-month"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="experience" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.experience')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-weather-cloudy-clock"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-          <v-col cols="12" md="6" lg="4">
-            <Field name="japanese_level" v-slot="{ field }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addMemberSkill.form.japanese_level')"
-                class="mx-auto"
-                :items="sortKey"
-                prependIcon="mdi-ideogram-cjk"
-                :width="'500px'"
-                item-title="value"
-                item-value="id"
-              >
-              </BaseSelect>
-            </Field>
-          </v-col>
-        </v-row>
-      </ParentCard>
-
-      <!-- Skills Section -->
-      <v-card class="pa-4 mb-4">
-        <v-card-title>Skills</v-card-title>
-        <v-table>
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Skill</th>
-              <th>Level</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(skills, category) in form.skills" :key="category">
-              <tr v-for="(level, skill) in skills" :key="skill">
-                <td>{{ category }}</td>
-                <td>{{ skill }}</td>
-                <!-- <td>
-                  <v-radio-group
-                    v-model="form.skills[category][skill]"
-                    class="d-flex flex-row"
-                  >
-                    <v-radio class="mr-4" label="◯" value="◯" />
-                    <v-radio class="mr-4" label="△" value="△" />
-                    <v-radio class="mr-4" label="□" value="□" />
-                  </v-radio-group>
-                </td> -->
-
-                <td>
-                  <v-radio-group
-                    v-model="form.skills[category][skill]"
-                    class="radio-grid"
-                  >
-                    <v-radio label="◯112" value="◯11" />
-                    <v-radio label="△" value="△" />
-                    <v-radio label="□" value="□" />
-                  </v-radio-group>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </v-table>
-      </v-card>
-
-      <!-- Submit Button -->
-      <v-btn
-        type="submit"
-        color="primary"
-        :loading="loading"
-        :disabled="!formValid"
+    <div class="d-flex justify-space-between align-center mb-3 mt-n3">
+      <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
+      <div style="width: 300px">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          type="text"
+          variant="plain"
+          dense
+          autocomplete="test"
+          prependIcon="mdi-magnify"
+          :width="'300px'"
+        ></BaseTextField>
+      </div>
+    </div>
+    <ParentCard>
+      <BaseTable
+        :headers="headers"
+        :items="items"
+        :height="windowHeight"
+        :items-count="itemsCount"
       >
-        Submit
-      </v-btn>
-
-      <!-- Feedback -->
-      <v-alert type="success" v-if="success" class="mt-4"
-        >Submitted successfully!</v-alert
-      >
-      <v-alert type="error" v-if="error" class="mt-4"
-        >Error: {{ error }}</v-alert
-      >
-    </v-form>
+        <template #item.action="{ item }">
+          <span class="d-flex justify-center p-0">
+            <BaseButton
+              elevation="0"
+              @click.stop="pushToEdit(item.id)"
+              color=""
+              class="edit-btn"
+              size="small"
+              :style="{ width }"
+            >
+              <v-icon icon="tabler:IconEdit" size="20" color="primary" />
+            </BaseButton>
+            <BaseButton
+              elevation="0"
+              @click.stop="showConfirmDelete(item.id)"
+              color=""
+              class="delete-btn"
+              size="small"
+              :style="{ width }"
+            >
+              <v-icon
+                icon="tabler:IconTrash"
+                size="20"
+                style="color: #ff0000"
+              />
+            </BaseButton>
+          </span>
+        </template>
+      </BaseTable>
+    </ParentCard>
+    <BaseConfirmDelete
+      v-model="confirmDelete"
+      :text="t('memberList.deleteConfirmText')"
+      :class="{ 'd-none': !confirmDelete }"
+      @yes="
+        confirmDelete = false;
+        deleteMember();
+      "
+      @no="
+        confirmDelete = false;
+        deleteTarget = undefined;
+      "
+    ></BaseConfirmDelete>
   </v-container>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { position, role, sortKey, project } from '@/utils/data';
-import { useMemberStore } from '@/stores/member/member.js';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
-const { t } = useI18n();
-import axios from 'axios';
+import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 
-const formValid = ref(true);
-const loading = ref(false);
-const success = ref(false);
-const error = ref('');
+const { t, locale } = useI18n();
+const skillSheetStore = useSkillSheetStore();
+const router = useRouter();
+const confirmDelete = ref(false);
+const deleteTarget = ref(undefined);
+const search = ref('');
+const items = ref([]);
+const width = '30px';
+const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
+let originalItems = [];
+const headers = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  const tmpHeaders = [
+    {
+      title: t('memberList.table.name').toUpperCase(),
+      key: 'name',
+    },
+    {
+      title: t('memberList.table.position'),
+      key: 'position',
+      align: 'center',
+      sortable: false,
+    },
+    {
+      title: t('memberList.table.phone'),
+      key: 'grade',
+      sortable: false,
+    },
+    {
+      title: t('memberList.table.email'),
+      key: 'join_date',
+      sortable: false,
+    },
+    {
+      title: t('memberList.table.address'),
+      key: 'sg_experience',
+      sortable: false,
+    },
+    {
+      title: t('memberList.table.action'),
+      key: 'action',
+      align: 'center',
+      sortable: false,
+      width: '10%',
+    },
+  ];
+  return tmpHeaders.map((header) => ({
+    ...header,
+    title: header.title.toUpperCase(),
+  }));
+});
+let windowHeight, itemsCount;
+if (window.innerWidth > 1366) {
+  windowHeight = window.innerHeight / 1.4;
+  itemsCount = 10;
+} else {
+  windowHeight = window.innerHeight / 1.8;
+  itemsCount = 5;
+}
 
-const rules = {
-  required: (v) => !!v || 'Required',
+const fetch = async () => {
+  await skillSheetStore.fetchSkillSheet();
+
+  const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
+    id: item.id,
+    name: item?.staff?.username,
+    position: item?.position?.name,
+    grade: item?.grade?.name,
+    join_date: item?.join_date,
+    sg_experience: item?.sg_experience,
+    prev_experience: item?.prev_experience,
+    total_experience: item?.total_experience,
+    japanese_level: item?.japanese_level?.name,
+    major_tech_stack: item?.major_tech_stack?.name,
+  }));
+
+  items.value = [...tmpArr];
+  originalItems = [...items.value];
 };
 
-const form = reactive({
-  name: '',
-  role: '',
-  team: '',
-  joinedYear: '',
-  experience: '',
-  japanese_level: '',
-  skills: {
-    Programming: { Java: '', PHP: '', Python: '' },
-    Frontend: { Vue: '', React: '', Angular: '' },
-    Backend: { Laravel: '', NodeJS: '' },
-    Database: { MySQL: '', PostgreSQL: '', Oracle: '' },
-    Cloud: { 'AWS S3': '', Azure: '' },
-  },
-});
+fetch();
 
-// const handleSubmit = async () => {
-//   loading.value = true;
-//   success.value = false;
-//   error.value = '';
+const showConfirmDelete = (id) => {
+  deleteTarget.value = id;
+  confirmDelete.value = true;
+};
+const deleteMember = async () => {
+  await memberStore.deleteMember({ id: deleteTarget.value });
+  deleteTarget.value = undefined;
+  fetch();
+};
+const pushToEdit = (id) => {
+  router.push({ name: 'edit-employee-skill', params: { skillSheetId: id } });
+};
 
-//   try {
-//     const response = await axios.post('/api/staff', form);
-//     success.value = true;
-//   } catch (err) {
-//     error.value = err?.response?.data?.message || 'Failed to submit';
-//   } finally {
-//     loading.value = false;
-//   }
-// };
+watch(
+  () => search.value,
+  (newVal) => {
+    if (newVal) {
+      items.value = originalItems.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(newVal.toLowerCase())
+        )
+      );
+    } else {
+      items.value = [...originalItems];
+    }
+  }
+);
 </script>
 <style>
-.radio-grid {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  gap: 1rem;
-  justify-content: start;
-  align-items: center;
+.small-text-field label {
+  font-size: 13px;
 }
+/* .edit-btn,
+.delete-btn {
+  min-width: 0 !important;
+  padding: 0 !important;
+} */
 </style>
