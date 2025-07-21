@@ -1,17 +1,18 @@
 <template>
   <v-navigation-drawer
-    :model-value="drawer"
+    :rail="drawer"
+    permanent
     app
     clipped
     elevation="0"
-    width="280"
+    :width="isRail ? 90 : 318"
     color="surface"
     left
-    expand-on-hover
+    @update:rail="(val) => (isRail = val)"
   >
     <div class="scroll-container">
       <PerfectScrollbar>
-        <v-list class="nav-list">
+        <v-list class="py-4 pa-6">
           <v-list-item
             v-for="(item, index) in navbars"
             :key="index"
@@ -25,7 +26,7 @@
             <template v-slot:prepend>
               <v-icon :icon="item.icon" size="20" />
             </template>
-            <v-list-item-title class="px-2">{{ item.title }}</v-list-item-title>
+            <v-list-item-title class="px-9">{{ item.title }}</v-list-item-title>
           </v-list-item>
 
           <!-- Admin Setting  -->
@@ -38,9 +39,13 @@
                 class="mb-1"
               >
                 <template v-slot:prepend>
-                  <v-icon icon="tabler:IconSettings" size="20" />
+                  <v-icon
+                    icon="tabler:IconSettings"
+                    class="d-flex justify-center admin_icon"
+                    size="20"
+                  />
                 </template>
-                <v-list-item-title class="px-2">{{
+                <v-list-item-title class="px-9">{{
                   $t('sidebar.adminsetting')
                 }}</v-list-item-title>
               </v-list-item>
@@ -51,12 +56,14 @@
               :to="item.path"
               link
               exact
+              rounded
               density="compact"
+              class="mb-1"
             >
               <template v-slot:prepend>
-                <v-icon :icon="item.icon" size="20" />
+                <v-icon :icon="item.icon" class="child_icon" size="20" />
               </template>
-              <v-list-item-title class="px-2">{{
+              <v-list-item-title class="px-9">{{
                 item.title
               }}</v-list-item-title>
             </v-list-item>
@@ -77,6 +84,7 @@ const authStore = useAuthStore();
 defineProps({ drawer: Boolean });
 const group = ref(true);
 const role = ref(authStore.staffRole);
+const isRail = ref(false);
 
 const navbars = computed(() => [
   {
@@ -164,13 +172,13 @@ const settings = computed(() => [
   },
 ]);
 </script>
-<style scoped>
+<!-- <style scoped>
 .navigation-drawer-fixed {
   position: fixed !important;
   top: 0;
   bottom: 0;
   height: 100vh !important;
-  padding: 20px;
+  /* padding: 20px; */
   box-sizing: border-box;
 }
 
@@ -181,9 +189,8 @@ const settings = computed(() => [
   overflow: hidden;
   position: relative;
 }
-
-.nav-list {
-  padding: 16px;
+.v-navigation-drawer--rail {
+  width: 90px !important;
 }
 
 .v-theme--dark .color {
@@ -194,6 +201,9 @@ const settings = computed(() => [
   font-size: 13px !important;
   text-transform: uppercase !important;
   margin-left: 10px !important;
+}
+.v-icon {
+  margin-inline-start: 2px !important;
 }
 .v-list-item:hover:not(.v-list-item--active) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
@@ -216,6 +226,87 @@ const settings = computed(() => [
   display: none !important;
 }
 .v-list-group__items .v-list-item {
-  padding-inline-start: 18px !important;
+  padding-inline-start: 19px !important;
+  margin: 0 0 2px;
+}
+</style> -->
+
+<style scoped>
+.navigation-drawer-fixed {
+  position: fixed !important;
+  top: 0;
+  bottom: 0;
+  height: 100vh !important;
+}
+
+.scroll-container {
+  height: calc(100vh - 170px) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.v-navigation-drawer--rail .v-list-item {
+  justify-content: center;
+  padding-left: 0;
+}
+
+.v-navigation-drawer--rail .v-icon {
+  margin-inline-start: 38px !important;
+}
+
+.v-navigation-drawer--rail {
+  width: 90px !important;
+}
+
+.v-navigation-drawer--rail .admin_icon {
+  margin-inline-start: 60px !important;
+}
+
+.v-navigation-drawer--rail .v-list-group__items .v-list-item .child_icon {
+  margin-left: 9px !important;
+}
+
+.v-navigation-drawer--rail .v-list-group__items .v-list-item {
+  padding-inline: 0 !important;
+  justify-content: center;
+}
+
+.v-list-item-title {
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+}
+
+.v-list-item.v-list-item--active {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white !important;
+}
+
+.v-icon {
+  font-size: 18px;
+}
+
+.v-navigation-drawer--rail .v-list-item:hover:not(.v-list-item--active) {
+  background-color: none;
+  color: rgb(var(--v-theme-primary)) !important;
+}
+
+.v-list-item.v-list-item--active {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white !important;
+}
+
+::v-deep(.v-list-item__spacer) {
+  display: none !important;
+}
+
+.v-list-group__items .v-list-item {
+  padding-inline-start: 19px !important;
+  margin: 0 0 2px;
+}
+
+.v-theme--dark .color {
+  border: 1px solid rgba(173, 173, 173, 0.336) !important;
 }
 </style>
