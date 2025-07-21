@@ -1,192 +1,82 @@
 <template>
   <v-navigation-drawer
-    :model-value="props.drawer"
+    :model-value="drawer"
     app
     clipped
     elevation="0"
-    :temporary="$vuetify.display.smAndDown"
+    width="280"
     color="surface"
+    left
+    expand-on-hover
   >
-    <v-list nav>
-      <v-list-item
-        v-for="(item, index) in navbars"
-        :key="index"
-        :to="item.path"
-        link
-        exact
-        density="compact"
-      >
-        <template v-slot:prepend>
-          <!-- <v-icon>{{ item.icon }}</v-icon> -->
-          <v-icon :icon="item.icon" size="20" />
-        </template>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
-      </v-list-item>
-
-      <!-- Admin Setting  -->
-      <v-list-group v-if="role === ADMIN" v-model="group" no-action>
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" rounded density="compact" class="mb-1">
-            <template v-slot:prepend>
-              <v-icon icon="tabler:IconSettings" size="20" />
-            </template>
-            <v-list-item-title>{{
-              $t('sidebar.adminsetting')
-            }}</v-list-item-title>
-          </v-list-item>
-        </template>
-        <v-list-item
-          v-for="(item, index) in settings"
-          :key="index"
-          :to="item.path"
-          link
-          exact
-          density="compact"
-        >
-          <template v-slot:prepend>
-            <v-icon :icon="item.icon" size="20" />
-            <!-- <v-icon>{{ item.icon }}</v-icon> -->
-            <!-- <v-icon icon="tabler:IconEdit" size="20" color="primary" /> -->
-          </template>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
-    <template v-slot:append>
-      <v-list-subheader class="mx-4 font-weight-bold text-font">
-        <v-icon left color="primary">mdi-palette</v-icon>
-        {{ $t('sidebar.theme') }}
-      </v-list-subheader>
-      <div class="d-flex align-center pa-2 gap-2">
-        <v-menu offset-y>
-          <template #activator="{ props: paletteProps }">
-            <v-btn
-              v-bind="paletteProps"
-              variant="outlined"
-              class="rounded-lg mx-1 border-2 text-capitalize"
-              color="secondary"
-            >
-              <v-icon>mdi-palette-outline</v-icon>
-              <v-icon
-                v-if="selectedColor"
-                :color="colorThemes[selectedColor].light"
-                class="ml-2"
-              >
-                mdi-circle
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list
-            class="py-0 color"
-            lines="one"
+    <div class="scroll-container">
+      <PerfectScrollbar>
+        <v-list class="nav-list">
+          <v-list-item
+            v-for="(item, index) in navbars"
+            :key="index"
+            :to="item.path"
+            link
+            exact
             density="compact"
-            min-width="120"
+            class="mb-1"
+            rounded
           >
+            <template v-slot:prepend>
+              <v-icon :icon="item.icon" size="20" />
+            </template>
+            <v-list-item-title class="px-2">{{ item.title }}</v-list-item-title>
+          </v-list-item>
+
+          <!-- Admin Setting  -->
+          <v-list-group v-if="role === ADMIN" v-model="group" no-action>
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                rounded
+                density="compact"
+                class="mb-1"
+              >
+                <template v-slot:prepend>
+                  <v-icon icon="tabler:IconSettings" size="20" />
+                </template>
+                <v-list-item-title class="px-2">{{
+                  $t('sidebar.adminsetting')
+                }}</v-list-item-title>
+              </v-list-item>
+            </template>
             <v-list-item
-              v-for="(color, name) in colorThemes"
-              :key="name"
-              @click="setTheme(name)"
-              :class="{ 'v-list-item--active': selectedColor === name }"
+              v-for="(item, index) in settings"
+              :key="index"
+              :to="item.path"
+              link
+              exact
+              density="compact"
             >
-              <template #prepend>
-                <v-icon
-                  :color="color.light"
-                  :class="{ 'selected-theme-icon': selectedColor === name }"
-                >
-                  mdi-circle
-                </v-icon>
+              <template v-slot:prepend>
+                <v-icon :icon="item.icon" size="20" />
               </template>
-              <v-list-item-title class="text-capitalize ml-2">
-                {{ name }}
-              </v-list-item-title>
+              <v-list-item-title class="px-2">{{
+                item.title
+              }}</v-list-item-title>
             </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-btn
-          variant="outlined"
-          class="rounded-lg mx-1 border-2 text-capitalize"
-          color="secondary"
-          @click="setLightTheme"
-        >
-          <v-icon size="25">mdi-weather-sunny</v-icon>
-        </v-btn>
-        <v-btn
-          variant="outlined"
-          class="rounded-lg mx-1 border-2 text-capitalize"
-          color="secondary"
-          @click="setDarkTheme"
-        >
-          <v-icon size="20">mdi-moon-waning-crescent</v-icon>
-        </v-btn>
-      </div>
-    </template>
+          </v-list-group>
+        </v-list>
+      </PerfectScrollbar>
+    </div>
   </v-navigation-drawer>
 </template>
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTheme } from 'vuetify';
-import { colorThemes } from '../../custom-theme/color';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { ADMIN } from '@/utils/constant';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const props = defineProps({ drawer: Boolean });
+defineProps({ drawer: Boolean });
 const group = ref(true);
 const role = ref(authStore.staffRole);
-
-const theme = useTheme();
-const selectedColor = ref(localStorage.getItem('selectedColor') || 'limeGreen');
-
-const setTheme = (colorName) => {
-  const newThemes = {
-    light: {
-      ...theme.themes.value.light,
-      colors: {
-        ...theme.themes.value.light.colors,
-        primary: colorThemes[colorName].light,
-        secondary: colorThemes[colorName].secondaryLight,
-      },
-    },
-    dark: {
-      ...theme.themes.value.dark,
-      colors: {
-        ...theme.themes.value.dark.colors,
-        primary: colorThemes[colorName].dark,
-        secondary: colorThemes[colorName].secondaryDark,
-      },
-    },
-  };
-
-  theme.themes.value = newThemes;
-
-  selectedColor.value = colorName;
-  localStorage.setItem('selectedColor', colorName);
-
-  requestAnimationFrame(() => {
-    theme.global.name.value = theme.global.name.value;
-  });
-};
-
-onMounted(() => {
-  setTheme(selectedColor.value);
-});
-
-const init = () => {
-  const savedTheme = localStorage.getItem('app-theme');
-  if (savedTheme) theme.global.name.value = savedTheme;
-};
-const setLightTheme = () => {
-  theme.global.name.value = 'light';
-  localStorage.setItem('app-theme', 'light');
-};
-
-const setDarkTheme = () => {
-  theme.global.name.value = 'dark';
-  localStorage.setItem('app-theme', 'dark');
-};
-onMounted(init);
 
 const navbars = computed(() => [
   {
@@ -280,10 +170,25 @@ const settings = computed(() => [
 ]);
 </script>
 <style scoped>
-.v-navigation-drawer {
+.navigation-drawer-fixed {
   position: fixed !important;
-  height: 93vh !important;
-  z-index: 0 !important;
+  top: 0;
+  bottom: 0;
+  height: 100vh !important;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.scroll-container {
+  height: calc(100vh - 170px) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.nav-list {
+  padding: 16px;
 }
 
 .v-theme--dark .color {

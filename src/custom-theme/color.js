@@ -12,7 +12,7 @@ export const colorThemes = {
     secondaryDark: '#03c9d7',
   },
   green: {
-    light: '#4CAF50',
+    light: '#116b11',
     dark: '#3d8b40',
     secondaryLight: '#2E7D32',
     secondaryDark: '#1B5E20',
@@ -30,9 +30,9 @@ export const colorThemes = {
     secondaryDark: '#88b209',
   },
   pink: {
-    light: '#f5a6b9',
-    dark: '#f5a6b9',
-    secondaryLight: '#ff758f',
-    secondaryDark: '#ff758f',
+    light: '#ff5c8a',
+    dark: '#ff5c8a',
+    secondaryLight: '#ff7096',
+    secondaryDark: '#ff7096',
   },
 };

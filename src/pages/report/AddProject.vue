@@ -11,11 +11,11 @@
       >
         <v-row class="mx-auto">
           <v-col cols="12" md="6" lg="3">
-            <Field name="code" v-slot="{ field, errorMessage }">
+            <Field name="cd" v-slot="{ field, errorMessage }">
               <BaseTextField
                 v-model="field.value"
                 v-bind="field"
-                :label="t('addProject.form.code')"
+                :label="t('addProject.form.cd')"
                 type="text"
                 variant="plain"
                 width="90%"
@@ -78,7 +78,7 @@
         </BaseTextField>
       </div>
     </div>
-    <v-card>
+    <ParentCard>
       <BaseTable
         :headers="headers"
         :items="items"
@@ -120,7 +120,7 @@
           </div>
         </template>
       </BaseTable>
-    </v-card>
+    </ParentCard>
     <BaseConfirmDelete
       v-model="confirmDelete"
       :text="t('addProject.deleteConfirmText')"
@@ -147,7 +147,7 @@ const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
 const projectCreateSchema = computed(() =>
-  getProjectCreateSchema(t, checkPrjCodes.value)
+  getProjectCreateSchema(t, checkPrjCds.value)
 );
 const role = authStore.staffRole;
 const formRef = ref(null);
@@ -156,15 +156,15 @@ const search = ref('');
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const updateTarget = ref(undefined);
-const checkPrjCodes = ref([]);
+const checkPrjCds = ref([]);
 let originalItems = [];
 const items = ref([]);
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('addProject.table.code'),
-      key: 'code',
+      title: t('addProject.table.cd'),
+      key: 'cd',
     },
     {
       title: t('addProject.table.name'),
@@ -197,7 +197,7 @@ const fetch = async () => {
   await projectStore.fetchProject();
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
-  checkPrjCodes.value = originalItems?.map((prj) => prj.code);
+  checkPrjCds.value = originalItems?.map((prj) => prj.cd);
 };
 
 fetch();
@@ -207,11 +207,11 @@ const scrollToEdit = async (id) => {
   const data = projectStore.getProjects?.[0];
   isEditMode.value = true;
   if (data) {
-    checkPrjCodes.value = originalItems
+    checkPrjCds.value = originalItems
       ?.filter((prj) => prj.id !== id)
-      ?.map((prj) => prj.code);
+      ?.map((prj) => prj.cd);
     formRef.value?.setValues({
-      code: data.code,
+      cd: data.cd,
       eng_name: data.eng_name,
       jp_name: data.jp_name,
     });

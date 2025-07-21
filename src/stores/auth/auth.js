@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
+import { profileImgPath } from '@/utils/helper';
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -20,8 +21,15 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = res.data.token;
       staff.value = res.data.staff;
       localStorage.setItem('token', token.value);
+      sessionStorage.setItem('staffname', staff.value.eng_name);
+      const profileImg = profileImgPath(staff.value.eng_name);
+      sessionStorage.setItem('profileImg', profileImg);
     } catch (error) {
-      // handle or rethrow error so component can handle
+      token.value = null;
+      staff.value = null;
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('staffname');
+      sessionStorage.removeItem('profileImg');
       throw error;
     }
   }
@@ -31,7 +39,6 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await api.get('/user');
       staff.value = res.data;
     } catch (error) {
-      // handle or rethrow error so component can handle
       throw error;
     }
   }
@@ -40,6 +47,8 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null;
     staff.value = null;
     localStorage.removeItem('token');
+    sessionStorage.removeItem('staffname');
+    sessionStorage.removeItem('profileImg');
   }
 
   return {

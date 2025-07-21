@@ -57,7 +57,7 @@ const inputType = computed(() => {
   if (props.type === 'password') {
     return isVisible.value ? 'text' : 'password';
   }
-  return 'text';
+  return props.type;
 });
 function toggleVisibility() {
   isVisible.value = !isVisible.value;

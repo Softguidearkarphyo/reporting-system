@@ -15,7 +15,7 @@
         ></BaseTextField>
       </div>
     </div>
-    <v-card class="side rounded-lg">
+    <ParentCard>
       <BaseTable
         :headers="headers"
         :items="items"
@@ -24,19 +24,20 @@
       >
         <template #item.position="{ item }">
           <div
-            class="rounded-pill py-1 px-1 text-center mx-auto"
+            class="rounded-pill py-1 text-center mx-auto"
             :style="{
               backgroundColor: item.position?.color,
-              width: '75px',
-              fontSize: '11px',
-              color: 'red',
+              width: '120px',
+              fontSize: '10px',
+              color: 'white',
             }"
           >
             <span>{{ item.position?.name }}</span>
           </div>
         </template>
+
         <template #item.action="{ item }">
-          <div class="d-flex justify-center">
+          <span class="d-flex justify-center p-0">
             <BaseButton
               elevation="0"
               @click.stop="pushToEdit(item.id)"
@@ -57,17 +58,16 @@
               :style="{ width }"
             >
               <v-icon
-                icon="tabler:IconCopyX"
+                icon="tabler:IconTrash"
                 size="20"
                 style="color: #ff0000"
               />
-              <!-- <v-icon> mdi-trash-can</v-icon> -->
             </BaseButton>
             <div v-else style="width: 50%"></div>
-          </div>
+          </span>
         </template>
       </BaseTable>
-    </v-card>
+    </ParentCard>
     <BaseConfirmDelete
       v-model="confirmDelete"
       :text="t('memberList.deleteConfirmText')"
@@ -101,14 +101,14 @@ const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
-const width = '50px';
+const width = '30px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('memberList.table.name'),
+      title: t('memberList.table.name').toUpperCase(),
       key: isJapanese ? 'jp_name' : 'eng_name',
     },
     {
@@ -142,7 +142,10 @@ const headers = computed(() => {
       width: '10%',
     });
   }
-  return tmpHeaders;
+  return tmpHeaders.map((header) => ({
+    ...header,
+    title: header.title.toUpperCase(),
+  }));
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {
@@ -204,4 +207,9 @@ watch(
 .small-text-field label {
   font-size: 13px;
 }
+/* .edit-btn,
+.delete-btn {
+  min-width: 0 !important;
+  padding: 0 !important;
+} */
 </style>
