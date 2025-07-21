@@ -52,6 +52,21 @@ export const useReportingStore = defineStore('reporting', () => {
     }
   };
 
+  const createTaskPerformance = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/task-performance/create',
+        payload
+      );
+      toast.success('Working Hour Filled Successfully');
+      return response;
+    } catch (error) {
+      const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];
+      toast.error(errorMsg);
+      return error;
+    }
+  };
+
   return {
     projects,
     getProjects,
@@ -65,5 +80,6 @@ export const useReportingStore = defineStore('reporting', () => {
     getTasks,
     setTasks,
     fetchTask,
+    createTaskPerformance,
   };
 });

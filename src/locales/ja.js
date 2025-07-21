@@ -8,10 +8,13 @@ export default {
     deleteBtnText: '削除',
     noDataText: 'データはありません。',
     submit: '保存',
+    autoFill: '自動設定で実行する',
     saveSetting: 'この設定を保存する',
+    download: 'ダウンロード',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
+    all: 'すべて',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -32,7 +35,7 @@ export default {
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
-    show_project: 'プロジェクトを表示'
+    show_project: 'プロジェクトを表示',
     theme: 'テーマカラー',
   },
   message: {
@@ -106,6 +109,7 @@ export default {
   },
   workHourReport: {
     title: '作業実績管理',
+    warnDateRequiredText: ' 少なくとも1日を選択してください',
     form: {
       employee: '職員名',
       project: 'プロジェクト',

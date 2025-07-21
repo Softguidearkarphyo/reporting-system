@@ -33,19 +33,22 @@
             </Field>
           </v-col>
           <v-col cols="12" sm="6" lg="3" class="gap-2">
-            <BaseButton type="submit" :width="'150px'" class="mx-6">{{ t('common.search') }}</BaseButton>
-            <BaseButton v-if="items.length > 0 && hasSearched" :width="'150px'">EXCEL</BaseButton>
+            <BaseButton type="submit" :width="'150px'" class="mx-6">{{
+              t('common.search')
+            }}</BaseButton>
+            <BaseButton v-if="items.length > 0 && hasSearched" :width="'150px'"
+              >EXCEL</BaseButton
+            >
           </v-col>
         </v-row>
       </Form>
     </ParentCard>
-     <div class="d-flex justify-space-between align-center mt-3">
+    <div class="d-flex justify-space-between align-center mt-3">
       <BaseTitle> {{ t('workingTime.title2') }} </BaseTitle>
       <div>
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
-          variant="underlined"
           color="primary"
           width="300px"
           prepend-icon="mdi-magnify"
@@ -53,13 +56,18 @@
         </BaseTextField>
       </div>
     </div>
-     <v-card>
-      <BaseTable :headers="headers" :items="items" :style="{ minHeight: windowHeight }" :items-count="itemsCount">
+    <v-card>
+      <BaseTable
+        :headers="headers"
+        :items="items"
+        :style="{ minHeight: windowHeight }"
+        :items-count="itemsCount"
+      >
         <template #[`item.staffName`]="{ item }">
           {{ item.staffName }}
         </template>
         <template #[`item.workingHours`]="{ item }">
-          <span>{{item.workingHours }} {{ t('workingTime.hour') }} </span>
+          <span>{{ item.workingHours }} {{ t('workingTime.hour') }} </span>
         </template>
       </BaseTable>
     </v-card>
@@ -83,11 +91,11 @@ const formData = ref({
 });
 let originalItems = [];
 const getData = ref([
-  { id:1, staffName: 'John Doe', workingHours: 40, date: '2025-07-01' },
-  { id:2, staffName: 'Jane Smith', workingHours: 35, date: '2025-07-02' },
-  { id:3, staffName: 'Robert Johnson', workingHours: 42, date: '2025-07-03' },
-  { id:4, staffName: 'Emily Davis', workingHours: 38, date: '2025-07-04' },
-  { id:5, staffName: 'Michael Brown', workingHours: 45, date: '2025-01-05' }
+  { id: 1, staffName: 'John Doe', workingHours: 40, date: '2025-07-01' },
+  { id: 2, staffName: 'Jane Smith', workingHours: 35, date: '2025-07-02' },
+  { id: 3, staffName: 'Robert Johnson', workingHours: 42, date: '2025-07-03' },
+  { id: 4, staffName: 'Emily Davis', workingHours: 38, date: '2025-07-04' },
+  { id: 5, staffName: 'Michael Brown', workingHours: 45, date: '2025-01-05' },
 ]);
 const items = ref([...getData.value]);
 const searchWithDateSchema = computed(() => dateSchema(t));
@@ -121,12 +129,12 @@ const filterByDate = (values) => {
   const startDate = new Date(values.start_date);
   const endDate = new Date(values.end_date);
 
-  items.value = getData.value.filter(staff => {
+  items.value = getData.value.filter((staff) => {
     const staffDate = new Date(staff.date);
     return staffDate >= startDate && staffDate <= endDate;
   });
 };
-originalItems = [...items.value]; 
+originalItems = [...items.value];
 watch(
   () => search.value,
   (newVal) => {

@@ -16,6 +16,7 @@
         :style="{ width }"
         :label="label"
         readonly
+        variant="underlined"
         @click="menu = true"
       >
         <template v-slot:prepend>
