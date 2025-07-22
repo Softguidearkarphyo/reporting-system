@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div class="d-flex justify-space-between align-center mb-3 mt-n3">
-      <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
+      <BaseTitle>{{ t('addMemberSkill.employee_competency') }}</BaseTitle>
       <div style="width: 300px">
         <BaseTextField
           v-model="search"
@@ -72,6 +72,7 @@
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
+import { responsibility } from '@/utils/data';
 
 const { t, locale } = useI18n();
 const skillSheetStore = useSkillSheetStore();
@@ -87,32 +88,47 @@ const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('memberList.table.name').toUpperCase(),
-      key: 'name',
+      title: t('addMemberSkill.table.staff').toUpperCase(),
+      key: 'staff',
     },
     {
-      title: t('memberList.table.position'),
-      key: 'position',
+      title: t('addMemberSkill.table.project'),
+      key: 'project',
       align: 'center',
       sortable: false,
     },
     {
-      title: t('memberList.table.phone'),
+      title: t('addMemberSkill.table.position'),
+      key: 'position',
+      sortable: false,
+    },
+    {
+      title: t('addMemberSkill.table.grade'),
       key: 'grade',
       sortable: false,
     },
     {
-      title: t('memberList.table.email'),
+      title: t('addMemberSkill.table.join_date'),
       key: 'join_date',
       sortable: false,
     },
     {
-      title: t('memberList.table.address'),
-      key: 'sg_experience',
+      title: t('addMemberSkill.table.japanese_level'),
+      key: 'japanese_level',
       sortable: false,
     },
     {
-      title: t('memberList.table.action'),
+      title: t('addMemberSkill.table.responsibility'),
+      key: 'responsibility',
+      sortable: false,
+    },
+    {
+      title: t('addMemberSkill.table.major_tech_stack'),
+      key: 'major_tech_stack',
+      sortable: false,
+    },
+    {
+      title: t('addMemberSkill.table.action'),
       key: 'action',
       align: 'center',
       sortable: false,
@@ -138,7 +154,9 @@ const fetch = async () => {
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
     id: item.id,
-    name: item?.staff?.username,
+    staff: item?.staff?.username,
+    project:
+      item?.staff_project.map((p) => p.project?.eng_name).join(', ') ?? [],
     position: item?.position?.name,
     grade: item?.grade?.name,
     join_date: item?.join_date,
@@ -146,6 +164,10 @@ const fetch = async () => {
     prev_experience: item?.prev_experience,
     total_experience: item?.total_experience,
     japanese_level: item?.japanese_level?.name,
+    responsibility:
+      item?.staff_responsibility
+        .map((p) => p.responsibility?.name)
+        .join(', ') ?? [],
     major_tech_stack: item?.major_tech_stack?.name,
   }));
 
