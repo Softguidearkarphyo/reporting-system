@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-container>
     <BaseTitle>Member Report</BaseTitle>
     <v-row
       class="d-flex align-center"
@@ -34,7 +34,7 @@
         <BaseButton>excel</BaseButton>
       </v-col>
     </v-row>
-  </v-card>
+  </v-container>
 </template>
 
 <script setup>

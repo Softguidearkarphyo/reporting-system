@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-3">
+    <BaseTitle>
       {{ t('addProject.title1') }}
     </BaseTitle>
     <ParentCard class="pa-2">
@@ -66,14 +66,14 @@
 
     <div class="d-flex justify-space-between align-center mt-3">
       <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
-      <div>
+      <div style="width: 50%">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
-          variant="underlined"
           color="primary"
-          width="300px"
           prepend-icon="mdi-magnify"
+          width="100%"
+          class="mb-n5"
         >
         </BaseTextField>
       </div>

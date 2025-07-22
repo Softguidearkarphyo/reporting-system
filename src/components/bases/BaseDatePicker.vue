@@ -16,6 +16,7 @@
         :style="{ width }"
         :label="label"
         readonly
+        variant="underlined"
         @click="menu = true"
       >
         <template v-slot:prepend>
@@ -111,8 +112,8 @@ function formatDate(date) {
   padding: 0 !important;
 }
 ::v-deep(.v-date-picker-month__day-btn:hover) {
-  background-color: rgb(var(--v-theme-primary)) !important;
-  color: white !important;
+  background-color: rgba(var(--v-theme-primary), 0.2) !important;
+  color: rgb(var(--v-theme-primary)) !important;
 }
 ::v-deep(.v-field__outline::after) {
   border-bottom: 2px solid rgb(var(--v-theme-primary)) !important;

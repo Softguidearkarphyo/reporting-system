@@ -2,16 +2,17 @@
   <v-container>
     <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
-      <div style="width: 300px">
+      <div style="width: 50%">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
+          class="mb-n5"
           type="text"
           variant="plain"
           dense
           autocomplete="test"
           prependIcon="mdi-magnify"
-          :width="'300px'"
+          width="100%"
         ></BaseTextField>
       </div>
     </div>
@@ -45,8 +46,9 @@
               class="edit-btn"
               size="small"
               :style="{ width }"
+              :add-class="['ma-1']"
             >
-              <v-icon icon="tabler:IconEdit" size="20" color="primary" />
+              <v-icon icon="tabler:IconEdit" size="18" color="primary" />
             </BaseButton>
             <BaseButton
               v-if="authStore.loginStaff?.id !== item.id"
@@ -56,10 +58,11 @@
               class="delete-btn"
               size="small"
               :style="{ width }"
+              :add-class="['ma-1']"
             >
               <v-icon
                 icon="tabler:IconTrash"
-                size="20"
+                size="18"
                 style="color: #ff0000"
               />
             </BaseButton>
@@ -101,7 +104,7 @@ const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
-const width = '30px';
+const width = '10px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const headers = computed(() => {

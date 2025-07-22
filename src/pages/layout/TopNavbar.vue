@@ -1,10 +1,6 @@
 <template>
   <v-app-bar color="surface" elevation="0" height="70" flat clipped-left>
-    <v-app-bar-nav-icon
-      @click="emit('toggle')"
-      class="hidden-lg-and-up ms-md-3 ms-sm-5 ms-3 text-muted"
-      variant="flat"
-    >
+    <v-app-bar-nav-icon @click="emit('toggle')" variant="flat">
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>

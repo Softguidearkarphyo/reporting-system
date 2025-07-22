@@ -30,6 +30,7 @@
           </v-btn>
 
           <v-btn
+            v-if="!hideCancelBtn"
             color="red"
             icon
             @click="$emit('no')"
@@ -69,6 +70,11 @@ const props = defineProps({
   mainBtn: {
     type: String,
     required: false,
+  },
+  hideCancelBtn: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 

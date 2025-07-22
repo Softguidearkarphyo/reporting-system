@@ -4,3 +4,9 @@
 .v-icon:not(.v-data-table-header__content .v-icon) {
   opacity: 1 !important;
 }
+.v-messages {
+  min-height: 1.5rem;
+}
+.radio-btn .mdi-radiobox-blank {
+  color: rgb(var(--v-theme-primary)) !important;
+}

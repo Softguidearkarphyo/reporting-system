@@ -8,10 +8,13 @@ export default {
     deleteBtnText: '削除',
     noDataText: 'データはありません。',
     submit: '保存',
+    autoFill: '自動設定で実行する',
     saveSetting: 'この設定を保存する',
+    download: 'ダウンロード',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
+    all: 'すべて',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -32,7 +35,7 @@ export default {
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
-    show_project: 'プロジェクトを表示'
+    show_project: 'プロジェクトを表示',
     theme: 'テーマカラー',
   },
   message: {
@@ -106,6 +109,7 @@ export default {
   },
   workHourReport: {
     title: '作業実績管理',
+    warnDateRequiredText: ' 少なくとも1日を選択してください',
     form: {
       employee: '職員名',
       project: 'プロジェクト',
@@ -115,6 +119,14 @@ export default {
       period: '開始時間 ～ 終了時間',
       startTime: '開始時間',
       finishTime: '終了時間',
+      single: '単一選択',
+      multiple: '複数選択',
+    },
+    table: {
+      period: '時限',
+      project_cd: '作番',
+      project_name: '作番名',
+      task: '作業',
     },
   },
   validation: {
@@ -148,5 +160,38 @@ export default {
     start_date: '開始日',
     end_date: '終了日',
     hour: '時',
+  },
+  creatLeave: {
+    title: '休暇申請登録',
+    options: {
+      selection: 'オプションタイプを選択：',
+      existing: '既存の従業員用',
+      new: '新入社員用',
+      ot: '残業時間追加用',
+    },
+    form1: {
+      name: '氏名',
+      leave_type: '休暇の種類',
+      start_date: '開始日',
+      end_date: '終了日',
+      reason: '理由',
+      part_time: '期間',
+    },
+    form2: {
+      name: '氏名',
+      permanent_date: '正社員登用日',
+    },
+    form3: {
+      name: '氏名',
+      ot_time: '残業時間',
+    },
+    table: {
+      name: '従業員名',
+      leave_type: '休暇の種類',
+      start_date: '開始日',
+      end_date: '終了日',
+      reason: '理由',
+      part_time: '期間',
+    },
   },
 };

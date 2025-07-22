@@ -121,18 +121,18 @@ const noDataMessageText = computed(() => {
 .v-data-table th .v-data-table-header__content span {
   font-size: 0.8rem;
 }
-.v-data-table .v-btn.edit-btn:hover {
+.v-data-table .v-btn.edit-btn {
   background-color: rgba(var(--v-theme-primary), 0.2);
 }
-.v-data-table .v-btn.edit-btn i {
+/* .v-data-table .v-btn.edit-btn i {
   color: rgb(var(--v-theme-primary));
   font-size: 20px;
+} */
+.v-data-table .v-btn.delete-btn {
+  background-color: rgb(var(--v-theme-error), 0.2);
 }
-.v-data-table .v-btn.delete-btn:hover {
-  background-color: rgb(var(--v-theme-error), 0.11);
-}
-.v-data-table .v-btn.delete-btn i {
+/* .v-data-table .v-btn.delete-btn i {
   color: rgb(var(--v-theme-error));
   font-size: 20px;
-}
+} */
 </style>

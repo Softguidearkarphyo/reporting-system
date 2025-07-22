@@ -28,3 +28,14 @@ export function profileImgPath(name) {
 
   return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
 }
+
+export function changeDateTimeZone(date) {
+  return date
+    .toLocaleString('ja-JP', {
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replaceAll('/', '-');
+}

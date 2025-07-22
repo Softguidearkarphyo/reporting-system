@@ -1,10 +1,10 @@
 <template>
   <div class="align-center">
     <v-select
-      v-bind="attrs"
-      :items="items"
+      v-bind="selectAttrs"
       :label="label"
       :style="{ width }"
+      variant="underlined"
       @update:modelValue="handleChange"
     >
       <template v-slot:prepend>
@@ -15,12 +15,11 @@
 </template>
 <script setup>
 import { useAttrs } from 'vue';
-defineProps({
+const props = defineProps({
   label: {
     type: String,
     default: 'select',
   },
-  items: [String, Object],
   width: {
     type: String,
     default: '400px',
@@ -30,8 +29,26 @@ defineProps({
     type: String,
     default: 'primary',
   },
+  addEmptySelect: {
+    type: Boolean,
+    default: true,
+  },
+  attrName: {
+    type: Object,
+    default: () => ({ id: '', name: '' }),
+  },
 });
 const attrs = useAttrs();
+const selectAttrs = computed(() => {
+  const tmpAttrs = { ...attrs };
+  if (!Array.isArray(tmpAttrs.items)) {
+    tmpAttrs.items = [];
+  }
+  if (props.addEmptySelect) {
+    tmpAttrs.items = [props.attrName, ...tmpAttrs.items];
+  }
+  return tmpAttrs;
+});
 const emit = defineEmits(['change']);
 const handleChange = (value) => {
   emit('change', value);
