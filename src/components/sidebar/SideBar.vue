@@ -232,7 +232,7 @@ const settings = computed(() => [
 
 .v-navigation-drawer--rail .v-list-group__items .v-list-item {
   background: transparent !important;
-  color: white !important;
+  color: rgb(var(--v-theme-font)) !important;
   box-shadow: none !important;
 }
 
