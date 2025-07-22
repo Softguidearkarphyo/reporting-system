@@ -55,8 +55,20 @@
     </v-row>
     <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
-      Theme Direction
+      Button Layout
     </v-list-subheader>
+    <v-row class="d-flex justify-center ma-0 pa-2" dense>
+      <v-col class="d-flex justify-center">
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text">Middle</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col class="d-flex justify-center">
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text">End</v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-navigation-drawer>
 </template>
 <script setup>

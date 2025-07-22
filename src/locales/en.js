@@ -102,9 +102,10 @@ export default {
     },
   },
   addMemberSkill: {
+    employee_competency: 'Employee Competency List',
     title: 'Employee Competency Form',
-    form: {
-      name: 'Name',
+    table: {
+      staff: 'Staff',
       project: 'Project',
       position: 'position',
       grade: 'grade',
@@ -114,7 +115,22 @@ export default {
       prev_experience: 'Previous Experience',
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
-      expertise: 'Expertise',
+      major_tech_stack: 'Major Tech Stack',
+    },
+    form: {
+      staff: 'Staff',
+      project: 'Project',
+      position: 'position',
+      grade: 'grade',
+      join_date: 'Join Date',
+      japanese_level: 'Japanese Level',
+      sg_experience: 'SG Experience',
+      prev_experience: 'Previous Experience',
+      total_experience: 'Total Experience',
+      responsibility: 'Responsibility',
+      major_tech_stack: 'Major Tech Stack',
+      view_skill: 'View Skills',
+      action: 'Action',
     },
   },
   workHourReport: {
@@ -129,6 +145,14 @@ export default {
       period: 'Start Time ~ Finish Time',
       startTime: 'Start Time',
       finishTime: 'Finish Time',
+      single: 'Single',
+      multiple: 'Multiple',
+    },
+    table: {
+      period: 'Period',
+      project_cd: 'Project Code',
+      project_name: 'Project Name',
+      task: 'Task',
     },
   },
   validation: {

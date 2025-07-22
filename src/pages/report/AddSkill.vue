@@ -1,26 +1,31 @@
 <template>
   <BaseTitle class="mb-4"> {{ t('addMemberSkill.title') }} </BaseTitle>
-  <Form ref="formRef" @submit="submit">
+  <Form
+    ref="formRef"
+    :validation-schema="skillSheetCreateSchema"
+    @submit="submit"
+  >
     <ParentCard class="pa-2">
       <v-row>
         <v-col cols="12" md="6" lg="4">
-          <Field name="staff_id" v-slot="{ field }">
+          <Field name="staff_id" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
-              :label="t('addMemberSkill.form.name')"
+              :label="t('addMemberSkill.form.staff')"
               class="mx-auto"
               :items="memberList"
               prependIcon="mdi-account"
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="project" v-slot="{ field }">
+          <Field name="project" v-slot="{ field, errorMessage }">
             <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
@@ -32,12 +37,13 @@
               item-title="name"
               item-value="id"
               :chip-width="140"
+              :error-messages="errorMessage"
             >
             </BaseMultiSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="position" v-slot="{ field }">
+          <Field name="position" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
@@ -48,12 +54,13 @@
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="grade" v-slot="{ field }">
+          <Field name="grade" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
@@ -64,24 +71,26 @@
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="join_date" v-slot="{ field }">
+          <Field name="join_date" v-slot="{ field, errorMessage }">
             <BaseDatePicker
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.join_date')"
               class="mx-auto"
               prependIcon="mdi-calendar-month"
+              :error-messages="errorMessage"
               :width="'320px'"
             ></BaseDatePicker>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="japanese_level" v-slot="{ field }">
+          <Field name="japanese_level" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
@@ -92,6 +101,7 @@
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
@@ -139,33 +149,35 @@
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="responsibility" v-slot="{ field }">
+          <Field name="responsibility" v-slot="{ field, errorMessage }">
             <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.responsibility')"
               class="mx-auto"
               :items="responsibilityList"
-              prependIcon="mdi-ideogram-cjk"
+              prependIcon="mdi-account-check"
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseMultiSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="major_tech_stack_id" v-slot="{ field }">
+          <Field name="major_tech_stack_id" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
-              :label="t('addMemberSkill.form.expertise')"
+              :label="t('addMemberSkill.form.major_tech_stack')"
               class="mx-auto"
               :items="skillSets"
-              prependIcon="mdi-ideogram-cjk"
+              prependIcon="mdi-star-shooting"
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
@@ -256,11 +268,13 @@ import { useI18n } from 'vue-i18n';
 import { useDisplay, useTheme } from 'vuetify';
 import { useMemberStore } from '@/stores/member/member';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useSystemStore } from '@/stores/system/system';
 import { useProjectStore } from '@/stores/project/project.js';
-
+import { skillSheetSchema } from '@/plugins/validations/skill-sheet-create';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 const route = useRoute();
+const router = useRouter();
 const { lgAndUp, mdAndUp } = useDisplay();
 const theme = useTheme();
 const memberStore = useMemberStore();
@@ -272,7 +286,6 @@ const formRef = ref(null);
 const openMenus = ref([]);
 const memberList = ref([]);
 const projectList = ref([]);
-
 const positionList = ref([]);
 const gradeList = ref([]);
 const japaneseLevelList = ref([]);
@@ -281,40 +294,32 @@ const responsibilityList = ref([]);
 const fetchedSkillSheet = ref(null);
 const skillSheetId = route.params.skillSheetId;
 const techStackList = ref([]);
+const skillSheetCreateSchema = computed(() => skillSheetSchema(t));
 
 watch(
   () => route.params.skillSheetId,
   async (id) => {
     if (!id) return;
     const res = await skillSheetStore.fetchSkillSheet({ id });
-    const data = res?.data?.[0] ?? null;
-    console.log(fetchedSkillSheet.value);
-
+    fetchedSkillSheet.value = res?.data?.[0] ?? null;
     await nextTick();
+    const data = fetchedSkillSheet.value;
     formRef.value.setValues({
-      staff_id: data?.staff?.id,
-      project: data?.project?.map((p) => p.id) || [],
-      position: data?.position?.id,
-      grade: data?.grade?.id,
-      join_date: data?.join_date,
-      japanese_level: data?.japanese_level?.id,
+      staff_id: data.staff?.id,
+      project: data.staff_project?.map((p) => p.project.id) || [],
+      position: data.position?.id,
+      grade: data.grade?.id,
+      join_date: data.join_date,
+      japanese_level: data.japanese_level?.id,
       sg_experience: data.sg_experience,
-      prev_experience: data?.prev_experience,
-      total_experience: data?.total_experience,
-      responsibility: data?.responsibility?.map((r) => r.id) || [],
-      major_tech_stack_id: data?.major_tech_stack?.id,
+      prev_experience: data.prev_experience,
+      total_experience: data.total_experience,
+      responsibility:
+        data.staff_responsibility?.map((r) => r.responsibility.id) || [],
+      major_tech_stack_id: data.major_tech_stack?.id,
     });
   },
   { immediate: true }
-);
-
-const colsPerScreen = { lg: 13, md: 9, sm: 7 };
-const cols = computed(() =>
-  lgAndUp.value
-    ? colsPerScreen.lg
-    : mdAndUp.value
-      ? colsPerScreen.md
-      : colsPerScreen.sm
 );
 
 const skillSets = computed(() =>
@@ -369,10 +374,18 @@ const updateTotal = () => {
 watch(() => formRef.value?.values?.sg_experience, updateTotal);
 watch(() => formRef.value?.values?.prev_experience, updateTotal);
 
+const colsPerScreen = { lg: 13, md: 9, sm: 7 };
+const cols = computed(() =>
+  lgAndUp.value
+    ? colsPerScreen.lg
+    : mdAndUp.value
+      ? colsPerScreen.md
+      : colsPerScreen.sm
+);
+
 const fetch = async () => {
   await Promise.all([
-    memberStore.fetchMember(),
-
+    memberStore.fetchMember({ skill_sheet: {} }),
     systemStore.fetchTechStacks(),
     systemStore.fetchResponsibilities(),
     systemStore.fetchProficiencyLevels(),
@@ -382,10 +395,14 @@ const fetch = async () => {
     projectStore.fetchProject(),
   ]);
   memberList.value =
-    memberStore.getMembers?.map((member) => ({
-      id: member.id,
-      name: member.eng_name,
+    (skillSheetId
+      ? memberStore.getMembers
+      : memberStore.getMembers?.filter((member) => !member.skill_sheet)
+    )?.map((item) => ({
+      id: item.id,
+      name: item.eng_name,
     })) ?? [];
+
   projectList.value =
     projectStore.getProjects?.map((item) => ({
       id: item.id,
@@ -426,7 +443,17 @@ const submit = async (values) => {
     skills,
   };
 
-  const res = await skillSheetStore.createSkillSheet(payload);
+  let res;
+  if (skillSheetId) {
+    const payloadd = { ...payload, id: skillSheetId };
+    res = await skillSheetStore.updateSkillSheet(payloadd);
+  } else {
+    res = await skillSheetStore.createSkillSheet(payload);
+  }
+
+  if (res?.data?.status === 200) {
+    router.push({ name: 'member-skill' });
+  }
 };
 </script>
 

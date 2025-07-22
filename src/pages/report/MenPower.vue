@@ -1,6 +1,6 @@
 <template>
-  <BaseTitle>MenPower</BaseTitle>
   <v-container>
+    <BaseTitle>MenPower</BaseTitle>
     <v-text-field label="test"></v-text-field>
     <v-text-field label="test"></v-text-field>
     <v-text-field label="test"></v-text-field>
