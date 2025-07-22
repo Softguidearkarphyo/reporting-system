@@ -2,7 +2,7 @@
   <v-container>
     <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('addMemberSkill.employee_competency') }}</BaseTitle>
-      <div style="width: 300px">
+      <div style="width: 75%">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
@@ -11,7 +11,7 @@
           dense
           autocomplete="test"
           prependIcon="mdi-magnify"
-          :width="'300px'"
+          :width="'100%'"
         ></BaseTextField>
       </div>
     </div>
@@ -22,6 +22,20 @@
         :height="windowHeight"
         :items-count="itemsCount"
       >
+        <template #item.view_skill="{ item }">
+          <span class="d-flex justify-center p-0">
+            <BaseButton
+              elevation="0"
+              @click="viewSkillSheet(item.id)"
+              color=""
+              class="edit-btn"
+              size="small"
+              :style="{ width }"
+            >
+              <v-icon icon="tabler:IconTarget" size="20" color="primary" />
+            </BaseButton>
+          </span>
+        </template>
         <template #item.action="{ item }">
           <span class="d-flex justify-center p-0">
             <BaseButton
@@ -52,6 +66,7 @@
         </template>
       </BaseTable>
     </ParentCard>
+    <BottomSheet v-model="showSheet" :id="selectedStaffId" />
     <BaseConfirmDelete
       v-model="confirmDelete"
       :text="t('memberList.deleteConfirmText')"
@@ -83,6 +98,15 @@ const search = ref('');
 const items = ref([]);
 const width = '30px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
+
+const showSheet = ref(false);
+const selectedStaffId = ref(null);
+
+const viewSkillSheet = (staffId) => {
+  selectedStaffId.value = staffId;
+  showSheet.value = true;
+};
+
 let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
@@ -120,6 +144,12 @@ const headers = computed(() => {
     {
       title: t('addMemberSkill.table.major_tech_stack'),
       key: 'major_tech_stack',
+      sortable: false,
+    },
+    {
+      title: t('addMemberSkill.table.view_skill'),
+      key: 'view_skill',
+      align: 'center',
       sortable: false,
     },
     {
