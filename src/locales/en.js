@@ -143,6 +143,14 @@ export default {
       period: 'Start Time ~ Finish Time',
       startTime: 'Start Time',
       finishTime: 'Finish Time',
+      single: 'Single',
+      multiple: 'Multiple',
+    },
+    table: {
+      period: 'Period',
+      project_cd: 'Project Code',
+      project_name: 'Project Name',
+      task: 'Task',
     },
   },
   validation: {

@@ -66,13 +66,14 @@
 
     <div class="d-flex justify-space-between align-center mt-3">
       <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
-      <div>
+      <div style="width: 50%">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
           color="primary"
-          width="300px"
           prepend-icon="mdi-magnify"
+          width="100%"
+          class="mb-n5"
         >
         </BaseTextField>
       </div>

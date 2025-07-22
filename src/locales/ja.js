@@ -119,6 +119,14 @@ export default {
       period: '開始時間 ～ 終了時間',
       startTime: '開始時間',
       finishTime: '終了時間',
+      single: '単一選択',
+      multiple: '複数選択',
+    },
+    table: {
+      period: '時限',
+      project_cd: '作番',
+      project_name: '作番名',
+      task: '作業',
     },
   },
   validation: {

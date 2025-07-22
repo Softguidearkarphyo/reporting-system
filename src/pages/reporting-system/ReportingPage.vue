@@ -12,9 +12,23 @@
               class="mx-auto"
               rounded="lg"
               hide-header
-              multiple
+              :multiple="isDayMultiple"
             >
             </v-date-picker>
+            <div class="d-flex justify-center">
+              <span class="mr-5" style="font-size: 1rem">{{
+                t('workHourReport.form.single')
+              }}</span>
+              <v-switch
+                v-model="isDayMultiple"
+                color="primary"
+                class="mb-n10 mt-n4"
+                :value="true"
+              ></v-switch>
+              <span class="ml-5" style="font-size: 1rem">{{
+                t('workHourReport.form.multiple')
+              }}</span>
+            </div>
           </v-col>
           <v-col cols="6" md="4" lg="3">
             <v-row>
@@ -24,6 +38,7 @@
                   v-slot="{ field: { value, ...field }, errorMessage }"
                 >
                   <BaseAutoComplete
+                    v-if="role === ADMIN"
                     v-model="selectedEmployee"
                     v-bind="field"
                     :label="t('workHourReport.form.employee')"
@@ -36,6 +51,9 @@
                     :error-messages="errorMessage"
                   >
                   </BaseAutoComplete>
+                  <div class="mt-4 mb-6 text-h5 staff-name" v-else>
+                    {{ staffName }}
+                  </div>
                 </Field>
               </v-col>
             </v-row>
@@ -172,21 +190,21 @@
             <v-row>
               <v-col cols="4" md="4" lg="12">
                 <div>
-                  <BaseButton style="width: 80%" class="rounded-pill">
+                  <BaseButton style="width: 170px" class="rounded-pill">
                     {{ t('common.autoFill') }}
                   </BaseButton>
                 </div>
               </v-col>
               <v-col cols="4" md="4" lg="12">
                 <div class="mt-6">
-                  <BaseButton style="width: 80%" class="rounded-pill">
+                  <BaseButton style="width: 170px" class="rounded-pill">
                     {{ t('common.saveSetting') }}
                   </BaseButton>
                 </div>
               </v-col>
               <v-col cols="4" md="4" lg="12">
                 <div class="mt-6">
-                  <BaseButton style="width: 80%" class="rounded-pill">
+                  <BaseButton style="width: 170px" class="rounded-pill">
                     {{ t('common.download') }}
                   </BaseButton>
                 </div>
@@ -197,50 +215,37 @@
       </Form>
     </ParentCard>
 
-    <ParentCard>
-      <BaseTable
-        :headers="headers"
-        :items="[]"
-        :items-count="itemsCount"
-        :style="{ minHeight: windowHeight }"
-        :pagination="false"
+    <v-carousel
+      v-if="selectedIsoDates.length > 0"
+      v-model="carouselIndex"
+      hide-delimiters
+      :show-arrows="isDayMultiple ? 'hover' : false"
+      style="height: auto"
+    >
+      <v-carousel-item
+        v-for="(selectedIsoDate, index) in selectedIsoDates"
+        :key="selectedIsoDate"
+        :value="index"
       >
-        <template #item.position="{ item }">
-          <div
-            class="rounded-pill py-1 px-1 text-center mx-auto"
-            :style="{
-              backgroundColor: item.position?.color,
-              width: '75px',
-              fontSize: '11px',
-            }"
+        <ParentCard>
+          <div class="mb-3 d-flex justify-end">
+            <BaseTitle style="width: 95%">
+              {{ selectedIsoDate }}
+            </BaseTitle>
+          </div>
+
+          <BaseTable
+            :headers="headers"
+            :items="dateTaskGroups?.[selectedIsoDate]"
+            :items-count="itemsCount"
+            :style="{ minHeight: windowHeight }"
+            :pagination="false"
+            style="width: 95%"
+            class="mx-auto"
           >
-            {{ item.position?.name }}
-          </div>
-        </template>
-        <template #item.action="{ item }">
-          <div class="d-flex justify-end">
-            <BaseButton
-              elevation="0"
-              @click.stop="scrollToEdit(item.id)"
-              color=""
-              class="edit-btn"
-              size="small"
-            >
-              <v-icon> mdi-pencil </v-icon>
-            </BaseButton>
-            <BaseButton
-              elevation="0"
-              @click.stop="showConfirmDelete(item.id)"
-              color=""
-              class="delete-btn"
-              size="small"
-            >
-              <v-icon> mdi-trash-can</v-icon>
-            </BaseButton>
-          </div>
-        </template>
-      </BaseTable>
-    </ParentCard>
+          </BaseTable> </ParentCard
+      ></v-carousel-item>
+    </v-carousel>
 
     <BaseConfirmDelete
       v-model="warnDateSelection"
@@ -264,10 +269,14 @@ import { changeDateTimeZone } from '@/utils/helper';
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const reportingStore = useReportingStore();
-const reportingSchema = computed(() =>
-  getReportingSchema(t, timeSelectionMode.value)
-);
 const role = authStore.staffRole;
+const staff = authStore.loginStaff;
+const staffName = computed(() =>
+  locale.value === 'ja' ? staff?.jp_name : staff?.eng_name
+);
+const reportingSchema = computed(() =>
+  getReportingSchema(t, timeSelectionMode.value, role === ADMIN)
+);
 const formRef = ref(null);
 const timeSelectionMode = ref(0);
 const selectedDates = ref([]);
@@ -281,6 +290,10 @@ let originalItems = [];
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
 const selectedPeriod = ref([1, 2]);
+const isDayMultiple = ref(true);
+const currentEmployee = ref();
+const dateTaskGroups = ref({});
+const carouselIndex = ref(0);
 const employees = computed(() => {
   return employeeItems.value?.map((item) => ({
     ...item,
@@ -302,28 +315,38 @@ const tasks = computed(() => {
     name: `${item.cd} : ${isJapanese.value ? item.jp_name : item.eng_name}`,
   }));
 });
+const selectedIsoDates = computed(() => {
+  if (isDayMultiple.value) {
+    return selectedDates.value
+      ?.map((date) => changeDateTimeZone(date))
+      ?.sort((a, b) => new Date(a) - new Date(b));
+  } else {
+    return [changeDateTimeZone(selectedDates.value)];
+  }
+});
 const headers = computed(() => {
-  const tmpHeaders = [
+  return [
     {
-      title: t('addProject.table.cd'),
-      key: 'cd',
+      title: t('workHourReport.table.period'),
+      key: 'period',
+      sortable: false,
     },
     {
-      title: t('addProject.table.name'),
-      key: isJapanese.value ? 'jp_name' : 'eng_name',
+      title: t('workHourReport.table.project_cd'),
+      key: 'project_cd',
+      sortable: false,
+    },
+    {
+      title: t('workHourReport.table.project_name'),
+      key: isJapanese.value ? 'project_jp_name' : 'project_eng_name',
+      sortable: false,
+    },
+    {
+      title: t('workHourReport.table.task'),
+      key: isJapanese.value ? 'task_jp_name' : 'task_eng_name',
       sortable: false,
     },
   ];
-  if (role === ADMIN) {
-    tmpHeaders.push({
-      title: t('memberList.table.action'),
-      key: 'action',
-      align: 'center',
-      sortable: false,
-      width: '10%',
-    });
-  }
-  return tmpHeaders;
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {
@@ -338,22 +361,15 @@ const fetch = async () => {
   formRef.value?.resetForm();
   await reportingStore.fetchProject();
   projectItems.value = [...reportingStore.getProjects];
-  await reportingStore.fetchMember();
-  const tmpMembers = [...reportingStore.getMembers];
-  tmpMembers?.sort((a, b) => {
-    if (!a.sort_key) return 1;
-    if (!b.sort_key) return -1;
-    return a.sort_key - b.sort_key;
-  });
-  employeeItems.value = [...tmpMembers];
   await reportingStore.fetchTask();
   taskItems.value = [...reportingStore.getTasks];
+  await getList();
   selectPreviousOfficeDays();
 };
 
 fetch();
 
-function selectPreviousOfficeDays() {
+const selectPreviousOfficeDays = () => {
   const result = [];
   let current = new Date();
   result.push(new Date());
@@ -365,8 +381,44 @@ function selectPreviousOfficeDays() {
     }
   }
   selectedDates.value = result.reverse();
-}
-function generatePeriods(startTime, endTime) {
+};
+const getList = async () => {
+  const memberPayload = { task_performance: {}, project: {}, task: {} };
+  if (role !== ADMIN) {
+    memberPayload.id = staff.id;
+  }
+  await reportingStore.fetchMember(memberPayload);
+  const tmpMembers = reportingStore.getMembers?.map((member) => {
+    const task_performance = member.task_performance?.map((task_perf) => ({
+      date: task_perf?.date,
+      period: task_perf?.period,
+      project_cd: task_perf?.project?.cd,
+      project_eng_name: task_perf?.project?.eng_name,
+      project_jp_name: task_perf?.project?.jp_name,
+      task_cd: task_perf?.task?.cd,
+      task_eng_name: task_perf?.task?.cd + '：' + task_perf?.task?.eng_name,
+      task_jp_name: task_perf?.task?.cd + '：' + task_perf?.task?.jp_name,
+    }));
+    const tmpItem = {
+      id: member?.id,
+      eng_name: member?.eng_name,
+      jp_name: member?.jp_name,
+      sort_key: member?.sort_key,
+      task_performance: task_performance,
+    };
+    return tmpItem;
+  });
+  tmpMembers?.sort((a, b) => {
+    if (!a.sort_key) return 1;
+    if (!b.sort_key) return -1;
+    return a.sort_key - b.sort_key;
+  });
+  employeeItems.value = [...tmpMembers];
+  if (role !== ADMIN) {
+    currentEmployee.value = employeeItems.value?.[0];
+  }
+};
+const generatePeriods = (startTime, endTime) => {
   const slots = [];
   let id = 1;
   const [startHour, startMin] = startTime.split(':').map(Number);
@@ -383,18 +435,14 @@ function generatePeriods(startTime, endTime) {
     start.setMinutes(start.getMinutes() + 30);
   }
   return slots;
-}
+};
 const submit = async (values) => {
-  console.log(values);
-  console.log(selectedDates.value);
-  if (selectedDates.value?.length === 0) {
+  if (selectedIsoDates.value?.length === 0) {
     warnDateSelection.value = true;
   } else {
     let data = [];
     let totalPeriods = [];
-    const totalDates = selectedDates.value?.map((date) =>
-      changeDateTimeZone(date)
-    );
+    const totalDates = selectedIsoDates.value;
     if (timeSelectionMode.value === 0) {
       selectedPeriod.value?.forEach((selectedPeriod) => {
         const currentPeriod = periods.value?.find(
@@ -412,33 +460,125 @@ const submit = async (values) => {
     } else {
       totalPeriods = generatePeriods(values.startTime, values.finishTime);
     }
-
-    selectedEmployee.value?.forEach((employee) => {
-      totalDates?.forEach((date) => {
-        totalPeriods?.forEach((period) => {
-          data.push({
-            date: date,
-            staff_id: employee,
-            project_id: values.project,
-            task_id: values.task,
-            period: period,
+    const targetEmployees =
+      role === ADMIN ? selectedEmployee.value : [staff.id];
+    if (values.project) {
+      targetEmployees?.forEach((employee) => {
+        totalDates?.forEach((date) => {
+          totalPeriods?.forEach((period) => {
+            data.push({
+              date: date,
+              staff_id: employee,
+              project_id: values.project,
+              task_id: values.task,
+              period: period,
+            });
           });
         });
       });
-    });
-    await reportingStore.createTaskPerformance({ create_array: data });
+      await reportingStore.createTaskPerformance({ create_array: data });
+    } else {
+      targetEmployees?.forEach((employee) => {
+        totalDates?.forEach((date) => {
+          data.push({
+            date: date,
+            staff_id: employee,
+          });
+        });
+      });
+      await reportingStore.deleteTaskPerformance({ delete_array: data });
+    }
   }
-  // if (isEditMode.value) {
-  //   await projectStore.updateProject({ id: updateTarget.value, ...values });
-  // } else {
-  //   await projectStore.createProject(values);
-  // }
-  // fetch();
+  await getList();
+  groupDates();
 };
+const groupDates = () => {
+  dateTaskGroups.value = currentEmployee.value?.task_performance?.reduce(
+    (acc, task) => {
+      if (selectedIsoDates.value?.includes(task.date)) {
+        if (!acc[task.date]) {
+          acc[task.date] = [];
+        }
+        acc[task.date].push(task);
+      }
+      return acc;
+    },
+    {}
+  );
+  const lastDate = isDayMultiple.value
+    ? selectedDates.value[selectedDates.value?.length - 1]
+    : selectedDates.value;
+  if (carouselIndex.value < 0) {
+    const index = selectedIsoDates.value.indexOf(changeDateTimeZone(lastDate));
+    if (index !== -1) {
+      carouselIndex.value = index;
+    }
+  }
+};
+
+watch(
+  () => formRef.value?.values?.project,
+  (val) => {
+    if (!val && formRef.value?.values?.task) {
+      formRef.value.setFieldValue('task', '');
+    }
+  }
+);
+watch(
+  () => isDayMultiple.value,
+  (val) => {
+    if (!val) {
+      const lastDay = selectedDates.value.pop();
+      selectedDates.value = lastDay;
+    } else {
+      selectedDates.value = [selectedDates.value];
+    }
+  }
+);
+watch(
+  () => selectedIsoDates.value,
+  () => {
+    groupDates();
+  }
+);
+watch(
+  () => selectedEmployee.value,
+  (val) => {
+    if (selectedEmployee.value?.length === 1) {
+      currentEmployee.value = employeeItems.value?.find(
+        (item) => item.id === selectedEmployee.value[0]
+      );
+      groupDates();
+    } else {
+      currentEmployee.value = undefined;
+    }
+  }
+);
 </script>
 
-<style>
-.radio-btn .mdi-radiobox-blank {
+<style scoped>
+::v-deep(
+  .v-date-picker-month__day:not(.v-date-picker-month__day--selected)
+    .v-btn.v-date-picker-month__day-btn:hover
+) {
+  background-color: rgba(var(--v-theme-primary), 0.2) !important;
   color: rgb(var(--v-theme-primary)) !important;
+}
+::v-deep(.v-date-picker-month__day--selected .v-btn) {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white !important;
+}
+.staff-name {
+  color: rgb(var(--v-theme-primary));
+}
+::v-deep(.v-window__left) {
+  position: absolute !important;
+  top: 15px !important;
+  left: 15px !important;
+}
+::v-deep(.v-window__right) {
+  position: absolute;
+  top: 15px !important;
+  right: 15px !important;
 }
 </style>

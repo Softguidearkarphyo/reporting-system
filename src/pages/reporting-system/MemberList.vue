@@ -2,16 +2,17 @@
   <v-container>
     <div class="d-flex justify-space-between align-center mb-3 mt-n3">
       <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
-      <div style="width: 300px">
+      <div style="width: 50%">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
+          class="mb-n5"
           type="text"
           variant="plain"
           dense
           autocomplete="test"
           prependIcon="mdi-magnify"
-          :width="'300px'"
+          width="100%"
         ></BaseTextField>
       </div>
     </div>

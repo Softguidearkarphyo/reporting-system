@@ -7,3 +7,6 @@
 .v-messages {
   min-height: 1.5rem;
 }
+.radio-btn .mdi-radiobox-blank {
+  color: rgb(var(--v-theme-primary)) !important;
+}
