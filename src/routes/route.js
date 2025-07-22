@@ -136,6 +136,12 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporting-system/edit-employee-skill/:skillSheetId',
+        name: 'edit-employee-skill',
+        component: AddSkill,
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/reporting-system/profile',
         name: 'profile',
         component: Profile,

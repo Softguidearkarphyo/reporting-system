@@ -4,7 +4,7 @@
     <ParentCard class="pa-2">
       <v-row>
         <v-col cols="12" md="6" lg="4">
-          <Field name="name" v-slot="{ field }">
+          <Field name="staff_id" v-slot="{ field }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
@@ -13,7 +13,7 @@
               :items="memberList"
               prependIcon="mdi-account"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseSelect>
@@ -26,11 +26,12 @@
               v-bind="field"
               :label="t('addMemberSkill.form.project')"
               class="mx-auto"
-              :items="project"
+              :items="projectList"
               prependIcon="mdi-microsoft-teams"
               :width="'320px'"
               item-title="name"
               item-value="id"
+              :chip-width="140"
             >
             </BaseMultiSelect>
           </Field>
@@ -42,10 +43,10 @@
               v-bind="field"
               :label="t('addMemberSkill.form.position')"
               class="mx-auto"
-              :items="dedicatedPosition"
+              :items="positionList"
               prependIcon="mdi-account-supervisor"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseSelect>
@@ -58,10 +59,10 @@
               v-bind="field"
               :label="t('addMemberSkill.form.grade')"
               class="mx-auto"
-              :items="grade"
+              :items="gradeList"
               prependIcon="mdi-star"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseSelect>
@@ -76,7 +77,6 @@
               class="mx-auto"
               prependIcon="mdi-calendar-month"
               :width="'320px'"
-              :error-messages="errorMessage"
             ></BaseDatePicker>
           </Field>
         </v-col>
@@ -87,10 +87,10 @@
               v-bind="field"
               :label="t('addMemberSkill.form.japanese_level')"
               class="mx-auto"
-              :items="japaneseLevel"
+              :items="japaneseLevelList"
               prependIcon="mdi-ideogram-cjk"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseSelect>
@@ -145,26 +145,26 @@
               v-bind="field"
               :label="t('addMemberSkill.form.responsibility')"
               class="mx-auto"
-              :items="responsibility"
+              :items="responsibilityList"
               prependIcon="mdi-ideogram-cjk"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseMultiSelect>
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="expertise" v-slot="{ field }">
+          <Field name="major_tech_stack_id" v-slot="{ field }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.expertise')"
               class="mx-auto"
-              :items="skillList"
+              :items="skillSets"
               prependIcon="mdi-ideogram-cjk"
               :width="'320px'"
-              item-title="value"
+              item-title="name"
               item-value="id"
             >
             </BaseSelect>
@@ -177,16 +177,16 @@
           class="skill-table"
           style="width: 100%"
         >
-          <template #body="{}">
-            <tbody class="talbe-center">
+          <template #body>
+            <tbody class="table-center">
               <tr v-for="(row, rowIndex) in chunkList" :key="rowIndex">
                 <td
                   v-for="(cell, cellIndex) in row"
-                  :key="cell.text + cellIndex"
+                  :key="`${cell.name}-${cellIndex}`"
                   style="min-width: 100px; max-width: 130px"
                 >
                   <div class="py-2 text-center">
-                    <div>{{ cell.text }}</div>
+                    <div>{{ cell.name }}</div>
                     <div style="position: relative">
                       <v-menu
                         v-model="openMenus[rowIndex][cellIndex]"
@@ -214,16 +214,21 @@
                         <v-card>
                           <v-card-text class="d-flex">
                             <BaseButton
-                              v-for="(item, index) in symbols"
+                              v-for="(item, index) in symbolLists"
                               :key="index"
                               small
                               color="primary"
                               text
                               @click="
-                                selectSymbol(item, cell, rowIndex, cellIndex)
+                                selectSymbol(
+                                  item.abbv,
+                                  cell,
+                                  rowIndex,
+                                  cellIndex
+                                )
                               "
                             >
-                              {{ item }}
+                              {{ item.abbv }}
                             </BaseButton>
                           </v-card-text>
                         </v-card>
@@ -236,6 +241,7 @@
           </template>
         </v-data-table>
       </div>
+
       <div class="d-flex justify-center">
         <BaseButton type="submit" style="width: 200px">
           {{ t('common.submit') }}
@@ -246,52 +252,86 @@
 </template>
 
 <script setup>
-import {
-  skillList,
-  symbols,
-  project,
-  grade,
-  dedicatedPosition,
-  responsibility,
-  japaneseLevel,
-} from '@/utils/data';
 import { useI18n } from 'vue-i18n';
 import { useDisplay, useTheme } from 'vuetify';
-import { watch } from 'vue';
-import { useMemberStore } from '@/stores/member/member.js';
-const formRef = ref(null);
+import { useMemberStore } from '@/stores/member/member';
+import { useRoute } from 'vue-router';
+import { useSystemStore } from '@/stores/system/system';
+import { useProjectStore } from '@/stores/project/project.js';
+
+import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
+const route = useRoute();
+const { lgAndUp, mdAndUp } = useDisplay();
 const theme = useTheme();
 const memberStore = useMemberStore();
-const memberList = ref([]);
-const fetch = async () => {
-  await memberStore.fetchMember();
-  const tmpMembers = memberStore.getMembers?.map((member) => ({
-    id: member.id,
-    value: member.eng_name,
-  }));
-  memberList.value = [...tmpMembers];
-};
-
-fetch();
-
-const buttonBgColor = computed(() =>
-  theme.global.name.value === 'dark' ? '#151A35' : '#ededed'
-);
-
-const { lgAndUp, mdAndUp } = useDisplay();
+const systemStore = useSystemStore();
+const projectStore = useProjectStore();
+const skillSheetStore = useSkillSheetStore();
 const { t } = useI18n();
-const openMenus = reactive([]);
-const skillSets = ref(
-  skillList.map((text) => ({
-    text,
-    symbol: '-',
-  }))
+const formRef = ref(null);
+const openMenus = ref([]);
+const memberList = ref([]);
+const projectList = ref([]);
+
+const positionList = ref([]);
+const gradeList = ref([]);
+const japaneseLevelList = ref([]);
+const symbolLists = ref([]);
+const responsibilityList = ref([]);
+const fetchedSkillSheet = ref(null);
+const skillSheetId = route.params.skillSheetId;
+const techStackList = ref([]);
+
+watch(
+  () => route.params.skillSheetId,
+  async (id) => {
+    if (!id) return;
+    const res = await skillSheetStore.fetchSkillSheet({ id });
+    const data = res?.data?.[0] ?? null;
+    console.log(fetchedSkillSheet.value);
+
+    await nextTick();
+    formRef.value.setValues({
+      staff_id: data?.staff?.id,
+      project: data?.project?.map((p) => p.id) || [],
+      position: data?.position?.id,
+      grade: data?.grade?.id,
+      join_date: data?.join_date,
+      japanese_level: data?.japanese_level?.id,
+      sg_experience: data.sg_experience,
+      prev_experience: data?.prev_experience,
+      total_experience: data?.total_experience,
+      responsibility: data?.responsibility?.map((r) => r.id) || [],
+      major_tech_stack_id: data?.major_tech_stack?.id,
+    });
+  },
+  { immediate: true }
 );
-const cols = computed(() => {
-  if (lgAndUp.value) return 13;
-  else if (mdAndUp.value) return 9;
-  else return 7;
-});
+
+const colsPerScreen = { lg: 13, md: 9, sm: 7 };
+const cols = computed(() =>
+  lgAndUp.value
+    ? colsPerScreen.lg
+    : mdAndUp.value
+      ? colsPerScreen.md
+      : colsPerScreen.sm
+);
+
+const skillSets = computed(() =>
+  techStackList.value.map((skill) => {
+    const matched = fetchedSkillSheet.value?.tech_stack_proficiencies?.find(
+      (item) => item.tech_stack_id === skill.id
+    );
+    const symbol = symbolLists.value.find(
+      (s) => s.id === matched?.proficiency_level_id
+    )?.abbv;
+    return {
+      ...skill,
+      symbol: symbol ?? '-',
+      symbolId: matched?.proficiency_level_id ?? null,
+    };
+  })
+);
 
 const chunkList = computed(() => {
   const result = [];
@@ -301,43 +341,97 @@ const chunkList = computed(() => {
   return result;
 });
 
-function selectSymbol(action, cell, rowIndex, cellIndex) {
-  openMenus[rowIndex][cellIndex] = false;
-  cell.symbol = action;
-}
+watchEffect(() => {
+  openMenus.value.length = 0;
+  chunkList.value.forEach((row) => {
+    openMenus.value.push(row.map(() => false));
+  });
+});
+
+const buttonBgColor = computed(() =>
+  theme.global.name.value === 'dark' ? '#151A35' : '#ededed'
+);
+
+const selectSymbol = (abbv, cell, rowIndex, cellIndex) => {
+  openMenus.value[rowIndex][cellIndex] = false;
+  cell.symbol = abbv;
+  const matched = symbolLists.value.find((item) => item.abbv === abbv);
+  cell.symbolId = matched?.id ?? null;
+};
+
+const updateTotal = () => {
+  const values = formRef.value?.values || {};
+  const sg = Number(values.sg_experience || 0);
+  const prev = Number(values.prev_experience || 0);
+  formRef.value?.setFieldValue('total_experience', sg + prev);
+};
+
+watch(() => formRef.value?.values?.sg_experience, updateTotal);
+watch(() => formRef.value?.values?.prev_experience, updateTotal);
+
+const fetch = async () => {
+  await Promise.all([
+    memberStore.fetchMember(),
+
+    systemStore.fetchTechStacks(),
+    systemStore.fetchResponsibilities(),
+    systemStore.fetchProficiencyLevels(),
+    systemStore.fetchGrade(),
+    systemStore.fetchPosition(),
+    systemStore.fetchJapaneseLevel(),
+    projectStore.fetchProject(),
+  ]);
+  memberList.value =
+    memberStore.getMembers?.map((member) => ({
+      id: member.id,
+      name: member.eng_name,
+    })) ?? [];
+  projectList.value =
+    projectStore.getProjects?.map((item) => ({
+      id: item.id,
+      name: item.eng_name,
+    })) ?? [];
+  gradeList.value = systemStore.getGrade ?? [];
+  positionList.value = systemStore.getPosition ?? [];
+  japaneseLevelList.value = systemStore.getJapaneseLevel ?? [];
+  responsibilityList.value = systemStore.getResponsibilities ?? [];
+
+  symbolLists.value =
+    systemStore.getProficiencyLevels?.map((item) => ({
+      id: item.id,
+      abbv: item.abbv,
+    })) ?? [];
+
+  const techStacks = systemStore.getTechStacks;
+  if (Array.isArray(techStacks)) {
+    techStackList.value = techStacks.map((item) => ({
+      id: item.id,
+      name: item.name,
+    }));
+  }
+};
+
+onMounted(async () => {
+  await fetch();
+});
+
 const submit = async (values) => {
-  const skills = skillSets.value.map(({ text, symbol }) => ({
-    name: text,
-    symbol: symbol,
+  const skills = skillSets.value.map(({ id, symbolId }) => ({
+    tech_stack_id: id,
+    proficiency_level_id: symbolId,
   }));
 
   const payload = {
     ...values,
     skills,
   };
-  console.log(payload, 'payload');
+
+  const res = await skillSheetStore.createSkillSheet(payload);
 };
-
-const updateTotal = () => {
-  const values = formRef.value.values;
-  const sg = Number(values.sg_experience || 0);
-  const prev = Number(values.prev_experience || 0);
-  formRef.value.setFieldValue('total_experience', sg + prev);
-};
-
-watch(() => formRef.value?.values?.sg_experience, updateTotal);
-watch(() => formRef.value?.values?.prev_experience, updateTotal);
-
-watchEffect(() => {
-  openMenus.length = 0;
-  chunkList.value.forEach((row) => {
-    openMenus.push(row.map(() => false));
-  });
-});
 </script>
 
 <style scoped>
-.talbe-center {
+.table-center {
   display: table;
   margin: 0 auto;
 }
