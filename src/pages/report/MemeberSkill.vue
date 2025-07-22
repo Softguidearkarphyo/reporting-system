@@ -91,12 +91,7 @@ const headers = computed(() => {
       title: t('addMemberSkill.table.staff').toUpperCase(),
       key: 'staff',
     },
-    {
-      title: t('addMemberSkill.table.project'),
-      key: 'project',
-      align: 'center',
-      sortable: false,
-    },
+
     {
       title: t('addMemberSkill.table.position'),
       key: 'position',

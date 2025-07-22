@@ -36,10 +36,10 @@ export const useSkillSheetStore = defineStore('skillSheet', () => {
     }
   };
 
-  const updateMember = async (payload) => {
+  const updateSkillSheet = async (payload) => {
     try {
       const response = await api.post(
-        '/reporting-system/staff/update',
+        '/reporting-system/employee-skill-sheet/update',
         payload
       );
       toast.success('Skillsheet Updated Successfully.');
@@ -70,7 +70,7 @@ export const useSkillSheetStore = defineStore('skillSheet', () => {
     setSkillSheets,
     fetchSkillSheet,
     createSkillSheet,
-    updateMember,
+    updateSkillSheet,
     deleteMember,
   };
 });

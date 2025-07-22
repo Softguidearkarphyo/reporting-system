@@ -102,7 +102,21 @@ export default {
     },
   },
   addMemberSkill: {
+    employee_competency: 'Employee Competency List',
     title: 'Employee Competency Form',
+    table: {
+      staff: 'Staff',
+      project: 'Project',
+      position: 'position',
+      grade: 'grade',
+      join_date: 'Join Date',
+      japanese_level: 'Japanese Level',
+      sg_experience: 'SG Experience',
+      prev_experience: 'Previous Experience',
+      total_experience: 'Total Experience',
+      responsibility: 'Responsibility',
+      major_tech_stack: 'Major Tech Stack',
+    },
     form: {
       staff: 'Staff',
       project: 'Project',
