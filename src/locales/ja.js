@@ -153,4 +153,37 @@ export default {
     end_date: '終了日',
     hour: '時',
   },
+  creatLeave: {
+    title: '休暇申請登録',
+    options: {
+      selection: 'オプションタイプを選択：',
+      existing: '既存の従業員用',
+      new: '新入社員用',
+      ot: '残業時間追加用',
+    },
+    form1: {
+      name: '氏名',
+      leave_type: '休暇の種類',
+      start_date: '開始日',
+      end_date: '終了日',
+      reason: '理由',
+      part_time: '期間',
+    },
+    form2: {
+      name: '氏名',
+      permanent_date: '正社員登用日',
+    },
+    form3: {
+      name: '氏名',
+      ot_time: '残業時間',
+    },
+    table: {
+      name: '従業員名',
+      leave_type: '休暇の種類',
+      start_date: '開始日',
+      end_date: '終了日',
+      reason: '理由',
+      part_time: '期間',
+    },
+  },
 };

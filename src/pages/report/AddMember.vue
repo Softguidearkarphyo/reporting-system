@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-4"> {{ t('addMember.title') }} </BaseTitle>
+    <BaseTitle> {{ t('addMember.title') }} </BaseTitle>
     <ParentCard class="pa-6">
       <Form
         ref="formRef"

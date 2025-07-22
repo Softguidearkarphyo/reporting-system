@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <BaseTitle class="mb-3">
+    <BaseTitle>
       {{ t('addProject.title1') }}
     </BaseTitle>
     <ParentCard class="pa-2">
