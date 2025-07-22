@@ -104,7 +104,7 @@ export default {
   addMemberSkill: {
     title: 'Employee Competency Form',
     form: {
-      name: 'Name',
+      staff: 'Staff',
       project: 'Project',
       position: 'position',
       grade: 'grade',
@@ -114,7 +114,7 @@ export default {
       prev_experience: 'Previous Experience',
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
-      expertise: 'Expertise',
+      major_tech_stack: 'Major Tech Stack',
     },
   },
   workHourReport: {
