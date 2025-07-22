@@ -1,254 +1,256 @@
 <template>
-  <BaseTitle class="mb-4"> {{ t('addMemberSkill.title') }} </BaseTitle>
-  <Form ref="formRef" @submit="submit">
-    <ParentCard class="pa-2">
-      <v-row>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="staff_id" v-slot="{ field }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.name')"
-              class="mx-auto"
-              :items="memberList"
-              prependIcon="mdi-account"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="project" v-slot="{ field }">
-            <BaseMultiSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.project')"
-              class="mx-auto"
-              :items="projectList"
-              prependIcon="mdi-microsoft-teams"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-              :chip-width="140"
-            >
-            </BaseMultiSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="position" v-slot="{ field }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.position')"
-              class="mx-auto"
-              :items="positionList"
-              prependIcon="mdi-account-supervisor"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="grade" v-slot="{ field }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.grade')"
-              class="mx-auto"
-              :items="gradeList"
-              prependIcon="mdi-star"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="join_date" v-slot="{ field }">
-            <BaseDatePicker
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.join_date')"
-              class="mx-auto"
-              prependIcon="mdi-calendar-month"
-              :width="'320px'"
-            ></BaseDatePicker>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="japanese_level" v-slot="{ field }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.japanese_level')"
-              class="mx-auto"
-              :items="japaneseLevelList"
-              prependIcon="mdi-ideogram-cjk"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="sg_experience" v-slot="{ field }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.sg_experience')"
-              class="mx-auto"
-              type="number"
-              prependIcon="mdi-weather-cloudy-clock"
-              :width="'320px'"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="prev_experience" v-slot="{ field }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.prev_experience')"
-              class="mx-auto"
-              type="number"
-              prependIcon="mdi-history"
-              :width="'320px'"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="total_experience" v-slot="{ field }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.total_experience')"
-              class="mx-auto"
-              prependIcon="mdi-clock-time-twelve"
-              :width="'320px'"
-              :readonly="true"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="responsibility" v-slot="{ field }">
-            <BaseMultiSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.responsibility')"
-              class="mx-auto"
-              :items="responsibilityList"
-              prependIcon="mdi-ideogram-cjk"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseMultiSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
-          <Field name="major_tech_stack_id" v-slot="{ field }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMemberSkill.form.expertise')"
-              class="mx-auto"
-              :items="skillSets"
-              prependIcon="mdi-ideogram-cjk"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-      </v-row>
-      <div class="mt-4 mb-4">
-        <v-data-table
-          hide-default-footer
-          class="skill-table"
-          style="width: 100%"
-        >
-          <template #body>
-            <tbody class="table-center">
-              <tr v-for="(row, rowIndex) in chunkList" :key="rowIndex">
-                <td
-                  v-for="(cell, cellIndex) in row"
-                  :key="`${cell.name}-${cellIndex}`"
-                  style="min-width: 100px; max-width: 130px"
-                >
-                  <div class="py-2 text-center">
-                    <div>{{ cell.name }}</div>
-                    <div style="position: relative">
-                      <v-menu
-                        v-model="openMenus[rowIndex][cellIndex]"
-                        :close-on-content-click="false"
-                        open-on-click
-                        location="top"
-                        offset-y
-                      >
-                        <template #activator="{ props }">
-                          <v-btn
-                            v-bind="props"
-                            elevation="0"
-                            class="mt-2 d-flex justify-center"
-                            :style="{
-                              backgroundColor: buttonBgColor,
-                              padding: '5px',
-                              width: '100%',
-                            }"
-                          >
-                            <span class="font-weight-bold text-subtitle-1">
-                              {{ cell.symbol }}
-                            </span>
-                          </v-btn>
-                        </template>
-                        <v-card>
-                          <v-card-text class="d-flex">
-                            <BaseButton
-                              v-for="(item, index) in symbolLists"
-                              :key="index"
-                              small
-                              color="primary"
-                              text
-                              @click="
-                                selectSymbol(
-                                  item.abbv,
-                                  cell,
-                                  rowIndex,
-                                  cellIndex
-                                )
-                              "
+  <v-container>
+    <BaseTitle class="mb-4"> {{ t('addMemberSkill.title') }} </BaseTitle>
+    <Form ref="formRef" @submit="submit">
+      <ParentCard class="pa-2">
+        <v-row>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="staff_id" v-slot="{ field }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.name')"
+                class="mx-auto"
+                :items="memberList"
+                prependIcon="mdi-account"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="project" v-slot="{ field }">
+              <BaseMultiSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.project')"
+                class="mx-auto"
+                :items="projectList"
+                prependIcon="mdi-microsoft-teams"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+                :chip-width="140"
+              >
+              </BaseMultiSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="position" v-slot="{ field }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.position')"
+                class="mx-auto"
+                :items="positionList"
+                prependIcon="mdi-account-supervisor"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="grade" v-slot="{ field }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.grade')"
+                class="mx-auto"
+                :items="gradeList"
+                prependIcon="mdi-star"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="join_date" v-slot="{ field }">
+              <BaseDatePicker
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.join_date')"
+                class="mx-auto"
+                prependIcon="mdi-calendar-month"
+                :width="'320px'"
+              ></BaseDatePicker>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="japanese_level" v-slot="{ field }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.japanese_level')"
+                class="mx-auto"
+                :items="japaneseLevelList"
+                prependIcon="mdi-ideogram-cjk"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="sg_experience" v-slot="{ field }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.sg_experience')"
+                class="mx-auto"
+                type="number"
+                prependIcon="mdi-weather-cloudy-clock"
+                :width="'320px'"
+              >
+              </BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="prev_experience" v-slot="{ field }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.prev_experience')"
+                class="mx-auto"
+                type="number"
+                prependIcon="mdi-history"
+                :width="'320px'"
+              >
+              </BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="total_experience" v-slot="{ field }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.total_experience')"
+                class="mx-auto"
+                prependIcon="mdi-clock-time-twelve"
+                :width="'320px'"
+                :readonly="true"
+              >
+              </BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="responsibility" v-slot="{ field }">
+              <BaseMultiSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.responsibility')"
+                class="mx-auto"
+                :items="responsibilityList"
+                prependIcon="mdi-ideogram-cjk"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseMultiSelect>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <Field name="major_tech_stack_id" v-slot="{ field }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addMemberSkill.form.expertise')"
+                class="mx-auto"
+                :items="skillSets"
+                prependIcon="mdi-ideogram-cjk"
+                :width="'320px'"
+                item-title="name"
+                item-value="id"
+              >
+              </BaseSelect>
+            </Field>
+          </v-col>
+        </v-row>
+        <div class="mt-4 mb-4">
+          <v-data-table
+            hide-default-footer
+            class="skill-table"
+            style="width: 100%"
+          >
+            <template #body>
+              <tbody class="table-center">
+                <tr v-for="(row, rowIndex) in chunkList" :key="rowIndex">
+                  <td
+                    v-for="(cell, cellIndex) in row"
+                    :key="`${cell.name}-${cellIndex}`"
+                    style="min-width: 100px; max-width: 130px"
+                  >
+                    <div class="py-2 text-center">
+                      <div>{{ cell.name }}</div>
+                      <div style="position: relative">
+                        <v-menu
+                          v-model="openMenus[rowIndex][cellIndex]"
+                          :close-on-content-click="false"
+                          open-on-click
+                          location="top"
+                          offset-y
+                        >
+                          <template #activator="{ props }">
+                            <v-btn
+                              v-bind="props"
+                              elevation="0"
+                              class="mt-2 d-flex justify-center"
+                              :style="{
+                                backgroundColor: buttonBgColor,
+                                padding: '5px',
+                                width: '100%',
+                              }"
                             >
-                              {{ item.abbv }}
-                            </BaseButton>
-                          </v-card-text>
-                        </v-card>
-                      </v-menu>
+                              <span class="font-weight-bold text-subtitle-1">
+                                {{ cell.symbol }}
+                              </span>
+                            </v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-text class="d-flex">
+                              <BaseButton
+                                v-for="(item, index) in symbolLists"
+                                :key="index"
+                                small
+                                color="primary"
+                                text
+                                @click="
+                                  selectSymbol(
+                                    item.abbv,
+                                    cell,
+                                    rowIndex,
+                                    cellIndex
+                                  )
+                                "
+                              >
+                                {{ item.abbv }}
+                              </BaseButton>
+                            </v-card-text>
+                          </v-card>
+                        </v-menu>
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-data-table>
-      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-data-table>
+        </div>
 
-      <div class="d-flex justify-center">
-        <BaseButton type="submit" style="width: 200px">
-          {{ t('common.submit') }}
-        </BaseButton>
-      </div>
-    </ParentCard>
-  </Form>
+        <div class="d-flex justify-center">
+          <BaseButton type="submit" style="width: 200px">
+            {{ t('common.submit') }}
+          </BaseButton>
+        </div>
+      </ParentCard>
+    </Form>
+  </v-container>
 </template>
 
 <script setup>
