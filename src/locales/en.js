@@ -102,7 +102,23 @@ export default {
     },
   },
   addMemberSkill: {
+    employee_competency: 'Employee Competency List',
     title: 'Employee Competency Form',
+    table: {
+      staff: 'Staff',
+      project: 'Project',
+      position: 'position',
+      grade: 'grade',
+      join_date: 'Join Date',
+      japanese_level: 'Japanese Level',
+      sg_experience: 'SG Experience',
+      prev_experience: 'Previous Experience',
+      total_experience: 'Total Experience',
+      responsibility: 'Responsibility',
+      major_tech_stack: 'Major Tech Stack',
+      view_skill: 'View Skills',
+      action: 'Action',
+    },
     form: {
       staff: 'Staff',
       project: 'Project',
@@ -115,6 +131,8 @@ export default {
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
       major_tech_stack: 'Major Tech Stack',
+      view_skill: 'View Skills',
+      action: 'Action',
     },
   },
   workHourReport: {
@@ -129,6 +147,14 @@ export default {
       period: 'Start Time ~ Finish Time',
       startTime: 'Start Time',
       finishTime: 'Finish Time',
+      single: 'Single',
+      multiple: 'Multiple',
+    },
+    table: {
+      period: 'Period',
+      project_cd: 'Project Code',
+      project_name: 'Project Name',
+      task: 'Task',
     },
   },
   validation: {
@@ -162,5 +188,38 @@ export default {
     start_date: 'Start Date',
     end_date: 'End Date',
     hour: 'hrs',
+  },
+  creatLeave: {
+    title: 'Leave Registration',
+    options: {
+      selection: 'SELECT OPTION TYPE :',
+      existing: 'FOR EXISTING EMPLOYEE',
+      new: 'FOR NEW EMPLOYEE',
+      ot: 'FOR ADDING OT TIME',
+    },
+    form1: {
+      name: 'Name',
+      leave_type: 'Leave Type',
+      start_date: 'Start Date',
+      end_date: 'End Date',
+      reason: 'Reason',
+      part_time: 'Duration',
+    },
+    form2: {
+      name: 'Name',
+      permanent_date: 'Permanent Date',
+    },
+    form3: {
+      name: 'Name',
+      ot_time: 'OT Time',
+    },
+    table: {
+      name: 'Employee Name',
+      leave_type: 'Leave Type',
+      start_date: 'Start Date',
+      end_date: 'End Date',
+      reason: 'Reason',
+      part_time: 'Duration',
+    },
   },
 };

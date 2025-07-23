@@ -1,58 +1,102 @@
 <template>
-  <BaseTitle class="mb-3">
-    {{ t('addProject.title1') }}
-  </BaseTitle>
-  <ParentCard class="pa-2">
-    <Form
-      ref="formRef"
-      :validation-schema="projectCreateSchema"
-      @submit="submit"
-    >
-      <v-row class="mx-auto">
-        <v-col cols="12" md="6" lg="3">
-          <Field name="cd" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.cd')"
-              type="text"
-              variant="plain"
-              width="90%"
-              prependIcon="mdi-pound-box"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="3">
-          <Field name="eng_name" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.eng_name')"
-              type="text"
-              variant="plain"
-              width="90%"
-              prependIcon="mdi-format-letter-case"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="3">
-          <Field name="jp_name" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.jp_name')"
-              type="text"
-              variant="plain"
-              width="90%"
-              autocomplete="test"
-              prependIcon="mdi-ideogram-cjk"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="11" class="ml-2 ml-md-n7 mr-lg-0" md="6" lg="3">
+    <BaseTitle>
+      {{ t('addProject.title1') }}
+    </BaseTitle>
+    <ParentCard class="pa-2">
+      <Form
+        ref="formRef"
+        :validation-schema="projectCreateSchema"
+        @submit="submit"
+      >
+        <v-row class="mx-auto">
+          <v-col cols="12" md="6" lg="3">
+            <Field name="cd" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.cd')"
+                type="text"
+                variant="plain"
+                width="90%"
+                prependIcon="mdi-pound-box"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="3">
+            <Field name="eng_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.eng_name')"
+                type="text"
+                variant="plain"
+                width="90%"
+                prependIcon="mdi-format-letter-case"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="12" md="6" lg="3">
+            <Field name="jp_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.jp_name')"
+                type="text"
+                variant="plain"
+                width="90%"
+                autocomplete="test"
+                prependIcon="mdi-ideogram-cjk"
+                :error-messages="errorMessage"
+              ></BaseTextField>
+            </Field>
+          </v-col>
+          <v-col cols="11" class="ml-2 ml-md-n7 mr-lg-0" md="6" lg="3">
+            <div class="d-flex justify-end">
+              <BaseButton type="submit" style="width: 200px">
+                {{ t('common.submit') }}
+              </BaseButton>
+            </div>
+          </v-col>
+        </v-row>
+      </Form>
+    </ParentCard>
+
+    <div class="d-flex justify-space-between align-center mt-3">
+      <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
+      <div style="width: 50%">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          color="primary"
+          prepend-icon="mdi-magnify"
+          width="100%"
+          class="mb-n5"
+        >
+        </BaseTextField>
+      </div>
+    </div>
+    <ParentCard>
+      <BaseTable
+        :headers="headers"
+        :items="items"
+        :items-count="itemsCount"
+        :style="{ minHeight: windowHeight }"
+      >
+        <template #item.position="{ item }">
+          <div
+            class="rounded-pill py-1 px-1 text-center mx-auto"
+            :style="{
+              backgroundColor: item.position?.color,
+              width: '75px',
+              fontSize: '11px',
+            }"
+          >
+            {{ item.position?.name }}
+          </div>
+        </template>
+        <template #item.action="{ item }">
           <div class="d-flex justify-end">
             <BaseButton type="submit" style="width: 200px">
               {{ t('common.submit') }}

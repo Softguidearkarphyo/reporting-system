@@ -156,7 +156,7 @@
               :label="t('addMemberSkill.form.responsibility')"
               class="mx-auto"
               :items="responsibilityList"
-              prependIcon="mdi-ideogram-cjk"
+              prependIcon="mdi-account-check"
               :width="'320px'"
               item-title="name"
               item-value="id"
@@ -173,7 +173,7 @@
               :label="t('addMemberSkill.form.major_tech_stack')"
               class="mx-auto"
               :items="skillSets"
-              prependIcon="mdi-ideogram-cjk"
+              prependIcon="mdi-star-shooting"
               :width="'320px'"
               item-title="name"
               item-value="id"
@@ -268,11 +268,13 @@ import { useI18n } from 'vue-i18n';
 import { useDisplay, useTheme } from 'vuetify';
 import { useMemberStore } from '@/stores/member/member';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useSystemStore } from '@/stores/system/system';
 import { useProjectStore } from '@/stores/project/project.js';
 import { skillSheetSchema } from '@/plugins/validations/skill-sheet-create';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 const route = useRoute();
+const router = useRouter();
 const { lgAndUp, mdAndUp } = useDisplay();
 const theme = useTheme();
 const memberStore = useMemberStore();
@@ -284,7 +286,6 @@ const formRef = ref(null);
 const openMenus = ref([]);
 const memberList = ref([]);
 const projectList = ref([]);
-
 const positionList = ref([]);
 const gradeList = ref([]);
 const japaneseLevelList = ref([]);
@@ -394,12 +395,14 @@ const fetch = async () => {
     projectStore.fetchProject(),
   ]);
   memberList.value =
-    memberStore.getMembers
-      ?.filter((member) => !member.skill_sheet)
-      .map((item) => ({
-        id: item.id,
-        name: item.eng_name,
-      })) ?? [];
+    (skillSheetId
+      ? memberStore.getMembers
+      : memberStore.getMembers?.filter((member) => !member.skill_sheet)
+    )?.map((item) => ({
+      id: item.id,
+      name: item.eng_name,
+    })) ?? [];
+
   projectList.value =
     projectStore.getProjects?.map((item) => ({
       id: item.id,
@@ -440,7 +443,17 @@ const submit = async (values) => {
     skills,
   };
 
-  const res = await skillSheetStore.createSkillSheet(payload);
+  let res;
+  if (skillSheetId) {
+    const payloadd = { ...payload, id: skillSheetId };
+    res = await skillSheetStore.updateSkillSheet(payloadd);
+  } else {
+    res = await skillSheetStore.createSkillSheet(payload);
+  }
+
+  if (res?.data?.status === 200) {
+    router.push({ name: 'member-skill' });
+  }
 };
 </script>
 

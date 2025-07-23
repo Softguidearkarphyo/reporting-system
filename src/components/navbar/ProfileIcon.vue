@@ -14,7 +14,7 @@
     </template>
     <v-sheet rounded="md" width="150" elevation="10" class="mt-2 color">
       <v-list class="py-0" lines="one" density="compact">
-        <v-list-item to="/reporting-system/profile" value="profile">
+        <v-list-item @click="EditEmployee" value="profile">
           <template v-slot:prepend>
             <v-icon class="profile">mdi-account</v-icon>
           </template>
@@ -63,6 +63,14 @@ const handleLogout = async () => {
   await authStore.logout();
   router.push('/');
 };
+const EditEmployee = () => {
+  const staff = authStore.loginStaff;
+  const memberId = staff?.id;
+  if (memberId) {
+    router.push(`/reporting-system/edit-members/${memberId}`);
+  }
+};
+
 </script>
 <style scoped>
 .v-theme--dark .color {

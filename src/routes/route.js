@@ -141,12 +141,12 @@ const routes = [
         component: AddSkill,
         meta: { requiresAuth: true },
       },
-      {
-        path: '/reporting-system/profile',
-        name: 'profile',
-        component: Profile,
-        meta: { requiresAuth: true },
-      },
+      // {
+      //   path: '/reporting-system/profile',
+      //   name: 'profile',
+      //   component: Profile,
+      //   meta: { requiresAuth: true },
+      // },
       {
         path: '/reporting-system/show-project-search',
         name: 'show-project-date',
