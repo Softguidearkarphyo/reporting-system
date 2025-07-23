@@ -157,6 +157,17 @@ export default {
       task: 'Task',
     },
   },
+  staffCard: {
+    name: 'name',
+    image: 'Select an image',
+    edit: 'Photo Editing',
+    download: 'Download',
+    reset: 'Reset',
+    label: 'Please select an image',
+    remove: 'Remove BG',
+    retouch: 'retouch',
+    crop: 'Crop',
+  },
   validation: {
     required: '{field} is required',
     username_mismatch: 'Username does not match',

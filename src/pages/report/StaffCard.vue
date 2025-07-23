@@ -2,43 +2,50 @@
   <BaseTitle>Staff Card</BaseTitle>
   <v-row>
     <v-col col="12" md="8">
-      <ParentCard>
+      <ParentCard height="650px">
         <StaffCardCanvas
           ref="cardImage"
           @dropped-image="updateDroppedImage"
           :members="members"
         />
-        <v-card-actions class="mt-5">
-          <v-row no-gutters dense>
-            <v-col cols="6">
-              <BaseSelect
-                :label="t('addMemberSkill.form.name')"
-                class="mx-auto"
-                :items="memberList"
-                item-value="id"
-                item-title="name"
-                prependIcon="mdi-account"
-                :width="'400px'"
-                @change="selectMember"
-              />
-            </v-col>
-            <v-col cols="3">
-              <v-btn @click="downloadCard"> Download </v-btn>
-            </v-col>
-            <v-col cols="3">
-              <v-btn @click="resetImage"> Reset </v-btn>
-            </v-col>
-          </v-row>
+        <v-card-actions class="mt-5 d-flex justify-center">
+          <div class="my-6">
+            <BaseSelect
+              v-model="selectedItem"
+              :label="t('staffCard.name')"
+              class="mx-auto"
+              :items="memberList"
+              item-value="id"
+              item-title="name"
+              prependIcon="mdi-account"
+              @change="selectMember"
+            />
+
+            <v-row class="mt-6" justify="center" align="center">
+              <v-col cols="auto">
+                <v-btn color="primary" variant="outlined" @click="downloadCard">
+                  <v-icon start>mdi-download</v-icon>
+                  {{ t('staffCard.download') }}
+                </v-btn>
+              </v-col>
+              <v-col cols="auto">
+                <v-btn color="error" variant="outlined" @click="resetImage">
+                  <v-icon start>mdi-refresh</v-icon>
+                  {{ t('staffCard.reset') }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </div>
         </v-card-actions>
       </ParentCard>
     </v-col>
     <v-col col="12" md="4">
-      <ParentCard>
-        <BaseTitle class="mb-4">Photo Editing</BaseTitle>
+      <ParentCard height="650px">
+        <BaseTitle class="mb-4">{{ t('staffCard.edit') }}</BaseTitle>
         <BaseFileInput
           v-model="imageFile"
           accept="image/*"
-          label="Select an image"
+          :label="t('staffCard.image')"
           prepend-icon="mdi-camera"
           @change="onFileChange"
           @click:clear="clearImages"
@@ -67,7 +74,7 @@
                 <v-img
                   v-else-if="resultImageUrl"
                   :src="resultImageUrl"
-                  max-height="400"
+                  max-height="350"
                   contain
                   draggable="true"
                   @dragstart="handleDragStart"
@@ -76,11 +83,11 @@
                 <v-img
                   v-else-if="originalImageUrl"
                   :src="originalImageUrl"
-                  max-height="400"
+                  max-height="350"
                   contain
                   draggable="false"
                 />
-                <v-card-text v-else> Please select an image </v-card-text>
+                <v-card-text v-else>{{ t('staffCard.label') }}</v-card-text>
               </div>
             </v-card>
           </v-col>
@@ -95,7 +102,7 @@
                 :disabled="!imageFile || isProcessing"
                 @click="removeBackground"
               >
-                Remove BG
+                {{ t('staffCard.remove') }}
               </v-btn>
             </v-col>
             <v-col cols="3">
@@ -105,7 +112,7 @@
                 :disabled="!isEnhancing"
                 @click="enhanceImage"
               >
-                Retouch
+                {{ t('staffCard.retouch') }}
               </v-btn>
             </v-col>
             <v-col cols="3">
@@ -116,12 +123,12 @@
                 :disabled="isProcessing || isEnhancing"
                 @click="cropImage"
               >
-                Crop
+                {{ t('staffCard.crop') }}
               </v-btn>
             </v-col>
             <v-col cols="3" v-if="resultImageUrl">
               <v-btn block :disabled="isProcessing" @click="downloadImage">
-                Download
+                {{ t('staffCard.download') }}
               </v-btn>
             </v-col>
           </v-row>
@@ -150,6 +157,7 @@ const enhancementType = ref('general');
 const enhancementStrength = ref(50);
 const cardImage = ref(null);
 const members = ref([]);
+const selectedItem = ref(null);
 const selectedId = ref(null);
 
 onMounted(() => {
@@ -200,6 +208,12 @@ const selectMember = async (id) => {
     members.value = [];
   }
 };
+
+function resetImage() {
+  selectedItem.value = null;
+  members.value = [];
+  cardImage.value.reset();
+}
 
 function handleDragStart(event) {
   const src = event.target.getAttribute('src');
@@ -326,13 +340,12 @@ const enhanceImage = async () => {
     formData.append('strength', enhancementStrength.value.toString());
 
     const { data } = await axios.post(
-      'https://api.picsart.io/tools/1.0/enhance/face',
+      'https://api.vyro.ai/v2/image/enhance',
       formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'api-key':
-            'eyJraWQiOiI5NzIxYmUzNi1iMjcwLTQ5ZDUtOTc1Ni05ZDU5N2M4NmIwNTEiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhdXRoLXNlcnZpY2UtMTViNzNhMDgtMDdkMi00NWE2LTkyYzUtMjM5YzBjN2JlYjNmIiwiYXVkIjoiNDkwMjQ3ODMyMDA1MTAxIiwibmJmIjoxNzUyNTUxODg4LCJzY29wZSI6WyJiMmItYXBpLmdlbl9haSIsImIyYi1hcGkuaW1hZ2VfYXBpIl0sImlzcyI6Imh0dHBzOi8vYXBpLnBpY3NhcnQuY29tL3Rva2VuLXNlcnZpY2UiLCJvd25lcklkIjoiNDkwMjQ3ODMyMDA1MTAxIiwiaWF0IjoxNzUyNTUxODg3LCJqdGkiOiJiZDgzMDgyNS01OGRhLTQzYWItYTYxZi0wYzgxMzFkZDRjOGEifQ.Pbb91_jVM847MHW58f5WDiIWXNR2EYtLRo59v1Ll6Rm9OFlncIpQxpP5MvRsUcGq05MNMqNlFBXMRzCVpVgMk8qiIE6eD-PZNL9iK_TZNEmTfz9CpOgCSvW8OVVk4KHiFNXN3qFTYA83M3yWxcZ476RTuyNxZ9A6G3e1rEqAsiehMYSqqYMHAufb1cHHzj-VQ95lNju5ODjbRI0pNB0kfXs-knMEzb8ZReqH36Sqcntz-M36QbZixPEbmvDGWWl7lilFPwIfjZ8Qo1mWTusPLRdOt6DeoNS2hsNmPnZEQkGmQe2jNZb4Rd67fVG5FTGu7fehXzS4klStI-kpCV1Jbg',
+          'api-key': '',
         },
       }
     );

@@ -3,249 +3,301 @@
     <BaseTitle class="mb-3">
       {{ t('workHourReport.title') }}
     </BaseTitle>
-    <ParentCard class="pa-2">
-      <Form ref="formRef" :validation-schema="reportingSchema" @submit="submit">
-        <v-row>
-          <v-col cols="6" md="4" lg="3">
-            <v-date-picker
-              v-model="selectedDates"
-              class="mx-auto"
-              rounded="lg"
-              hide-header
-              :multiple="isDayMultiple"
-            >
-            </v-date-picker>
-            <div class="d-flex justify-center">
-              <span class="mr-5" style="font-size: 1rem">{{
-                t('workHourReport.form.single')
-              }}</span>
-              <v-switch
-                v-model="isDayMultiple"
-                color="primary"
-                class="mb-n10 mt-n4"
-                :value="true"
-              ></v-switch>
-              <span class="ml-5" style="font-size: 1rem">{{
-                t('workHourReport.form.multiple')
-              }}</span>
-            </div>
-          </v-col>
-          <v-col cols="6" md="4" lg="3">
-            <v-row>
-              <v-col cols="12">
-                <Field
-                  name="employee"
-                  v-slot="{ field: { value, ...field }, errorMessage }"
-                >
-                  <BaseAutoComplete
-                    v-if="role === ADMIN"
-                    v-model="selectedEmployee"
-                    v-bind="field"
-                    :label="t('workHourReport.form.employee')"
-                    :items="employees"
-                    prependIcon="mdi-account"
-                    item-title="name"
-                    item-value="id"
-                    width="90%"
-                    :chip-width="195"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseAutoComplete>
-                  <div class="mt-4 mb-6 text-h5 staff-name" v-else>
-                    {{ staffName }}
-                  </div>
-                </Field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <Field name="project" v-slot="{ field, errorMessage }">
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('workHourReport.form.project')"
-                    :items="projects"
-                    prependIcon="mdi-microsoft-teams"
-                    item-title="name"
-                    item-value="id"
-                    width="90%"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseSelect>
-                </Field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <Field name="task" v-slot="{ field, errorMessage }">
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('workHourReport.form.task')"
-                    :items="tasks"
-                    prependIcon="mdi-clipboard-text"
-                    item-title="name"
-                    width="90%"
-                    item-value="id"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseSelect>
-                </Field>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="6" md="4" lg="3">
-            <v-row>
-              <v-col cols="12">
-                <Field
-                  name="timeSelectionMode"
-                  rules=""
-                  v-slot="{ errorMessage }"
-                >
-                  <v-radio-group
-                    v-model="timeSelectionMode"
-                    inline
-                    class="mt-2 ml-n2"
-                    :error-messages="errorMessage"
-                  >
-                    <v-radio
-                      :label="t('workHourReport.form.auto')"
-                      :value="0"
-                      color="primary"
-                      class="radio-btn mr-5"
-                    ></v-radio>
-                    <v-radio
-                      :label="t('workHourReport.form.manual')"
-                      :value="1"
-                      color="primary"
-                      class="radio-btn"
-                    ></v-radio>
-                  </v-radio-group>
-                </Field>
-              </v-col>
-            </v-row>
-            <v-row v-if="timeSelectionMode === 0">
-              <v-col cols="12">
-                <Field name="period" v-slot="{ field, errorMessage }">
-                  <BaseMultiSelect
-                    v-model="selectedPeriod"
-                    v-bind="field"
-                    :label="t('workHourReport.form.period')"
-                    :items="periods"
-                    prependIcon="mdi-clock"
-                    item-title="name"
-                    width="90%"
-                    item-value="id"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseMultiSelect>
-                </Field>
-              </v-col>
-            </v-row>
-            <v-row v-else>
-              <v-col cols="6">
-                <Field name="startTime" v-slot="{ field, errorMessage }">
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('workHourReport.form.startTime')"
-                    :items="timeSlots"
-                    prependIcon="mdi-clock-time-nine"
-                    item-title="name"
-                    item-value="name"
-                    width="90%"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseSelect>
-                </Field>
-              </v-col>
-              <v-col cols="6">
-                <Field name="finishTime" v-slot="{ field, errorMessage }">
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('workHourReport.form.finishTime')"
-                    :items="timeSlots"
-                    item-title="name"
-                    item-value="name"
-                    width="90%"
-                    class="ml-n4"
-                    :error-messages="errorMessage"
-                  >
-                  </BaseSelect>
-                </Field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <div class="ml-n2">
-                  <BaseButton type="submit" style="width: 90%">
-                    {{ t('common.submit') }}
-                  </BaseButton>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="12" lg="3">
-            <v-row>
-              <v-col cols="4" md="4" lg="12">
-                <div>
-                  <BaseButton style="width: 170px" class="rounded-pill">
-                    {{ t('common.autoFill') }}
-                  </BaseButton>
-                </div>
-              </v-col>
-              <v-col cols="4" md="4" lg="12">
-                <div class="mt-6">
-                  <BaseButton style="width: 170px" class="rounded-pill">
-                    {{ t('common.saveSetting') }}
-                  </BaseButton>
-                </div>
-              </v-col>
-              <v-col cols="4" md="4" lg="12">
-                <div class="mt-6">
-                  <BaseButton style="width: 170px" class="rounded-pill">
-                    {{ t('common.download') }}
-                  </BaseButton>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </Form>
-    </ParentCard>
-
-    <v-carousel
-      v-if="selectedIsoDates.length > 0"
-      v-model="carouselIndex"
-      hide-delimiters
-      :show-arrows="isDayMultiple ? 'hover' : false"
-      style="height: auto"
-    >
-      <v-carousel-item
-        v-for="(selectedIsoDate, index) in selectedIsoDates"
-        :key="selectedIsoDate"
-        :value="index"
-      >
-        <ParentCard>
-          <div class="mb-3 d-flex justify-end">
-            <BaseTitle style="width: 95%">
-              {{ selectedIsoDate }}
-            </BaseTitle>
-          </div>
-
-          <BaseTable
-            :headers="headers"
-            :items="dateTaskGroups?.[selectedIsoDate]"
-            :items-count="itemsCount"
-            :style="{ minHeight: windowHeight }"
-            :pagination="false"
-            style="width: 95%"
-            class="mx-auto"
+    <v-row>
+      <v-col cols="6"
+        ><ParentCard>
+          <Form
+            ref="formRef"
+            :validation-schema="reportingSchema"
+            @submit="submit"
           >
-          </BaseTable> </ParentCard
-      ></v-carousel-item>
-    </v-carousel>
+            <v-row>
+              <v-col cols="6">
+                <v-row>
+                  <v-col cols="12" class="relative mb-n1">
+                    <v-date-picker
+                      v-model="selectedDates"
+                      rounded="lg"
+                      hide-header
+                      :multiple="isDayMultiple"
+                      :style="{
+                        transform: 'scale(1.1)',
+                        transformOrigin: 'top left',
+                        height: '90%',
+                      }"
+                    >
+                    </v-date-picker>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="d-flex justify-center mb-n3">
+                    <span class="mr-5 mt-4" style="font-size: 1rem">{{
+                      t('workHourReport.form.single')
+                    }}</span>
+                    <v-switch
+                      v-model="isDayMultiple"
+                      color="primary"
+                      :value="true"
+                    ></v-switch>
+                    <span class="ml-5 mt-4" style="font-size: 1rem">{{
+                      t('workHourReport.form.multiple')
+                    }}</span>
+                  </v-col>
+                </v-row>
+                <v-row
+                  ><v-col cols="12" class="d-flex justify-space-around">
+                    <v-btn
+                      icon
+                      color="primary"
+                      class="circle-btn"
+                      density="comfortable"
+                    >
+                      <v-icon> tabler:IconPlayerPlay </v-icon>
+                      <v-tooltip
+                        activator="parent"
+                        location="bottom"
+                        color="primary"
+                        >{{ t('common.autoFill') }}</v-tooltip
+                      >
+                    </v-btn>
+                    <v-btn
+                      icon
+                      color="primary"
+                      class="circle-btn"
+                      density="comfortable"
+                    >
+                      <v-icon> tabler:IconBookmarks </v-icon>
+                      <v-tooltip activator="parent" location="bottom">{{
+                        t('common.saveSetting')
+                      }}</v-tooltip>
+                    </v-btn>
+                    <v-btn
+                      icon
+                      color="primary"
+                      class="circle-btn"
+                      density="comfortable"
+                    >
+                      <v-icon> tabler:IconCloudDown </v-icon>
+                      <v-tooltip activator="parent" location="bottom">{{
+                        t('common.download')
+                      }}</v-tooltip>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="6">
+                <v-row>
+                  <v-col cols="12">
+                    <Field
+                      name="employee"
+                      v-slot="{ field: { value, ...field }, errorMessage }"
+                    >
+                      <BaseAutoComplete
+                        v-if="role === ADMIN"
+                        v-model="selectedEmployee"
+                        v-bind="field"
+                        :label="t('workHourReport.form.employee')"
+                        :items="employees"
+                        prependIcon="tabler:IconUser"
+                        item-title="name"
+                        item-value="id"
+                        width="90%"
+                        :chip-width="195"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseAutoComplete>
+                      <div class="mt-4 mb-6 text-h5 staff-name" v-else>
+                        {{ staffName }}
+                      </div>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <Field name="project" v-slot="{ field, errorMessage }">
+                      <BaseSelect
+                        v-model="field.value"
+                        v-bind="field"
+                        :label="t('workHourReport.form.project')"
+                        :items="projects"
+                        prependIcon="tabler:IconWorldPlus"
+                        item-title="name"
+                        item-value="id"
+                        width="90%"
+                        class="mt-n2"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseSelect>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <Field name="task" v-slot="{ field, errorMessage }">
+                      <BaseSelect
+                        v-model="field.value"
+                        v-bind="field"
+                        :label="t('workHourReport.form.task')"
+                        :items="tasks"
+                        prependIcon="tabler:IconChecklist "
+                        item-title="name"
+                        width="90%"
+                        item-value="id"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseSelect>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" class="mb-n6 mt-n3">
+                    <Field
+                      name="timeSelectionMode"
+                      rules=""
+                      v-slot="{ errorMessage }"
+                    >
+                      <v-radio-group
+                        v-model="timeSelectionMode"
+                        inline
+                        class="mt-2 ml-n2"
+                        :error-messages="errorMessage"
+                      >
+                        <v-radio
+                          :label="t('workHourReport.form.auto')"
+                          :value="0"
+                          color="primary"
+                          class="radio-btn mr-5"
+                        ></v-radio>
+                        <v-radio
+                          :label="t('workHourReport.form.manual')"
+                          :value="1"
+                          color="primary"
+                          class="radio-btn"
+                        ></v-radio>
+                      </v-radio-group>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row v-if="timeSelectionMode === 0">
+                  <v-col cols="12">
+                    <Field name="period" v-slot="{ field, errorMessage }">
+                      <BaseMultiSelect
+                        v-model="selectedPeriod"
+                        v-bind="field"
+                        :label="t('workHourReport.form.period')"
+                        :items="periods"
+                        prependIcon="tabler:IconClockHour9"
+                        item-title="name"
+                        width="90%"
+                        item-value="id"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseMultiSelect>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row v-else>
+                  <v-col cols="6">
+                    <Field name="startTime" v-slot="{ field, errorMessage }">
+                      <BaseSelect
+                        v-model="field.value"
+                        v-bind="field"
+                        :label="t('workHourReport.form.startTime')"
+                        :items="timeSlots"
+                        prependIcon="tabler:IconClockHour5"
+                        item-title="name"
+                        item-value="name"
+                        width="90%"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseSelect>
+                    </Field>
+                  </v-col>
+                  <v-col cols="6">
+                    <Field name="finishTime" v-slot="{ field, errorMessage }">
+                      <BaseSelect
+                        v-model="field.value"
+                        v-bind="field"
+                        :label="t('workHourReport.form.finishTime')"
+                        :items="timeSlots"
+                        item-title="name"
+                        item-value="name"
+                        width="90%"
+                        class="ml-n4"
+                        :error-messages="errorMessage"
+                      >
+                      </BaseSelect>
+                    </Field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <div
+                      class="d-flex justify-space-between ml-n2"
+                      style="width: 95%"
+                    >
+                      <BaseButton
+                        color="primary"
+                        density="compact"
+                        @click="overTime = overTime > 0 ? overTime - 0.5 : 0"
+                        ><v-icon>mdi-minus</v-icon></BaseButton
+                      >
+                      <div class="mt-2">{{ overTime }} hours</div>
+                      <BaseButton
+                        color="primary"
+                        density="compact"
+                        @click="overTime = overTime + 0.5"
+                        ><v-icon>mdi-plus</v-icon></BaseButton
+                      >
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row
+                  ><v-col cols="12">
+                    <div class="ml-n2 mt-2">
+                      <BaseButton type="submit" style="width: 90%">
+                        {{ t('common.submit') }}
+                      </BaseButton>
+                    </div>
+                  </v-col></v-row
+                >
+              </v-col>
+            </v-row>
+          </Form>
+        </ParentCard></v-col
+      >
+      <v-col cols="6"
+        ><v-carousel
+          v-if="selectedIsoDates.length > 0"
+          v-model="carouselIndex"
+          hide-delimiters
+          :show-arrows="isDayMultiple ? 'hover' : false"
+          style="height: auto"
+        >
+          <v-carousel-item
+            v-for="(selectedIsoDate, index) in selectedIsoDates"
+            :key="selectedIsoDate"
+            :value="index"
+          >
+            <ParentCard>
+              <h3 class="color-primary text-center">
+                {{ selectedIsoDate }}
+              </h3>
+
+              <BaseTable
+                :headers="headers"
+                :items="dateTaskGroups?.[selectedIsoDate]"
+                :items-count="itemsCount"
+                :style="{ minHeight: windowHeight }"
+                :pagination="false"
+                density="compact"
+                style="width: 92%"
+                class="mx-auto dense-table"
+              >
+              </BaseTable> </ParentCard
+          ></v-carousel-item> </v-carousel
+      ></v-col>
+    </v-row>
 
     <BaseConfirmDelete
       v-model="warnDateSelection"
@@ -294,6 +346,7 @@ const isDayMultiple = ref(true);
 const currentEmployee = ref();
 const dateTaskGroups = ref({});
 const carouselIndex = ref(0);
+const overTime = ref(0);
 const employees = computed(() => {
   return employeeItems.value?.map((item) => ({
     ...item,
@@ -414,9 +467,7 @@ const getList = async () => {
     return a.sort_key - b.sort_key;
   });
   employeeItems.value = [...tmpMembers];
-  if (role !== ADMIN) {
-    currentEmployee.value = employeeItems.value?.[0];
-  }
+  groupDates();
 };
 const generatePeriods = (startTime, endTime) => {
   const slots = [];
@@ -432,6 +483,21 @@ const generatePeriods = (startTime, endTime) => {
     const hours = start.getHours().toString().padStart(2, '0');
     const minutes = start.getMinutes().toString().padStart(2, '0');
     slots.push(`${hours}:${minutes}`);
+    start.setMinutes(start.getMinutes() + 30);
+  }
+  return slots;
+};
+const generateExtraPeriods = (startTime, hours) => {
+  const slots = [];
+  const [startHour, startMin] = startTime.split(':').map(Number);
+  const start = new Date();
+  start.setHours(startHour, startMin, 0, 0);
+  start.setMinutes(start.getMinutes() + 30);
+  const end = new Date(start.getTime() + (hours - 0.5) * 60 * 60 * 1000);
+  while (start <= end) {
+    const h = start.getHours().toString().padStart(2, '0');
+    const m = start.getMinutes().toString().padStart(2, '0');
+    slots.push(`${h}:${m}`);
     start.setMinutes(start.getMinutes() + 30);
   }
   return slots;
@@ -460,6 +526,14 @@ const submit = async (values) => {
     } else {
       totalPeriods = generatePeriods(values.startTime, values.finishTime);
     }
+    if (overTime.value > 0) {
+      totalPeriods.push(
+        ...generateExtraPeriods(
+          totalPeriods[totalPeriods.length - 1],
+          overTime.value
+        )
+      );
+    }
     const targetEmployees =
       role === ADMIN ? selectedEmployee.value : [staff.id];
     if (values.project) {
@@ -480,9 +554,12 @@ const submit = async (values) => {
     } else {
       targetEmployees?.forEach((employee) => {
         totalDates?.forEach((date) => {
-          data.push({
-            date: date,
-            staff_id: employee,
+          totalPeriods?.forEach((period) => {
+            data.push({
+              date: date,
+              staff_id: employee,
+              period: period,
+            });
           });
         });
       });
@@ -490,9 +567,17 @@ const submit = async (values) => {
     }
   }
   await getList();
-  groupDates();
 };
 const groupDates = () => {
+  if (role !== ADMIN) {
+    currentEmployee.value = employeeItems.value?.[0];
+  } else if (selectedEmployee.value?.length === 1) {
+    currentEmployee.value = employeeItems.value?.find(
+      (item) => item.id === selectedEmployee.value[0]
+    );
+  } else {
+    currentEmployee.value = undefined;
+  }
   dateTaskGroups.value = currentEmployee.value?.task_performance?.reduce(
     (acc, task) => {
       if (selectedIsoDates.value?.includes(task.date)) {
@@ -508,8 +593,8 @@ const groupDates = () => {
   const lastDate = isDayMultiple.value
     ? selectedDates.value[selectedDates.value?.length - 1]
     : selectedDates.value;
-  if (carouselIndex.value < 0) {
-    const index = selectedIsoDates.value.indexOf(changeDateTimeZone(lastDate));
+  if (lastDate) {
+    const index = selectedIsoDates.value?.indexOf(changeDateTimeZone(lastDate));
     if (index !== -1) {
       carouselIndex.value = index;
     }
@@ -535,25 +620,9 @@ watch(
     }
   }
 );
-watch(
-  () => selectedIsoDates.value,
-  () => {
-    groupDates();
-  }
-);
-watch(
-  () => selectedEmployee.value,
-  (val) => {
-    if (selectedEmployee.value?.length === 1) {
-      currentEmployee.value = employeeItems.value?.find(
-        (item) => item.id === selectedEmployee.value[0]
-      );
-      groupDates();
-    } else {
-      currentEmployee.value = undefined;
-    }
-  }
-);
+watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
+  groupDates();
+});
 </script>
 
 <style scoped>
@@ -571,14 +640,14 @@ watch(
 .staff-name {
   color: rgb(var(--v-theme-primary));
 }
-::v-deep(.v-window__left) {
-  position: absolute !important;
-  top: 15px !important;
-  left: 15px !important;
+::v-deep(.v-table .v-table__wrapper table tbody tr td) {
+  font-size: 0.75rem !important;
 }
-::v-deep(.v-window__right) {
-  position: absolute;
-  top: 15px !important;
-  right: 15px !important;
+::v-deep(.circle-btn .v-btn__content) {
+  color: white !important;
 }
+/* .v-tooltip > ::v-deep(.v-overlay__content) {
+  background-color: rgba(var(--v-theme-primary), 0.2) !important;
+  color: rgb(var(--v-theme-primary)) !important;
+} */
 </style>

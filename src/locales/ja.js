@@ -129,6 +129,17 @@ export default {
       task: '作業',
     },
   },
+  staffCard: {
+    name: '名前',
+    image: '画像を選択',
+    edit: '写真編集',
+    download: 'ダウンロード',
+    reset: 'リセット',
+    label: '画像を選択してください',
+    remove: '背景を削除',
+    retouch: 'レタッチ',
+    crop: '切り抜き',
+  },
   validation: {
     required: '{field}は必須項目です',
     username_mismatch: 'ユーザー名が一致しません',
