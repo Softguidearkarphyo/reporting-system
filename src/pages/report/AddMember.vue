@@ -83,6 +83,7 @@
                 variant="plain"
                 prependIcon="mdi-pound-box"
                 :width="'320px'"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
@@ -131,6 +132,7 @@
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               >
               </BaseSelect>
@@ -148,6 +150,7 @@
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               >
               </BaseSelect>
@@ -166,11 +169,12 @@
                 autocomplete="test"
                 prependIcon="mdi-email"
                 :width="'320px'"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col cols="12" md="6" lg="4">
+          <v-col v-if="roleId === 2" cols="12" md="6" lg="4">
             <Field name="permanent_date" v-slot="{ field, errorMessage }">
               <BaseDatePicker
                 v-model="field.value"
@@ -180,7 +184,8 @@
                 prependIcon="mdi-calendar-month"
                 :width="'320px'"
                 :error-messages="errorMessage"
-              ></BaseDatePicker>
+                :disabled="true"
+              />
             </Field>
           </v-col>
           <v-col cols="12" md="6" lg="4">
@@ -229,6 +234,7 @@
                 :width="'320px'"
                 item-title="name"
                 item-value="id"
+               :disabled="roleId === 2"
               >
               </BaseMultiSelect>
             </Field>
@@ -269,6 +275,8 @@ import { useI18n } from 'vue-i18n';
 import { memberSchema } from '@/plugins/validations/add-member.js';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth/auth.js';
+
 const { t } = useI18n();
 const formRef = ref(null);
 const isEditMode = ref(false);
@@ -277,6 +285,8 @@ const memberStore = useMemberStore();
 const route = useRoute();
 const router = useRouter();
 const memberId = route.params.memberId;
+const authStore = useAuthStore();
+const roleId = computed(() => authStore.staff?.role ?? 0);
 watch(
   () => route.params.memberId,
   async (val) => {
@@ -312,11 +322,16 @@ const submit = async (values) => {
   let res;
   if (memberId) {
     const payload = { ...values, id: memberId };
-    res = await memberStore.updateMember(payload);
+    res = await memberStore.updateMember(payload);   
   } else {
     res = await memberStore.createMember(values);
   }
+
   if (res?.data?.status === 200) {
+    const updatedMember = res.data.staff;
+    if (Number(memberId) === authStore.loginStaff?.id) {   
+      authStore.setStaff(updatedMember);
+    }
     router.push({ name: 'member-lists' });
   }
 };

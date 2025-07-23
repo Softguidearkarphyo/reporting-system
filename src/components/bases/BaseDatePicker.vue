@@ -32,6 +32,7 @@
         hide-details
         @update:model-value="onDateSelected"
         color="primary"
+        :disabled="disabled"
       />
     </div>
   </v-menu>

@@ -24,12 +24,14 @@ export const useAuthStore = defineStore('auth', () => {
       sessionStorage.setItem('staffname', staff.value.eng_name);
       const profileImg = profileImgPath(staff.value.eng_name);
       sessionStorage.setItem('profileImg', profileImg);
+      sessionStorage.setItem('role', staff.value.role);
     } catch (error) {
       token.value = null;
       staff.value = null;
       localStorage.removeItem('token');
       sessionStorage.removeItem('staffname');
       sessionStorage.removeItem('profileImg');
+      sessionStorage.removeItem('role');
       throw error;
     }
   }
@@ -41,6 +43,14 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       throw error;
     }
+  }
+
+  async function setStaff(newStaff) {
+    staff.value = newStaff;
+    sessionStorage.setItem('staffname', staff.value.eng_name);
+    const profileImg = profileImgPath(staff.value.eng_name);
+    sessionStorage.setItem('profileImg', profileImg);
+    sessionStorage.setItem('role', staff.value.role);
   }
 
   function logout() {
@@ -61,5 +71,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     fetchStaff,
     logout,
+    setStaff,
   };
 });

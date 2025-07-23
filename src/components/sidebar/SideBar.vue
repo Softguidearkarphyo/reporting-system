@@ -30,7 +30,7 @@
           </v-list-item>
 
           <!-- Admin Setting  -->
-          <v-list-group v-if="role === ADMIN" v-model="group" no-action>
+          <v-list-group v-if="role === 1" v-model="group" no-action>
             <template v-slot:activator="{ props }">
               <v-list-item
                 v-bind="props"
@@ -77,13 +77,11 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
-import { ADMIN } from '@/utils/constant';
-
 const { t } = useI18n();
 const authStore = useAuthStore();
 defineProps({ drawer: Boolean });
 const group = ref(true);
-const role = ref(authStore.staffRole);
+const role = computed(() => authStore.staff?.role ?? 0);
 const isRail = ref(false);
 
 const navbars = computed(() => [
