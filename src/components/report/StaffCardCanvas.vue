@@ -39,6 +39,7 @@
 </template>
 <script setup>
 import html2canvas from 'html2canvas';
+
 const dropped = ref(false);
 const droppedImgUrl = ref(null);
 const exportCard = ref(null);
@@ -64,6 +65,9 @@ function handleDrop(event) {
     dropped.value = true;
   }
 }
+function reset() {
+  droppedImgUrl.value = null;
+}
 
 const downloadAsImage = async () => {
   if (!exportCard?.value) {
@@ -85,7 +89,7 @@ const downloadAsImage = async () => {
   }
 };
 
-defineExpose({ downloadAsImage });
+defineExpose({ downloadAsImage, reset });
 </script>
 
 <style scoped>
