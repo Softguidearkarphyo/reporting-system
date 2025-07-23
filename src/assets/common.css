@@ -10,3 +10,6 @@
 .radio-btn .mdi-radiobox-blank {
   color: rgb(var(--v-theme-primary)) !important;
 }
+.color-primary {
+  color: rgb(var(--v-theme-primary)) !important;
+}
