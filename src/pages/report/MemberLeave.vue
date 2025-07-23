@@ -1,5 +1,3 @@
 <template>
-  <v-container>
-    <h1>Member Leave</h1>
-  </v-container>
+  <h1>Member Leave</h1>
 </template>

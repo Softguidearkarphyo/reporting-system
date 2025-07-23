@@ -1,37 +1,35 @@
 <template>
-  <v-container>
-    <BaseTitle>Report</BaseTitle>
-    <v-row
-      class="d-flex align-center"
-      justify="start"
-      no-gutters
-      style="gap: 16px"
-    >
-      <v-col cols="12" md="3">
-        <DatePicker
-          label="Start Date"
-          :style="{ width: '100%' }"
-          :is-hide-details="true"
-          customClass="mt-2"
-        />
-      </v-col>
+  <BaseTitle>Report</BaseTitle>
+  <v-row
+    class="d-flex align-center"
+    justify="start"
+    no-gutters
+    style="gap: 16px"
+  >
+    <v-col cols="12" md="3">
+      <DatePicker
+        label="Start Date"
+        :style="{ width: '100%' }"
+        :is-hide-details="true"
+        customClass="mt-2"
+      />
+    </v-col>
 
-      <v-col cols="12" md="3">
-        <DatePicker
-          label="End Date"
-          :style="{ width: '100%' }"
-          :is-hide-details="true"
-          customClass="mt-2"
-        />
-      </v-col>
+    <v-col cols="12" md="3">
+      <DatePicker
+        label="End Date"
+        :style="{ width: '100%' }"
+        :is-hide-details="true"
+        customClass="mt-2"
+      />
+    </v-col>
 
-      <v-col cols="12" md="3">
-        <BaseButton>submit</BaseButton>
-        <BaseButton>CSV</BaseButton>
-        <BaseButton>Excel</BaseButton>
-      </v-col>
-    </v-row>
-  </v-container>
+    <v-col cols="12" md="3">
+      <BaseButton>submit</BaseButton>
+      <BaseButton>CSV</BaseButton>
+      <BaseButton>Excel</BaseButton>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>

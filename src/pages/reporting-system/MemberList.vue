@@ -11,7 +11,7 @@
           dense
           autocomplete="test"
           prependIcon="mdi-magnify"
-          :width="'300px'"
+          :width="'100%'"
         ></BaseTextField>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="surface" elevation="0" height="70" flat clipped-left>
-    <v-app-bar-nav-icon @click="emit('toggle')" variant="flat">
+    <v-app-bar-nav-icon @click="emit('toggle')">
       <v-icon>mdi-view-headline</v-icon>
     </v-app-bar-nav-icon>
     <v-toolbar-title>SOFTGUIDE</v-toolbar-title>

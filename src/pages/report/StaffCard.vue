@@ -1,136 +1,134 @@
 <template>
-  <v-container>
-    <BaseTitle>Staff Card</BaseTitle>
-    <v-row>
-      <v-col col="12" md="8">
-        <ParentCard>
-          <StaffCardCanvas
-            ref="cardImage"
-            @dropped-image="updateDroppedImage"
-            :members="members"
-          />
-          <v-card-actions class="mt-5">
-            <v-row no-gutters dense>
-              <v-col cols="6">
-                <BaseSelect
-                  :label="t('addMemberSkill.form.name')"
-                  class="mx-auto"
-                  :items="memberList"
-                  item-value="id"
-                  item-title="name"
-                  prependIcon="mdi-account"
-                  :width="'400px'"
-                  @change="selectMember"
-                />
-              </v-col>
-              <v-col cols="3">
-                <v-btn @click="downloadCard"> Download </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <!-- <v-btn @click="resetImage"> Reset </v-btn> -->
-              </v-col>
-            </v-row>
-          </v-card-actions>
-        </ParentCard>
-      </v-col>
-      <v-col col="12" md="4">
-        <ParentCard>
-          <BaseTitle class="mb-4">Photo Editing</BaseTitle>
-          <BaseFileInput
-            v-model="imageFile"
-            accept="image/*"
-            label="Select an image"
-            prepend-icon="mdi-camera"
-            @change="onFileChange"
-            @click:clear="clearImages"
-            :disabled="isProcessing"
-            clearable
-          >
-          </BaseFileInput>
-
-          <v-row>
-            <v-col cols="12">
-              <v-card variant="outlined">
-                <div class="text-center pa-8">
-                  <template v-if="isProcessing">
-                    <v-progress-circular
-                      indeterminate
-                      color="primary"
-                      size="64"
-                    />
-                    <div class="mt-4">Removing background...</div>
-                  </template>
-                  <CroppieWrapper
-                    v-else-if="resultImageUrl && !cropped"
-                    ref="cropper"
-                    :image-url="resultImageUrl"
-                  />
-                  <v-img
-                    v-else-if="resultImageUrl"
-                    :src="resultImageUrl"
-                    max-height="400"
-                    contain
-                    draggable="true"
-                    @dragstart="handleDragStart"
-                  />
-
-                  <v-img
-                    v-else-if="originalImageUrl"
-                    :src="originalImageUrl"
-                    max-height="400"
-                    contain
-                    draggable="false"
-                  />
-                  <v-card-text v-else> Please select an image </v-card-text>
-                </div>
-              </v-card>
+  <BaseTitle>Staff Card</BaseTitle>
+  <v-row>
+    <v-col col="12" md="8">
+      <ParentCard>
+        <StaffCardCanvas
+          ref="cardImage"
+          @dropped-image="updateDroppedImage"
+          :members="members"
+        />
+        <v-card-actions class="mt-5">
+          <v-row no-gutters dense>
+            <v-col cols="6">
+              <BaseSelect
+                :label="t('addMemberSkill.form.name')"
+                class="mx-auto"
+                :items="memberList"
+                item-value="id"
+                item-title="name"
+                prependIcon="mdi-account"
+                :width="'400px'"
+                @change="selectMember"
+              />
+            </v-col>
+            <v-col cols="3">
+              <v-btn @click="downloadCard"> Download </v-btn>
+            </v-col>
+            <v-col cols="3">
+              <v-btn @click="resetImage"> Reset </v-btn>
             </v-col>
           </v-row>
+        </v-card-actions>
+      </ParentCard>
+    </v-col>
+    <v-col col="12" md="4">
+      <ParentCard>
+        <BaseTitle class="mb-4">Photo Editing</BaseTitle>
+        <BaseFileInput
+          v-model="imageFile"
+          accept="image/*"
+          label="Select an image"
+          prepend-icon="mdi-camera"
+          @change="onFileChange"
+          @click:clear="clearImages"
+          :disabled="isProcessing"
+          clearable
+        >
+        </BaseFileInput>
 
-          <v-card-actions>
-            <v-row no-gutters class="w-100" dense>
-              <v-col cols="3">
-                <v-btn
-                  color="primary"
-                  block
-                  :disabled="!imageFile || isProcessing"
-                  @click="removeBackground"
-                >
-                  Remove BG
-                </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn
-                  color="primary"
-                  block
-                  :disabled="!isEnhancing"
-                  @click="enhanceImage"
-                >
-                  Retouch
-                </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn
-                  v-if="showCropper"
-                  color="primary"
-                  block
-                  :disabled="isProcessing || isEnhancing"
-                  @click="cropImage"
-                >
-                  Crop
-                </v-btn>
-              </v-col>
-              <v-col cols="3" v-if="resultImageUrl">
-                <v-btn block :disabled="isProcessing" @click="downloadImage">
-                  Download
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card-actions>
-        </ParentCard>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-card variant="outlined">
+              <div class="text-center pa-8">
+                <template v-if="isProcessing">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="64"
+                  />
+                  <div class="mt-4">Removing background...</div>
+                </template>
+                <CroppieWrapper
+                  v-else-if="resultImageUrl && !cropped"
+                  ref="cropper"
+                  :image-url="resultImageUrl"
+                />
+                <v-img
+                  v-else-if="resultImageUrl"
+                  :src="resultImageUrl"
+                  max-height="400"
+                  contain
+                  draggable="true"
+                  @dragstart="handleDragStart"
+                />
+
+                <v-img
+                  v-else-if="originalImageUrl"
+                  :src="originalImageUrl"
+                  max-height="400"
+                  contain
+                  draggable="false"
+                />
+                <v-card-text v-else> Please select an image </v-card-text>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-card-actions>
+          <v-row no-gutters class="w-100" dense>
+            <v-col cols="3">
+              <v-btn
+                color="primary"
+                block
+                :disabled="!imageFile || isProcessing"
+                @click="removeBackground"
+              >
+                Remove BG
+              </v-btn>
+            </v-col>
+            <v-col cols="3">
+              <v-btn
+                color="primary"
+                block
+                :disabled="!isEnhancing"
+                @click="enhanceImage"
+              >
+                Retouch
+              </v-btn>
+            </v-col>
+            <v-col cols="3">
+              <v-btn
+                v-if="showCropper"
+                color="primary"
+                block
+                :disabled="isProcessing || isEnhancing"
+                @click="cropImage"
+              >
+                Crop
+              </v-btn>
+            </v-col>
+            <v-col cols="3" v-if="resultImageUrl">
+              <v-btn block :disabled="isProcessing" @click="downloadImage">
+                Download
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-actions>
+      </ParentCard>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>

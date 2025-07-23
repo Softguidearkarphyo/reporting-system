@@ -3,7 +3,7 @@
     location="right"
     app
     clipped
-    width="300"
+    width="288"
     elevation="0"
     :model-value="props.setting"
     temporary

@@ -1,77 +1,75 @@
 <template>
-  <v-container>
-    <BaseTitle class="mb-3">{{ t('workingTime.title1') }}</BaseTitle>
-    <ParentCard>
-      <Form
-        ref="formRef"
-        :validation-schema="searchWithDateSchema"
-        @submit="filterByDate"
+  <BaseTitle class="mb-3">{{ t('workingTime.title1') }}</BaseTitle>
+  <ParentCard>
+    <Form
+      ref="formRef"
+      :validation-schema="searchWithDateSchema"
+      @submit="filterByDate"
+    >
+      <v-row class="mt-3">
+        <v-col cols="12" sm="6" lg="3" class="pa-1">
+          <Field name="start_date" v-slot="{ field, errorMessage }">
+            <BaseDatePicker
+              v-model="field.value"
+              v-bind="field"
+              :label="t('workingTime.start_date')"
+              :width="'100%'"
+              :error-messages="errorMessage"
+              prependIcon="mdi-calendar-month"
+            ></BaseDatePicker>
+          </Field>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3" class="pa-1">
+          <Field name="end_date" v-slot="{ field, errorMessage }">
+            <BaseDatePicker
+              v-model="field.value"
+              v-bind="field"
+              :label="t('workingTime.end_date')"
+              :width="'100%'"
+              :error-messages="errorMessage"
+              prependIcon="mdi-calendar-month"
+            ></BaseDatePicker>
+          </Field>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3" class="gap-2">
+          <BaseButton type="submit" :width="'150px'" class="mx-6">{{
+            t('common.search')
+          }}</BaseButton>
+          <BaseButton v-if="items.length > 0 && hasSearched" :width="'150px'"
+            >EXCEL</BaseButton
+          >
+        </v-col>
+      </v-row>
+    </Form>
+  </ParentCard>
+  <div class="d-flex justify-space-between align-center mt-3">
+    <BaseTitle> {{ t('workingTime.title2') }} </BaseTitle>
+    <div>
+      <BaseTextField
+        v-model="search"
+        :label="t('common.search')"
+        color="primary"
+        width="300px"
+        prepend-icon="mdi-magnify"
       >
-        <v-row class="mt-3">
-          <v-col cols="12" sm="6" lg="3" class="pa-1">
-            <Field name="start_date" v-slot="{ field, errorMessage }">
-              <BaseDatePicker
-                v-model="field.value"
-                v-bind="field"
-                :label="t('workingTime.start_date')"
-                :width="'100%'"
-                :error-messages="errorMessage"
-                prependIcon="mdi-calendar-month"
-              ></BaseDatePicker>
-            </Field>
-          </v-col>
-          <v-col cols="12" sm="6" lg="3" class="pa-1">
-            <Field name="end_date" v-slot="{ field, errorMessage }">
-              <BaseDatePicker
-                v-model="field.value"
-                v-bind="field"
-                :label="t('workingTime.end_date')"
-                :width="'100%'"
-                :error-messages="errorMessage"
-                prependIcon="mdi-calendar-month"
-              ></BaseDatePicker>
-            </Field>
-          </v-col>
-          <v-col cols="12" sm="6" lg="3" class="gap-2">
-            <BaseButton type="submit" :width="'150px'" class="mx-6">{{
-              t('common.search')
-            }}</BaseButton>
-            <BaseButton v-if="items.length > 0 && hasSearched" :width="'150px'"
-              >EXCEL</BaseButton
-            >
-          </v-col>
-        </v-row>
-      </Form>
-    </ParentCard>
-    <div class="d-flex justify-space-between align-center mt-3">
-      <BaseTitle> {{ t('workingTime.title2') }} </BaseTitle>
-      <div>
-        <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          color="primary"
-          width="300px"
-          prepend-icon="mdi-magnify"
-        >
-        </BaseTextField>
-      </div>
+      </BaseTextField>
     </div>
-    <v-card>
-      <BaseTable
-        :headers="headers"
-        :items="items"
-        :style="{ minHeight: windowHeight }"
-        :items-count="itemsCount"
-      >
-        <template #[`item.staffName`]="{ item }">
-          {{ item.staffName }}
-        </template>
-        <template #[`item.workingHours`]="{ item }">
-          <span>{{ item.workingHours }} {{ t('workingTime.hour') }} </span>
-        </template>
-      </BaseTable>
-    </v-card>
-  </v-container>
+  </div>
+  <v-card>
+    <BaseTable
+      :headers="headers"
+      :items="items"
+      :style="{ minHeight: windowHeight }"
+      :items-count="itemsCount"
+    >
+      <template #[`item.staffName`]="{ item }">
+        {{ item.staffName }}
+      </template>
+      <template #[`item.workingHours`]="{ item }">
+        <span>{{ item.workingHours }} {{ t('workingTime.hour') }} </span>
+      </template>
+    </BaseTable>
+  </v-card>
 </template>
 <script setup>
 import { useI18n } from 'vue-i18n';

@@ -1,76 +1,56 @@
 <template>
   <v-navigation-drawer
-    :rail="drawer"
-    permanent
+    :model-value="drawer"
+    @update:model-value="emit('update:drawer', $event)"
+    :rail="!display.smAndDown.value && rail"
+    :permanent="!display.smAndDown.value"
+    :temporary="display.smAndDown.value"
     app
     clipped
-    elevation="0"
-    width="340"
     color="surface"
-    left
-    @update:rail="(val) => (isRail = val)"
   >
-    <div class="scroll-container">
-      <PerfectScrollbar>
-        <v-list class="py-4 pa-6">
-          <v-list-item
-            v-for="(item, index) in navbars"
-            :key="index"
-            :to="item.path"
-            link
-            exact
-            density="compact"
-            class="mb-1"
-            rounded
-          >
-            <template v-slot:prepend>
-              <v-icon :icon="item.icon" size="20" />
-            </template>
-            <v-list-item-title class="px-9">{{ item.title }}</v-list-item-title>
-          </v-list-item>
+    <v-list density="compact" nav>
+      <v-list-item
+        v-for="(item, index) in navbars"
+        :key="index"
+        :to="item.path"
+        :prepend-icon="item.icon"
+        :title="item.title"
+        :value="item.title"
+        link
+        exact
+        density="compact"
+        class="mb-1"
+        rounded
+      ></v-list-item>
 
-          <!-- Admin Setting  -->
-          <v-list-group v-if="role === ADMIN" v-model="group" no-action>
-            <template v-slot:activator="{ props }">
-              <v-list-item
-                v-bind="props"
-                rounded
-                density="compact"
-                class="mb-1"
-              >
-                <template v-slot:prepend>
-                  <v-icon
-                    icon="tabler:IconSettings"
-                    class="d-flex justify-center admin_icon"
-                    size="20"
-                  />
-                </template>
-                <v-list-item-title class="px-9">{{
-                  $t('sidebar.adminsetting')
-                }}</v-list-item-title>
-              </v-list-item>
-            </template>
-            <v-list-item
-              v-for="(item, index) in settings"
-              :key="index"
-              :to="item.path"
-              link
-              exact
-              rounded
-              density="compact"
-              class="mb-1"
-            >
-              <template v-slot:prepend>
-                <v-icon :icon="item.icon" class="child_icon" size="20" />
-              </template>
-              <v-list-item-title class="px-9">{{
-                item.title
-              }}</v-list-item-title>
-            </v-list-item>
-          </v-list-group>
-        </v-list>
-      </PerfectScrollbar>
-    </div>
+      <v-list-group v-if="role === ADMIN">
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            v-bind="props"
+            prepend-icon="tabler:IconSettings"
+            :title="$t('sidebar.adminsetting')"
+            class="list-item mb-1"
+          ></v-list-item>
+        </template>
+        <v-list-item
+          v-for="(item, index) in settings"
+          :key="index"
+          :to="item.path"
+          :title="item.title"
+          :value="item.title"
+          link
+          exact
+          density="compact"
+          class="mb-1"
+          rounded
+        >
+          <template #prepend>
+            <v-icon>{{ item.icon }}</v-icon>
+          </template>
+        </v-list-item>
+      </v-list-group>
+    </v-list>
   </v-navigation-drawer>
 </template>
 <script setup>
@@ -78,13 +58,17 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { ADMIN } from '@/utils/constant';
+import { useDisplay } from 'vuetify';
 
+const display = useDisplay();
 const { t } = useI18n();
 const authStore = useAuthStore();
-defineProps({ drawer: Boolean });
-const group = ref(true);
+const props = defineProps({
+  drawer: Boolean,
+  rail: Boolean,
+});
+const emit = defineEmits(['update:drawer']);
 const role = ref(authStore.staffRole);
-const isRail = ref(false);
 
 const navbars = computed(() => [
   {
@@ -178,58 +162,43 @@ const settings = computed(() => [
 ]);
 </script>
 <style scoped>
-.navigation-drawer-fixed {
-  position: fixed !important;
-  top: 0;
-  bottom: 0;
+::v-deep(.v-navigation-drawer) {
   height: 100vh !important;
+  overflow-y: auto !important;
 }
 
-.scroll-container {
-  height: calc(100vh - 170px) !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
+::v-deep(.v-list) {
+  padding-bottom: 20px;
 }
 
-.v-list-item-title {
+::v-deep(.v-list-item-title) {
   font-size: 13px !important;
   text-transform: uppercase !important;
 }
 
-.v-icon {
-  font-size: 18px;
+::v-deep(
+  .v-navigation-drawer:not(.v-navigation-drawer--rail)
+    .v-navigation-drawer__content
+) {
+  max-width: 100% !important;
 }
 
-.v-list-item.v-list-item--active {
+::v-deep(.v-list-item.v-list-item--active) {
   background-color: rgb(var(--v-theme-primary)) !important;
   color: white !important;
 }
 
-::v-deep(.v-list-item__spacer) {
-  display: none !important;
-}
-
-.v-list-group__items .v-list-item {
-  padding-inline-start: 19px !important;
-  margin: 0 0 2px;
-}
-
-.v-theme--dark .color {
-  border: 1px solid rgba(173, 173, 173, 0.336) !important;
-}
-
-.v-list-item:hover:not(.v-list-item--active) {
+::v-deep(.v-list-item:hover:not(.v-list-item--active)) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
   color: rgb(var(--v-theme-primary)) !important;
 }
-
-::v-deep(.v-list-item__overlay) {
-  all: unset !important;
-  display: none !important;
+.v-list-group__items .v-list-item {
+  padding-inline-start: 10px !important;
+  margin: 0 0 2px;
 }
-
+.v-navigation-drawer--rail .v-list-group__items .v-list-item {
+  padding-inline-end: 36px !important;
+}
 .v-navigation-drawer--rail .v-list-group__items .v-list-item {
   background: transparent !important;
   color: rgb(var(--v-theme-font)) !important;
@@ -241,35 +210,11 @@ const settings = computed(() => [
 }
 .v-navigation-drawer--rail
   .v-list-group__items
-  .v-list-item.v-list-item--active
-  .child_icon {
+  .v-list-item.v-list-item--active {
   color: rgb(var(--v-theme-primary)) !important;
 }
-
-.v-navigation-drawer--rail .v-list-group__items .v-list-item {
-  padding-inline: 0 !important;
-  justify-content: center;
-}
-
-.v-navigation-drawer--rail .v-list-item {
-  justify-content: center;
-  padding-left: 0;
-}
-
-.v-navigation-drawer--rail .v-icon {
-  margin-inline-start: 38px !important;
-}
-
-.v-navigation-drawer--rail {
-  width: 90px !important;
-}
-
-.v-navigation-drawer--rail .admin_icon {
-  transition: none !important;
-  margin-inline-start: 60px !important;
-}
-
-.v-navigation-drawer--rail .v-list-group__items .v-list-item .child_icon {
-  margin-left: 9px !important;
+::v-deep(.v-list-item__overlay) {
+  all: unset !important;
+  display: none !important;
 }
 </style>

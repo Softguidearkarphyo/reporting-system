@@ -1,11 +1,9 @@
 <template>
-  <v-container>
-    <BaseTitle>MenPower</BaseTitle>
-    <v-text-field label="test"></v-text-field>
-    <v-text-field label="test"></v-text-field>
-    <v-text-field label="test"></v-text-field>
-    <BaseButton>submit</BaseButton>
-  </v-container>
+  <BaseTitle>MenPower</BaseTitle>
+  <v-text-field label="test"></v-text-field>
+  <v-text-field label="test"></v-text-field>
+  <v-text-field label="test"></v-text-field>
+  <BaseButton>submit</BaseButton>
 </template>
 <script setup>
 import { ref } from 'vue';
