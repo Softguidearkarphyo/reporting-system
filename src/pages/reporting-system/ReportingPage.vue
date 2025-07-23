@@ -52,10 +52,13 @@
                       class="circle-btn"
                       density="comfortable"
                     >
-                      <v-icon> mdi-play </v-icon>
-                      <v-tooltip activator="parent" location="bottom">{{
-                        t('common.autoFill')
-                      }}</v-tooltip>
+                      <v-icon> tabler:IconPlayerPlay </v-icon>
+                      <v-tooltip
+                        activator="parent"
+                        location="bottom"
+                        color="primary"
+                        >{{ t('common.autoFill') }}</v-tooltip
+                      >
                     </v-btn>
                     <v-btn
                       icon
@@ -63,7 +66,7 @@
                       class="circle-btn"
                       density="comfortable"
                     >
-                      <v-icon> mdi-bookmark </v-icon>
+                      <v-icon> tabler:IconBookmarks </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
                         t('common.saveSetting')
                       }}</v-tooltip>
@@ -74,7 +77,7 @@
                       class="circle-btn"
                       density="comfortable"
                     >
-                      <v-icon> mdi-download </v-icon>
+                      <v-icon> tabler:IconCloudDown </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
                         t('common.download')
                       }}</v-tooltip>
@@ -95,7 +98,7 @@
                         v-bind="field"
                         :label="t('workHourReport.form.employee')"
                         :items="employees"
-                        prependIcon="mdi-account"
+                        prependIcon="tabler:IconUser"
                         item-title="name"
                         item-value="id"
                         width="90%"
@@ -117,7 +120,7 @@
                         v-bind="field"
                         :label="t('workHourReport.form.project')"
                         :items="projects"
-                        prependIcon="mdi-microsoft-teams"
+                        prependIcon="tabler:IconWorldPlus"
                         item-title="name"
                         item-value="id"
                         width="90%"
@@ -136,7 +139,7 @@
                         v-bind="field"
                         :label="t('workHourReport.form.task')"
                         :items="tasks"
-                        prependIcon="mdi-clipboard-text"
+                        prependIcon="tabler:IconChecklist "
                         item-title="name"
                         width="90%"
                         item-value="id"
@@ -183,7 +186,7 @@
                         v-bind="field"
                         :label="t('workHourReport.form.period')"
                         :items="periods"
-                        prependIcon="mdi-clock"
+                        prependIcon="tabler:IconClockHour9"
                         item-title="name"
                         width="90%"
                         item-value="id"
@@ -201,7 +204,7 @@
                         v-bind="field"
                         :label="t('workHourReport.form.startTime')"
                         :items="timeSlots"
-                        prependIcon="mdi-clock-time-nine"
+                        prependIcon="tabler:IconClockHour5"
                         item-title="name"
                         item-value="name"
                         width="90%"
@@ -640,7 +643,11 @@ watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
 ::v-deep(.v-table .v-table__wrapper table tbody tr td) {
   font-size: 0.75rem !important;
 }
-::v-deep(.circle-btn .v-btn__content i) {
+::v-deep(.circle-btn .v-btn__content) {
   color: white !important;
 }
+/* .v-tooltip > ::v-deep(.v-overlay__content) {
+  background-color: rgba(var(--v-theme-primary), 0.2) !important;
+  color: rgb(var(--v-theme-primary)) !important;
+} */
 </style>
