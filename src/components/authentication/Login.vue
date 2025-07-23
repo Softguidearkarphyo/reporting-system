@@ -8,17 +8,19 @@
         <v-row justify="center">
           <v-col cols="12" xs="10" sm="8" md="6" lg="4" xl="3">
             <v-card
-              class="pa-6"
-              elevation="10"
+              class="pt-5 pb-5 px-6"
+              elevation="8"
               rounded="lg"
               width="100%"
               max-width="420"
               style="box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08)"
             >
-              <div class="d-flex justify-center mb-5">
-                <v-avatar size="64" color="transparent">
-                  <v-icon size="36" color="primary">mdi-lock</v-icon>
-                </v-avatar>
+              <div class="d-flex justify-center mb-4">
+                <v-icon
+                  icon="tabler:IconLockFilled"
+                  size="36"
+                  color="primary"
+                />
               </div>
               <Form
                 @submit="handleLogin"
@@ -35,7 +37,7 @@
                     autocomplete="username"
                     prependIcon="mdi-account"
                     width="371px"
-                    class="mb-7"
+                    class="mb-3"
                     :error-messages="errorMessage || apiErrors.username"
                   ></BaseTextField>
                 </Field>
@@ -50,7 +52,7 @@
                     autocomplete="current-password"
                     prependIcon="mdi-lock"
                     width="371px"
-                    class="mb-10"
+                    class="mb-3"
                     :error-messages="errorMessage || apiErrors.password"
                   ></BaseTextField>
                 </Field>
