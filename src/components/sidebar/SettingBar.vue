@@ -58,14 +58,46 @@
       Button Layout
     </v-list-subheader>
     <v-row class="d-flex justify-center ma-0 pa-2" dense>
-      <v-col class="d-flex justify-center">
+      <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">Middle</v-btn>
+          <v-btn variant="text" color="primary">Middle</v-btn>
         </v-sheet>
       </v-col>
-      <v-col class="d-flex justify-center">
+      <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">End</v-btn>
+          <v-btn variant="text" color="primary">End</v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-list-subheader class="mx-4">
+      <v-icon left color="primary">mdi-palette</v-icon>
+      Card Border with
+    </v-list-subheader>
+    <v-row class="d-flex justify-center ma-0 pa-2" dense>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text" color="primary">Border</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2" @click="rgbClick">
+          <v-btn variant="text" color="primary">RGB</v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-list-subheader class="mx-4">
+      <v-icon left color="primary">mdi-palette</v-icon>
+      Card with
+    </v-list-subheader>
+    <v-row class="d-flex justify-center ma-0 pa-2" dense>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text" color="primary">Shadow</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text" color="primary">None</v-btn>
         </v-sheet>
       </v-col>
     </v-row>
@@ -112,11 +144,11 @@ onMounted(() => {
   setTheme(selectedColor.value);
 });
 
-const init = () => {
-  const savedTheme = localStorage.getItem('app-theme');
-  if (savedTheme) theme.global.name.value = savedTheme;
-};
-onMounted(init);
+function rgbClick() {
+  const currentBorder = theme.themes.value.light.colors.gradientborder;
+  console.log('Current border:', currentBorder);
+  // localStorage.setItem('card-border', 'rgb');
+}
 </script>
 
 <style scoped>

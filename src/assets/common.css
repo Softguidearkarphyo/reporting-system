@@ -21,10 +21,10 @@
 }
 
 .v-theme--light {
-  --gradient-border: var(--gradient-border-light);
+  --gradientborder: var(--gradient-border-light);
 }
 .v-theme--dark {
-  --gradient-border: var(--gradient-border-dark);
+  --gradientborder: var(--gradient-border-dark);
 }
 
 .gradientborder::before {
@@ -36,7 +36,7 @@
   bottom: 0;
   border-radius: 12px;
   padding: 3px;
-  background: var(--gradient-border);
+  background: var(--gradientborder);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

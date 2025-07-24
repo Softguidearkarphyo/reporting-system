@@ -70,4 +70,7 @@ const handleChange = (value) => {
 ::v-deep(.v-field.v-field--focused .v-field__outline) {
   color: rgb(var(--v-theme-primary)) !important;
 }
+::v-deep(.v-select *) {
+  pointer-events: all !important;
+}
 </style>

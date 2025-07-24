@@ -12,9 +12,10 @@
           {{ t('message.error404Text') }}<br />
           {{ t('message.error404Text2') }}
         </p>
-        <v-btn color="primary" variant="flat" rounded="xl" @click="backHome">{{
-          t('message.backhome')
-        }}</v-btn>
+        <v-btn color="primary" variant="flat" rounded="xl" @click="backHome">
+          <v-icon>tabler:IconArrowLeft</v-icon>
+          {{ t('message.backhome') }}</v-btn
+        >
       </div>
     </div>
   </v-app>
