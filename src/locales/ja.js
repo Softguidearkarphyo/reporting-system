@@ -139,6 +139,7 @@ export default {
     remove: '背景を削除',
     retouch: 'レタッチ',
     crop: '切り抜き',
+    cross: '画像をクリア',
   },
   validation: {
     required: '{field}は必須項目です',

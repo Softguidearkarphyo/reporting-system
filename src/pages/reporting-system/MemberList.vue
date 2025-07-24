@@ -1,90 +1,84 @@
 <template>
-  <v-container>
-    <div class="d-flex justify-space-between align-center mb-3 mt-n3">
-      <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
-      <div style="width: 50%">
-        <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          class="mb-n5"
-          type="text"
-          variant="plain"
-          dense
-          autocomplete="test"
-          prependIcon="mdi-magnify"
-          width="100%"
-        ></BaseTextField>
-      </div>
+  <div class="d-flex justify-space-between align-center mb-3 mt-n3">
+    <BaseTitle>{{ t('memberList.title') }}</BaseTitle>
+    <div style="width: 50%">
+      <BaseTextField
+        v-model="search"
+        :label="t('common.search')"
+        class="mb-n5"
+        type="text"
+        variant="plain"
+        dense
+        autocomplete="test"
+        prependIcon="mdi-magnify"
+        width="100%"
+      ></BaseTextField>
     </div>
-    <ParentCard>
-      <BaseTable
-        :headers="headers"
-        :items="items"
-        :height="windowHeight"
-        :items-count="itemsCount"
-      >
-        <template #item.position="{ item }">
-          <div
-            class="rounded-pill py-1 text-center mx-auto"
-            :style="{
-              backgroundColor: item.position?.color,
-              width: '120px',
-              fontSize: '10px',
-              color: 'white',
-            }"
-          >
-            <span>{{ item.position?.name }}</span>
-          </div>
-        </template>
+  </div>
+  <ParentCard>
+    <BaseTable
+      :headers="headers"
+      :items="items"
+      :height="windowHeight"
+      :items-count="itemsCount"
+    >
+      <template #[`item.position`]="{ item }">
+        <div
+          class="rounded-pill py-1 text-center mx-auto"
+          :style="{
+            backgroundColor: item.position?.color,
+            width: '120px',
+            fontSize: '10px',
+            color: 'white',
+          }"
+        >
+          <span>{{ item.position?.name }}</span>
+        </div>
+      </template>
 
-        <template #item.action="{ item }">
-          <span class="d-flex justify-center p-0">
-            <BaseButton
-              elevation="0"
-              @click.stop="pushToEdit(item.id)"
-              color=""
-              class="edit-btn"
-              size="small"
-              :style="{ width }"
-              :add-class="['ma-1']"
-            >
-              <v-icon icon="tabler:IconEdit" size="18" color="primary" />
-            </BaseButton>
-            <BaseButton
-              v-if="authStore.loginStaff?.id !== item.id"
-              elevation="0"
-              @click.stop="showConfirmDelete(item.id)"
-              color=""
-              class="delete-btn"
-              size="small"
-              :style="{ width }"
-              :add-class="['ma-1']"
-            >
-              <v-icon
-                icon="tabler:IconTrash"
-                size="18"
-                style="color: #ff0000"
-              />
-            </BaseButton>
-            <div v-else style="width: 50%"></div>
-          </span>
-        </template>
-      </BaseTable>
-    </ParentCard>
-    <BaseConfirmDelete
-      v-model="confirmDelete"
-      :text="t('memberList.deleteConfirmText')"
-      :class="{ 'd-none': !confirmDelete }"
-      @yes="
-        confirmDelete = false;
-        deleteMember();
-      "
-      @no="
-        confirmDelete = false;
-        deleteTarget = undefined;
-      "
-    ></BaseConfirmDelete>
-  </v-container>
+      <template #[`item.action`]="{ item }">
+        <span class="d-flex justify-center p-0">
+          <BaseButton
+            elevation="0"
+            @click.stop="pushToEdit(item.id)"
+            color=""
+            class="edit-btn"
+            size="small"
+            :style="{ width }"
+            :add-class="['ma-1']"
+          >
+            <v-icon icon="tabler:IconEdit" size="18" color="primary" />
+          </BaseButton>
+          <BaseButton
+            v-if="authStore.loginStaff?.id !== item.id"
+            elevation="0"
+            @click.stop="showConfirmDelete(item.id)"
+            color=""
+            class="delete-btn"
+            size="small"
+            :style="{ width }"
+            :add-class="['ma-1']"
+          >
+            <v-icon icon="tabler:IconTrash" size="18" style="color: #ff0000" />
+          </BaseButton>
+          <div v-else style="width: 50%"></div>
+        </span>
+      </template>
+    </BaseTable>
+  </ParentCard>
+  <BaseConfirmDelete
+    v-model="confirmDelete"
+    :text="t('memberList.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }"
+    @yes="
+      confirmDelete = false;
+      deleteMember();
+    "
+    @no="
+      confirmDelete = false;
+      deleteTarget = undefined;
+    "
+  ></BaseConfirmDelete>
 </template>
 
 <script setup>

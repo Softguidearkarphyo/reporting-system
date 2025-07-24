@@ -28,7 +28,7 @@
       <!-- Leave Availability Cards -->
       <v-row class="mb-6" justify="space-between">
         <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2">
-          <v-card class="pa-3" rounded="lg" elevation="1">
+          <v-card class="pa-3 gradientborder" rounded="lg" elevation="1">
             <div class="text-caption">Remaining</div>
             <div class="text-h6 font-weight-bold">{{ type.name }}</div>
             <v-progress-circular

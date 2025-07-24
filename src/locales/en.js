@@ -167,6 +167,7 @@ export default {
     remove: 'Remove BG',
     retouch: 'retouch',
     crop: 'Crop',
+    cross: 'Clear Image',
   },
   validation: {
     required: '{field} is required',
