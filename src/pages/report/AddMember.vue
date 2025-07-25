@@ -83,7 +83,7 @@
                 variant="plain"
                 prependIcon="mdi-pound-box"
                 :width="'320px'"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
@@ -132,7 +132,7 @@
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               >
               </BaseSelect>
@@ -150,7 +150,7 @@
                 item-title="name"
                 :width="'320px'"
                 item-value="id"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               >
               </BaseSelect>
@@ -169,7 +169,7 @@
                 autocomplete="test"
                 prependIcon="mdi-email"
                 :width="'320px'"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
                 :error-messages="errorMessage"
               ></BaseTextField>
             </Field>
@@ -234,7 +234,7 @@
                 :width="'320px'"
                 item-title="name"
                 item-value="id"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
               >
               </BaseMultiSelect>
             </Field>
@@ -252,7 +252,7 @@
                 item-title="value"
                 item-value="id"
                 :error-messages="errorMessage"
-                :readonly="roleId === 2"
+                :disabled="roleId === 2"
               >
               </BaseSelect>
             </Field>
