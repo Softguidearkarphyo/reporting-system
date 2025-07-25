@@ -16,6 +16,7 @@
         :style="{ width }"
         :label="label"
         readonly
+        :disabled="disabled"
         variant="underlined"
         @click="menu = true"
       >

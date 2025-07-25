@@ -58,20 +58,53 @@
       Button Layout
     </v-list-subheader>
     <v-row class="d-flex justify-center ma-0 pa-2" dense>
-      <v-col class="d-flex justify-center">
+      <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
           <v-btn variant="text">Middle</v-btn>
         </v-sheet>
       </v-col>
-      <v-col class="d-flex justify-center">
+      <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
           <v-btn variant="text">End</v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-list-subheader class="mx-4">
+      <v-icon left color="primary">mdi-palette</v-icon>
+      Card Border with
+    </v-list-subheader>
+    <v-row class="d-flex justify-center ma-0 pa-2" dense>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2" @click="defaultClick">
+          <v-btn variant="text">Border</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2" @click="rgbClick">
+          <v-btn variant="text">RGB</v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
+    <v-list-subheader class="mx-4">
+      <v-icon left color="primary">mdi-palette</v-icon>
+      Card with
+    </v-list-subheader>
+    <v-row class="d-flex justify-center ma-0 pa-2" dense>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text">Shadow</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet class="rounded-lg text-center px-3 py-2">
+          <v-btn variant="text">None</v-btn>
         </v-sheet>
       </v-col>
     </v-row>
   </v-navigation-drawer>
 </template>
 <script setup>
+import { isRgbActive } from '@/utils/border';
 import { useTheme } from 'vuetify';
 import { colorThemes } from '../../custom-theme/color';
 const props = defineProps({
@@ -110,13 +143,21 @@ const setTheme = (colorName) => {
 
 onMounted(() => {
   setTheme(selectedColor.value);
+  const savedState = localStorage.getItem('RGB-Active');
+  if (savedState !== null) {
+    isRgbActive.value = savedState ? JSON.parse(savedState) : false;
+  }
 });
 
-const init = () => {
-  const savedTheme = localStorage.getItem('app-theme');
-  if (savedTheme) theme.global.name.value = savedTheme;
-};
-onMounted(init);
+function rgbClick() {
+  isRgbActive.value = true;
+  localStorage.setItem('RGB-Active', JSON.parse(true));
+}
+
+function defaultClick() {
+  isRgbActive.value = false;
+  localStorage.setItem('RGB-Active', JSON.parse(false));
+}
 </script>
 
 <style scoped>

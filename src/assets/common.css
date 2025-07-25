@@ -13,3 +13,34 @@
 .color-primary {
   color: rgb(var(--v-theme-primary)) !important;
 }
+
+/* for gradient color  */
+:root {
+  --gradient-border-light: linear-gradient(45deg, #42d392, #647eff);
+  --gradient-border-dark: linear-gradient(315deg, #42d392 25%, #647eff);
+}
+
+.v-theme--light {
+  --gradientborder: var(--gradient-border-light);
+}
+.v-theme--dark {
+  --gradientborder: var(--gradient-border-dark);
+}
+
+.gradientborder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  padding: 3px;
+  background: var(--gradientborder);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}

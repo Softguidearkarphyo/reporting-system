@@ -36,7 +36,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import DatePicker from '../../components/bases/BaseDatePicker.vue';
 import BaseButton from '../../components/bases/BaseButton.vue';
 import BaseTitle from '../../components/bases/BaseTitle.vue';

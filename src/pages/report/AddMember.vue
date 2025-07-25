@@ -174,7 +174,7 @@
               ></BaseTextField>
             </Field>
           </v-col>
-          <v-col v-if="roleId === 2" cols="12" md="6" lg="4">
+          <v-col cols="12" md="6" lg="4">
             <Field name="permanent_date" v-slot="{ field, errorMessage }">
               <BaseDatePicker
                 v-model="field.value"
@@ -184,7 +184,7 @@
                 prependIcon="mdi-calendar-month"
                 :width="'320px'"
                 :error-messages="errorMessage"
-                :disabled="true"
+                :disabled="roleId === 2"
               />
             </Field>
           </v-col>
@@ -252,6 +252,7 @@
                 item-title="value"
                 item-value="id"
                 :error-messages="errorMessage"
+                :disabled="roleId === 2"
               >
               </BaseSelect>
             </Field>

@@ -39,8 +39,9 @@ export default {
     theme: 'Theme Color',
   },
   message: {
-    error404Text: 'We apologize,',
-    error404Text2: 'the page you are looking for could not be found.',
+    error404Text: 'Oooops! Page Not Found',
+    error404Text2:
+      "This page doesn't exist or was removed!\nWe suggest you back home",
     backhome: 'Go Home',
   },
   login: {
@@ -167,6 +168,7 @@ export default {
     remove: 'Remove BG',
     retouch: 'retouch',
     crop: 'Crop',
+    cross: 'Clear Image',
   },
   validation: {
     required: '{field} is required',

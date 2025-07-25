@@ -21,20 +21,40 @@
               @change="selectMember"
             />
 
-            <v-row class="mt-6" justify="center" align="center">
-              <v-col cols="auto">
-                <v-btn color="primary" variant="outlined" @click="downloadCard">
-                  <v-icon start>mdi-download</v-icon>
-                  {{ t('staffCard.download') }}
-                </v-btn>
-              </v-col>
-              <v-col cols="auto">
-                <v-btn color="error" variant="outlined" @click="resetImage">
-                  <v-icon start>mdi-refresh</v-icon>
-                  {{ t('staffCard.reset') }}
-                </v-btn>
-              </v-col>
-            </v-row>
+            <div class="d-flex justify-space-around mt-5">
+              <v-btn
+                color="primary"
+                class="circle-btn"
+                icon
+                density="comfortable"
+                @click="downloadCard"
+              >
+                <v-tooltip
+                  color="primary"
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.download')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconDownload</v-icon>
+              </v-btn>
+              <v-btn
+                color="error"
+                icon
+                density="comfortable"
+                @click="resetImage"
+              >
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.reset')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconRefresh</v-icon>
+              </v-btn>
+            </div>
           </div>
         </v-card-actions>
       </ParentCard>
@@ -42,93 +62,145 @@
     <v-col col="12" md="4">
       <ParentCard height="650px">
         <BaseTitle class="mb-4">{{ t('staffCard.edit') }}</BaseTitle>
-        <BaseFileInput
+        <v-file-input
+          ref="fileInput"
           v-model="imageFile"
           accept="image/*"
-          :label="t('staffCard.image')"
-          prepend-icon="mdi-camera"
           @change="onFileChange"
-          @click:clear="clearImages"
           :disabled="isProcessing"
           clearable
+          style="display: none"
         >
-        </BaseFileInput>
+        </v-file-input>
+        <v-btn
+          color="primary"
+          v-if="originalImageUrl || cropped"
+          variant="text"
+          icon
+          class="clear"
+          @click="clearImages"
+        >
+          <v-tooltip
+            activator="parent"
+            location="top"
+            :text="t('staffCard.cross')"
+            transition="fade-transition"
+            open-delay="300"
+          ></v-tooltip>
+          <v-icon>tabler:IconX</v-icon></v-btn
+        >
+        <v-card variant="outlined">
+          <div class="text-center pa-8">
+            <div v-if="isProcessing" class="scanning-overlay">
+              <div :class="['fingerprint', { scanning: isScanning }]"></div>
+            </div>
 
-        <v-row>
-          <v-col cols="12">
-            <v-card variant="outlined">
-              <div class="text-center pa-8">
-                <template v-if="isProcessing">
-                  <v-progress-circular
-                    indeterminate
-                    color="primary"
-                    size="64"
-                  />
-                  <div class="mt-4">Removing background...</div>
-                </template>
-                <CroppieWrapper
-                  v-else-if="resultImageUrl && !cropped"
-                  ref="cropper"
-                  :image-url="resultImageUrl"
-                />
-                <v-img
-                  v-else-if="resultImageUrl"
-                  :src="resultImageUrl"
-                  max-height="350"
-                  contain
-                  draggable="true"
-                  @dragstart="handleDragStart"
-                />
+            <!-- Content -->
+            <template v-if="!resultImageUrl && !originalImageUrl">
+              <v-card-text @click="triggerFileInput" style="cursor: pointer">
+                {{ t('staffCard.label') }}
+              </v-card-text>
+            </template>
 
-                <v-img
-                  v-else-if="originalImageUrl"
-                  :src="originalImageUrl"
-                  max-height="350"
-                  contain
-                  draggable="false"
-                />
-                <v-card-text v-else>{{ t('staffCard.label') }}</v-card-text>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
+            <CroppieWrapper
+              v-else-if="resultImageUrl && !cropped"
+              ref="cropper"
+              :image-url="resultImageUrl"
+            />
 
-        <v-card-actions>
-          <v-row no-gutters class="w-100" dense>
+            <v-img
+              v-else-if="resultImageUrl"
+              :src="resultImageUrl"
+              max-height="350"
+              max-width="380"
+              contain
+              draggable="true"
+              @dragstart="handleDragStart"
+            />
+
+            <v-img
+              v-else-if="originalImageUrl"
+              :src="originalImageUrl"
+              max-height="350"
+              max-width="380"
+              contain
+              draggable="false"
+            />
+          </div>
+        </v-card>
+
+        <v-card-actions class="mt-6">
+          <v-row class="w-100" dense>
             <v-col cols="3">
               <v-btn
                 color="primary"
-                block
+                icon
+                density="comfortable"
                 :disabled="!imageFile || isProcessing"
                 @click="removeBackground"
-              >
-                {{ t('staffCard.remove') }}
+                ><v-tooltip
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.remove')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconPhoto</v-icon>
               </v-btn>
             </v-col>
             <v-col cols="3">
               <v-btn
                 color="primary"
-                block
+                icon
+                density="comfortable"
                 :disabled="!isEnhancing"
                 @click="enhanceImage"
               >
-                {{ t('staffCard.retouch') }}
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.retouch')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconWand</v-icon>
               </v-btn>
             </v-col>
             <v-col cols="3">
               <v-btn
                 v-if="showCropper"
                 color="primary"
-                block
+                icon
+                density="comfortable"
                 :disabled="isProcessing || isEnhancing"
                 @click="cropImage"
               >
-                {{ t('staffCard.crop') }}
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.crop')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconCrop</v-icon>
               </v-btn>
             </v-col>
             <v-col cols="3" v-if="resultImageUrl">
-              <v-btn block :disabled="isProcessing" @click="downloadImage">
-                {{ t('staffCard.download') }}
+              <v-btn
+                color="primary"
+                icon
+                density="comfortable"
+                :disabled="isProcessing"
+                @click="downloadImage"
+              >
+                <v-tooltip
+                  activator="parent"
+                  location="bottom"
+                  :text="t('staffCard.download')"
+                  transition="fade-transition"
+                  open-delay="300"
+                ></v-tooltip>
+                <v-icon>tabler:IconDownload</v-icon>
               </v-btn>
             </v-col>
           </v-row>
@@ -158,7 +230,8 @@ const enhancementStrength = ref(50);
 const cardImage = ref(null);
 const members = ref([]);
 const selectedItem = ref(null);
-const selectedId = ref(null);
+const fileInput = ref(null);
+const isScanning = ref(false);
 
 onMounted(() => {
   fetchData();
@@ -215,6 +288,10 @@ function resetImage() {
   cardImage.value.reset();
 }
 
+function triggerFileInput() {
+  fileInput.value.click();
+}
+
 function handleDragStart(event) {
   const src = event.target.getAttribute('src');
   event.dataTransfer.setData('text/plain', src);
@@ -246,7 +323,7 @@ const showCropper = computed(() => {
   return (enhancedImage.value || resultImageUrl.value) && !cropped.value;
 });
 
-const onFileChange = (event) => {
+function onFileChange(event) {
   const file = event.target.files ? event.target.files[0] : event;
   if (file) {
     originalImageUrl.value = URL.createObjectURL(file);
@@ -259,7 +336,7 @@ const onFileChange = (event) => {
     imageFile.value = null;
     cropped.value = '';
   }
-};
+}
 
 const clearImages = () => {
   [originalImageUrl.value, resultImageUrl.value, enhancedImage.value]
@@ -278,6 +355,7 @@ const removeBackground = async () => {
   if (!imageFile.value) return;
 
   isProcessing.value = true;
+  isScanning.value = true;
   resultImageUrl.value = '';
 
   try {
@@ -290,7 +368,7 @@ const removeBackground = async () => {
       formData,
       {
         headers: {
-          'X-Api-Key': 'zYmQYkz5e5ATgftFnFiX9AsK',
+          'X-Api-Key': 'fzkpnP5pr7pVCLKEEKrMbRDF',
         },
         responseType: 'blob',
       }
@@ -312,6 +390,7 @@ const removeBackground = async () => {
       canvas.toBlob((blob) => {
         resultImageUrl.value = URL.createObjectURL(blob);
         isProcessing.value = false;
+        isScanning.value = false;
       }, 'image/png');
     };
 
@@ -400,5 +479,85 @@ const downloadImage = () => {
 <style scoped>
 .v-card {
   border-color: rgb(var(--v-theme-primary)) !important;
+}
+
+::v-deep(.v-btn) {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white !important;
+}
+
+::v-deep(.circle-btn .v-btn__content) {
+  color: white !important;
+}
+
+.clear {
+  top: 80px;
+  left: 450px;
+  z-index: 1;
+  margin: 0;
+  display: block;
+  position: absolute;
+}
+
+.scanning-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.fingerprint {
+  width: 350px;
+  height: 388px;
+  position: relative;
+}
+
+.fingerprint.scanning::after {
+  content: '';
+  left: -20px;
+  position: absolute;
+  width: 350px;
+  height: 4px;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 215, 0, 0),
+    rgba(220, 53, 69, 0.8)
+  );
+  animation: scanning 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-shadow:
+    0 0 5px rgba(255, 215, 0, 0.8),
+    0 0 15px rgba(220, 53, 69, 0.6);
+  border-radius: 2px;
+  transform-origin: center;
+}
+
+@keyframes scanDown {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes scanUp {
+  0% {
+    top: 100%;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+.fingerprint.scanning::after {
+  animation:
+    scanDown 0.8s linear forwards,
+    scanUp 0.8s linear 0.8s forwards infinite;
 }
 </style>

@@ -38,9 +38,11 @@ export default {
     show_project: 'プロジェクトを表示',
     theme: 'テーマカラー',
   },
+
   message: {
-    error404Text: '申し訳ありませんが、',
-    error404Text2: 'お探しのページは見つかりませんでした。',
+    error404Text: 'おっと！ページが見つかりません',
+    error404Text2:
+      'このページは存在しないか、削除されました。\nホームに戻ってください',
     backhome: '戻る',
   },
   login: {
@@ -139,6 +141,7 @@ export default {
     remove: '背景を削除',
     retouch: 'レタッチ',
     crop: '切り抜き',
+    cross: '画像をクリア',
   },
   validation: {
     required: '{field}は必須項目です',

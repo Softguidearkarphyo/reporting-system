@@ -121,4 +121,7 @@ const chipResizeWidth = computed(() => {
 ::v-deep(.v-select--multiple .v-field__input) {
   flex-wrap: nowrap !important;
 }
+::v-deep(.v-select *) {
+  pointer-events: all !important;
+}
 </style>
