@@ -60,12 +60,12 @@
     <v-row class="d-flex justify-center ma-0 pa-2" dense>
       <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text" color="primary">Middle</v-btn>
+          <v-btn variant="text">Middle</v-btn>
         </v-sheet>
       </v-col>
       <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text" color="primary">End</v-btn>
+          <v-btn variant="text">End</v-btn>
         </v-sheet>
       </v-col>
     </v-row>
@@ -75,13 +75,13 @@
     </v-list-subheader>
     <v-row class="d-flex justify-center ma-0 pa-2" dense>
       <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text" color="primary">Border</v-btn>
+        <v-sheet class="rounded-lg text-center px-3 py-2" @click="defaultClick">
+          <v-btn variant="text">Border</v-btn>
         </v-sheet>
       </v-col>
       <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2" @click="rgbClick">
-          <v-btn variant="text" color="primary">RGB</v-btn>
+          <v-btn variant="text">RGB</v-btn>
         </v-sheet>
       </v-col>
     </v-row>
@@ -92,18 +92,19 @@
     <v-row class="d-flex justify-center ma-0 pa-2" dense>
       <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text" color="primary">Shadow</v-btn>
+          <v-btn variant="text">Shadow</v-btn>
         </v-sheet>
       </v-col>
       <v-col>
         <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text" color="primary">None</v-btn>
+          <v-btn variant="text">None</v-btn>
         </v-sheet>
       </v-col>
     </v-row>
   </v-navigation-drawer>
 </template>
 <script setup>
+import { isRgbActive } from '@/utils/border';
 import { useTheme } from 'vuetify';
 import { colorThemes } from '../../custom-theme/color';
 const props = defineProps({
@@ -142,12 +143,20 @@ const setTheme = (colorName) => {
 
 onMounted(() => {
   setTheme(selectedColor.value);
+  const savedState = localStorage.getItem('RGB-Active');
+  if (savedState !== null) {
+    isRgbActive.value = savedState ? JSON.parse(savedState) : false;
+  }
 });
 
 function rgbClick() {
-  const currentBorder = theme.themes.value.light.colors.gradientborder;
-  console.log('Current border:', currentBorder);
-  // localStorage.setItem('card-border', 'rgb');
+  isRgbActive.value = true;
+  localStorage.setItem('RGB-Active', JSON.parse(true));
+}
+
+function defaultClick() {
+  isRgbActive.value = false;
+  localStorage.setItem('RGB-Active', JSON.parse(false));
 }
 </script>
 

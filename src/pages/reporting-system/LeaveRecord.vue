@@ -28,7 +28,12 @@
       <!-- Leave Availability Cards -->
       <v-row class="mb-6" justify="space-between">
         <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2">
-          <v-card class="pa-3 gradientborder" rounded="lg" elevation="1">
+          <v-card
+            :class="borderClass"
+            style="padding: 10px"
+            rounded="lg"
+            elevation="1"
+          >
             <div class="text-caption">Remaining</div>
             <div class="text-h6 font-weight-bold">{{ type.name }}</div>
             <v-progress-circular
@@ -54,12 +59,12 @@
               :items="leaveRequests"
               class="elevation-0"
             >
-              <template #item.status="{ item }">
+              <template #[`item.status`]="{ item }">
                 <v-chip color="warning" text-color="black" size="small" label>{{
                   item.status
                 }}</v-chip>
               </template>
-              <template #item.action="{ item }">
+              <template #[`item.action`]="{ item }">
                 <v-btn icon size="x-small" color="green">
                   <v-icon>mdi-check</v-icon>
                 </v-btn>
@@ -129,7 +134,7 @@
 
 <script setup>
 import { ref } from 'vue';
-
+import { borderClass } from '@/utils/border';
 const tab = ref(0);
 
 const leaveTypes = [
