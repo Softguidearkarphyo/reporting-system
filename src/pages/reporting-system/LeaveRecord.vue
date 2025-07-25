@@ -54,12 +54,12 @@
               :items="leaveRequests"
               class="elevation-0"
             >
-              <template #item.status="{ item }">
+              <template #[`item.status`]="{ item }">
                 <v-chip color="warning" text-color="black" size="small" label>{{
                   item.status
                 }}</v-chip>
               </template>
-              <template #item.action="{ item }">
+              <template #[`item.action`]="">
                 <v-btn icon size="x-small" color="green">
                   <v-icon>mdi-check</v-icon>
                 </v-btn>

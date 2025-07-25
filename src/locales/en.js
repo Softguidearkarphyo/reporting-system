@@ -200,37 +200,37 @@ export default {
     end_date: 'End Date',
     hour: 'hrs',
   },
+
   creatLeave: {
     title: 'Leave Registration',
+    title1: 'Leave Registration Form',
+    title2: 'Calculation Leave',
+    title3: 'OT Time Registration',
     options: {
       selection: 'SELECT OPTION TYPE :',
       existing: 'FOR EXISTING EMPLOYEE',
       new: 'FOR NEW EMPLOYEE',
       ot: 'FOR ADDING OT TIME',
+      employee: 'SELECT EMPLOYEE',
+      selected_name: 'SELECTED NAME : ',
     },
-    form1: {
+    form: {
       name: 'Name',
       leave_type: 'Leave Type',
-      start_date: 'Start Date',
-      end_date: 'End Date',
+      leave_date: 'Leave Date',
+      duration: 'Duration',
       reason: 'Reason',
-      part_time: 'Duration',
-    },
-    form2: {
-      name: 'Name',
-      permanent_date: 'Permanent Date',
-    },
-    form3: {
-      name: 'Name',
+      ot_date: 'OT Date',
       ot_time: 'OT Time',
+      permanent_date: 'Permanent Date',
     },
     table: {
       name: 'Employee Name',
       leave_type: 'Leave Type',
-      start_date: 'Start Date',
-      end_date: 'End Date',
+      leave_type: 'Leave Type',
+      duration: 'Duration',
       reason: 'Reason',
-      part_time: 'Duration',
+      action: 'Action',
     },
   },
 };

@@ -32,6 +32,7 @@
         hide-details
         @update:model-value="onDateSelected"
         color="primary"
+        :multiple="multiple"
         :disabled="disabled"
       />
     </div>
@@ -66,6 +67,11 @@ const props = defineProps({
     type: String,
     default: 'bodyDataTable',
   },
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+
   modelValue: {
     type: [String, Date],
     required: false,
