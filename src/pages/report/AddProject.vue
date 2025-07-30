@@ -8,8 +8,8 @@
       :validation-schema="projectCreateSchema"
       @submit="submit"
     >
-      <v-row class="mx-auto">
-        <v-col cols="12" md="6" lg="3">
+      <v-row class="align-center justify-center" no-gutters>
+        <v-col cols="12" md="6" lg="3" class="px-3">
           <Field name="cd" v-slot="{ field, errorMessage }">
             <BaseTextField
               v-model="field.value"
@@ -23,7 +23,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="3">
+        <v-col cols="12" md="6" lg="3" class="px-3">
           <Field name="eng_name" v-slot="{ field, errorMessage }">
             <BaseTextField
               v-model="field.value"
@@ -37,7 +37,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="3">
+        <v-col cols="12" md="6" lg="3" class="px-3">
           <Field name="jp_name" v-slot="{ field, errorMessage }">
             <BaseTextField
               v-model="field.value"
@@ -52,8 +52,8 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="11" class="ml-2 ml-md-n7 mr-lg-0" md="6" lg="3">
-          <div class="d-flex justify-end">
+        <v-col cols="12" md="6" lg="3">
+          <div class="d-flex justify-start mx-3">
             <BaseButton type="submit" style="width: 200px">
               {{ t('common.submit') }}
             </BaseButton>
@@ -62,119 +62,85 @@
       </v-row>
     </Form>
   </ParentCard>
-
-  <div class="d-flex justify-space-between align-center mt-3">
-    <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
-    <div style="width: 50%">
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        color="primary"
-        prepend-icon="mdi-magnify"
-        width="100%"
-        class="mb-n5"
-      >
-      </BaseTextField>
-    </div>
-  </div>
-  <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :items-count="itemsCount"
-      :style="{ minHeight: windowHeight }"
-    >
-      <template #item.position="{ item }">
-        <div
-          class="rounded-pill py-1 px-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '75px',
-            fontSize: '11px',
-          }"
+  <div v-if="hasInitialData">
+    <v-row class="align-center mt-3">
+      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+        <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
+      </v-col>
+      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          color="primary"
+          prepend-icon="mdi-magnify"
         >
-          {{ item.position?.name }}
-        </div>
-      </template>
-      <template #item.action="{ item }">
-        <div class="d-flex justify-end">
-          <BaseButton type="submit" style="width: 200px">
-            {{ t('common.submit') }}
-          </BaseButton>
-        </div>
-      </template>
-    </BaseTable>
-  </ParentCard>
-
-  <div class="d-flex justify-space-between align-center mt-3">
-    <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
-    <div>
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        color="primary"
-        width="300px"
-        prepend-icon="mdi-magnify"
+        </BaseTextField>
+      </v-col>
+    </v-row>
+    <ParentCard>
+      <BaseTable
+        :headers="headers"
+        :items="items"
+        :items-count="itemsCount"
+        :style="{ minHeight: windowHeight }"
       >
-      </BaseTextField>
-    </div>
+        <template #item.position="{ item }">
+          <div
+            class="rounded-pill py-1 px-1 text-center mx-auto"
+            :style="{
+              backgroundColor: item.position?.color,
+              width: '75px',
+              fontSize: '11px',
+            }"
+          >
+            {{ item.position?.name }}
+          </div>
+        </template>
+        <template #item.created_at="{ item }">
+          {{ formatDate(item.created_at) }}
+        </template>
+        <template #item.action="{ item }">
+          <div class="d-flex justify-end">
+            <BaseButton
+              elevation="0"
+              @click.stop="scrollToEdit(item.id)"
+              color=""
+              class="edit-btn"
+              size="small"
+            >
+              <v-icon icon="tabler:IconEdit" size="18" color="primary" />
+            </BaseButton>
+            <BaseButton
+              elevation="0"
+              @click.stop="showConfirmDelete(item.id)"
+              color=""
+              class="delete-btn"
+              size="small"
+            >
+              <v-icon
+                icon="tabler:IconTrash"
+                size="18"
+                style="color: #ff0000"
+              />
+            </BaseButton>
+          </div>
+        </template>
+      </BaseTable>
+    </ParentCard>
+    <BaseConfirmDelete
+      v-model="confirmDelete"
+      :text="t('addProject.deleteConfirmText')"
+      :class="{ 'd-none': !confirmDelete }"
+      @yes="
+        confirmDelete = false;
+        deleteProject();
+      "
+      @no="
+        confirmDelete = false;
+        deleteTarget = undefined;
+      "
+    ></BaseConfirmDelete>
   </div>
-  <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :items-count="itemsCount"
-      :style="{ minHeight: windowHeight }"
-    >
-      <template #item.position="{ item }">
-        <div
-          class="rounded-pill py-1 px-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '75px',
-            fontSize: '11px',
-          }"
-        >
-          {{ item.position?.name }}
-        </div>
-      </template>
-      <template #item.action="{ item }">
-        <div class="d-flex justify-end">
-          <BaseButton
-            elevation="0"
-            @click.stop="scrollToEdit(item.id)"
-            color=""
-            class="edit-btn"
-            size="small"
-          >
-            <v-icon> mdi-pencil </v-icon>
-          </BaseButton>
-          <BaseButton
-            elevation="0"
-            @click.stop="showConfirmDelete(item.id)"
-            color=""
-            class="delete-btn"
-            size="small"
-          >
-            <v-icon> mdi-trash-can</v-icon>
-          </BaseButton>
-        </div>
-      </template>
-    </BaseTable>
-  </ParentCard>
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('addProject.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="
-      confirmDelete = false;
-      deleteProject();
-    "
-    @no="
-      confirmDelete = false;
-      deleteTarget = undefined;
-    "
-  ></BaseConfirmDelete>
 </template>
 <script setup>
 import { useI18n } from 'vue-i18n';
@@ -199,16 +165,26 @@ const updateTarget = ref(undefined);
 const checkPrjCds = ref([]);
 let originalItems = [];
 const items = ref([]);
+const hasInitialData = ref(false);
 const headers = computed(() => {
-  const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
       title: t('addProject.table.cd'),
       key: 'cd',
     },
     {
-      title: t('addProject.table.name'),
-      key: isJapanese ? 'jp_name' : 'eng_name',
+      title: t('addProject.table.english_name'),
+      key: 'eng_name',
+      sortable: false,
+    },
+    {
+      title: t('addProject.table.japanese_name'),
+      key: 'jp_name',
+      sortable: false,
+    },
+    {
+      title: t('addProject.table.created_at'),
+      key: 'created_at',
       sortable: false,
     },
   ];
@@ -221,7 +197,10 @@ const headers = computed(() => {
       width: '10%',
     });
   }
-  return tmpHeaders;
+  return tmpHeaders.map((header) => ({
+    ...header,
+    title: header.title.toUpperCase(),
+  }));
 });
 let windowHeight, itemsCount;
 if (window.innerWidth > 1366) {
@@ -238,6 +217,7 @@ const fetch = async () => {
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
   checkPrjCds.value = originalItems?.map((prj) => prj.cd);
+  hasInitialData.value = originalItems.length > 0;
 };
 
 fetch();
@@ -294,4 +274,9 @@ watch(
     }
   }
 );
+
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  return new Date(dateString).toISOString().split('T')[0];
+};
 </script>

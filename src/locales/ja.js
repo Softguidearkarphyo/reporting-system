@@ -69,6 +69,9 @@ export default {
       cd: 'コード',
       name: '名前',
       action: '操作',
+      japanese_name: '日本語名',
+      english_name: '英語名',
+      created_at: '作成日時',
     },
     form: {
       cd: 'コード',
@@ -102,6 +105,8 @@ export default {
     title: 'メンバースキル作成',
     form: {
       name: '名前',
+      staff: 'スタッフ',
+      date: '日付',
       role: '役割',
       team: 'チーム',
       permanent_date: '正社員日付',

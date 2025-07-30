@@ -1,19 +1,22 @@
 <template>
-  <div class="d-flex justify-space-between align-center mb-3 mt-n3">
-    <BaseTitle>{{ t('addMemberSkill.employee_competency') }}</BaseTitle>
-    <div style="width: 75%">
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        type="text"
-        variant="plain"
-        dense
-        autocomplete="test"
-        prependIcon="mdi-magnify"
-        :width="'100%'"
-      ></BaseTextField>
-    </div>
-  </div>
+  <v-row class="align-center mb-3">
+      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+        <BaseTitle> {{ t('addMemberSkill.employee_competency') }} </BaseTitle>
+      </v-col>
+      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          color="primary"
+          prepend-icon="mdi-magnify"
+          type="text"
+          variant="plain"
+          dense
+          autocomplete="test"
+        >
+        </BaseTextField>
+      </v-col>
+    </v-row>
   <ParentCard>
     <BaseTable
       :headers="headers"
