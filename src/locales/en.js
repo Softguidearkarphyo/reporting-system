@@ -68,6 +68,9 @@ export default {
       cd: 'Code',
       name: 'Name',
       action: 'Action',
+      japanese_name: 'Japanese',
+      english_name: 'English',
+      created_at: 'Created At',
     },
     pagination: {
       range: 'showing {start} - {end} of {total} records',
@@ -122,6 +125,7 @@ export default {
     },
     form: {
       staff: 'Staff',
+      date: 'Date',
       project: 'Project',
       position: 'position',
       grade: 'grade',

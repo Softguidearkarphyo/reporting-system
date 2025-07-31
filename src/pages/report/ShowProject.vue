@@ -46,22 +46,20 @@
       </v-row>
     </Form>
   </ParentCard>
-
-  <div class="d-flex align-center justify-space-between mb-3 mt-5">
-    <BaseTitle>{{ t('showProject.title') }}</BaseTitle>
-    <div>
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        variant="underlined"
-        color="primary"
-        width="300px"
-        style="margin-right: 40px"
-        prepend-icon="mdi-magnify"
-      />
-    </div>
-  </div>
-
+  <v-row class="align-center mt-3">
+      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+        <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
+      </v-col>
+      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          color="primary"
+          prepend-icon="mdi-magnify"
+        >
+        </BaseTextField>
+      </v-col>
+    </v-row>
   <v-card>
     <BaseTable :headers="headers" :items="originalItems">
       <template #[`item.user_id`]="{ item }">
@@ -223,8 +221,3 @@ watch(
   }
 );
 </script>
-<style scoped>
-::v-deep(.v-input__control) {
-  width: 300px;
-}
-</style>
