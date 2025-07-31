@@ -57,50 +57,60 @@
       <v-icon left color="primary">mdi-palette</v-icon>
       Button Layout
     </v-list-subheader>
-    <v-row class="d-flex justify-center ma-0 pa-2" dense>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">Middle</v-btn>
-        </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">End</v-btn>
-        </v-sheet>
-      </v-col>
-    </v-row>
+    <div class="d-flex align-center pa-6">
+      <v-btn
+        prepend-icon="tabler:IconLayoutSidebarInactive"
+        class="ma-2 setIcon"
+      >
+        Middle
+      </v-btn>
+      <v-btn
+        prepend-icon="tabler:IconLayoutSidebarRightInactive"
+        class="ma-2 setIcon"
+      >
+        End
+      </v-btn>
+    </div>
     <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Card Border with
     </v-list-subheader>
-    <v-row class="d-flex justify-center ma-0 pa-2" dense>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2" @click="defaultClick">
-          <v-btn variant="text">Border</v-btn>
-        </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2" @click="rgbClick">
-          <v-btn variant="text">RGB</v-btn>
-        </v-sheet>
-      </v-col>
-    </v-row>
+    <div class="d-flex align-center pa-6">
+      <v-btn
+        @click="defaultClick"
+        prepend-icon="tabler:IconLayoutSidebarInactive"
+        class="ma-2 setIcon"
+        :class="{ active: !isRgbActive }"
+      >
+        Border
+      </v-btn>
+      <v-btn
+        @click="rgbClick"
+        prepend-icon="tabler:IconLayoutSidebarRightInactive"
+        class="ma-2 setIcon"
+        :class="{ active: isRgbActive }"
+      >
+        RGB
+      </v-btn>
+    </div>
     <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Card with
     </v-list-subheader>
-    <v-row class="d-flex justify-center ma-0 pa-2" dense>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">Shadow</v-btn>
-        </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet class="rounded-lg text-center px-3 py-2">
-          <v-btn variant="text">None</v-btn>
-        </v-sheet>
-      </v-col>
-    </v-row>
+    <div class="d-flex align-center pa-6">
+      <v-btn
+        prepend-icon="tabler:IconLayoutSidebarInactive"
+        class="ma-2 setIcon"
+      >
+        Shadow
+      </v-btn>
+      <v-btn
+        prepend-icon="tabler:IconLayoutSidebarRightInactive"
+        class="ma-2 setIcon"
+      >
+        None
+      </v-btn>
+    </div>
   </v-navigation-drawer>
 </template>
 <script setup>
@@ -175,5 +185,19 @@ function defaultClick() {
 }
 .v-sheet:hover {
   scale: 1.06;
+}
+.setIcon {
+  height: 50px !important;
+  width: 110px !important;
+  border: 1px solid rgba(var(--v-theme-font), 0.1) !important;
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+}
+.setIcon:hover {
+  scale: 1.04;
+  color: rgba(var(--v-theme-primary)) !important;
+}
+.setIcon.active {
+  color: rgb(var(--v-theme-primary)) !important;
+  border-color: rgb(var(--v-theme-primary)) !important;
 }
 </style>
