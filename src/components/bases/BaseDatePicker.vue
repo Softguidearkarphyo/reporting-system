@@ -11,7 +11,7 @@
       <v-text-field
         :ref="refName"
         v-bind="{ ...activatorProps, ...$attrs }"
-        :model-value="$attrs.modelValue ?? $attrs.value"
+        :model-value="formattedValue"
         @update:model-value="$emit('update:modelValue', $event)"
         :style="{ width }"
         :label="label"
@@ -31,6 +31,7 @@
         :style="{ minWidth: minWidth, maxWidth: maxWidth, width: width }"
         show-adjacent-months
         hide-details
+        :model-value="internalValue"
         @update:model-value="onDateSelected"
         color="primary"
         :multiple="multiple"
@@ -39,9 +40,10 @@
     </div>
   </v-menu>
 </template>
+
 <script setup>
 const props = defineProps({
-  modelValue: [String, Date],
+  modelValue: [String, Date, Array],
   label: String,
   color: String,
   minWidth: {
@@ -72,11 +74,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-
-  modelValue: {
-    type: [String, Date],
-    required: false,
-  },
   prependIcon: [String, Object],
   prependIconColor: {
     type: String,
@@ -87,19 +84,39 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const menu = ref(false);
-const model = ref(props.modelValue ? new Date(props.modelValue) : null);
+const internalValue = ref(null);
+
+const formattedValue = computed(() => {
+  if (!props.modelValue) return '';
+  if (props.multiple && Array.isArray(props.modelValue)) {
+    return props.modelValue.join(', ');
+  }
+  return props.modelValue;
+});
 
 watch(
   () => props.modelValue,
   (val) => {
-    model.value = val ? new Date(val) : null;
+    if (val) {
+      internalValue.value = props.multiple
+        ? Array.isArray(val)
+          ? val.map((d) => new Date(d))
+          : [new Date(val)]
+        : new Date(val);
+    } else {
+      internalValue.value = props.multiple ? [] : null;
+    }
   },
   { immediate: true }
 );
 
 function onDateSelected(val) {
-  model.value = val;
-  emit('update:modelValue', formatDate(val));
+  if (props.multiple) {
+    const formattedDates = val.map((date) => formatDate(date));
+    emit('update:modelValue', formattedDates);
+  } else {
+    emit('update:modelValue', formatDate(val));
+  }
   menu.value = false;
 }
 

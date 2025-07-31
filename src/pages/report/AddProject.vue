@@ -82,7 +82,7 @@
         :items-count="itemsCount"
         :style="{ minHeight: windowHeight }"
       >
-        <template #item.position="{ item }">
+        <template #[`item.position`]="{ item }">
           <div
             class="rounded-pill py-1 px-1 text-center mx-auto"
             :style="{
@@ -94,10 +94,10 @@
             {{ item.position?.name }}
           </div>
         </template>
-        <template #item.created_at="{ item }">
+        <template #[`item.created_at`]="{ item }">
           {{ formatDate(item.created_at) }}
         </template>
-        <template #item.action="{ item }">
+        <template #[`item.action`]="{ item }">
           <div class="d-flex justify-end">
             <BaseButton
               elevation="0"
