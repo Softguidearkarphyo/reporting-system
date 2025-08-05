@@ -86,7 +86,7 @@
                 </v-row>
               </v-col>
               <v-col cols="6">
-                <v-row>
+                <v-row class="pt-3">
                   <v-col cols="12">
                     <Field
                       name="employee"
@@ -242,7 +242,15 @@
                         @click="overTime = overTime > 0 ? overTime - 0.5 : 0"
                         ><v-icon>mdi-minus</v-icon></BaseButton
                       >
-                      <div class="mt-2">{{ overTime }} hours</div>
+                      <div class="mt-2">
+                        {{
+                          overTime === 0
+                            ? t('workHourReport.form.overTime')
+                            : t('workHourReport.form.overTimeCount', {
+                                duration: overTime,
+                              })
+                        }}
+                      </div>
                       <BaseButton
                         color="primary"
                         density="compact"
@@ -254,13 +262,13 @@
                 </v-row>
                 <v-row
                   ><v-col cols="12">
-                    <div class="ml-n2 mt-2">
+                    <div class="ml-n2 mt-2 mb-2">
                       <BaseButton type="submit" style="width: 90%">
                         {{ t('common.submit') }}
                       </BaseButton>
                     </div>
-                  </v-col></v-row
-                >
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </Form>

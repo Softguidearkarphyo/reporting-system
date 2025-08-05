@@ -120,6 +120,7 @@ const noDataMessageText = computed(() => {
 <style>
 .v-data-table th .v-data-table-header__content span {
   font-size: 0.8rem;
+  text-transform: uppercase;
 }
 .v-data-table .v-btn.edit-btn {
   background-color: rgba(var(--v-theme-primary), 0.2);
