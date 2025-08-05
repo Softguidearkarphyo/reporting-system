@@ -208,6 +208,24 @@ export const periods = ref([
     finishTime: '5:30',
   },
 ]);
+
+export const lateTimes = ref([
+  {
+    id: 1,
+    name: '8:30 ~ 9:00',
+    value: '1',
+  },
+  {
+    id: 2,
+    name: '9:01 ~ 10:00',
+    value: '2',
+  },
+  {
+    id: 3,
+    name: '10:01 ~ 10:30',
+    value: '2',
+  },
+]);
 export const timeSlots = ref([
   { id: 1, name: '08:30' },
   { id: 2, name: '09:00' },
