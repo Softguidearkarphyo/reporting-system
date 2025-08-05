@@ -208,6 +208,24 @@ export const periods = ref([
     finishTime: '5:30',
   },
 ]);
+
+export const lateTimes = ref([
+  {
+    id: 1,
+    name: '8:30 ~ 9:00',
+    value: '1',
+  },
+  {
+    id: 2,
+    name: '9:01 ~ 10:00',
+    value: '2',
+  },
+  {
+    id: 3,
+    name: '10:01 ~ 10:30',
+    value: '2',
+  },
+]);
 export const timeSlots = ref([
   { id: 1, name: '08:30' },
   { id: 2, name: '09:00' },
@@ -241,4 +259,19 @@ export const timeSlots = ref([
   { id: 30, name: '23:00' },
   { id: 31, name: '23:30' },
   { id: 32, name: '24:00' },
+]);
+
+export const months = ref([
+  { id: 1, name: 'January' },
+  { id: 2, name: 'February' },
+  { id: 3, name: 'March' },
+  { id: 4, name: 'April' },
+  { id: 5, name: 'May' },
+  { id: 6, name: 'June' },
+  { id: 7, name: 'July' },
+  { id: 8, name: 'August' },
+  { id: 9, name: 'September' },
+  { id: 10, name: 'October' },
+  { id: 11, name: 'November' },
+  { id: 12, name: 'December' },
 ]);

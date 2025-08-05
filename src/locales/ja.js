@@ -128,6 +128,8 @@ export default {
       finishTime: '終了時間',
       single: '単一選択',
       multiple: '複数選択',
+      overTime: '残業時間を入力してください',
+      overTimeCount: '{duration} 時間',
     },
     table: {
       period: '時限',
@@ -210,6 +212,26 @@ export default {
       duration: '期間',
       reason: '理由',
       action: '操作',
+    },
+  },
+
+  memberFine: {
+    title1: '罰金登録',
+    title2: 'ファインリスト',
+    deleteConfirmText:
+      'これを削除してもよろしいですか？ この操作は元に戻せません。',
+    statusConfirmText: 'このアクションを変更してもよろしいですか?',
+    form: {
+      name: '名前',
+      date: '日付',
+      amount: '金額',
+      time: '時間',
+      fine: 'ファイン',
+      total: '合計',
+      status: '状態',
+      action: '操作',
+      must_be_late: "無効",
+      month: "月",
     },
   },
 };

@@ -8,7 +8,7 @@
       :validation-schema="projectCreateSchema"
       @submit="submit"
     >
-      <v-row class="align-center justify-center" no-gutters>
+      <v-row class="align-center" >
         <v-col cols="12" md="6" lg="3" class="px-3">
           <Field name="cd" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -23,7 +23,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="3" class="px-3">
+        <v-col cols="12" md="6" lg="3" class="px-3 ">
           <Field name="eng_name" v-slot="{ field, errorMessage }">
             <BaseTextField
               v-model="field.value"
@@ -37,7 +37,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="3" class="px-3">
+        <v-col cols="12" md="6" lg="3" class="px-3 ">
           <Field name="jp_name" v-slot="{ field, errorMessage }">
             <BaseTextField
               v-model="field.value"
@@ -52,12 +52,10 @@
             ></BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="3">
-          <div class="d-flex justify-start mx-3">
-            <BaseButton type="submit" style="width: 200px">
+        <v-col cols="12" md="6" lg="3" class="px-3 ">
+            <BaseButton type="submit" style="width: 95%">
               {{ t('common.submit') }}
             </BaseButton>
-          </div>
         </v-col>
       </v-row>
     </Form>

@@ -154,6 +154,8 @@ export default {
       finishTime: 'Finish Time',
       single: 'Single',
       multiple: 'Multiple',
+      overTime: 'Fill overtime here',
+      overTimeCount: '{duration} hours',
     },
     table: {
       period: 'Period',
@@ -245,6 +247,25 @@ export default {
       duration: 'Duration',
       reason: 'Reason',
       action: 'Action',
+    },
+  },
+
+  memberFine: {
+    title1: 'Fine Registration',
+    title2: 'Fine List',
+    deleteConfirmText:
+      'Are you sure to delete this member? # This action cannot be undone.',
+    statusConfirmText: 'Are you sure to change this action?',
+    form: {
+      name: 'Name',
+      date: 'Date',
+      time: 'Time',
+      fine: 'Fine',
+      total: 'Total',
+      status: 'Status',
+      action: 'action',
+      must_be_late: "invalid",
+      month: "Month",
     },
   },
 };

@@ -24,6 +24,7 @@ declare module 'vue' {
     BaseSelect: typeof import('./components/bases/BaseSelect.vue')['default']
     BaseTable: typeof import('./components/bases/BaseTable.vue')['default']
     BaseTextField: typeof import('./components/bases/BaseTextField.vue')['default']
+    BaseTimePicker: typeof import('./components/bases/BaseTimePicker.vue')['default']
     BaseTitle: typeof import('./components/bases/BaseTitle.vue')['default']
     BottomSheet: typeof import('./components/bases/BottomSheet.vue')['default']
     CroppieWrapper: typeof import('./components/croppie/CroppieWrapper.vue')['default']
