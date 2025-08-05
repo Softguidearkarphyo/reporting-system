@@ -285,7 +285,6 @@ const fetchMemberFines = async () => {
   try {
   const AllFine =  await memberFineStore.fetchMemberFine();
   status.value = AllFine.data.data.length === 0 ? false : true;
-  console.log(AllFine.data)
   const tmpMembersFines = memberFineStore.getMemberFine.data?.map((memberFine) => ({
       id: memberFine.id,
       name: memberFine.staff.eng_name,
@@ -310,14 +309,28 @@ const submit = async (values) => {
 const finesWithStatusAndTotal = computed(() => {
   const finesCopy = JSON.parse(JSON.stringify(fines.value));
 
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  const previousMonthDate = new Date(currentYear, currentMonth - 2, 1);
+  const previousMonth = previousMonthDate.getMonth() + 1;
+  const previousYear = previousMonthDate.getFullYear();
+
   const filteredFines = finesCopy.filter((fine) => {
     const fineDate = new Date(fine.date);
     const fineMonth = fineDate.getMonth() + 1;
+    const fineYear = fineDate.getFullYear();
 
     const matchName = selectedName.value ? fine.name === selectedName.value : true;
     const matchMonth = selectedMonth.value ? fineMonth === selectedMonth.value : true;
 
-    return matchName && matchMonth;
+    const noFiltersSelected = !selectedName.value && !selectedMonth.value;
+    const matchRecentMonths =
+      (fineMonth === currentMonth && fineYear === currentYear) ||
+      (fineMonth === previousMonth && fineYear === previousYear);
+
+    return noFiltersSelected ? matchRecentMonths : matchName && matchMonth;
   });
 
   const groupedByStaffAndMonth = {};
@@ -332,7 +345,6 @@ const finesWithStatusAndTotal = computed(() => {
     }
     groupedByStaffAndMonth[key].push(fine);
   });
-  console.log(groupedByStaffAndMonth)
 
   Object.values(groupedByStaffAndMonth).forEach((group) => {
     let runningTotal = 0;
@@ -345,8 +357,6 @@ const finesWithStatusAndTotal = computed(() => {
 
   return filteredFines;
 });
-
-
 
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
