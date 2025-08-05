@@ -25,7 +25,7 @@ export const useMemberFineStore = defineStore('memberFine', () => {
 
   const fetchMemberFine = async () => {
     try {
-      const response = await api.get('/reporting-system/fines/get');
+      const response = await api.post('/reporting-system/fines/get');
       setMemberFine(response.data)
       return response;
     } catch (error) {

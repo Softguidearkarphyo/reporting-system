@@ -261,6 +261,7 @@ export default {
       status: 'Status',
       action: 'action',
       must_be_late: "invalid",
+      month: "Month",
     },
   }, 
  

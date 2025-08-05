@@ -228,6 +228,7 @@ export default {
       status: '状態',
       action: '操作',
       must_be_late: "無効",
+      month: "月",
     },
   }
 };

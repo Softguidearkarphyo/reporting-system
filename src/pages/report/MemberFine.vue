@@ -67,99 +67,123 @@
     </v-row>
   </ParentCard>
 
-   <div class="mt-5 d-flex">
-     <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
-   </div>
-   <ParentCard>
-      <BaseTable
-        :headers="headers"
-        :items="finesWithStatusAndTotal"
-        :style="{ minHeight: windowHeight }"
-      >
-       <template #[`item.time`]="{ item }">
-        <span class="time-box d-inline-flex justify-center align-center">
-        <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-        {{ item.time }}
-      </span>
-      </template> 
-      <template #[`item.fine`]="{ item }">
-         <span class="money-box d-inline-flex justify-center align-center">
-            {{ item.fine + " Ks" }}
-          </span>
-      </template> 
-      <template #[`item.total`]="{ item }">
-        <span class="money-box d-inline-flex justify-center align-center">
-          {{ item.total  + " Ks" }}
-        </span>
-      </template> 
-      <template #[`item.status`]="{ item }">
-          <span class="d-flex justify-left align-center"> 
-             <span
-                class="status-label mr-5"
-               :style="{
-                      backgroundColor: item.switchValue ? 'rgba(var(--v-theme-complete), 0.2)' : 'rgba(var(--v-theme-pending), 0.2)',
-                      color:  item.switchValue ? '#789f00ff' : '#ff9800',
-                    }"
+  <div v-if="status">
+    <ParentCard>
+      <div class="d-flex justify-space-around align-center">
+          <BaseSelect
+              v-model="selectedName"
+              :label="t('memberFine.form.name')"
+              item-value="name"
+              item-title="name"
+              :items="items"
+              :width="'500px'"
               >
-              <v-icon size="16" class="mr-1">
-                {{ item.switchValue ? 'mdi-check-circle-outline' : 'mdi-timer-sand' }}
-              </v-icon>
-              {{ item.switchValue ? 'Complete' : 'Pending' }}</span>
-            <span>
-              <v-switch
-                color="primary"
-                density="compact"
-                hide-details="true"
-                v-model="item.switchValue"
-                @update:modelValue="onSwitchChange(item)"
-                style="transform: scale(0.8);"
-              ></v-switch>
-            </span>
-          </span>
-      </template>
-        <template #[`item.action`]="{ item }">
-        <span class="d-flex justify-left align-center p-0">
-          <BaseButton
-            elevation="0"
-            color=""
-            class="delete-btn"
-            size="small"
-            :add-class="['ma-1']"
-            @click.stop="showConfirmDelete(item.id)"
-          >
-            <v-icon icon="tabler:IconTrash" size="18" style="color: #ff0000" />
-          </BaseButton>
-        </span>
-            <BaseConfirmDelete
-              v-model="confirmDelete"
-              :text="t('memberFine.deleteConfirmText')"
-              :class="{ 'd-none': !confirmDelete }"
-              @yes="
-                confirmDelete = false;
-                deleteMemberFine();
-              "
-              @no="
-                confirmDelete = false;
-                deleteTarget = undefined;
-              "
-            ></BaseConfirmDelete>
-            <BaseConfirmDelete
-                v-model="confirmChange"
-                :text="t('memberFine.statusConfirmText')"
-                :class="{ 'd-none': !confirmChange }"
-                @yes="
-                  confirmChange = false;
-                  changeStatus(switchTarget);
-                "
-                @no="
-                  confirmChange = false;
-                  switchTarget.switchValue = !switchTarget.switchValue;
-                  switchTarget = null;
-                "
-              ></BaseConfirmDelete>
-      </template>
-      </BaseTable>
+          </BaseSelect>
+          <BaseSelect
+              v-model="selectedMonth"
+              item-value="id"
+              item-title="name"
+              :items = "months"
+              :label="t('memberFine.form.month')"
+              :width="'500px'"
+            >
+          </BaseSelect>
+      </div>
     </ParentCard>
+    <div class="mt-5 d-flex">
+      <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
+    </div>
+    <ParentCard>
+        <BaseTable
+          :headers="headers"
+          :items="finesWithStatusAndTotal"
+          :style="{ minHeight: windowHeight }"
+        >
+        <template #[`item.time`]="{ item }">
+          <span class="time-box d-inline-flex justify-center align-center">
+          <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+          {{ item.time }}
+        </span>
+        </template> 
+        <template #[`item.fine`]="{ item }">
+          <span class="money-box d-inline-flex justify-center align-center">
+              {{ item.fine + " Ks" }}
+            </span>
+        </template> 
+        <template #[`item.total`]="{ item }">
+          <span class="money-box d-inline-flex justify-center align-center">
+            {{ item.total  + " Ks" }}
+          </span>
+        </template> 
+        <template #[`item.status`]="{ item }">
+            <span class="d-flex justify-left align-center"> 
+              <span
+                  class="status-label mr-5"
+                :style="{
+                        backgroundColor: item.switchValue ? 'rgba(var(--v-theme-complete), 0.2)' : 'rgba(var(--v-theme-pending), 0.2)',
+                        color:  item.switchValue ? '#789f00ff' : '#ff9800',
+                      }"
+                >
+                <v-icon size="16" class="mr-1">
+                  {{ item.switchValue ? 'mdi-check-circle-outline' : 'mdi-timer-sand' }}
+                </v-icon>
+                {{ item.switchValue ? 'Complete' : 'Pending' }}</span>
+              <span>
+                <v-switch
+                  color="primary"
+                  density="compact"
+                  hide-details="true"
+                  v-model="item.switchValue"
+                  @update:modelValue="onSwitchChange(item)"
+                  style="transform: scale(0.8);"
+                ></v-switch>
+              </span>
+            </span>
+        </template>
+          <template #[`item.action`]="{ item }">
+          <span class="d-flex justify-left align-center p-0">
+            <BaseButton
+              elevation="0"
+              color=""
+              class="delete-btn"
+              size="small"
+              :add-class="['ma-1']"
+              @click.stop="showConfirmDelete(item.id)"
+            >
+              <v-icon icon="tabler:IconTrash" size="18" style="color: #ff0000" />
+            </BaseButton>
+          </span>
+          </template>
+        </BaseTable>
+    </ParentCard>
+  </div>
+      <BaseConfirmDelete
+        v-model="confirmDelete"
+        :text="t('memberFine.deleteConfirmText')"
+        :class="{ 'd-none': !confirmDelete }"
+        @yes="
+          confirmDelete = false;
+          deleteMemberFine();
+        "
+        @no="
+          confirmDelete = false;
+          deleteTarget = undefined;
+        "
+      ></BaseConfirmDelete>
+      <BaseConfirmDelete
+        v-model="confirmChange"
+        :text="t('memberFine.statusConfirmText')"
+        :class="{ 'd-none': !confirmChange }"
+        @yes="
+          confirmChange = false;
+          changeStatus(switchTarget);
+        "
+        @no="
+          confirmChange = false;
+          switchTarget.switchValue = !switchTarget.switchValue;
+          switchTarget = null;
+        "
+      ></BaseConfirmDelete>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'; 
@@ -167,17 +191,20 @@ import { useI18n } from 'vue-i18n';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useMemberFineStore } from '@/stores/member/member-fine.js';
 import { getMemberFineValidation } from '@/plugins/validations/member-fine.js';
-import {  lateTimes } from '@/utils/data';
+import {  lateTimes,months } from '@/utils/data';
 
 const { t, locale } = useI18n();
 const memberStore = useMemberStore(); 
 const items = ref([]);
 const fines = ref([]);
+const selectedName = ref(null); 
+const selectedMonth = ref(null);
 const switchTarget = ref(null);
 const memberFineStore = useMemberFineStore();
 const deleteTarget = ref(undefined);
 const confirmDelete = ref(undefined);
 const confirmChange = ref(undefined);
+const status = ref(true);
 const headers = computed(() => {
   const tmpHeaders = [
     {
@@ -256,7 +283,9 @@ const fetchData = async () => {
 
 const fetchMemberFines = async () => {
   try {
-  await memberFineStore.fetchMemberFine();
+  const AllFine =  await memberFineStore.fetchMemberFine();
+  status.value = AllFine.data.data.length === 0 ? false : true;
+  console.log(AllFine.data)
   const tmpMembersFines = memberFineStore.getMemberFine.data?.map((memberFine) => ({
       id: memberFine.id,
       name: memberFine.staff.eng_name,
@@ -279,21 +308,33 @@ const submit = async (values) => {
 };
 
 const finesWithStatusAndTotal = computed(() => {
-  const finesByStaffAndMonth = {};
   const finesCopy = JSON.parse(JSON.stringify(fines.value));
 
-  finesCopy.forEach((fine) => {
+  const filteredFines = finesCopy.filter((fine) => {
+    const fineDate = new Date(fine.date);
+    const fineMonth = fineDate.getMonth() + 1;
+
+    const matchName = selectedName.value ? fine.name === selectedName.value : true;
+    const matchMonth = selectedMonth.value ? fineMonth === selectedMonth.value : true;
+
+    return matchName && matchMonth;
+  });
+
+  const groupedByStaffAndMonth = {};
+
+  filteredFines.forEach((fine) => {
     const date = new Date(fine.date);
     const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
     const key = `${fine.name}-${monthYear}`;
 
-    if (!finesByStaffAndMonth[key]) {
-      finesByStaffAndMonth[key] = [];
+    if (!groupedByStaffAndMonth[key]) {
+      groupedByStaffAndMonth[key] = [];
     }
-    finesByStaffAndMonth[key].push(fine);
+    groupedByStaffAndMonth[key].push(fine);
   });
+  console.log(groupedByStaffAndMonth)
 
-  Object.values(finesByStaffAndMonth).forEach((group) => {
+  Object.values(groupedByStaffAndMonth).forEach((group) => {
     let runningTotal = 0;
     group.forEach((fine) => {
       runningTotal += parseFloat(fine.fine);
@@ -302,8 +343,10 @@ const finesWithStatusAndTotal = computed(() => {
     });
   });
 
-  return finesCopy;
+  return filteredFines;
 });
+
+
 
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
