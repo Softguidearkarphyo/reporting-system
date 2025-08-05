@@ -47,19 +47,19 @@
     </Form>
   </ParentCard>
   <v-row class="align-center mt-3">
-      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-        <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
-      </v-col>
-      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-        <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          color="primary"
-          prepend-icon="mdi-magnify"
-        >
-        </BaseTextField>
-      </v-col>
-    </v-row>
+    <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+      <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
+    </v-col>
+    <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+      <BaseTextField
+        v-model="search"
+        :label="t('common.search')"
+        color="primary"
+        prepend-icon="mdi-magnify"
+      >
+      </BaseTextField>
+    </v-col>
+  </v-row>
   <v-card>
     <BaseTable :headers="headers" :items="originalItems">
       <template #[`item.user_id`]="{ item }">
@@ -186,7 +186,6 @@ const submit = (values) => {
   const targetDate = new Date(endDate);
   targetDate.setDate(targetDate.getDate() - subtractDays);
   const formattedTarget = formatDate(targetDate);
-  console.log(formattedTarget);
 
   const filteredItems = getItems.filter(
     (item) => item.created_at === formattedTarget

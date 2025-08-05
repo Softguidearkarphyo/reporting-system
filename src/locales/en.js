@@ -212,6 +212,7 @@ export default {
     title1: 'Leave Registration Form',
     title2: 'Calculation Leave',
     title3: 'OT Time Registration',
+    title4: 'On Leave',
     options: {
       selection: 'SELECT OPTION TYPE :',
       existing: 'FOR EXISTING EMPLOYEE',
@@ -235,6 +236,7 @@ export default {
       offdays: 'Off Days',
       calculate: 'Calculate',
       full_date: 'End of Year Date',
+      total_days: 'Total Days',
     },
     table: {
       name: 'Employee Name',
