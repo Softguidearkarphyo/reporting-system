@@ -14,7 +14,7 @@
                     v-model="field.value"
                     v-bind="field"
                     item-value="id"
-                    item-title="name"
+                    :item-title="itemTitleKey"
                     :items="items"
                     :label="t('memberFine.form.name')"
                     variant="plain"
@@ -73,8 +73,8 @@
           <BaseSelect
               v-model="selectedName"
               :label="t('memberFine.form.name')"
-              item-value="name"
-              item-title="name"
+              item-value="eng_name"
+              :item-title="itemTitleKey"
               :items="items"
               :width="'500px'"
               >
@@ -186,7 +186,7 @@
       ></BaseConfirmDelete>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'; 
+import { ref, onMounted, watch } from 'vue'; 
 import { useI18n } from 'vue-i18n';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useMemberFineStore } from '@/stores/member/member-fine.js';
@@ -205,11 +205,13 @@ const deleteTarget = ref(undefined);
 const confirmDelete = ref(undefined);
 const confirmChange = ref(undefined);
 const status = ref(true);
+const lang = ref(locale.value);
 const headers = computed(() => {
+  const lan = locale.value
   const tmpHeaders = [
     {
       title: t('memberFine.form.name'),
-      key: 'name',
+      key: lan == "ja" ? 'jp_name':'eng_name',
       align: 'left',  
     },
     {
@@ -268,12 +270,17 @@ onMounted(() => {
   fetchMemberFines();
 });
 
+const itemTitleKey = computed(() => {
+  return lang.value === 'jp' ? 'jp_name' : 'eng_name';
+});
+console.log(itemTitleKey);
 const fetchData = async () => {
   try {
     await memberStore.fetchMember();
     const tmpMembers = memberStore.getMembers?.map((member) => ({
       id: member.id,
-      name: member.eng_name,
+      eng_name: member.eng_name,
+      jp_name: member.jp_name,
     }));
     items.value = [...tmpMembers];
   } catch (error) {
@@ -287,7 +294,8 @@ const fetchMemberFines = async () => {
   status.value = AllFine.data.data.length === 0 ? false : true;
   const tmpMembersFines = memberFineStore.getMemberFine.data?.map((memberFine) => ({
       id: memberFine.id,
-      name: memberFine.staff.eng_name,
+      eng_name: memberFine.staff.eng_name,
+      jp_name: memberFine.staff.jp_name,
       date: memberFine.date,
       time: memberFine.time,
       status: memberFine.status,
@@ -385,6 +393,10 @@ const changeStatus = async (item) => {
     switchTarget.value = null;
   }
 };
+
+watch(locale, (newLocale) => {
+  lang.value = newLocale;
+});
 
 </script>
 <style scoped>
