@@ -125,7 +125,7 @@ const noDataMessageText = computed(() => {
 <style scoped>
 /* Header background color */
 ::v-deep(.custom-header-bg .v-data-table__th) {
-  background-color: #f8f9fa !important;
+  background-color: #f8f9fa;
 }
 
 /* Header font style */
@@ -147,9 +147,14 @@ const noDataMessageText = computed(() => {
 }
 
 /* Button icon color */
-::v-deep(.v-data-table .edit-btn .v-icon),
-::v-deep(.v-data-table .delete-btn .v-icon) {
+::v-deep(.v-data-table .edit-btn .v-icon.v-theme--light),
+::v-deep(.v-data-table .delete-btn .v-icon.v-theme--light) {
   color: #2d2e2e;
+}
+
+::v-deep(.v-data-table .edit-btn .v-icon.v-theme--dark),
+::v-deep(.v-data-table .delete-btn .v-icon.v-theme--dark) {
+  color: #ffffff;
 }
 
 /* Table border */

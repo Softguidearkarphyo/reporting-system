@@ -1,6 +1,6 @@
 <template>
   <BaseTitle> {{ t('memberFine.title1') }} </BaseTitle>
-  <ParentCard class="pa-2">
+  <ParentCard>
      <v-row class="align-center">
        <v-col cols="12" md="12">
          <Form
@@ -68,14 +68,12 @@
   </ParentCard>
 
   <div v-if="status">
-    <div class="mt-5 d-flex">
-      <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
-    </div>
-    <ParentCard>
-      <div class="mb-3 text-right">
+    <ParentCard class="mt-3">
+      <div class="d-flex justify-space-between align-center mb-2 pr-2">
+        <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
         <v-menu
           v-model="dialog"
-          location="top"
+          location="bottom"
           offset-y
           transition="fade-transition"
         >
@@ -96,7 +94,7 @@
           </v-btn>
         </template>
 
-         <ParentCard @click.stop>
+        <ParentCard @click.stop>
           <div>
               <BaseSelect
                   v-model="selectedName"
@@ -170,7 +168,7 @@
                 hide-details="true"
                 v-model="item.switchValue"
                 @update:modelValue="onSwitchChange(item)"
-                style="transform: scale(0.8)"
+                style="transform: scale(0.7)"
               ></v-switch>
             </span>
           </span>
@@ -188,7 +186,6 @@
               <v-icon
                 icon="tabler:IconTrash"
                 size="15"
-                style="color: #ff0000"
               />
             </BaseButton>
           </span>
