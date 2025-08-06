@@ -122,7 +122,7 @@ const noDataMessageText = computed(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .custom-header-bg .v-data-table__th {
   background-color: #f8f9fa !important;
 }
@@ -156,7 +156,7 @@ const noDataMessageText = computed(() => {
 }
 
 .v-data-table {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e0e0e0 !important;
   overflow: hidden;
 }
 

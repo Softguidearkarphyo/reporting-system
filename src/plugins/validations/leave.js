@@ -20,5 +20,11 @@ export function leaveSchema(t, checkId = []) {
     reason: string().required(
       t('validation.required', { field: t('creatLeave.form.reason') })
     ),
+    ot_date: string().required(
+      t('validation.required', { field: t('creatLeave.form.ot_date') })
+    ),
+    ot_time: string().required(
+      t('validation.required', { field: t('creatLeave.form.ot_time') })
+    ),
   });
 }
