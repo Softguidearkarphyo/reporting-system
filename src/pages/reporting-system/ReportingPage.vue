@@ -61,10 +61,34 @@
                       >
                     </v-btn>
                     <v-btn
+                      v-if="showSavedBookmark"
+                      icon
+                      class="circle-btn"
+                      density="comfortable"
+                      :disabled="
+                        selectedEmployee.length > 1 ||
+                        Object.keys(dateTaskGroups ?? {})?.length === 0
+                      "
+                      @click="discardSetting"
+                    >
+                      <v-icon color="primary">
+                        tabler:IconBookmarksFilled
+                      </v-icon>
+                      <v-tooltip activator="parent" location="bottom">{{
+                        t('common.discardSetting')
+                      }}</v-tooltip>
+                    </v-btn>
+                    <v-btn
+                      v-else
                       icon
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
+                      :disabled="
+                        selectedEmployee.length > 1 ||
+                        Object.keys(dateTaskGroups ?? {})?.length === 0
+                      "
+                      @click="saveSetting"
                     >
                       <v-icon> tabler:IconBookmarks </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
@@ -233,7 +257,7 @@
                 <v-row>
                   <v-col cols="12">
                     <div
-                      class="d-flex justify-space-between ml-n2"
+                      class="d-flex justify-space-between ml-n2 mt-n2"
                       style="width: 95%"
                     >
                       <BaseButton
@@ -349,6 +373,28 @@ const checkPrjCds = ref([]);
 let originalItems = [];
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
+const selectedEmployeeInfo = computed(() => {
+  if (role === ADMIN) {
+    return employeeItems.value?.filter((item) =>
+      selectedEmployee.value?.includes(item.id)
+    );
+  } else {
+    return employeeItems.value;
+  }
+});
+const showSavedBookmark = computed(() => {
+  if (role === ADMIN) {
+    console.log(selectedEmployeeInfo.value);
+
+    return (
+      selectedEmployeeInfo.value?.length > 0 &&
+      selectedEmployeeInfo.value?.every(
+        (employee) => employee.task_performance_setting?.length > 0
+      )
+    );
+  }
+  return selectedEmployeeInfo.value?.[0]?.task_performance_setting?.length > 0;
+});
 const selectedPeriod = ref([1, 2]);
 const isDayMultiple = ref(true);
 const currentEmployee = ref();
@@ -444,18 +490,26 @@ const selectPreviousOfficeDays = () => {
   selectedDates.value = result.reverse();
 };
 const getList = async () => {
-  const memberPayload = { task_performance: {}, project: {}, task: {} };
+  const memberPayload = {
+    task_performance: {},
+    project: {},
+    task: {},
+    task_performance_setting: {},
+  };
   if (role !== ADMIN) {
     memberPayload.id = staff.id;
   }
   await reportingStore.fetchMember(memberPayload);
   const tmpMembers = reportingStore.getMembers?.map((member) => {
     const task_performance = member.task_performance?.map((task_perf) => ({
+      staff_id: task_perf?.staff_id,
       date: task_perf?.date,
       period: task_perf?.period,
+      project_id: task_perf?.project_id,
       project_cd: task_perf?.project?.cd,
       project_eng_name: task_perf?.project?.eng_name,
       project_jp_name: task_perf?.project?.jp_name,
+      task_id: task_perf?.task_id,
       task_cd: task_perf?.task?.cd,
       task_eng_name: task_perf?.task?.cd + '：' + task_perf?.task?.eng_name,
       task_jp_name: task_perf?.task?.cd + '：' + task_perf?.task?.jp_name,
@@ -466,6 +520,7 @@ const getList = async () => {
       jp_name: member?.jp_name,
       sort_key: member?.sort_key,
       task_performance: task_performance,
+      task_performance_setting: member.task_performance_setting,
     };
     return tmpItem;
   });
@@ -490,7 +545,8 @@ const generatePeriods = (startTime, endTime) => {
   while (start <= end) {
     const hours = start.getHours().toString().padStart(2, '0');
     const minutes = start.getMinutes().toString().padStart(2, '0');
-    slots.push(`${hours}:${minutes}`);
+    const seconds = start.getSeconds().toString().padStart(2, '0');
+    slots.push(`${hours}:${minutes}:${seconds}`);
     start.setMinutes(start.getMinutes() + 30);
   }
   return slots;
@@ -505,7 +561,8 @@ const generateExtraPeriods = (startTime, hours) => {
   while (start <= end) {
     const h = start.getHours().toString().padStart(2, '0');
     const m = start.getMinutes().toString().padStart(2, '0');
-    slots.push(`${h}:${m}`);
+    const s = start.getSeconds().toString().padStart(2, '0');
+    slots.push(`${h}:${m}:${s}`);
     start.setMinutes(start.getMinutes() + 30);
   }
   return slots;
@@ -608,7 +665,44 @@ const groupDates = () => {
     }
   }
 };
-
+const saveSetting = async () => {
+  if (dateTaskGroups.value) {
+    const latestByWeekday = {};
+    Object.entries(dateTaskGroups.value)?.forEach(([dateStr, data]) => {
+      const date = new Date(dateStr);
+      const weekday = date.getDay();
+      if (
+        !latestByWeekday?.[weekday] ||
+        new Date(dateStr) > new Date(latestByWeekday?.[weekday]?.date)
+      ) {
+        latestByWeekday[weekday] = {
+          date: dateStr,
+          data: data,
+        };
+      }
+    });
+    const settingItems = [];
+    Object.entries(latestByWeekday)?.forEach(([weekday, obj]) => {
+      const items = obj.data?.map((item) => ({
+        day: weekday,
+        staff_id: item.staff_id,
+        project_id: item.project_id,
+        task_id: item.task_id,
+        period: item.period,
+      }));
+      settingItems.push(...items);
+    });
+    settingItems.sort((a, b) => a.day - b.day);
+    await reportingStore.saveSetting({ create_array: settingItems });
+    await getList();
+  }
+};
+const discardSetting = async () => {
+  await reportingStore.discardSetting({
+    delete_array: role === ADMIN ? selectedEmployee.value : [staff.id],
+  });
+  await getList();
+};
 watch(
   () => formRef.value?.values?.project,
   (val) => {
@@ -653,6 +747,16 @@ watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
 }
 ::v-deep(.circle-btn .v-btn__content) {
   color: white !important;
+}
+::v-deep(.v-window__left) {
+  position: absolute !important;
+  top: 15px !important;
+  left: 15px !important;
+}
+::v-deep(.v-window__right) {
+  position: absolute;
+  top: 15px !important;
+  right: 15px !important;
 }
 /* .v-tooltip > ::v-deep(.v-overlay__content) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;

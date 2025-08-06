@@ -8,14 +8,15 @@ export default {
     deleteBtnText: 'delete',
     noDataText: 'No data available',
     submit: 'Submit',
-    autoFill: 'Apply settings',
+    autoFill: 'Apply setting',
     saveSetting: 'Save setting',
+    discardSetting: 'Discard setting',
     download: 'Download',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
     all: 'All',
-    filter: 'Filter'
+    filter: 'Filter',
   },
   sidebar: {
     dashboard: 'dashboard',

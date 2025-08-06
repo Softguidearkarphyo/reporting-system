@@ -82,6 +82,36 @@ export const useReportingStore = defineStore('reporting', () => {
     }
   };
 
+  const saveSetting = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/task-performance-setting/save',
+        payload
+      );
+      toast.success('Setting Saved Successfully');
+      return response;
+    } catch (error) {
+      const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];
+      toast.error(errorMsg);
+      return error;
+    }
+  };
+
+  const discardSetting = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/task-performance-setting/discard',
+        payload
+      );
+      toast.success('Setting Discarded Successfully');
+      return response;
+    } catch (error) {
+      const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];
+      toast.error(errorMsg);
+      return error;
+    }
+  };
+
   return {
     projects,
     getProjects,
@@ -97,5 +127,7 @@ export const useReportingStore = defineStore('reporting', () => {
     fetchTask,
     createTaskPerformance,
     deleteTaskPerformance,
+    saveSetting,
+    discardSetting,
   };
 });
