@@ -15,6 +15,7 @@ export default {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
     all: 'すべて',
+    filter: '濾過'
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -99,6 +100,7 @@ export default {
       ref_ph_number: '紹介者の電話番号',
       project: 'プロジェクト',
       sort_key: 'ソートキー',
+      staff_image: 'スタッフ画像',
     },
   },
   addMemberSkill: {
@@ -230,8 +232,8 @@ export default {
       total: '合計',
       status: '状態',
       action: '操作',
-      must_be_late: "無効",
-      month: "月",
+      must_be_late: '無効',
+      month: '月',
     },
   },
 };

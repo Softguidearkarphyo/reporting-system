@@ -2,63 +2,62 @@
   <BaseTitle>
     {{ t('addProject.title1') }}
   </BaseTitle>
-  <ParentCard class="pa-2">
-    <Form
-      ref="formRef"
-      :validation-schema="projectCreateSchema"
-      @submit="submit"
-    >
-      <v-row class="align-center" >
-        <v-col cols="12" md="6" lg="3" class="px-3">
-          <Field name="cd" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.cd')"
-              type="text"
-              variant="plain"
-              width="90%"
-              prependIcon="mdi-pound-box"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="3" class="px-3 ">
-          <Field name="eng_name" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.eng_name')"
-              type="text"
-              variant="plain"
-              width="90%"
-              prependIcon="mdi-format-letter-case"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="3" class="px-3 ">
-          <Field name="jp_name" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addProject.form.jp_name')"
-              type="text"
-              variant="plain"
-              width="90%"
-              autocomplete="test"
-              prependIcon="mdi-ideogram-cjk"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="3" class="px-3 ">
-            <BaseButton type="submit" style="width: 95%">
-              {{ t('common.submit') }}
-            </BaseButton>
-        </v-col>
-      </v-row>
-    </Form>
+  <ParentCard>
+    <v-row class="align-center" >
+      <v-col cols="12" md="12">
+        <Form
+          ref="formRef"
+          :validation-schema="projectCreateSchema"
+          @submit="submit"
+        >
+          <div class="d-flex flex-wrap align-center justify-space-around">
+              <Field name="cd" v-slot="{ field, errorMessage }">
+                <BaseTextField
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('addProject.form.cd')"
+                  type="text"
+                  variant="plain"
+                   :width="'300px'"
+                  prependIcon="mdi-pound-box"
+                  :error-messages="errorMessage"
+                  style="flex: none"
+                ></BaseTextField>
+              </Field>
+              <Field name="eng_name" v-slot="{ field, errorMessage }">
+                <BaseTextField
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('addProject.form.eng_name')"
+                  type="text"
+                  variant="plain"
+                    :width="'300px'"
+                  prependIcon="mdi-format-letter-case"
+                  :error-messages="errorMessage"
+                  style="flex: none"
+                ></BaseTextField>
+              </Field>
+              <Field name="jp_name" v-slot="{ field, errorMessage }">
+                <BaseTextField
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('addProject.form.jp_name')"
+                  type="text"
+                  variant="plain"
+                    :width="'300px'"
+                  autocomplete="test"
+                  prependIcon="mdi-ideogram-cjk"
+                  :error-messages="errorMessage"
+                  style="flex: none"
+                ></BaseTextField>
+              </Field>
+              <BaseButton type="submit" :width="'200px'">
+                {{ t('common.submit') }}
+              </BaseButton>
+          </div>
+        </Form>
+      </v-col>
+    </v-row>
   </ParentCard>
   <div v-if="hasInitialData">
     <v-row class="align-center mt-3">
@@ -106,7 +105,7 @@
               class="edit-btn"
               size="small"
             >
-              <v-icon icon="tabler:IconEdit" size="18" color="primary" />
+              <v-icon icon="tabler:IconEdit" size="15" />
             </BaseButton>
             <BaseButton
               elevation="0"
@@ -117,8 +116,7 @@
             >
               <v-icon
                 icon="tabler:IconTrash"
-                size="18"
-                style="color: #ff0000"
+                size="15"
               />
             </BaseButton>
           </div>
