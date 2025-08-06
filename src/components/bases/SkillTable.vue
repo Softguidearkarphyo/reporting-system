@@ -31,7 +31,7 @@
                       :style="{
                         backgroundColor: buttonBgColor,
                         padding: '5px',
-                        width: '100%',
+                        width: '95%',
                       }"
                     >
                       <span class="font-weight-bold text-subtitle-1">
