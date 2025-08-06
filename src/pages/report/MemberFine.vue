@@ -1,40 +1,40 @@
 <template>
   <BaseTitle> {{ t('memberFine.title1') }} </BaseTitle>
   <ParentCard class="pa-2">
-    <v-row class="align-center">
-      <v-col cols="12" md="12">
-        <Form
-          ref="formRef"
-          :validation-schema="memberFineValidation"
-          @submit="submit"
-        >
-          <div class="d-flex flex-wrap align-center justify-space-around">
-            <Field name="staff" v-slot="{ field, errorMessage }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                item-value="id"
-                item-title="name"
-                :items="items"
-                :label="t('memberFine.form.name')"
-                variant="plain"
-                prependIcon="mdi-account-tie"
-                :error-messages="errorMessage"
-                :width="'300px'"
-              />
-            </Field>
-            <Field name="date" v-slot="{ field, errorMessage }">
-              <BaseDatePicker
-                v-model="field.value"
-                v-bind="field"
-                :label="t('memberFine.form.date')"
-                prependIcon="mdi-calendar-month"
-                :error-messages="errorMessage"
-                :width="'300px'"
-                style="flex: none"
-              />
-            </Field>
-            <!-- <Field name="time"  v-slot="{ field, errorMessage }">
+     <v-row class="align-center">
+       <v-col cols="12" md="12">
+         <Form
+         ref="formRef"
+         :validation-schema="memberFineValidation"
+         @submit="submit"
+         >
+            <div class="d-flex flex-wrap align-center justify-space-around">
+                <Field name="staff" v-slot="{ field, errorMessage }" >
+                  <BaseSelect
+                    v-model="field.value"
+                    v-bind="field"
+                    item-value="id"
+                    item-title="name"
+                    :items="memberList"
+                    :label="t('memberFine.form.name')"
+                    variant="plain"
+                    prependIcon="mdi-account-tie"
+                    :error-messages="errorMessage"
+                    :width="'300px'"
+                  />
+                </Field>
+                <Field name="date" v-slot="{ field, errorMessage }" >
+                  <BaseDatePicker
+                    v-model="field.value"
+                    v-bind="field"
+                    :label="t('memberFine.form.date')"
+                    prependIcon="mdi-calendar-month"
+                    :error-messages="errorMessage"
+                    :width="'300px'"
+                    style="flex: none"
+                  />
+                </Field>
+                <!-- <Field name="time"  v-slot="{ field, errorMessage }">
                   <BaseTimePicker  
                     v-model="field.value"
                     v-bind="field"
@@ -68,32 +68,60 @@
   </ParentCard>
 
   <div v-if="status">
-    <ParentCard>
-      <div class="d-flex justify-space-around align-center">
-        <BaseSelect
-          v-model="selectedName"
-          :label="t('memberFine.form.name')"
-          item-value="name"
-          item-title="name"
-          :items="items"
-          :width="'500px'"
-        >
-        </BaseSelect>
-        <BaseSelect
-          v-model="selectedMonth"
-          item-value="id"
-          item-title="name"
-          :items="months"
-          :label="t('memberFine.form.month')"
-          :width="'500px'"
-        >
-        </BaseSelect>
-      </div>
-    </ParentCard>
     <div class="mt-5 d-flex">
       <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
     </div>
     <ParentCard>
+      <div class="mb-3 text-right">
+        <v-menu
+          v-model="dialog"
+          location="top"
+          offset-y
+          transition="fade-transition"
+        >
+          <template #activator="{ props: tooltipProps }">
+          <v-btn
+            v-bind="tooltipProps"
+            color="primary"
+            density="comfortable"
+            class="filter-btn"
+            icon
+          >
+            <v-icon>mdi-filter-cog-outline</v-icon>
+             <v-tooltip
+                activator="parent"
+                location="top"
+                >{{ t('common.filter') }}</v-tooltip
+              >
+          </v-btn>
+        </template>
+
+         <ParentCard @click.stop>
+          <div>
+              <BaseSelect
+                  v-model="selectedName"
+                  :label="t('memberFine.form.name')"
+                  item-value="eng_name"
+                  item-title="name"
+                  :items="memberList"
+                  :width="'200px'"
+                   prependIcon="mdi-account-tie"
+                  >
+              </BaseSelect>
+              <BaseSelect
+                  v-model="selectedMonth"
+                  item-value="id"
+                  item-title="name"
+                  :items = "months"
+                  :label="t('memberFine.form.month')"
+                  :width="'200px'"
+                  prependIcon="mdi-calendar-month"
+                >
+            </BaseSelect>
+          </div>
+        </ParentCard>
+        </v-menu>
+      </div>
       <BaseTable
         :headers="headers"
         :items="finesWithStatusAndTotal"
@@ -197,7 +225,7 @@
   ></BaseConfirmDelete>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue'; 
 import { useI18n } from 'vue-i18n';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useMemberFineStore } from '@/stores/member/member-fine.js';
@@ -216,12 +244,15 @@ const deleteTarget = ref(undefined);
 const confirmDelete = ref(undefined);
 const confirmChange = ref(undefined);
 const status = ref(true);
+const lang = ref(locale.value);
+const dialog = ref(false);
 const headers = computed(() => {
+  const lan = locale.value
   const tmpHeaders = [
     {
       title: t('memberFine.form.name'),
-      key: 'name',
-      align: 'left',
+      key: lan == "ja" ? 'jp_name':'eng_name',
+      align: 'left',  
     },
     {
       title: t('memberFine.form.date'),
@@ -277,14 +308,20 @@ onMounted(() => {
   fetchMemberFines();
 });
 
+const memberList = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return (
+    memberStore.getMembers?.map((member) => ({
+      id: member.id,
+      name: isJapanese ? member.jp_name : member.eng_name,
+      eng_name: member.eng_name
+    })) || []
+  );
+});
+
 const fetchData = async () => {
   try {
     await memberStore.fetchMember();
-    const tmpMembers = memberStore.getMembers?.map((member) => ({
-      id: member.id,
-      name: member.eng_name,
-    }));
-    items.value = [...tmpMembers];
   } catch (error) {
     console.error('Error fetching members:', error);
   }
@@ -292,20 +329,19 @@ const fetchData = async () => {
 
 const fetchMemberFines = async () => {
   try {
-    const AllFine = await memberFineStore.fetchMemberFine();
-    status.value = AllFine.data.data.length === 0 ? false : true;
-    const tmpMembersFines = memberFineStore.getMemberFine.data?.map(
-      (memberFine) => ({
-        id: memberFine.id,
-        name: memberFine.staff.eng_name,
-        date: memberFine.date,
-        time: memberFine.time,
-        status: memberFine.status,
-        total: memberFine.total,
-        fine: parseInt(memberFine.amount),
-        switchValue: memberFine.status === 1,
-      })
-    );
+  const AllFine =  await memberFineStore.fetchMemberFine();
+  status.value = AllFine.data.data.length === 0 ? false : true;
+  const tmpMembersFines = memberFineStore.getMemberFine.data?.map((memberFine) => ({
+      id: memberFine.id,
+      eng_name: memberFine.staff.eng_name,
+      jp_name: memberFine.staff.jp_name,
+      date: memberFine.date,
+      time: memberFine.time,
+      status: memberFine.status,
+      total: memberFine.total,
+      fine: parseInt(memberFine.amount),
+      switchValue: memberFine.status === 1,
+    }));
     fines.value = [...tmpMembersFines];
   } catch (error) {
     console.error('Error fetching members fines:', error);
@@ -334,7 +370,7 @@ const finesWithStatusAndTotal = computed(() => {
     const fineYear = fineDate.getFullYear();
 
     const matchName = selectedName.value
-      ? fine.name === selectedName.value
+      ? fine.eng_name === selectedName.value
       : true;
     const matchMonth = selectedMonth.value
       ? fineMonth === selectedMonth.value
@@ -403,6 +439,11 @@ const changeStatus = async (item) => {
     switchTarget.value = null;
   }
 };
+
+watch(locale, (newLocale) => {
+  lang.value = newLocale;
+});
+
 </script>
 <style scoped>
 .no-message-switch .v-input__details {
@@ -435,5 +476,8 @@ const changeStatus = async (item) => {
   display: inline-block;
   text-align: center;
   font-weight: 800;
+}
+::v-deep(.filter-btn .v-btn__content) {
+  color: white !important;
 }
 </style>
