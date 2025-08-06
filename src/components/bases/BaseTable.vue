@@ -122,58 +122,58 @@ const noDataMessageText = computed(() => {
 });
 </script>
 
-<style>
-.custom-header-bg .v-data-table__th {
+<style scoped>
+/* Header background color */
+::v-deep(.custom-header-bg .v-data-table__th) {
   background-color: #f8f9fa !important;
 }
-.v-data-table th .v-data-table-header__content span {
+
+/* Header font style */
+::v-deep(.v-data-table th .v-data-table-header__content span) {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-.v-data-table .v-btn.edit-btn,
-.v-data-table .v-btn.delete-btn {
-  border: 1px solid #dee2e6;
-  padding: 6px !important;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  color: red;
-}
-.v-data-table .v-btn.edit-btn,
-.v-data-table .v-btn.delete-btn {
+/* Button base style */
+::v-deep(.v-data-table .v-btn.edit-btn),
+::v-deep(.v-data-table .v-btn.delete-btn) {
   border: 1px solid #dee2e6;
   padding: 6px !important;
   width: 30px;
   height: 30px;
   min-width: 30px;
 }
-.v-data-table .delete-btn .v-icon,
-.v-data-table .edit-btn .v-icon {
-  color: #2d2e2e; /* blue */
+
+/* Button icon color */
+::v-deep(.v-data-table .edit-btn .v-icon),
+::v-deep(.v-data-table .delete-btn .v-icon) {
+  color: #2d2e2e;
 }
 
-.v-data-table {
+/* Table border */
+::v-deep(.v-data-table) {
   border: 1px solid #e0e0e0;
   overflow: hidden;
 }
 
-/* === Hover: change background and icon color === */
-.v-data-table .v-btn.edit-btn:hover {
-  background-color: rgba(var(--v-theme-primary), 0.2); /* blue bg */
+/* Hover effects */
+::v-deep(.v-data-table .v-btn.edit-btn:hover) {
+  background-color: rgba(var(--v-theme-primary), 0.2);
 }
-.v-data-table .v-btn.edit-btn:hover .v-icon {
-  color: rgba(var(--v-theme-primary)); /* icon turns white */
+::v-deep(.v-data-table .v-btn.edit-btn:hover .v-icon) {
+  color: rgba(var(--v-theme-primary));
 }
 
-.v-data-table .v-btn.delete-btn:hover {
-  background-color: #f0bbc0; /* red bg */
+::v-deep(.v-data-table .v-btn.delete-btn:hover) {
+  background-color: #f0bbc0;
 }
-.v-data-table .v-btn.delete-btn:hover .v-icon {
-  color: rgb(252, 3, 3); /* icon turns white */
+::v-deep(.v-data-table .v-btn.delete-btn:hover .v-icon) {
+  color: rgb(252, 3, 3);
 }
+
+/* Margin utility */
 .mt-4 {
   margin-top: 1.5rem;
 }

@@ -103,6 +103,7 @@ export default {
       ref_ph_number: 'Reference Phone',
       project: 'Project',
       sort_key: 'Sort Key',
+      staff_image: 'Staff Image',
     },
   },
   addMemberSkill: {
@@ -264,8 +265,8 @@ export default {
       total: 'Total',
       status: 'Status',
       action: 'action',
-      must_be_late: "invalid",
-      month: "Month",
+      must_be_late: 'invalid',
+      month: 'Month',
     },
   },
 };

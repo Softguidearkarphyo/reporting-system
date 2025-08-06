@@ -222,23 +222,6 @@
           </Field>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <Field name="project" v-slot="{ field }">
-            <BaseMultiSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMember.form.project')"
-              class="mx-auto"
-              :items="project"
-              prependIcon="mdi-microsoft-teams"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-              :disabled="roleId === 2"
-            >
-            </BaseMultiSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="6" lg="4">
           <Field name="sort_key" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
@@ -255,6 +238,68 @@
             >
             </BaseSelect>
           </Field>
+          <!-- <Field name="project" v-slot="{ field }">
+            <BaseMultiSelect
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addMember.form.project')"
+              class="mx-auto"
+              :items="project"
+              prependIcon="mdi-microsoft-teams"
+              :width="'320px'"
+              item-title="name"
+              item-value="id"
+              :disabled="roleId === 2"
+            >
+            </BaseMultiSelect>
+          </Field> -->
+        </v-col>
+
+        <v-col cols="12" md="6" lg="4">
+          <!-- <v-text-field
+            label="Upload Image"
+            v-model="fileName"
+            prepend-inner-icon="mdi-upload"
+            readonly
+            class="file-upload"
+            width="320px"
+            @click="triggerFileInput"
+          /> -->
+          <BaseTextField
+            v-model="fileName"
+            v-bind="field"
+            :label="t('addMember.form.staff_image')"
+            class="mx-auto"
+            prependIcon="tabler:IconPhotoCheck"
+            :width="'320px'"
+            :error-messages="errorMessage"
+            :disabled="roleId === 2"
+            @click="triggerFileInput"
+          >
+          </BaseTextField>
+          <input
+            ref="fileInput"
+            type="file"
+            accept="image/*"
+            @change="handleFileChange"
+            style="display: none"
+          />
+          <!-- <Field name="sort_key" v-slot="{ field, errorMessage }">
+            <BaseSelect
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addMember.form.sort_key')"
+              class="mx-auto"
+              :items="sortKey"
+              prependIcon="mdi-sort"
+              :width="'320px'"
+              item-title="value"
+              item-value="id"
+              :error-messages="errorMessage"
+              :disabled="roleId === 2"
+            >
+            </BaseSelect>
+          </Field> -->
         </v-col>
         <v-col cols="12">
           <div class="d-flex justify-center">
@@ -286,6 +331,9 @@ const router = useRouter();
 const memberId = route.params.memberId;
 const authStore = useAuthStore();
 const roleId = computed(() => authStore.staff?.role ?? 0);
+const fileInput = ref(null);
+const fileName = ref('');
+
 watch(
   () => route.params.memberId,
   async (val) => {
@@ -332,6 +380,19 @@ const submit = async (values) => {
       authStore.setStaff(updatedMember);
     }
     router.push({ name: 'member-lists' });
+  }
+};
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    fileName.value = file.name;
+    // Handle file here (emit, save, etc.)
+    console.log('Selected:', file);
   }
 };
 </script>
