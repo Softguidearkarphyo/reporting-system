@@ -310,11 +310,13 @@ const handleUpdate = (skills) => {
   updatedSkills.value = skills;
 };
 const submit = async (values) => {
+  const isCreate = !fetchedSkillSheet.value;
+
   const payload = {
     ...values,
-    skills:
-      updatedSkills.value.length >
-      fetchedSkillSheet.value.tech_stack_proficiencies.length
+    skills: isCreate
+      ? updatedSkills.value
+      : updatedSkills.value.length
         ? updatedSkills.value
         : fetchedSkillSheet.value.tech_stack_proficiencies,
   };
