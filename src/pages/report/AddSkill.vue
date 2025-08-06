@@ -172,7 +172,7 @@
               v-bind="field"
               :label="t('addMemberSkill.form.major_tech_stack')"
               class="mx-auto"
-              :items="skillSets"
+              :items="techStackList"
               prependIcon="mdi-star-shooting"
               :width="'320px'"
               item-title="name"
@@ -184,76 +184,12 @@
         </v-col>
       </v-row>
       <div class="mt-4 mb-4">
-        <v-data-table
-          hide-default-footer
-          class="skill-table"
-          style="width: 100%"
-        >
-          <template #body>
-            <tbody class="table-center">
-              <tr v-for="(row, rowIndex) in chunkList" :key="rowIndex">
-                <td
-                  v-for="(cell, cellIndex) in row"
-                  :key="`${cell.name}-${cellIndex}`"
-                  style="min-width: 100px; max-width: 130px"
-                >
-                  <div class="py-2 text-center">
-                    <div>{{ cell.name }}</div>
-                    <div style="position: relative">
-                      <v-menu
-                        v-model="openMenus[rowIndex][cellIndex]"
-                        :close-on-content-click="false"
-                        open-on-click
-                        location="top"
-                        offset-y
-                      >
-                        <template #activator="{ props }">
-                          <v-btn
-                            v-bind="props"
-                            elevation="0"
-                            class="mt-2 d-flex justify-center"
-                            :style="{
-                              backgroundColor: buttonBgColor,
-                              padding: '5px',
-                              width: '100%',
-                            }"
-                          >
-                            <span class="font-weight-bold text-subtitle-1">
-                              {{ cell.symbol }}
-                            </span>
-                          </v-btn>
-                        </template>
-                        <v-card>
-                          <v-card-text class="d-flex">
-                            <BaseButton
-                              v-for="(item, index) in symbolLists"
-                              :key="index"
-                              small
-                              color="primary"
-                              text
-                              @click="
-                                selectSymbol(
-                                  item.abbv,
-                                  cell,
-                                  rowIndex,
-                                  cellIndex
-                                )
-                              "
-                            >
-                              {{ item.abbv }}
-                            </BaseButton>
-                          </v-card-text>
-                        </v-card>
-                      </v-menu>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-data-table>
+        <SkillTable
+          :proficiencies="fetchedSkillSheet?.tech_stack_proficiencies || []"
+          :editable="true"
+          @update="handleUpdate"
+        />
       </div>
-
       <div class="d-flex justify-center">
         <BaseButton type="submit" style="width: 200px">
           {{ t('common.submit') }}
@@ -265,7 +201,6 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n';
-import { useDisplay, useTheme } from 'vuetify';
 import { useMemberStore } from '@/stores/member/member';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
@@ -275,21 +210,17 @@ import { skillSheetSchema } from '@/plugins/validations/skill-sheet-create';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 const route = useRoute();
 const router = useRouter();
-const { lgAndUp, mdAndUp } = useDisplay();
-const theme = useTheme();
 const memberStore = useMemberStore();
 const systemStore = useSystemStore();
 const projectStore = useProjectStore();
 const skillSheetStore = useSkillSheetStore();
 const { t } = useI18n();
 const formRef = ref(null);
-const openMenus = ref([]);
 const memberList = ref([]);
 const projectList = ref([]);
 const positionList = ref([]);
 const gradeList = ref([]);
 const japaneseLevelList = ref([]);
-const symbolLists = ref([]);
 const responsibilityList = ref([]);
 const fetchedSkillSheet = ref(null);
 const skillSheetId = route.params.skillSheetId;
@@ -322,48 +253,6 @@ watch(
   { immediate: true }
 );
 
-const skillSets = computed(() =>
-  techStackList.value.map((skill) => {
-    const matched = fetchedSkillSheet.value?.tech_stack_proficiencies?.find(
-      (item) => item.tech_stack_id === skill.id
-    );
-    const symbol = symbolLists.value.find(
-      (s) => s.id === matched?.proficiency_level_id
-    )?.abbv;
-    return {
-      ...skill,
-      symbol: symbol ?? '-',
-      symbolId: matched?.proficiency_level_id ?? null,
-    };
-  })
-);
-
-const chunkList = computed(() => {
-  const result = [];
-  for (let i = 0; i < skillSets.value.length; i += cols.value) {
-    result.push(skillSets.value.slice(i, i + cols.value));
-  }
-  return result;
-});
-
-watchEffect(() => {
-  openMenus.value.length = 0;
-  chunkList.value.forEach((row) => {
-    openMenus.value.push(row.map(() => false));
-  });
-});
-
-const buttonBgColor = computed(() =>
-  theme.global.name.value === 'dark' ? '#151A35' : '#ededed'
-);
-
-const selectSymbol = (abbv, cell, rowIndex, cellIndex) => {
-  openMenus.value[rowIndex][cellIndex] = false;
-  cell.symbol = abbv;
-  const matched = symbolLists.value.find((item) => item.abbv === abbv);
-  cell.symbolId = matched?.id ?? null;
-};
-
 const updateTotal = () => {
   const values = formRef.value?.values || {};
   const sg = Number(values.sg_experience || 0);
@@ -374,21 +263,11 @@ const updateTotal = () => {
 watch(() => formRef.value?.values?.sg_experience, updateTotal);
 watch(() => formRef.value?.values?.prev_experience, updateTotal);
 
-const colsPerScreen = { lg: 13, md: 9, sm: 7 };
-const cols = computed(() =>
-  lgAndUp.value
-    ? colsPerScreen.lg
-    : mdAndUp.value
-      ? colsPerScreen.md
-      : colsPerScreen.sm
-);
-
 const fetch = async () => {
   await Promise.all([
     memberStore.fetchMember({ skill_sheet: {} }),
     systemStore.fetchTechStacks(),
     systemStore.fetchResponsibilities(),
-    systemStore.fetchProficiencyLevels(),
     systemStore.fetchGrade(),
     systemStore.fetchPosition(),
     systemStore.fetchJapaneseLevel(),
@@ -413,12 +292,6 @@ const fetch = async () => {
   japaneseLevelList.value = systemStore.getJapaneseLevel ?? [];
   responsibilityList.value = systemStore.getResponsibilities ?? [];
 
-  symbolLists.value =
-    systemStore.getProficiencyLevels?.map((item) => ({
-      id: item.id,
-      abbv: item.abbv,
-    })) ?? [];
-
   const techStacks = systemStore.getTechStacks;
   if (Array.isArray(techStacks)) {
     techStackList.value = techStacks.map((item) => ({
@@ -431,16 +304,19 @@ const fetch = async () => {
 onMounted(async () => {
   await fetch();
 });
+const updatedSkills = ref([]);
 
+const handleUpdate = (skills) => {
+  updatedSkills.value = skills;
+};
 const submit = async (values) => {
-  const skills = skillSets.value.map(({ id, symbolId }) => ({
-    tech_stack_id: id,
-    proficiency_level_id: symbolId,
-  }));
-
   const payload = {
     ...values,
-    skills,
+    skills:
+      updatedSkills.value.length >
+      fetchedSkillSheet.value.tech_stack_proficiencies.length
+        ? updatedSkills.value
+        : fetchedSkillSheet.value.tech_stack_proficiencies,
   };
 
   let res;

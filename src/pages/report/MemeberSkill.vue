@@ -1,22 +1,22 @@
 <template>
   <v-row class="align-center mb-3">
-      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-        <BaseTitle> {{ t('addMemberSkill.employee_competency') }} </BaseTitle>
-      </v-col>
-      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-        <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          color="primary"
-          prepend-icon="mdi-magnify"
-          type="text"
-          variant="plain"
-          dense
-          autocomplete="test"
-        >
-        </BaseTextField>
-      </v-col>
-    </v-row>
+    <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+      <BaseTitle> {{ t('addMemberSkill.employee_competency') }} </BaseTitle>
+    </v-col>
+    <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+      <BaseTextField
+        v-model="search"
+        :label="t('common.search')"
+        color="primary"
+        prepend-icon="mdi-magnify"
+        type="text"
+        variant="plain"
+        dense
+        autocomplete="test"
+      >
+      </BaseTextField>
+    </v-col>
+  </v-row>
   <ParentCard>
     <BaseTable
       :headers="headers"
@@ -24,7 +24,7 @@
       :height="windowHeight"
       :items-count="itemsCount"
     >
-      <template #item.view_skill="{ item }">
+      <template #[`item.view_skill`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
             elevation="0"
@@ -38,7 +38,7 @@
           </BaseButton>
         </span>
       </template>
-      <template #item.action="{ item }">
+      <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
             elevation="0"
@@ -64,7 +64,20 @@
       </template>
     </BaseTable>
   </ParentCard>
-  <BottomSheet v-model="showSheet" :id="selectedStaffId" />
+  <v-bottom-sheet v-model="showSheet">
+    <v-card>
+      <v-card-title class="text-h6 d-flex flex-column">
+        Skill Sheet
+        <h3 class="text-subtitle-2 mt-1">{{ staffName }}</h3>
+      </v-card-title>
+      <v-card-text>
+        <SkillTable
+          :proficiencies="fetchedSkillSheet?.tech_stack_proficiencies || []"
+          :editable="false"
+        />
+      </v-card-text>
+    </v-card>
+  </v-bottom-sheet>
   <BaseConfirmDelete
     v-model="confirmDelete"
     :text="t('memberList.deleteConfirmText')"
@@ -84,26 +97,21 @@
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
-import { responsibility } from '@/utils/data';
-
+import { useSystemStore } from '@/stores/system/system';
 const { t, locale } = useI18n();
 const skillSheetStore = useSkillSheetStore();
+const systemStore = useSystemStore();
 const router = useRouter();
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
+const fetchedSkillSheet = ref(null);
 const width = '30px';
-const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
-
+const techStackList = ref([]);
+const symbolLists = ref([]);
 const showSheet = ref(false);
-const selectedStaffId = ref(null);
-
-const viewSkillSheet = (staffId) => {
-  selectedStaffId.value = staffId;
-  showSheet.value = true;
-};
-
+const staffName = ref('');
 let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
@@ -148,6 +156,7 @@ const headers = computed(() => {
       key: 'view_skill',
       align: 'center',
       sortable: false,
+      width: '10%',
     },
     {
       title: t('addMemberSkill.table.action'),
@@ -172,6 +181,25 @@ if (window.innerWidth > 1366) {
 }
 
 const fetch = async () => {
+  await Promise.all([
+    systemStore.fetchTechStacks(),
+    systemStore.fetchProficiencyLevels(),
+  ]);
+
+  symbolLists.value =
+    systemStore.getProficiencyLevels?.map((item) => ({
+      id: item.id,
+      abbv: item.abbv,
+    })) ?? [];
+
+  const techStacks = systemStore.getTechStacks;
+  if (Array.isArray(techStacks)) {
+    techStackList.value = techStacks.map((item) => ({
+      id: item.id,
+      name: item.name,
+    }));
+  }
+
   await skillSheetStore.fetchSkillSheet();
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
@@ -198,6 +226,14 @@ const fetch = async () => {
 };
 
 fetch();
+
+const viewSkillSheet = async (id) => {
+  const res = await skillSheetStore.fetchSkillSheet({ id });
+  fetchedSkillSheet.value = res?.data?.[0] ?? null;
+  const data = fetchedSkillSheet.value;
+  staffName.value = data?.staff?.eng_name ?? '';
+  showSheet.value = true;
+};
 
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
@@ -231,9 +267,4 @@ watch(
 .small-text-field label {
   font-size: 13px;
 }
-/* .edit-btn,
-.delete-btn {
-  min-width: 0 !important;
-  padding: 0 !important;
-} */
 </style>
