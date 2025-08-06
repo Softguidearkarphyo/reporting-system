@@ -15,6 +15,7 @@ export default {
       range: 'showing {start} - {end} of {total} records',
     },
     all: 'All',
+    filter: 'Filter'
   },
   sidebar: {
     dashboard: 'dashboard',

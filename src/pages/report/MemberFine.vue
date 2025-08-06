@@ -68,32 +68,60 @@
   </ParentCard>
 
   <div v-if="status">
-    <ParentCard>
-      <div class="d-flex justify-space-around align-center">
-          <BaseSelect
-              v-model="selectedName"
-              :label="t('memberFine.form.name')"
-              item-value="eng_name"
-              item-title="name"
-              :items="memberList"
-              :width="'500px'"
-              >
-          </BaseSelect>
-          <BaseSelect
-              v-model="selectedMonth"
-              item-value="id"
-              item-title="name"
-              :items = "months"
-              :label="t('memberFine.form.month')"
-              :width="'500px'"
-            >
-          </BaseSelect>
-      </div>
-    </ParentCard>
     <div class="mt-5 d-flex">
       <BaseTitle> {{ t('memberFine.title2') }} </BaseTitle>
     </div>
     <ParentCard>
+      <div class="mb-3 text-right">
+        <v-menu
+          v-model="dialog"
+          location="top"
+          offset-y
+          transition="fade-transition"
+        >
+          <template #activator="{ props: tooltipProps }">
+          <v-btn
+            v-bind="tooltipProps"
+            color="primary"
+            density="comfortable"
+            class="filter-btn"
+            icon
+          >
+            <v-icon>mdi-filter-cog-outline</v-icon>
+             <v-tooltip
+                activator="parent"
+                location="top"
+                >{{ t('common.filter') }}</v-tooltip
+              >
+          </v-btn>
+        </template>
+
+         <ParentCard @click.stop>
+          <div>
+              <BaseSelect
+                  v-model="selectedName"
+                  :label="t('memberFine.form.name')"
+                  item-value="eng_name"
+                  item-title="name"
+                  :items="memberList"
+                  :width="'200px'"
+                   prependIcon="mdi-account-tie"
+                  >
+              </BaseSelect>
+              <BaseSelect
+                  v-model="selectedMonth"
+                  item-value="id"
+                  item-title="name"
+                  :items = "months"
+                  :label="t('memberFine.form.month')"
+                  :width="'200px'"
+                  prependIcon="mdi-calendar-month"
+                >
+            </BaseSelect>
+          </div>
+        </ParentCard>
+        </v-menu>
+      </div>
       <BaseTable
         :headers="headers"
         :items="finesWithStatusAndTotal"
@@ -217,6 +245,7 @@ const confirmDelete = ref(undefined);
 const confirmChange = ref(undefined);
 const status = ref(true);
 const lang = ref(locale.value);
+const dialog = ref(false);
 const headers = computed(() => {
   const lan = locale.value
   const tmpHeaders = [
@@ -447,5 +476,8 @@ watch(locale, (newLocale) => {
   display: inline-block;
   text-align: center;
   font-weight: 800;
+}
+::v-deep(.filter-btn .v-btn__content) {
+  color: white !important;
 }
 </style>

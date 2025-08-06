@@ -15,6 +15,7 @@ export default {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
     all: 'すべて',
+    filter: '濾過'
   },
   sidebar: {
     dashboard: 'ダッシュボード',
