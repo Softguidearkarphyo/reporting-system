@@ -1,40 +1,37 @@
 <template>
-  <v-row class="align-center mb-3">
-      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-        <BaseTitle> {{ t('memberList.title') }} </BaseTitle>
-      </v-col>
-      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-        <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          color="primary"
-          prepend-icon="mdi-magnify"
-          class="mb-n5"
-          type="text"
-          variant="plain"
-          dense
-        >
-        </BaseTextField>
-      </v-col>
-    </v-row> 
+  <v-row class="align-center">
+    <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+      <BaseTitle> {{ t('memberList.title') }} </BaseTitle>
+    </v-col>
+    <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+      <BaseTextField
+        v-model="search"
+        :label="t('common.search')"
+        color="primary"
+        prepend-icon="mdi-magnify"
+        class="mb-n5"
+        type="text"
+        variant="plain"
+        dense
+      >
+      </BaseTextField>
+    </v-col>
+  </v-row>
   <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :height="windowHeight"
-      :items-count="itemsCount"
-    >
-      <template #[`item.position`]="{ item }">
-        <div
-          class="rounded-pill py-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '120px',
-            fontSize: '10px',
-            color: 'white',
-          }"
-        >
-          <span>{{ item.position?.name }}</span>
+    <BaseTable :headers="headers" :items="items" :items-count="itemsCount">
+      <template #[`item.name`]="{ item }">
+        <div class="d-flex align-center">
+          <v-avatar size="30" class="mr-3">
+            <v-img src="https://randomuser.me/api/portraits/men/5.jpg" />
+          </v-avatar>
+          <div>
+            <div class="font-weight-medium">
+              {{ isJapanese ? item.jp_name : item.eng_name }}
+            </div>
+            <div class="text-caption text-grey-darken-1">
+              {{ item.position?.name }}
+            </div>
+          </div>
         </div>
       </template>
 
@@ -49,7 +46,7 @@
             :style="{ width }"
             :add-class="['ma-1']"
           >
-            <v-icon icon="tabler:IconEdit" size="18" color="primary" />
+            <v-icon icon="tabler:IconEdit" size="15" />
           </BaseButton>
           <BaseButton
             v-if="authStore.loginStaff?.id !== item.id"
@@ -61,9 +58,9 @@
             :style="{ width }"
             :add-class="['ma-1']"
           >
-            <v-icon icon="tabler:IconTrash" size="18" style="color: #ff0000" />
+            <v-icon icon="tabler:IconTrash" size="15" />
           </BaseButton>
-          <div v-else style="width: 50%"></div>
+          <div v-else style="width: 33%"></div>
         </span>
       </template>
     </BaseTable>
@@ -103,19 +100,19 @@ const items = ref([]);
 const width = '10px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
+const isJapanese = computed(() => locale.value === 'ja');
 const headers = computed(() => {
-  const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('memberList.table.name').toUpperCase(),
-      key: isJapanese ? 'jp_name' : 'eng_name',
+      title: t('memberList.table.name'),
+      key: 'name',
     },
-    {
-      title: t('memberList.table.position'),
-      key: 'position',
-      align: 'center',
-      sortable: false,
-    },
+    // {
+    //   title: t('memberList.table.position'),
+    //   key: 'position',
+    //   align: 'center',
+    //   sortable: false,
+    // },
     {
       title: t('memberList.table.phone'),
       key: 'ph_number',
@@ -146,14 +143,14 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
+// let windowHeight, itemsCount;
+// if (window.innerWidth > 1366) {
+//   windowHeight = window.innerHeight / 1.4;
+//   itemsCount = 10;
+// } else {
+//   windowHeight = window.innerHeight / 1.8;
+//   itemsCount = 5;
+// }
 
 const fetch = async () => {
   await memberStore.fetchMember();
