@@ -37,7 +37,7 @@ const vuetify = createVuetify({
           'on-surface': '#070707ff',
           error: '#B00020',
           pending: '#FF9800',
-          complete: '#638500ff',
+          complete: '#789f00ff',
         },
       },
       dark: {

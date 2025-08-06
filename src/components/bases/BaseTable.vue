@@ -130,6 +130,7 @@ const noDataMessageText = computed(() => {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .v-data-table .v-btn.edit-btn,

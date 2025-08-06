@@ -154,6 +154,8 @@ export default {
       finishTime: 'Finish Time',
       single: 'Single',
       multiple: 'Multiple',
+      overTime: 'Fill overtime here',
+      overTimeCount: '{duration} hours',
     },
     table: {
       period: 'Period',
@@ -212,6 +214,7 @@ export default {
     title1: 'Leave Registration Form',
     title2: 'Calculation Leave',
     title3: 'OT Time Registration',
+    title4: 'On Leave',
     options: {
       selection: 'SELECT OPTION TYPE :',
       existing: 'FOR EXISTING EMPLOYEE',
@@ -235,6 +238,7 @@ export default {
       offdays: 'Off Days',
       calculate: 'Calculate',
       full_date: 'End of Year Date',
+      total_days: 'Total Days',
     },
     table: {
       name: 'Employee Name',
@@ -249,10 +253,10 @@ export default {
   memberFine: {
     title1: 'Fine Registration',
     title2: 'Fine List',
-     deleteConfirmText:
-    'Are you sure to delete this member? # This action cannot be undone.',
+    deleteConfirmText:
+      'Are you sure to delete this member? # This action cannot be undone.',
     statusConfirmText: 'Are you sure to change this action?',
-     form: {
+    form: {
       name: 'Name',
       date: 'Date',
       time: 'Time',
@@ -261,7 +265,7 @@ export default {
       status: 'Status',
       action: 'action',
       must_be_late: "invalid",
+      month: "Month",
     },
-  }, 
- 
+  },
 };
