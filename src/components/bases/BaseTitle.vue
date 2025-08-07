@@ -17,11 +17,10 @@ defineProps({
 
 <style scoped>
 h3 {
-  color: rgb(var(--v-theme-font));
+  color: rgb(var(--v-theme-titlecolor));
   text-transform: uppercase; /* Capitalize all letters */
-  color: #837f81; /* Example custom color */
-  letter-spacing: 0.5px;
-  font-weight: 500;
-  font-size: 1.1rem; /* Adjust font size as needed */
+  letter-spacing: 1px;
+  /* font-weight: 700; */
+  font-size: 1rem; /* Adjust font size as needed */
 }
 </style>

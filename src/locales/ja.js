@@ -9,7 +9,8 @@ export default {
     noDataText: 'データはありません。',
     submit: '保存',
     autoFill: '自動設定で実行する',
-    saveSetting: 'この設定を保存する',
+    saveSetting: '自動設定として保存する',
+    discardSetting: '自動設定を破棄する',
     download: 'ダウンロード',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',

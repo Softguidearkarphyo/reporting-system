@@ -18,11 +18,17 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :items-count="itemsCount">
+    <BaseTable
+      :headers="headers"
+      :items="items"
+      :items-count="itemsCount"
+      :density="true"
+    >
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
-          <v-avatar size="30" class="mr-3">
-            <v-img src="https://randomuser.me/api/portraits/men/5.jpg" />
+          <v-avatar size="37" class="mr-3">
+            <v-img v-if="item.staff_image_url" :src="item.staff_image_url" />
+            <v-img v-else src="https://randomuser.me/api/portraits/men/5.jpg" />
           </v-avatar>
           <div>
             <div class="font-weight-medium">

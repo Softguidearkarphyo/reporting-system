@@ -10,7 +10,7 @@ import { borderClass } from '@/utils/border';
 </script>
 <style scoped>
 .v-card {
-  border-radius: 1px;
+  border-radius: 6px;
   margin-bottom: 8px;
 }
 

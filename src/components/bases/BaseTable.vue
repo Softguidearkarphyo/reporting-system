@@ -11,8 +11,8 @@
       :show-select="checkbox"
       :no-data-text="noDataMessageText"
       class="custom-header-bg"
+      :density="!density ? 'compact' : 'default'"
       hide-default-footer
-      density="compact"
     >
       <template
         v-for="header in headers"
@@ -93,7 +93,11 @@ const props = defineProps({
   },
   noDataMessage: {
     type: String,
-    required: true,
+    required: false,
+  },
+  density: {
+    type: String,
+    required: false,
   },
 });
 
@@ -125,7 +129,7 @@ const noDataMessageText = computed(() => {
 <style scoped>
 /* Header background color */
 ::v-deep(.custom-header-bg .v-data-table__th) {
-  background-color: #f8f9fa;
+  background-color: rgb(var(--v-theme-table)) !important;
 }
 
 /* Header font style */
@@ -134,6 +138,14 @@ const noDataMessageText = computed(() => {
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
+}
+/* This targets all table data cells inside v-data-table */
+::v-deep(.v-data-table td) {
+  color: #8c8ea1; /* change to your desired color */
+}
+
+::v-deep(.v-data-table td:first-child) {
+  color: rgb(var(--v-theme-tbcolor)) !important;
 }
 
 /* Button base style */
@@ -146,21 +158,9 @@ const noDataMessageText = computed(() => {
   min-width: 30px;
 }
 
-/* Button icon color */
-::v-deep(.v-data-table .edit-btn .v-icon.v-theme--light),
-::v-deep(.v-data-table .delete-btn .v-icon.v-theme--light) {
-  color: #2d2e2e;
-}
-
-::v-deep(.v-data-table .edit-btn .v-icon.v-theme--dark),
-::v-deep(.v-data-table .delete-btn .v-icon.v-theme--dark) {
-  color: #ffffff;
-}
-
-/* Table border */
-::v-deep(.v-data-table) {
-  border: 1px solid #e0e0e0;
-  overflow: hidden;
+::v-deep(.v-data-table .edit-btn .v-icon),
+::v-deep(.v-data-table .delete-btn .v-icon) {
+  color: rgb(var(--v-theme-tbicon));
 }
 
 /* Hover effects */
