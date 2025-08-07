@@ -15,7 +15,9 @@ export default {
       range: 'showing {start} - {end} of {total} records',
     },
     all: 'All',
-    filter: 'Filter'
+    filter: 'Filter',
+    excel: 'Excel',
+    clear: 'Clear'
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -209,6 +211,7 @@ export default {
     start_date: 'Start Date',
     end_date: 'End Date',
     hour: 'hrs',
+    minutes: 'mins',
   },
 
   creatLeave: {
@@ -268,6 +271,7 @@ export default {
       action: 'action',
       must_be_late: 'invalid',
       month: 'Month',
+      count: 'Total Late'
     },
   },
 };

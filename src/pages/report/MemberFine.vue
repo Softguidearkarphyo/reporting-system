@@ -141,9 +141,17 @@
             {{ item.total + ' Ks' }}
           </span>
         </template>
+        <template #[`item.count`]="{ item }">
+          <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+            {{ item.count }}
+          </span>
+          <v-icon v-if="item.count>2" :style="{
+    color: item.count > 3 ? '#d00000' : '#ffba08'}" class="ms-1">{{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline'}}
+          </v-icon>
+        </template>
         <template #[`item.status`]="{ item }">
           <span class="d-flex justify-left align-center">
-            <span
+            <span 
               class="status-label mr-5"
               :style="{
                 backgroundColor: item.switchValue
@@ -272,6 +280,11 @@ const headers = computed(() => {
       align: 'left',
     },
     {
+      title: t('memberFine.form.count'),
+      key: 'count',
+      align: 'left',
+    },
+    {
       title: t('memberFine.form.status'),
       key: 'status',
       align: 'left',
@@ -336,6 +349,7 @@ const fetchMemberFines = async () => {
       time: memberFine.time,
       status: memberFine.status,
       total: memberFine.total,
+      count: memberFine.count,
       fine: parseInt(memberFine.amount),
       switchValue: memberFine.status === 1,
     }));
@@ -382,17 +396,17 @@ const finesWithStatusAndTotal = computed(() => {
   });
 
   const groupedByStaffAndMonth = {};
-
   filteredFines.forEach((fine) => {
     const date = new Date(fine.date);
     const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
-    const key = `${fine.name}-${monthYear}`;
+    const key = `${fine.eng_name}-${monthYear}`;
 
     if (!groupedByStaffAndMonth[key]) {
       groupedByStaffAndMonth[key] = [];
     }
     groupedByStaffAndMonth[key].push(fine);
   });
+  console.log(groupedByStaffAndMonth)
 
   Object.values(groupedByStaffAndMonth).forEach((group) => {
     let runningTotal = 0;
