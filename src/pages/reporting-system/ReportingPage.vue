@@ -51,6 +51,7 @@
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
+                      @click="applySetting"
                     >
                       <v-icon> tabler:IconPlayerPlay </v-icon>
                       <v-tooltip
@@ -384,8 +385,6 @@ const selectedEmployeeInfo = computed(() => {
 });
 const showSavedBookmark = computed(() => {
   if (role === ADMIN) {
-    console.log(selectedEmployeeInfo.value);
-
     return (
       selectedEmployeeInfo.value?.length > 0 &&
       selectedEmployeeInfo.value?.every(
@@ -543,9 +542,11 @@ const generatePeriods = (startTime, endTime) => {
   end.setHours(endHour, endMin, 0, 0);
   end.setMinutes(end.getMinutes() - 30);
   while (start <= end) {
-    const hours = start.getHours().toString().padStart(2, '0');
+    let hours = start.getHours();
     const minutes = start.getMinutes().toString().padStart(2, '0');
     const seconds = start.getSeconds().toString().padStart(2, '0');
+    hours = hours % 12 || 12;
+    hours = hours.toString().padStart(2, '0');
     slots.push(`${hours}:${minutes}:${seconds}`);
     start.setMinutes(start.getMinutes() + 30);
   }
@@ -559,10 +560,12 @@ const generateExtraPeriods = (startTime, hours) => {
   start.setMinutes(start.getMinutes() + 30);
   const end = new Date(start.getTime() + (hours - 0.5) * 60 * 60 * 1000);
   while (start <= end) {
-    const h = start.getHours().toString().padStart(2, '0');
-    const m = start.getMinutes().toString().padStart(2, '0');
-    const s = start.getSeconds().toString().padStart(2, '0');
-    slots.push(`${h}:${m}:${s}`);
+    let hours = start.getHours();
+    const minutes = start.getMinutes().toString().padStart(2, '0');
+    const seconds = start.getSeconds().toString().padStart(2, '0');
+    hours = hours % 12 || 12;
+    hours = hours.toString().padStart(2, '0');
+    slots.push(`${hours}:${minutes}:${seconds}`);
     start.setMinutes(start.getMinutes() + 30);
   }
   return slots;
@@ -664,6 +667,29 @@ const groupDates = () => {
       carouselIndex.value = index;
     }
   }
+};
+const applySetting = async () => {
+  console.log(selectedEmployeeInfo.value);
+  console.log(selectedIsoDates.value);
+  const settings = [];
+  selectedEmployeeInfo.value?.forEach((info) => {
+    selectedIsoDates.value?.forEach((dateStr) => {
+      const date = new Date(dateStr);
+      const day = date.getDay();
+      const employeeSettings = info?.task_performance_setting
+        ?.filter((setting) => setting.day === day)
+        ?.map((setting) => ({
+          date: dateStr,
+          period: setting.period,
+          project_id: setting.project_id,
+          staff_id: setting.staff_id,
+          task_id: setting.task_id,
+        }));
+      settings.push(...employeeSettings);
+    });
+  });
+  await reportingStore.createTaskPerformance({ create_array: settings });
+  await getList();
 };
 const saveSetting = async () => {
   if (dateTaskGroups.value) {

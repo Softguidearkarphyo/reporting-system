@@ -93,7 +93,7 @@ const props = defineProps({
   },
   noDataMessage: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 
