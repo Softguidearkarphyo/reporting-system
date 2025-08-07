@@ -11,6 +11,7 @@ export default {
     autoFill: 'Apply setting',
     saveSetting: 'Save setting',
     discardSetting: 'Discard setting',
+    viewSetting: 'View Setting',
     download: 'Download',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
@@ -165,6 +166,20 @@ export default {
       project_cd: 'Project Code',
       project_name: 'Project Name',
       task: 'Task',
+    },
+    dateClear: 'Clear Dates',
+  },
+  workHourReportSetting: {
+    title: 'Work Performance Setting',
+    employee: 'Employee',
+    days: {
+      sun: 'Sunday',
+      mon: 'Monday',
+      tue: 'Tuesday',
+      wed: 'Wednesday',
+      thurs: 'Thursday',
+      fri: 'Friday',
+      sat: 'Saturday',
     },
   },
   staffCard: {

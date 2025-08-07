@@ -11,6 +11,7 @@ export default {
     autoFill: '自動設定で実行する',
     saveSetting: '自動設定として保存する',
     discardSetting: '自動設定を破棄する',
+    viewSetting: '自動設定を見る',
     download: 'ダウンロード',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
@@ -139,6 +140,20 @@ export default {
       project_cd: '作番',
       project_name: '作番名',
       task: '作業',
+    },
+    dateClear: '日付をクリア',
+  },
+  workHourReportSetting: {
+    title: 'Work Performance Setting',
+    employee: '職員名',
+    days: {
+      sun: '日曜日',
+      mon: '月曜日',
+      tue: '火曜日',
+      wed: '水曜日',
+      thurs: '木曜日',
+      fri: '金曜日',
+      sat: '土曜日',
     },
   },
   staffCard: {
