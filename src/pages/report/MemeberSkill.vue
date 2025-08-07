@@ -16,15 +16,15 @@
       >
       </BaseTextField>
     </v-col>
+    <v-col class="text-end">
+      <BaseButton @click="exportExcel" style="width: 200px">
+        Export
+      </BaseButton>
+    </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :height="windowHeight"
-      :items-count="itemsCount"
-    >
-      <template #[`item.view_skill`]="{ item }">
+    <BaseTable :headers="headers" :items="items" :items-count="itemsCount">
+      <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
             elevation="0"
@@ -34,12 +34,8 @@
             size="small"
             :style="{ width }"
           >
-            <v-icon icon="tabler:IconTarget" size="20" color="primary" />
+            <v-icon icon="tabler:IconTarget" size="15" />
           </BaseButton>
-        </span>
-      </template>
-      <template #[`item.action`]="{ item }">
-        <span class="d-flex justify-center p-0">
           <BaseButton
             elevation="0"
             @click.stop="pushToEdit(item.id)"
@@ -48,17 +44,7 @@
             size="small"
             :style="{ width }"
           >
-            <v-icon icon="tabler:IconEdit" size="20" color="primary" />
-          </BaseButton>
-          <BaseButton
-            elevation="0"
-            @click.stop="showConfirmDelete(item.id)"
-            color=""
-            class="delete-btn"
-            size="small"
-            :style="{ width }"
-          >
-            <v-icon icon="tabler:IconTrash" size="20" style="color: #ff0000" />
+            <v-icon icon="tabler:IconEdit" size="15" />
           </BaseButton>
         </span>
       </template>
@@ -78,19 +64,6 @@
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('memberList.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="
-      confirmDelete = false;
-      deleteMember();
-    "
-    @no="
-      confirmDelete = false;
-      deleteTarget = undefined;
-    "
-  ></BaseConfirmDelete>
 </template>
 
 <script setup>
@@ -100,18 +73,15 @@ import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 import { useSystemStore } from '@/stores/system/system';
 const { t, locale } = useI18n();
 const skillSheetStore = useSkillSheetStore();
-const systemStore = useSystemStore();
 const router = useRouter();
-const confirmDelete = ref(false);
-const deleteTarget = ref(undefined);
 const search = ref('');
 const items = ref([]);
 const fetchedSkillSheet = ref(null);
 const width = '30px';
-const techStackList = ref([]);
-const symbolLists = ref([]);
 const showSheet = ref(false);
 const staffName = ref('');
+const techStackList = ref([]);
+const systemStore = useSystemStore();
 let originalItems = [];
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
@@ -152,13 +122,6 @@ const headers = computed(() => {
       sortable: false,
     },
     {
-      title: t('addMemberSkill.table.view_skill'),
-      key: 'view_skill',
-      align: 'center',
-      sortable: false,
-      width: '10%',
-    },
-    {
       title: t('addMemberSkill.table.action'),
       key: 'action',
       align: 'center',
@@ -171,36 +134,9 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
-  await Promise.all([
-    systemStore.fetchTechStacks(),
-    systemStore.fetchProficiencyLevels(),
-  ]);
-
-  symbolLists.value =
-    systemStore.getProficiencyLevels?.map((item) => ({
-      id: item.id,
-      abbv: item.abbv,
-    })) ?? [];
-
-  const techStacks = systemStore.getTechStacks;
-  if (Array.isArray(techStacks)) {
-    techStackList.value = techStacks.map((item) => ({
-      id: item.id,
-      name: item.name,
-    }));
-  }
-
-  await skillSheetStore.fetchSkillSheet();
+  await systemStore.fetchTechStacks(), await skillSheetStore.fetchSkillSheet();
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
     id: item.id,
@@ -223,9 +159,17 @@ const fetch = async () => {
 
   items.value = [...tmpArr];
   originalItems = [...items.value];
+
+  techStackList.value =
+    systemStore?.getTechStacks?.map((item) => ({
+      id: item.id,
+      name: item.name,
+    })) ?? [];
 };
 
-fetch();
+onMounted(async () => {
+  await fetch();
+});
 
 const viewSkillSheet = async (id) => {
   const res = await skillSheetStore.fetchSkillSheet({ id });
@@ -235,15 +179,6 @@ const viewSkillSheet = async (id) => {
   showSheet.value = true;
 };
 
-const showConfirmDelete = (id) => {
-  deleteTarget.value = id;
-  confirmDelete.value = true;
-};
-const deleteMember = async () => {
-  await memberStore.deleteMember({ id: deleteTarget.value });
-  deleteTarget.value = undefined;
-  fetch();
-};
 const pushToEdit = (id) => {
   router.push({ name: 'edit-employee-skill', params: { skillSheetId: id } });
 };

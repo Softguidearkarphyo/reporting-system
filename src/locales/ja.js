@@ -18,6 +18,8 @@ export default {
     },
     all: 'すべて',
     filter: '濾過',
+    excel: 'エクセル',
+    clear: 'クリア'
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -199,6 +201,7 @@ export default {
     start_date: '開始日',
     end_date: '終了日',
     hour: '時',
+    minutes: '分',
   },
 
   creatLeave: {
@@ -250,6 +253,7 @@ export default {
       action: '操作',
       must_be_late: '無効',
       month: '月',
+      count: '合計遅延'
     },
   },
 };

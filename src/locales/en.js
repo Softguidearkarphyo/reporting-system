@@ -18,6 +18,8 @@ export default {
     },
     all: 'All',
     filter: 'Filter',
+    excel: 'Excel',
+    clear: 'Clear'
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -225,6 +227,7 @@ export default {
     start_date: 'Start Date',
     end_date: 'End Date',
     hour: 'hrs',
+    minutes: 'mins',
   },
 
   creatLeave: {
@@ -284,6 +287,7 @@ export default {
       action: 'action',
       must_be_late: 'invalid',
       month: 'Month',
+      count: 'Total Late'
     },
   },
 };

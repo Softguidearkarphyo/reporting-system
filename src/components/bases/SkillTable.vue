@@ -66,7 +66,6 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
 import { useDisplay, useTheme } from 'vuetify';
 const { lgAndUp, mdAndUp } = useDisplay();
 import { useSystemStore } from '@/stores/system/system';
@@ -79,7 +78,8 @@ const systemStore = useSystemStore();
 const techStackList = ref([]);
 const symbolLists = ref([]);
 const theme = useTheme();
-const emit = defineEmits(['update']);
+const openMenus = ref([]);
+const emit = defineEmits(['getSkills']);
 const colsPerScreen = { lg: 13, md: 9, sm: 7 };
 const cols = computed(() =>
   lgAndUp.value
@@ -108,7 +108,9 @@ const fetch = async () => {
     }));
   }
 };
-fetch();
+onMounted(async () => {
+  await fetch();
+});
 const skillSets = computed(() =>
   techStackList.value.map((skill) => {
     const matched = props.proficiencies?.find(
@@ -133,7 +135,6 @@ const chunkList = computed(() => {
   return result;
 });
 
-const openMenus = ref([]);
 watchEffect(() => {
   openMenus.value.length = 0;
   chunkList.value.forEach((row) => {
@@ -150,11 +151,11 @@ const selectSymbol = (abbv, cell, rowIndex, cellIndex) => {
   const matched = symbolLists.value.find((item) => item.abbv === abbv);
   cell.symbolId = matched?.id ?? null;
 
-  const updated = skillSets.value.map(({ id, symbolId }) => ({
+  const skills = skillSets.value.map(({ id, symbolId }) => ({
     tech_stack_id: id,
     proficiency_level_id: symbolId,
   }));
-  emit('update', updated);
+  emit('getSkills', skills);
 };
 </script>
 

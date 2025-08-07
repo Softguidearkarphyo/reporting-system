@@ -112,7 +112,31 @@ export const useReportingStore = defineStore('reporting', () => {
     }
   };
 
+  const workHours = ref([]);
+  const getWorkhours = computed(()=> workHours.value)
+  const setWorkhours = (data) =>{
+    workHours.value = data;
+  }
+  const fetchWorkTime = async (payload)=>{
+    try {
+      const response = await api.post(
+        '/reporting-system/reporting/getAllHour',
+        payload
+      );
+      response.data.length > 0 ? toast.success('Working Hours Access Successfully') : toast.error('No record between these dates')
+      setWorkhours(response.data)
+      return response;
+    } catch (error) {
+      toast.error(errorMsg);
+      return error;
+    }
+  }
+
   return {
+    workHours,
+    getWorkhours,
+    setWorkhours,
+    fetchWorkTime,
     projects,
     getProjects,
     setProjects,
