@@ -16,6 +16,7 @@
               class="mx-auto"
               :items="memberList"
               prependIcon="mdi-account"
+              :disabled="!!parseInt(skillSheetId)"
               :width="'320px'"
               item-title="name"
               item-value="id"
@@ -187,7 +188,7 @@
         <SkillTable
           :proficiencies="fetchedSkillSheet?.tech_stack_proficiencies || []"
           :editable="true"
-          @update="handleUpdate"
+          @getSkills="handleGetSkills"
         />
       </div>
       <div class="d-flex justify-center">
@@ -225,6 +226,7 @@ const responsibilityList = ref([]);
 const fetchedSkillSheet = ref(null);
 const skillSheetId = route.params.skillSheetId;
 const techStackList = ref([]);
+const skills = ref([]);
 const skillSheetCreateSchema = computed(() => skillSheetSchema(t));
 
 watch(
@@ -292,22 +294,19 @@ const fetch = async () => {
   japaneseLevelList.value = systemStore.getJapaneseLevel ?? [];
   responsibilityList.value = systemStore.getResponsibilities ?? [];
 
-  const techStacks = systemStore.getTechStacks;
-  if (Array.isArray(techStacks)) {
-    techStackList.value = techStacks.map((item) => ({
+  techStackList.value =
+    systemStore?.getTechStacks?.map((item) => ({
       id: item.id,
       name: item.name,
-    }));
-  }
+    })) ?? [];
 };
 
 onMounted(async () => {
   await fetch();
 });
-const updatedSkills = ref([]);
 
-const handleUpdate = (skills) => {
-  updatedSkills.value = skills;
+const handleGetSkills = (items) => {
+  skills.value = items;
 };
 const submit = async (values) => {
   const isCreate = !fetchedSkillSheet.value;
@@ -315,9 +314,9 @@ const submit = async (values) => {
   const payload = {
     ...values,
     skills: isCreate
-      ? updatedSkills.value
-      : updatedSkills.value.length
-        ? updatedSkills.value
+      ? skills.value
+      : skills.value.length
+        ? skills.value
         : fetchedSkillSheet.value.tech_stack_proficiencies,
   };
 
