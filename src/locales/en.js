@@ -1,25 +1,27 @@
 export default {
   common: {
-    no: "No",
+    no: 'No',
     search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
       'Are you sure to delete? # This action cannot be undone.',
-    deleteBtnCancelText: 'cancel',
-    deleteBtnText: 'delete',
+    cancel: 'cancel',
+    delete: 'delete',
     noDataText: 'No data available',
     submit: 'Submit',
     autoFill: 'Apply setting',
     saveSetting: 'Save setting',
     discardSetting: 'Discard setting',
+    viewSetting: 'View Setting',
     download: 'Download',
+    edit: 'Edit',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
     all: 'All',
     filter: 'Filter',
     excel: 'Excel',
-    clear: 'Clear'
+    clear: 'Clear',
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -155,6 +157,7 @@ export default {
       task: 'Task',
       auto: 'Auto',
       manual: 'Manual',
+      day: 'Day',
       period: 'Start Time ~ Finish Time',
       startTime: 'Start Time',
       finishTime: 'Finish Time',
@@ -168,6 +171,20 @@ export default {
       project_cd: 'Project Code',
       project_name: 'Project Name',
       task: 'Task',
+    },
+    dateClear: 'Clear Dates',
+  },
+  workHourReportSetting: {
+    title: 'Work Performance Setting',
+    employee: 'Employee',
+    days: {
+      sun: 'Sunday',
+      mon: 'Monday',
+      tue: 'Tuesday',
+      wed: 'Wednesday',
+      thurs: 'Thursday',
+      fri: 'Friday',
+      sat: 'Saturday',
     },
   },
   staffCard: {
@@ -273,7 +290,7 @@ export default {
       action: 'action',
       must_be_late: 'invalid',
       month: 'Month',
-      count: 'Count'
+      count: 'Count',
     },
   },
 };
