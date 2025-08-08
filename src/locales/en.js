@@ -1,5 +1,6 @@
 export default {
   common: {
+    no: "No",
     search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
@@ -287,7 +288,7 @@ export default {
       action: 'action',
       must_be_late: 'invalid',
       month: 'Month',
-      count: 'Total Late'
+      count: 'Count'
     },
   },
 };

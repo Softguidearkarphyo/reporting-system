@@ -33,11 +33,11 @@
               <BaseButton type="submit" :width="'200px'" class="mx-6">{{
                 t('common.search')
               }}</BaseButton>
-              <BaseButton :width="'200px'"
-                >{{t('common.excel')}}</BaseButton
-              >
-              <BaseButton :width="'200px'" @click="clearFormTable()"
+               <BaseButton :width="'200px'" @click="clearFormTable()"
                 >{{t('common.clear')}}</BaseButton
+              >
+              <BaseButton :width="'200px'" @click="excelExport()"
+                >{{t('common.excel')}}</BaseButton
               >
           </div>
         </Form>
@@ -66,7 +66,7 @@
         :items="items"
       >
         <template #[`item.periods`]="{ item }">
-          <span>{{ item.periods[0] }}  {{ t('workingTime.hour') }} {{ item.periods[1] }}  {{ t('workingTime.minutes') }}</span>
+          <span>{{ item.periods[0] }}  {{ t('workingTime.hour') }} {{ item.periods[1] == 5 ? "30 " + t('workingTime.minutes') : "" }}</span>
         </template>
       </BaseTable>
     </ParentCard>
@@ -76,11 +76,9 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { Form, Field } from 'vee-validate';
-import BaseButton from '../../components/bases/BaseButton.vue';
-import BaseTitle from '../../components/bases/BaseTitle.vue';
-import BaseTable from '../../components/bases/BaseTable.vue';
 import { dateSchema } from '@/plugins/validations/working-time.js';
 import { useReportingStore } from '@/stores/reporting/reporting.js';
+import XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
 
 const reportingStore = useReportingStore();
 const { t, locale } = useI18n();
@@ -118,31 +116,32 @@ const filterByDate = async (values) => {
   const workTimes = await reportingStore.fetchWorkTime(values)
   initialData.value = workTimes.data.length === 0 ? false : true;
   const staffPeriods = {};
-
+  
   workTimes.data.forEach(entry => {
     const staffId = entry.staff_id;
     const jp_name = entry.jp_name;
     const eng_name = entry.eng_name;
-    const minutes = timeToMinutes(entry.periods);
+    const hours =+ 0.5;
 
     if (!staffPeriods[staffId]) {
       staffPeriods[staffId] = {
         staff_id: staffId,
         eng_name: eng_name,
         jp_name: jp_name,
-        totalMinutes: 0,
+        totalHour: 0,
       };
     }
-
-    staffPeriods[staffId].totalMinutes += minutes;
+    staffPeriods[staffId].totalHour += hours;
   });
 
   const result = Object.values(staffPeriods).map((staff) => ({
     staff_id: staff.staff_id,
     eng_name: staff.eng_name,
     jp_name: staff.jp_name,
-    periods: minutesToTimeStr(staff.totalMinutes),
+    periods: hourMinConvert(staff.totalHour),
   }));
+
+  console.log(result)
 
   items.value = result;
   originalItems = [...result];
@@ -152,21 +151,50 @@ const filterByDate = async (values) => {
   }
 };
 
-function timeToMinutes(timeStr) {
-  const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function minutesToTimeStr(totalMinutes) {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  const hourArr = [hours, minutes];
-  return hourArr
+function hourMinConvert(hour){
+ if (hour.toString().includes('.')) {
+  const arr = hour.toString().split('.')
+  return arr
+} 
+return [hour]
 }
 
 const clearFormTable = () => {
   formRef.value.resetForm();
   initialData.value = false
+};
+
+const excelExport = () => {
+  XlsxPopulate.fromBlankAsync().then(workbook => {
+    const sheet = workbook.sheet(0);
+    const isENglish = locale.value === 'en';
+    // Set headers with styles and width
+    sheet.cell("A1").value(t('common.no')).style({ bold: true, fill: "D9E1F2" });
+    sheet.cell("B1").value(t('workingTime.staffName')).style({ bold: true, fill: "D9E1F2" });
+    sheet.cell("C1").value(t('workingTime.workingHours')).style({ bold: true, fill: "D9E1F2" });
+    sheet.column(1).width(10); 
+    sheet.column(2).width(30); 
+    sheet.column(3).width(30);
+
+    // Fill in data
+    items.value.forEach((e, i) => {
+      const row = i + 2;
+      sheet.cell(`A${row}`).value(i+1);
+      sheet.cell(`B${row}`).value(isENglish ? e.eng_name : e.jp_name);
+      sheet.cell(`C${row}`).value(e.periods[0] + t('workingTime.hour') +" "
+       + (e.periods[1] ? e.periods[1] + t('workingTime.hour'): ""));
+    });
+
+    // Export file
+    workbook.outputAsync().then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${t('workingTime.title2')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  });
 };
 
 watch(
