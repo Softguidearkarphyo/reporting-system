@@ -17,13 +17,11 @@
       </BaseTextField>
     </v-col>
     <v-col class="text-end">
-      <BaseButton @click="exportExcel" style="width: 200px">
-        Export
-      </BaseButton>
+      <BaseButton @click="exportFile" style="width: 200px"> Export </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :items-count="itemsCount">
+    <BaseTable :headers="headers" :items="items">
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
@@ -67,6 +65,7 @@
 </template>
 
 <script setup>
+import { exportExcel } from '@/excel-export/skillsheet/excel';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
@@ -161,10 +160,7 @@ const fetch = async () => {
   originalItems = [...items.value];
 
   techStackList.value =
-    systemStore?.getTechStacks?.map((item) => ({
-      id: item.id,
-      name: item.name,
-    })) ?? [];
+    systemStore?.getTechStacks?.map((item) => item?.name) ?? [];
 };
 
 onMounted(async () => {
@@ -182,7 +178,9 @@ const viewSkillSheet = async (id) => {
 const pushToEdit = (id) => {
   router.push({ name: 'edit-employee-skill', params: { skillSheetId: id } });
 };
-
+const exportFile = () => {
+  exportExcel(skillSheetStore.getSkillSheets, techStackList.value);
+};
 watch(
   () => search.value,
   (newVal) => {
