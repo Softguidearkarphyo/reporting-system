@@ -1,5 +1,6 @@
 export default {
   common: {
+    no: "番号",
     search: '検索',
     deleteConfirmTitle: '削除のご確認',
     deleteConfirmText:
@@ -179,7 +180,7 @@ export default {
   },
   workingTime: {
     title1: 'ユーザー管理',
-    title2: 'Working Times',
+    title2: '勤務時間',
     number: 'No',
     staffName: '職員氏名',
     workingHours: '作業時間',
