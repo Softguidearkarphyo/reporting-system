@@ -250,6 +250,8 @@ const headers = computed(() => {
       title: t('memberFine.form.date'),
       key: 'date',
       align: 'left',
+      sortable: true,
+      sortDirection: 'desc'
     },
     {
       title: t('memberFine.form.time'),
@@ -403,7 +405,7 @@ const finesWithStatusAndTotal = computed(() => {
     });
   });
 
-  return filteredFines;
+  return filteredFines.sort((a, b) => new Date(b.date) - new Date(a.date));
 });
 
 const showConfirmDelete = (id) => {
