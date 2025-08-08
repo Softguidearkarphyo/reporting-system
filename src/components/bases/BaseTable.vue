@@ -113,7 +113,7 @@ const itemsPerPageSelectItems = ref([
 
 const totalItems = computed(() => props.items?.length);
 const pageCount = computed(() =>
-  Math.ceil(totalItems.value / itemsPerPage.value)
+  itemsPerPage.value ? Math.ceil(totalItems.value / itemsPerPage.value) : 1
 );
 const startItem = computed(
   () => (page.value - 1) * itemsPerPage.value + (totalItems.value ? 1 : 0)
