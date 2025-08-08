@@ -11,6 +11,7 @@ import ShowProject from '../pages/report/ShowProject.vue';
 import MemberList from '../pages/reporting-system/MemberList.vue';
 import Leave from '../pages/reporting-system/LeaveRecord.vue';
 import Reporting from '../pages/reporting-system/ReportingPage.vue';
+import ReportingSetting from '../pages/report/ReportingSetting.vue';
 import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
 import AddProject from '../pages/report/AddProject.vue';
@@ -61,6 +62,12 @@ const routes = [
         path: '/reporting-system/reporting',
         name: 'reporting',
         component: Reporting,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporting-system/reporting-setting',
+        name: 'reporting-setting',
+        component: ReportingSetting,
         meta: { requiresAuth: true },
       },
       {

@@ -5,8 +5,8 @@ export default {
     deleteConfirmTitle: '削除のご確認',
     deleteConfirmText:
       'これを削除してもよろしいですか？ # この操作は元に戻せません。',
-    deleteBtnCancelText: 'キャンセル',
-    deleteBtnText: '削除',
+    cancel: 'キャンセル',
+    delete: '削除',
     noDataText: 'データはありません。',
     submit: '保存',
     autoFill: '自動設定で実行する',
@@ -14,13 +14,14 @@ export default {
     discardSetting: '自動設定を破棄する',
     viewSetting: '自動設定を見る',
     download: 'ダウンロード',
+    edit: '編集',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
     all: 'すべて',
     filter: '濾過',
     excel: 'エクセル',
-    clear: 'クリア'
+    clear: 'クリア',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -130,6 +131,7 @@ export default {
       task: '作業',
       auto: '自動設定',
       manual: '手動設定',
+      day: '日付',
       period: '開始時間 ～ 終了時間',
       startTime: '開始時間',
       finishTime: '終了時間',
@@ -147,7 +149,7 @@ export default {
     dateClear: '日付をクリア',
   },
   workHourReportSetting: {
-    title: 'Work Performance Setting',
+    title: '作業実績設定',
     employee: '職員名',
     days: {
       sun: '日曜日',
@@ -254,7 +256,7 @@ export default {
       action: '操作',
       must_be_late: '無効',
       month: '月',
-      count: '合計遅延'
+      count: '合計遅延',
     },
   },
 };

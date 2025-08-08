@@ -31,6 +31,7 @@
           <BaseSelect
             :model-value="itemsPerPage"
             :items="itemsPerPageSelectItems"
+            :attr-name="{ title: '', value: 0 }"
             variant="filled"
             density="comfortable"
             dense
