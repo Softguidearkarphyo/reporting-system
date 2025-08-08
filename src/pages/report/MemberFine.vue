@@ -31,33 +31,20 @@
                     prependIcon="mdi-calendar-month"
                     :error-messages="errorMessage"
                     :width="'300px'"
-                    style="flex: none"
+                    style="flex: none;"
                   />
                 </Field>
-                <!-- <Field name="time"  v-slot="{ field, errorMessage }">
+                <Field name="time"  v-slot="{ field, errorMessage }">
                   <BaseTimePicker  
                     v-model="field.value"
                     v-bind="field"
                     :label="t('memberFine.form.time')"
-                    width="90%"
                     prependIcon="mdi-clock-outline"
-                    :error-messages="errorMessage" />
-                </Field> -->
-
-            <Field name="time" v-slot="{ field, errorMessage }">
-              <BaseSelect
-                v-model="field.value"
-                v-bind="field"
-                :label="t('memberFine.form.time')"
-                :items="lateTimes"
-                prependIcon="tabler:IconClockHour5"
-                item-title="name"
-                item-value="id"
-                :error-messages="errorMessage"
-                :width="'300px'"
-              >
-              </BaseSelect>
-            </Field>
+                    :error-messages="errorMessage"
+                    :width="'300px'"
+                    style="flex: none;"
+                    />
+                </Field>
             <BaseButton type="submit" :width="'200px'">
               {{ t('common.submit') }}
             </BaseButton>
@@ -349,7 +336,6 @@ const fetchMemberFines = async () => {
       time: memberFine.time,
       status: memberFine.status,
       total: memberFine.total,
-      count: memberFine.count,
       fine: parseInt(memberFine.amount),
       switchValue: memberFine.status === 1,
     }));
@@ -406,14 +392,14 @@ const finesWithStatusAndTotal = computed(() => {
     }
     groupedByStaffAndMonth[key].push(fine);
   });
-  console.log(groupedByStaffAndMonth)
 
   Object.values(groupedByStaffAndMonth).forEach((group) => {
     let runningTotal = 0;
-    group.forEach((fine) => {
+    group.forEach((fine, i) => {
       runningTotal += parseFloat(fine.fine);
-      fine.total = runningTotal;
+      fine.total  = runningTotal;
       fine.status = fine.status === 0 ? 'Pending' : 'Complete';
+      fine.count  = ++i;
     });
   });
 
@@ -464,8 +450,6 @@ watch(locale, (newLocale) => {
   background-color: rgba(var(--v-theme-primary), 0.2);
   border-radius: 4px;
   padding: 3px 9px;
-  /* min-width: 90px; */
-  /* height: 28px; */
   font-size: 10px;
   font-weight: 800;
   color: rgba(var(--v-theme-primary));
@@ -483,7 +467,6 @@ watch(locale, (newLocale) => {
   border-radius: 4px;
   min-width: 85px;
   font-size: 10px;
-  /* font-weight: 500; */
   display: inline-block;
   text-align: center;
   font-weight: 800;

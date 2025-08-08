@@ -1,34 +1,37 @@
 <template>
-  <v-menu
-  v-model="menu"
-  :close-on-content-click="false"
-  transition="scale-transition"
-  offset-x
-  :attach="true"
-  max-width="100"
-  min-width="auto"
->
+ <v-menu
+    v-model="menu"
+    min-width="auto"
+    :close-on-content-click="false"
+    transition="scale-transition"
+    offset-y
+    location="center"
+  >
     <template v-slot:activator="{ props: activatorProps }">
       <v-text-field
-        v-bind="activatorProps"
-        :model-value="displayTime"
-        readonly
-        :label="label"
-        variant="underlined"
-        @click="menu = true"
-        :prepend-icon="prependIcon"
-        :style="{ width }"
-      />
+          v-bind="{ ...activatorProps, ...$attrs }"
+          :model-value="formattedValue"
+          @update:model-value="$emit('update:modelValue', $event)"
+          :style="{ width }"
+          :label="label"
+          readonly
+          variant="underlined"
+          @click="menu = true"
+        >
+          <template v-slot:prepend>
+            <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+          </template>
+        </v-text-field>
     </template>
 
     <VueDatePicker
      :model-value="internalTime"
       @update:model-value="onSelect"
       time-picker
-      auto-apply
       inline
       hide-input-icon
       no-calendar
+      :auto-apply="false"
       :time-picker-options="{
         hours: { min: 0, max: 23, step: 1 },
         minutes: { min: 0, max: 59, step: 1 }
@@ -46,6 +49,10 @@ const props = defineProps({
   modelValue: {
     type: [String, null],
     default: null,
+  },
+   width: {
+    type: String,
+    default: '400px',
   },
   label: { type: String, default: 'Time' },
  prependIcon: [String, Object],
@@ -77,6 +84,17 @@ watch(
   },
   { immediate: true }
 );
+
+const formattedValue = computed(() => {
+  if (!(internalTime.value instanceof Date) || isNaN(internalTime.value)) {
+    return '';
+  }
+   return internalTime.value.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+});
 
 
 const formatTime = (date) => {
@@ -113,20 +131,10 @@ const onSelect = (val) => {
 
   const formatted = formatTime(date);
   emit('update:modelValue', formatted);
-   emit('input', formatted);  
+  emit('input', formatted);  
   emit('change', formatted);
   menu.value = false;
 };
-
-const displayTime = computed(() => {
-  const date = internalTime.value;
-  if (!(date instanceof Date) || isNaN(date)) return '';
-  return date.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-});
 
 
 </script>

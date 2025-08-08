@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="2" :class="borderClass" color="surface">
+  <v-card elevation="2" :class="borderClass" color="surface" style="overflow: visible !important;">
     <v-card-text>
       <slot />
     </v-card-text>
