@@ -1,5 +1,6 @@
 export default {
   common: {
+    no: "No",
     search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
