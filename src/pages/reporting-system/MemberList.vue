@@ -144,14 +144,14 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-// let windowHeight, itemsCount;
-// if (window.innerWidth > 1366) {
-//   windowHeight = window.innerHeight / 1.4;
-//   itemsCount = 10;
-// } else {
-//   windowHeight = window.innerHeight / 1.8;
-//   itemsCount = 5;
-// }
+let windowHeight, itemsCount;
+if (window.innerWidth > 1366) {
+  windowHeight = window.innerHeight / 1.4;
+  itemsCount = 10;
+} else {
+  windowHeight = window.innerHeight / 1.8;
+  itemsCount = 5;
+}
 
 const fetch = async () => {
   await memberStore.fetchMember();

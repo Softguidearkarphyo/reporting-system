@@ -383,7 +383,9 @@ const showSavedBookmark = computed(() => {
 const selectedPeriod = ref([1, 2]);
 const isDayMultiple = ref(true);
 const currentEmployee = ref();
-const dateTaskGroups = ref({});
+const dateTaskGroups = computed(() => {
+  return selectedEmployeeInfo.value?.task_performance_setting;
+});
 const carouselIndex = ref(0);
 const overTime = ref(0);
 const employees = computed(() => {
@@ -456,6 +458,7 @@ const fetch = async () => {
   await reportingStore.fetchTask();
   taskItems.value = [...reportingStore.getTasks];
   await getList();
+  selectedEmployee.value = employeeItems.value?.[0]?.id;
 };
 
 fetch();
@@ -518,10 +521,11 @@ const getList = async () => {
     return a.sort_key - b.sort_key;
   });
   employeeItems.value = [...tmpMembers];
-  selectedEmployee.value = employeeItems.value?.[0]?.id;
-  dateTaskGroups.value = fillPeriods(
-    employeeItems.value?.[0]?.task_performance_setting
-  );
+  employeeItems.value?.forEach((employee) => {
+    employee.task_performance_setting = fillPeriods(
+      employee.task_performance_setting
+    );
+  });
 };
 const submit = async (values) => {
   let data = [];
