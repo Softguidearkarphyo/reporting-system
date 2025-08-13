@@ -148,7 +148,9 @@ const buttonBgColor = computed(() =>
 const selectSymbol = (abbv, cell, rowIndex, cellIndex) => {
   openMenus.value[rowIndex][cellIndex] = false;
   cell.symbol = abbv;
-  const matched = symbolLists.value.find((item) => item.abbv === abbv);
+  const matched = symbolLists.value.find(
+    (item) => item.abbv === abbv && item.abbv !== '-'
+  );
   cell.symbolId = matched?.id ?? null;
 
   const skills = skillSets.value.map(({ id, symbolId }) => ({

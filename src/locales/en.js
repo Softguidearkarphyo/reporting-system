@@ -128,7 +128,6 @@ export default {
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
       major_tech_stack: 'Major Tech Stack',
-      view_skill: 'View Skills',
       action: 'Action',
     },
     form: {
@@ -144,8 +143,6 @@ export default {
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
       major_tech_stack: 'Major Tech Stack',
-      view_skill: 'View Skills',
-      action: 'Action',
     },
   },
   workHourReport: {

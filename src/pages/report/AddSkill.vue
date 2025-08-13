@@ -192,7 +192,11 @@
         />
       </div>
       <div class="d-flex justify-center">
-        <BaseButton type="submit" style="width: 200px">
+        <BaseButton
+          :disabled="!memberList.length"
+          type="submit"
+          style="width: 200px"
+        >
           {{ t('common.submit') }}
         </BaseButton>
       </div>
