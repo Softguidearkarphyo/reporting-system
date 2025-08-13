@@ -17,7 +17,13 @@
       </BaseTextField>
     </v-col>
     <v-col class="text-end">
-      <BaseButton @click="exportFile" style="width: 200px"> Export </BaseButton>
+      <BaseButton
+        @click="exportFile"
+        :disabled="!items.length"
+        style="width: 200px"
+      >
+        Export
+      </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
