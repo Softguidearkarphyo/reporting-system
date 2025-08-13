@@ -29,6 +29,13 @@ const setupHeaders = (sheet, skills) => {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const dateHeader = `${year}/${month}`;
+  const titles = [
+    '★最も得意',
+    '◎：経験5年以上「最も得意」',
+    '○：経験3年以上',
+    '□：経験1～2年',
+    '△：経験がある',
+  ];
   const headerRow1 = [
     '',
     '',
@@ -64,13 +71,6 @@ const setupHeaders = (sheet, skills) => {
     '変更日',
   ];
   const sheetData = [headerRow1, headerRow2];
-  const titles = [
-    '★最も得意',
-    '◎：経験5年以上「最も得意」',
-    '○：経験3年以上',
-    '□：経験1～2年',
-    '△：経験がある',
-  ];
   const infoText = '専任は業務でよく使うスキルを１つ書く';
   const formattedDateTime = now.toLocaleString('ja-JP', {
     year: 'numeric',
@@ -93,7 +93,6 @@ const setupHeaders = (sheet, skills) => {
       .value(title)
       .style({ fontSize: 10 });
   });
-
   const tableStartRow = titles.length + 1;
   sheetData.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {
