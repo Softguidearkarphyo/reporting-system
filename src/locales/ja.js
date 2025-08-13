@@ -203,6 +203,10 @@ export default {
     max: '{field}は{max}文字以内で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
     unique: '{field} は重複しています',
+    dateSmallerThanOrEqual:
+      '{field1}は{field2}と同じか、それ以前の日付でなければなりません',
+    dateLargerThanOrEqual:
+      '{field1}は{field2}と同じか、それ以降の日付でなければなりません',
   },
   showProject: {
     title: '作業実績管理',
@@ -276,6 +280,21 @@ export default {
       must_be_late: '無効',
       month: '月',
       count: '合計遅延',
+    },
+  },
+
+  menPower: {
+    title: '作業実績管理',
+    form: {
+      startDate: '開始日',
+      endDate: '終了日',
+    },
+    table: {
+      cd: '作業番',
+      name: '作業名',
+      men: '工数',
+      hours: '作業時間',
+      days: '日数',
     },
   },
 };
