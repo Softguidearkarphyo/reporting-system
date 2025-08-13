@@ -3,7 +3,7 @@
     {{ t('addProject.title1') }}
   </BaseTitle>
   <ParentCard>
-    <v-row class="align-center" >
+    <v-row class="align-center">
       <v-col cols="12" md="12">
         <Form
           ref="formRef"
@@ -11,49 +11,49 @@
           @submit="submit"
         >
           <div class="d-flex flex-wrap align-center justify-space-around">
-              <Field name="cd" v-slot="{ field, errorMessage }">
-                <BaseTextField
-                  v-model="field.value"
-                  v-bind="field"
-                  :label="t('addProject.form.cd')"
-                  type="text"
-                  variant="plain"
-                   :width="'300px'"
-                  prependIcon="mdi-pound-box"
-                  :error-messages="errorMessage"
-                  style="flex: none"
-                ></BaseTextField>
-              </Field>
-              <Field name="eng_name" v-slot="{ field, errorMessage }">
-                <BaseTextField
-                  v-model="field.value"
-                  v-bind="field"
-                  :label="t('addProject.form.eng_name')"
-                  type="text"
-                  variant="plain"
-                    :width="'300px'"
-                  prependIcon="mdi-format-letter-case"
-                  :error-messages="errorMessage"
-                  style="flex: none"
-                ></BaseTextField>
-              </Field>
-              <Field name="jp_name" v-slot="{ field, errorMessage }">
-                <BaseTextField
-                  v-model="field.value"
-                  v-bind="field"
-                  :label="t('addProject.form.jp_name')"
-                  type="text"
-                  variant="plain"
-                    :width="'300px'"
-                  autocomplete="test"
-                  prependIcon="mdi-ideogram-cjk"
-                  :error-messages="errorMessage"
-                  style="flex: none"
-                ></BaseTextField>
-              </Field>
-              <BaseButton type="submit" :width="'200px'">
-                {{ t('common.submit') }}
-              </BaseButton>
+            <Field name="cd" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.cd')"
+                type="text"
+                variant="plain"
+                :width="'300px'"
+                prependIcon="mdi-pound-box"
+                :error-messages="errorMessage"
+                style="flex: none"
+              ></BaseTextField>
+            </Field>
+            <Field name="eng_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.eng_name')"
+                type="text"
+                variant="plain"
+                :width="'300px'"
+                prependIcon="mdi-format-letter-case"
+                :error-messages="errorMessage"
+                style="flex: none"
+              ></BaseTextField>
+            </Field>
+            <Field name="jp_name" v-slot="{ field, errorMessage }">
+              <BaseTextField
+                v-model="field.value"
+                v-bind="field"
+                :label="t('addProject.form.jp_name')"
+                type="text"
+                variant="plain"
+                :width="'300px'"
+                autocomplete="test"
+                prependIcon="mdi-ideogram-cjk"
+                :error-messages="errorMessage"
+                style="flex: none"
+              ></BaseTextField>
+            </Field>
+            <BaseButton type="submit" :width="'200px'">
+              {{ t('common.submit') }}
+            </BaseButton>
           </div>
         </Form>
       </v-col>
@@ -75,12 +75,7 @@
       </v-col>
     </v-row>
     <ParentCard>
-      <BaseTable
-        :headers="headers"
-        :items="items"
-        :items-count="itemsCount"
-        :style="{ minHeight: windowHeight }"
-      >
+      <BaseTable :headers="headers" :items="items">
         <template #[`item.position`]="{ item }">
           <div
             class="rounded-pill py-1 px-1 text-center mx-auto"
@@ -114,10 +109,7 @@
               class="delete-btn"
               size="small"
             >
-              <v-icon
-                icon="tabler:IconTrash"
-                size="15"
-              />
+              <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
           </div>
         </template>
@@ -198,14 +190,6 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
   formRef.value?.resetForm();

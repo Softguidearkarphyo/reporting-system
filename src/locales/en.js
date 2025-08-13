@@ -207,6 +207,8 @@ export default {
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
+    dateSmallerThanOrEqual: '{field1} must be the same or before {field2}',
+    dateLargerThanOrEqual: '{field1} must be the same or after {field2}',
   },
   showProject: {
     title: 'Work performance management',
@@ -288,6 +290,21 @@ export default {
       must_be_late: 'invalid',
       month: 'Month',
       count: 'Count',
+    },
+  },
+
+  menPower: {
+    title: 'Work performance management',
+    form: {
+      startDate: 'Start Date',
+      endDate: 'End Date',
+    },
+    table: {
+      cd: 'Project Code',
+      name: 'Project Name',
+      men: 'Men',
+      hours: 'Hours',
+      days: 'Days',
     },
   },
 };

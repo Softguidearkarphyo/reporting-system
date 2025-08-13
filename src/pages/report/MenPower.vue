@@ -1,116 +1,130 @@
 <template>
-  <BaseTitle>MenPower</BaseTitle>
+  <BaseTitle>{{ t('menPower.title') }}</BaseTitle>
+  <Form
+    ref="formRef"
+    :validation-schema="menPowerSchema"
+    :validate-on-change="true"
+  >
+    <div class="d-flex justify-content-start align-items-center ga-5 my-5">
+      <div>
+        <Field name="start_date" v-slot="{ field, errorMessage }">
+          <BaseDatePicker
+            v-model="field.value"
+            v-bind="field"
+            text-width="240px"
+            location="bottom"
+            :label="t('menPower.form.startDate')"
+            :error-messages="errorMessage"
+            prependIcon="mdi-calendar-month"
+            @update:model-value="getList()"
+          ></BaseDatePicker>
+        </Field>
+      </div>
+      <div>
+        <Field name="end_date" v-slot="{ field, errorMessage }">
+          <BaseDatePicker
+            v-model="field.value"
+            v-bind="field"
+            text-width="240px"
+            location="bottom"
+            :label="t('menPower.form.endDate')"
+            :error-messages="errorMessage"
+            prependIcon="mdi-calendar-month"
+            @update:model-value="getList()"
+          ></BaseDatePicker>
+        </Field>
+      </div>
+      <div>
+        <BaseButton
+          @click="exportFile"
+          :disabled="!items.length"
+          style="width: 100px"
+        >
+          Export
+        </BaseButton>
+      </div>
+    </div>
+  </Form>
   <ParentCard>
-    <Form>
-      <v-row class="mt-3">
-        <v-col cols="12" sm="6" lg="3" class="pa-1">
-          <Field name="start_date" v-slot="{ field, errorMessage }">
-            <BaseDatePicker
-              v-model="field.value"
-              v-bind="field"
-              :label="t('workingTime.start_date')"
-              :width="'100%'"
-              :error-messages="errorMessage"
-              prependIcon="mdi-calendar-month"
-            ></BaseDatePicker>
-          </Field>
-        </v-col>
-        <v-col cols="12" sm="6" lg="3" class="pa-1">
-          <Field name="end_date" v-slot="{ field, errorMessage }">
-            <BaseDatePicker
-              v-model="field.value"
-              v-bind="field"
-              :label="t('workingTime.end_date')"
-              :width="'100%'"
-              :error-messages="errorMessage"
-              prependIcon="mdi-calendar-month"
-            ></BaseDatePicker>
-          </Field>
-        </v-col>
-        <v-col cols="12" sm="6" lg="3" class="d-flex justify-start pa-1">
-          <Field name="eng_name" v-slot="{ field, errorMessage }">
-            <BaseTextField
-              v-model="field.value"
-              v-bind="field"
-              type="text"
-              variant="plain"
-              prependIcon="mdi-format-letter-case"
-              :style="{ maxWidth: '120px' }"
-              :error-messages="errorMessage"
-            ></BaseTextField>
-          </Field>
-        </v-col>
-        <v-col cols="12" sm="6" lg="3" class="pa-1 d-flex align-center">
-          <BaseButton type="submit" :width="'150px'" class="ml-sm-0 ml-lg-6">
-            {{ t('common.search') }}
-          </BaseButton>
-        </v-col>
-      </v-row>
-    </Form>
-  </ParentCard>
-  <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :height="windowHeight"
-      :items-count="itemsCount"
-    >
+    <BaseTable :headers="headers" :items="items" :pagination="false">
     </BaseTable>
   </ParentCard>
 </template>
 <script setup>
 import { useI18n } from 'vue-i18n';
-import { useProjectStore } from '@/stores/project/project.js';
+import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
+import { getMenPowerSchema } from '@/plugins/validations/menpower.js';
+import { changeDateTimeZone } from '@/utils/helper';
+import { exportExcel } from '@/excel-export/menpower/excel';
 
-const projectStore = useProjectStore();
+const menPowerStore = useMenPowerStoreStore();
+const menPowerSchema = computed(() => getMenPowerSchema(t));
 const { t, locale } = useI18n();
+const formRef = ref(null);
 const items = ref([]);
 const formData = ref({
   start_date: null,
   end_date: null,
 });
+const startDate = computed(() => formRef.value?.values?.start_date);
+const endDate = computed(() => formRef.value?.values?.end_date);
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
     {
-      title: t('addProject.table.cd'),
+      title: t('menPower.table.cd'),
       key: 'cd',
     },
     {
-      title: t('addProject.table.name'),
+      title: t('menPower.table.name'),
       key: isJapanese ? 'jp_name' : 'eng_name',
       sortable: false,
     },
     {
-      title: 'Average Hr',
-      sortable: false,
+      title: t('menPower.table.men'),
+      key: 'men',
+      sortable: true,
     },
     {
-      title: 'Total Hr',
-      sortable: false,
+      title: t('menPower.table.hours'),
+      key: 'hours',
+      sortable: true,
+    },
+    {
+      title: t('menPower.table.days'),
+      key: 'days',
+      sortable: true,
     },
   ];
   return tmpHeaders;
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
+
+const fetch = () => {
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 6);
+  formRef.value?.setValues({
+    start_date: changeDateTimeZone(startDate),
+    end_date: changeDateTimeZone(endDate),
+  });
+  getList();
+};
 
 onMounted(() => {
-  fetchData();
+  fetch();
 });
 
-const fetchData = async () => {
-  try {
-    await projectStore.fetchProject();
-    items.value = [...projectStore.getProjects];
-  } catch (err) {
-    console.error(err);
+const getList = async () => {
+  const { valid } = await formRef.value?.validate();
+  if (valid) {
+    await menPowerStore.fetchMenPower({
+      start_date: startDate.value,
+      end_date: endDate.value,
+    });
+    items.value = [...menPowerStore.getMenPower];
   }
+};
+const exportFile = () => {
+  exportExcel(startDate.value, endDate.value, menPowerStore.getMenPower);
 };
 </script>
