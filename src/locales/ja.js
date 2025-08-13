@@ -1,6 +1,6 @@
 export default {
   common: {
-    no: "番号",
+    no: '番号',
     search: '検索',
     deleteConfirmTitle: '削除のご確認',
     deleteConfirmText:
@@ -110,16 +110,35 @@ export default {
     },
   },
   addMemberSkill: {
+    employee_competency: '従業員の能力リスト',
     title: 'メンバースキル作成',
-    form: {
-      name: '名前',
-      staff: 'スタッフ',
-      date: '日付',
-      role: '役割',
-      team: 'チーム',
-      permanent_date: '正社員日付',
+    table: {
+      staff: '名前',
+      project: 'プロジェクト',
+      position: '役職',
+      grade: '等級',
+      join_date: '入社日',
       japanese_level: '日本語レベル',
-      experience: '経験',
+      sg_experience: 'SG経験',
+      prev_experience: '以前経験',
+      total_experience: '総経験',
+      responsibility: '担当',
+      major_tech_stack: '専任',
+      view_skill: '閲覧',
+      action: '操作',
+    },
+    form: {
+      staff: '名前',
+      project: 'プロジェクト',
+      position: '役職',
+      grade: '等級',
+      join_date: '入社日',
+      japanese_level: '日本語レベル',
+      sg_experience: 'SG経験',
+      prev_experience: '以前経験',
+      total_experience: '総経験',
+      responsibility: '担当',
+      major_tech_stack: '専任',
     },
   },
   workHourReport: {

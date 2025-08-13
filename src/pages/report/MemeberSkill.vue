@@ -1,5 +1,5 @@
 <template>
-  <v-row class="align-center mb-3">
+  <v-row class="align-center">
     <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
       <BaseTitle> {{ t('addMemberSkill.employee_competency') }} </BaseTitle>
     </v-col>
@@ -9,18 +9,16 @@
         :label="t('common.search')"
         color="primary"
         prepend-icon="mdi-magnify"
+        class="mb-n5"
         type="text"
         variant="plain"
         dense
-        autocomplete="test"
       >
       </BaseTextField>
-    </v-col>
-    <v-col class="text-end">
       <BaseButton
         @click="exportFile"
         :disabled="!items.length"
-        style="width: 200px"
+        style="width: 100px"
       >
         Export
       </BaseButton>
