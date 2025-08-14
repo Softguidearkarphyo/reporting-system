@@ -1,7 +1,7 @@
 import XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
+
 const COL_START = 2;
-const HEADER_ROW = 3;
-const DATA_ROW_START = 4;
+const ROW_START = 3;
 const COLUMNS = [
   'NAME',
   'SALARY',
@@ -16,29 +16,31 @@ export const exportExcel = (staff) => {
   XlsxPopulate.fromBlankAsync()
     .then((workbook) => {
       const sheet = workbook.sheet(0);
-
-      setupHeaders(sheet);
-      const { lastCol, lastRow } = fillData(sheet, staff);
-      styleSheet(sheet, lastCol, lastRow);
-
+      const dataRowStart = setupHeaders(sheet);
+      const { lastCol, lastRow } = fillData(sheet, staff, dataRowStart);
+      styleSheet(sheet, lastCol, dataRowStart, lastRow);
       return workbook.outputAsync();
     })
     .then((blob) => {
-      const filename = `payroll_template_${new Date().getFullYear()}_${String(new Date().getMonth() + 1).padStart(2, '0')}.xlsx`;
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+      const filename = `payroll_${dateStr}.xlsx`;
       downloadBlob(blob, filename);
     })
     .catch(console.error);
 };
 
 const setupHeaders = (sheet) => {
+  sheet.cell(1, 2).value('Staff PayRoll').style({ bold: true, fontSize: 12 });
   COLUMNS.forEach((title, index) => {
-    sheet.cell(HEADER_ROW, COL_START + index).value(title);
+    sheet.cell(ROW_START, COL_START + index).value(title);
   });
+  return ROW_START + 1;
 };
 
-const fillData = (sheet, staff) => {
+const fillData = (sheet, staff, tableStartRow) => {
   staff.forEach((item, index) => {
-    const row = DATA_ROW_START + index;
+    const row = tableStartRow + index;
 
     const { totalHours: leaveHour, totalDays: leaveDay } = calculateHours(
       item?.leave,
@@ -68,11 +70,11 @@ const fillData = (sheet, staff) => {
   });
 
   const lastCol = COL_START + COLUMNS.length - 1;
-  const lastRow = DATA_ROW_START + staff.length - 1;
+  const lastRow = tableStartRow + staff.length - 1;
   return { lastCol, lastRow };
 };
 
-const styleSheet = (sheet, lastCol, lastRow) => {
+const styleSheet = (sheet, lastCol, tableStartRow, lastRow) => {
   sheet.range('A1:Z500').style({ fill: 'FFFFFF' });
 
   const columnWidths = {
@@ -90,7 +92,7 @@ const styleSheet = (sheet, lastCol, lastRow) => {
   });
 
   for (let col = COL_START; col <= lastCol; col++) {
-    sheet.row(HEADER_ROW).cell(col).style({
+    sheet.row(ROW_START).cell(col).style({
       fill: '92D050',
       horizontalAlignment: 'center',
       verticalAlignment: 'center',
@@ -100,7 +102,7 @@ const styleSheet = (sheet, lastCol, lastRow) => {
     });
   }
 
-  for (let rowNum = HEADER_ROW; rowNum <= lastRow; rowNum++) {
+  for (let rowNum = tableStartRow; rowNum <= lastRow; rowNum++) {
     for (let col = COL_START; col <= lastCol; col++) {
       sheet.row(rowNum).cell(col).style({
         border: true,

@@ -20,7 +20,12 @@ export const exportExcel = (skillSheet, skills) => {
 
       return workbook.outputAsync();
     })
-    .then((blob) => downloadBlob(blob, 'skillSheet.xlsx'))
+    .then((blob) => {
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+      const filename = `skillSheet_${dateStr}.xlsx`;
+      downloadBlob(blob, filename);
+    })
     .catch(console.error);
 };
 
