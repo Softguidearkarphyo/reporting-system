@@ -4,11 +4,6 @@ import Components from 'unplugin-vue-components/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 
 export default defineConfig({
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    strictPort: true,
-  },
   plugins: [
     vue(),
     Components({

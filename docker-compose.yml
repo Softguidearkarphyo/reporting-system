@@ -12,6 +12,7 @@ services:
     ports:
        - "3030:5173"
     working_dir: /src
+    command: npm run dev -- --host 0.0.0.0 --port 5173
     volumes:
       - ./:/src
       - node_modules_volume:/src/node_modules
