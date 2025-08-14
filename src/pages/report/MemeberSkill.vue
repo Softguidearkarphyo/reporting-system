@@ -55,7 +55,7 @@
   <v-bottom-sheet v-model="showSheet">
     <v-card>
       <v-card-title class="text-h6 d-flex flex-column">
-        Skill Sheet
+        {{ t('addMemberSkill.employee_competency') }}
         <h3 class="text-subtitle-2 mt-1">{{ staffName }}</h3>
       </v-card-title>
       <v-card-text>
