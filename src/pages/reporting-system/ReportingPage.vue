@@ -331,7 +331,6 @@
                 :items-count="itemsCount"
                 :style="{ minHeight: windowHeight }"
                 :pagination="false"
-                density="compact"
                 style="width: 92%"
                 class="mx-auto dense-table"
               >

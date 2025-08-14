@@ -57,7 +57,6 @@
                 :items-count="itemsCount"
                 :style="{ minHeight: windowHeight }"
                 :pagination="false"
-                density="compact"
                 class="mx-auto dense-table mt-6"
               >
                 <template #[`item.period`]="{ item }">
