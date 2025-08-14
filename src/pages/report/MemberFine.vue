@@ -1,50 +1,50 @@
 <template>
   <BaseTitle> {{ t('memberFine.title1') }} </BaseTitle>
   <ParentCard>
-     <v-row class="align-center">
-       <v-col cols="12" md="12">
-         <Form
-         ref="formRef"
-         :validation-schema="memberFineValidation"
-         @submit="submit"
-         >
-            <div class="d-flex flex-wrap align-center justify-space-around">
-                <Field name="staff" v-slot="{ field, errorMessage }" >
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    item-value="id"
-                    item-title="name"
-                    :items="memberList"
-                    :label="t('memberFine.form.name')"
-                    variant="plain"
-                    prependIcon="mdi-account-tie"
-                    :error-messages="errorMessage"
-                    :width="'300px'"
-                  />
-                </Field>
-                <Field name="date" v-slot="{ field, errorMessage }" >
-                  <BaseDatePicker
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('memberFine.form.date')"
-                    prependIcon="mdi-calendar-month"
-                    :error-messages="errorMessage"
-                    :width="'300px'"
-                    style="flex: none;"
-                  />
-                </Field>
-                <Field name="time"  v-slot="{ field, errorMessage }">
-                  <BaseTimePicker  
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('memberFine.form.time')"
-                    prependIcon="mdi-clock-outline"
-                    :error-messages="errorMessage"
-                    :width="'300px'"
-                    style="flex: none;"
-                    />
-                </Field>
+    <v-row class="align-center">
+      <v-col cols="12" md="12">
+        <Form
+          ref="formRef"
+          :validation-schema="memberFineValidation"
+          @submit="submit"
+        >
+          <div class="d-flex flex-wrap align-center justify-space-around">
+            <Field name="staff" v-slot="{ field, errorMessage }">
+              <BaseSelect
+                v-model="field.value"
+                v-bind="field"
+                item-value="id"
+                item-title="name"
+                :items="memberList"
+                :label="t('memberFine.form.name')"
+                variant="plain"
+                prependIcon="mdi-account-tie"
+                :error-messages="errorMessage"
+                :width="'300px'"
+              />
+            </Field>
+            <Field name="date" v-slot="{ field, errorMessage }">
+              <BaseDatePicker
+                v-model="field.value"
+                v-bind="field"
+                :label="t('memberFine.form.date')"
+                prependIcon="mdi-calendar-month"
+                :error-messages="errorMessage"
+                :width="'300px'"
+                style="flex: none"
+              />
+            </Field>
+            <Field name="time" v-slot="{ field, errorMessage }">
+              <BaseTimePicker
+                v-model="field.value"
+                v-bind="field"
+                :label="t('memberFine.form.time')"
+                prependIcon="mdi-clock-outline"
+                :error-messages="errorMessage"
+                :width="'300px'"
+                style="flex: none"
+              />
+            </Field>
             <BaseButton type="submit" :width="'200px'">
               {{ t('common.submit') }}
             </BaseButton>
@@ -65,53 +65,47 @@
           transition="fade-transition"
         >
           <template #activator="{ props: tooltipProps }">
-          <v-btn
-            v-bind="tooltipProps"
-            color="primary"
-            density="comfortable"
-            class="filter-btn"
-            icon
-          >
-            <v-icon>mdi-filter-cog-outline</v-icon>
-             <v-tooltip
-                activator="parent"
-                location="top"
-                >{{ t('common.filter') }}</v-tooltip
-              >
-          </v-btn>
-        </template>
+            <v-btn
+              v-bind="tooltipProps"
+              color="primary"
+              density="comfortable"
+              class="filter-btn"
+              icon
+            >
+              <v-icon>mdi-filter-cog-outline</v-icon>
+              <v-tooltip activator="parent" location="top">{{
+                t('common.filter')
+              }}</v-tooltip>
+            </v-btn>
+          </template>
 
-        <ParentCard @click.stop>
-          <div>
+          <ParentCard @click.stop>
+            <div>
               <BaseSelect
-                  v-model="selectedName"
-                  :label="t('memberFine.form.name')"
-                  item-value="eng_name"
-                  item-title="name"
-                  :items="memberList"
-                  :width="'200px'"
-                   prependIcon="mdi-account-tie"
-                  >
+                v-model="selectedName"
+                :label="t('memberFine.form.name')"
+                item-value="eng_name"
+                item-title="name"
+                :items="memberList"
+                :width="'200px'"
+                prependIcon="mdi-account-tie"
+              >
               </BaseSelect>
               <BaseSelect
-                  v-model="selectedMonth"
-                  item-value="id"
-                  item-title="name"
-                  :items = "months"
-                  :label="t('memberFine.form.month')"
-                  :width="'200px'"
-                  prependIcon="mdi-calendar-month"
-                >
-            </BaseSelect>
-          </div>
-        </ParentCard>
+                v-model="selectedMonth"
+                item-value="id"
+                item-title="name"
+                :items="months"
+                :label="t('memberFine.form.month')"
+                :width="'200px'"
+                prependIcon="mdi-calendar-month"
+              >
+              </BaseSelect>
+            </div>
+          </ParentCard>
         </v-menu>
       </div>
-      <BaseTable
-        :headers="headers"
-        :items="finesWithStatusAndTotal"
-        :style="{ minHeight: windowHeight }"
-      >
+      <BaseTable :headers="headers" :items="finesWithStatusAndTotal">
         <template #[`item.time`]="{ item }">
           <span class="time-box d-inline-flex justify-center align-center">
             <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
@@ -129,16 +123,25 @@
           </span>
         </template>
         <template #[`item.count`]="{ item }">
-          <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+          <span
+            class="time-box d-inline-flex justify-center align-center p-2 rounded-pill"
+          >
             {{ item.count }}
           </span>
-          <v-icon v-if="item.count>2" :style="{
-    color: item.count > 3 ? '#d00000' : '#ffba08'}" class="ms-1">{{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline'}}
+          <v-icon
+            v-if="item.count > 2"
+            :style="{
+              color: item.count > 3 ? '#d00000' : '#ffba08',
+            }"
+            class="ms-1"
+            >{{
+              item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline'
+            }}
           </v-icon>
         </template>
         <template #[`item.status`]="{ item }">
           <span class="d-flex justify-left align-center">
-            <span 
+            <span
               class="status-label mr-5"
               :style="{
                 backgroundColor: item.switchValue
@@ -178,10 +181,7 @@
               :add-class="['ma-1']"
               @click.stop="showConfirmDelete(item.id)"
             >
-              <v-icon
-                icon="tabler:IconTrash"
-                size="15"
-              />
+              <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
           </span>
         </template>
@@ -217,7 +217,7 @@
   ></BaseConfirmDelete>
 </template>
 <script setup>
-import { ref, onMounted, watch } from 'vue'; 
+import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useMemberFineStore } from '@/stores/member/member-fine.js';
@@ -239,19 +239,19 @@ const status = ref(true);
 const lang = ref(locale.value);
 const dialog = ref(false);
 const headers = computed(() => {
-  const lan = locale.value
+  const lan = locale.value;
   const tmpHeaders = [
     {
       title: t('memberFine.form.name'),
-      key: lan == "ja" ? 'jp_name':'eng_name',
-      align: 'left',  
+      key: lan == 'ja' ? 'jp_name' : 'eng_name',
+      align: 'left',
     },
     {
       title: t('memberFine.form.date'),
       key: 'date',
       align: 'left',
       sortable: true,
-      sortDirection: 'desc'
+      sortDirection: 'desc',
     },
     {
       title: t('memberFine.form.time'),
@@ -291,14 +291,6 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const memberFineValidation = computed(() => getMemberFineValidation(t));
 
@@ -313,7 +305,7 @@ const memberList = computed(() => {
     memberStore.getMembers?.map((member) => ({
       id: member.id,
       name: isJapanese ? member.jp_name : member.eng_name,
-      eng_name: member.eng_name
+      eng_name: member.eng_name,
     })) || []
   );
 });
@@ -328,19 +320,21 @@ const fetchData = async () => {
 
 const fetchMemberFines = async () => {
   try {
-  const AllFine =  await memberFineStore.fetchMemberFine();
-  status.value = AllFine.data.data.length === 0 ? false : true;
-  const tmpMembersFines = memberFineStore.getMemberFine.data?.map((memberFine) => ({
-      id: memberFine.id,
-      eng_name: memberFine.staff.eng_name,
-      jp_name: memberFine.staff.jp_name,
-      date: memberFine.date,
-      time: memberFine.time,
-      status: memberFine.status,
-      total: memberFine.total,
-      fine: parseInt(memberFine.amount),
-      switchValue: memberFine.status === 1,
-    }));
+    const AllFine = await memberFineStore.fetchMemberFine();
+    status.value = AllFine.data.data.length === 0 ? false : true;
+    const tmpMembersFines = memberFineStore.getMemberFine.data?.map(
+      (memberFine) => ({
+        id: memberFine.id,
+        eng_name: memberFine.staff.eng_name,
+        jp_name: memberFine.staff.jp_name,
+        date: memberFine.date,
+        time: memberFine.time,
+        status: memberFine.status,
+        total: memberFine.total,
+        fine: parseInt(memberFine.amount),
+        switchValue: memberFine.status === 1,
+      })
+    );
     fines.value = [...tmpMembersFines];
   } catch (error) {
     console.error('Error fetching members fines:', error);
@@ -399,9 +393,9 @@ const finesWithStatusAndTotal = computed(() => {
     let runningTotal = 0;
     group.forEach((fine, i) => {
       runningTotal += parseFloat(fine.fine);
-      fine.total  = runningTotal;
+      fine.total = runningTotal;
       fine.status = fine.status === 0 ? 'Pending' : 'Complete';
-      fine.count  = ++i;
+      fine.count = ++i;
     });
   });
 
@@ -442,7 +436,6 @@ const changeStatus = async (item) => {
 watch(locale, (newLocale) => {
   lang.value = newLocale;
 });
-
 </script>
 <style scoped>
 .no-message-switch .v-input__details {

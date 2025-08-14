@@ -25,7 +25,7 @@
     </v-data-table>
 
     <!-- Pagination Section Outside Table Border -->
-    <div v-if="pagination" class="mt-4">
+    <div v-if="showPagination" class="mt-4">
       <v-row class="d-flex justify-space-between align-center">
         <v-col>
           <BaseSelect
@@ -82,7 +82,7 @@ const props = defineProps({
   },
   itemsCount: {
     type: Number,
-    default: 5,
+    default: 10,
   },
   pagination: {
     type: Boolean,
@@ -110,7 +110,9 @@ const itemsPerPageSelectItems = ref([
   { title: '15', value: 15 },
   { title: '20', value: 20 },
 ]);
-
+const showPagination = computed(
+  () => props.pagination && props.items?.length > 10
+);
 const totalItems = computed(() => props.items?.length);
 const pageCount = computed(() =>
   itemsPerPage.value ? Math.ceil(totalItems.value / itemsPerPage.value) : 1

@@ -421,25 +421,27 @@ const leaveTypes = [
   { id: 5, name: 'Unpaid Leave' },
 ];
 const leaveDurations = [
-  { id: 1, name: 'Half Day' },
-  { id: 2, name: '30 Minutes' },
-  { id: 3, name: '1 Hour' },
-  { id: 4, name: '1 Hour 30 Minutes' },
-  { id: 5, name: '2 Hours' },
-  { id: 6, name: '2 Hours 30 Minutes' },
-  { id: 7, name: '3 Hours' },
-  { id: 8, name: '3 Hours 30 Minutes' },
+  { id: 1, name: 'Full Day' },
+  { id: 2, name: 'Half Day' },
+  { id: 3, name: '30 Minutes' },
+  { id: 4, name: '1 Hour' },
+  { id: 5, name: '1 Hour 30 Minutes' },
+  { id: 6, name: '2 Hours' },
+  { id: 7, name: '2 Hours 30 Minutes' },
+  { id: 8, name: '3 Hours' },
+  { id: 9, name: '3 Hours 30 Minutes' },
 ];
 
 const otList = [
-  { id: 1, name: 'Half Day' },
-  { id: 2, name: '30 Minutes' },
-  { id: 3, name: '1 Hour' },
-  { id: 4, name: '1 Hour 30 Minutes' },
-  { id: 5, name: '2 Hours' },
-  { id: 6, name: '2 Hours 30 Minutes' },
-  { id: 7, name: '3 Hours' },
-  { id: 8, name: '3 Hours 30 Minutes' },
+  { id: 1, name: 'Full Day' },
+  { id: 2, name: 'Half Day' },
+  { id: 3, name: '30 Minutes' },
+  { id: 4, name: '1 Hour' },
+  { id: 5, name: '1 Hour 30 Minutes' },
+  { id: 6, name: '2 Hours' },
+  { id: 7, name: '2 Hours 30 Minutes' },
+  { id: 8, name: '3 Hours' },
+  { id: 9, name: '3 Hours 30 Minutes' },
 ];
 
 // Method

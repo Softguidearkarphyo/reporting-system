@@ -95,25 +95,13 @@
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
+                      @click="clearDates"
                     >
-                      <v-icon> tabler:IconCloudDown </v-icon>
+                      <v-icon> tabler:IconTrash </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
-                        t('common.download')
+                        t('workHourReport.dateClear')
                       }}</v-tooltip>
                     </v-btn>
-                  </v-col>
-                </v-row>
-                <v-row
-                  ><v-col cols="12">
-                    <div class="d-flex justify-center" style="margin-top: 14px">
-                      <BaseButton
-                        type="button"
-                        style="width: 90%"
-                        @click="clearDates"
-                      >
-                        {{ t('workHourReport.dateClear') }}
-                      </BaseButton>
-                    </div>
                   </v-col>
                 </v-row>
               </v-col>
@@ -328,8 +316,6 @@
               <BaseTable
                 :headers="headers"
                 :items="dateTaskGroups?.[selectedIsoDate]"
-                :items-count="itemsCount"
-                :style="{ minHeight: windowHeight }"
                 :pagination="false"
                 style="width: 92%"
                 class="mx-auto dense-table"
@@ -464,14 +450,6 @@ const headers = computed(() => {
     },
   ];
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
   formRef.value?.resetForm();

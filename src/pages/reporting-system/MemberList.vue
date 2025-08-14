@@ -15,6 +15,13 @@
         dense
       >
       </BaseTextField>
+      <BaseButton
+        @click="exportFile"
+        :disabled="!items.length"
+        style="width: 100px"
+      >
+        Export
+      </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
@@ -88,6 +95,7 @@ import { useMemberStore } from '@/stores/member/member.js';
 import { position } from '@/utils/data';
 import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
+import { exportExcel } from '@/excel-export/payroll/excel';
 
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
@@ -144,14 +152,6 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
   await memberStore.fetchMember();
@@ -184,7 +184,9 @@ const deleteMember = async () => {
 const pushToEdit = (id) => {
   router.push({ name: 'edit-members', params: { memberId: id } });
 };
-
+const exportFile = () => {
+  exportExcel(items.value);
+};
 watch(
   () => search.value,
   (newVal) => {

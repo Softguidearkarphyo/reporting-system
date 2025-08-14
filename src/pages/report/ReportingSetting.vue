@@ -54,8 +54,6 @@
               <BaseTable
                 :headers="headers"
                 :items="dateTaskGroups?.[dayOfTheWeek.id]"
-                :items-count="itemsCount"
-                :style="{ minHeight: windowHeight }"
                 :pagination="false"
                 class="mx-auto dense-table mt-6"
               >
@@ -441,14 +439,6 @@ const headers = computed(() => {
     },
   ];
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
   formRef.value?.resetForm();
