@@ -7,12 +7,8 @@ export const exportExcel = (startDate, endDate, data) => {
     .then((workbook) => {
       const sheet = workbook.sheet(0);
       const dataRowStart = setupHeaders(sheet);
-      const { dataStartRow, lastCol, lastRow } = fillData(
-        sheet,
-        data,
-        dataRowStart
-      );
-      styleSheet(sheet, lastCol, dataStartRow, lastRow);
+      const { lastCol, lastRow } = fillData(sheet, data, dataRowStart);
+      styleSheet(sheet, lastCol, dataRowStart, lastRow);
       return workbook.outputAsync();
     })
     .then((blob) => downloadBlob(blob, `${startDate}~${endDate} men-hour.xlsx`))
@@ -28,7 +24,6 @@ const setupHeaders = (sheet) => {
 };
 const fillData = (sheet, data, dataRowStart) => {
   const lastCol = sheet.usedRange().endCell().columnNumber();
-  console.log(lastCol);
   data.forEach((item, rowIndex) => {
     const rowNum = dataRowStart + rowIndex;
     sheet.cell(rowNum, 2).value(item?.cd);
@@ -38,12 +33,12 @@ const fillData = (sheet, data, dataRowStart) => {
     sheet.cell(rowNum, 6).value(item?.days);
   });
   const lastRow = dataRowStart + data.length - 1;
-  return { dataRowStart, lastCol, lastRow };
+  return { lastCol, lastRow };
 };
 
 const styleSheet = (sheet, lastCol, dataRowStart, lastRow) => {
   const columnWidths = {
-    1: 2.7,
+    1: 3,
     2: 30,
     3: 50,
     4: 10,
@@ -62,10 +57,13 @@ const styleSheet = (sheet, lastCol, dataRowStart, lastRow) => {
   }
   for (let rowNum = dataRowStart; rowNum <= lastRow; rowNum++) {
     for (let col = COL_START; col <= lastCol; col++) {
-      sheet.row(rowNum).cell(col).style({
-        border: true,
-        fontSize: 10,
-      });
+      sheet
+        .row(rowNum)
+        .cell(col)
+        .style({
+          border: true,
+          fontSize: col === COL_START ? 12 : 10,
+        });
     }
   }
 };

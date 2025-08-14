@@ -302,7 +302,7 @@ watch(
   async (val) => {
     if (val) {
       isEditMode.value = true;
-      const res = await memberStore.fetchMember({ id: val });
+      const res = await memberStore.fetchMember({ id: val, staff_project: {} });
       const data = res?.data?.[0];
       existingFileName.value = data?.staff_image_url?.split('/').pop();
       console.log(existingFileName.value, 'hello world');

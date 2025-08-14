@@ -14,6 +14,7 @@ import Reporting from '../pages/reporting-system/ReportingPage.vue';
 import ReportingSetting from '../pages/report/ReportingSetting.vue';
 import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
+import Location from '../pages/report/Location.vue';
 import AddProject from '../pages/report/AddProject.vue';
 import NotFound from '../pages/report/404.vue';
 import StaffCard from '../pages/report/StaffCard.vue';
@@ -101,6 +102,12 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporting-system/locations',
+        name: 'location',
+        component: Location,
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/reporting-system/new-employee',
         name: 'add-members',
         component: AddMember,
@@ -179,9 +186,11 @@ router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('token');
   if (to.path === '/login' && !isLoggedIn) {
     next('/');
-  } else if ((to.path === '/' || to.path === '/login') && isLoggedIn) {
-    next('/reporting-system/dashboard');
-  } else if (to.meta.requiresAuth && !isLoggedIn) {
+  }
+  // else if ((to.path === '/' || to.path === '/login') && isLoggedIn) {
+  //   next('/reporting-system/dashboard');
+  // }
+  else if (to.meta.requiresAuth && !isLoggedIn) {
     next('/');
   } else {
     next();

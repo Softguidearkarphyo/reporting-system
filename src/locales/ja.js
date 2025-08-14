@@ -34,6 +34,7 @@ export default {
     employeereports: 'メンバーレポート',
     projectmenpower: 'プロジェクト人員',
     sixmonthssummary: '6ヶ月まとめ',
+    location: '現在地',
     newproject: 'プロジェクト追加',
     newemployee: 'メンバー追加',
     newemployeeleave: '休暇追加',
@@ -296,5 +297,9 @@ export default {
       hours: '作業時間',
       days: '日数',
     },
+  },
+
+  location: {
+    title: '現在所',
   },
 };

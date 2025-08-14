@@ -15,7 +15,6 @@
   </v-app-bar>
 </template>
 <script setup>
-import ProfileIcon from '../../components/navbar/ProfileIcon.vue';
 import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
