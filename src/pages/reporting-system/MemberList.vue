@@ -30,7 +30,10 @@
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
             <v-img v-if="item.staff_image_url" :src="item.staff_image_url" />
-            <v-img v-else src="https://randomuser.me/api/portraits/men/5.jpg" />
+            <v-img
+              v-else
+              :src="profileImgPath(isJapanese ? item.jp_name : item.eng_name)"
+            />
           </v-avatar>
           <div>
             <div class="font-weight-medium">
@@ -96,6 +99,7 @@ import { position } from '@/utils/data';
 import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
 import { exportExcel } from '@/excel-export/payroll/excel';
+import { profileImgPath } from '@/utils/helper';
 
 const { t, locale } = useI18n();
 const authStore = useAuthStore();

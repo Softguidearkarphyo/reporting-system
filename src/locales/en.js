@@ -34,6 +34,7 @@ export default {
     employeereports: 'employee report',
     projectmenpower: 'project menpower',
     sixmonthssummary: '6 months summary',
+    location: 'location',
     newproject: 'new project',
     newemployee: 'new employee',
     newemployeeleave: 'new employee leave',
@@ -306,5 +307,9 @@ export default {
       hours: 'Hours',
       days: 'Days',
     },
+  },
+
+  location: {
+    title: 'Location',
   },
 };

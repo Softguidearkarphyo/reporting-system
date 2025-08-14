@@ -139,7 +139,8 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  await systemStore.fetchTechStacks(), await skillSheetStore.fetchSkillSheet();
+  await systemStore.fetchTechStacks(),
+    await skillSheetStore.fetchSkillSheet({ staff_project: {} });
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
     id: item.id,

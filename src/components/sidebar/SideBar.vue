@@ -119,10 +119,15 @@ const settings = computed(() => [
     path: '/reporting-system/show-men-powers',
     icon: 'tabler:IconUserHexagon',
   },
+  // {
+  //   title: t('sidebar.sixmonthssummary'),
+  //   path: '/reporting-system/show-project-date',
+  //   icon: 'tabler:IconHexagonNumber6',
+  // },
   {
-    title: t('sidebar.sixmonthssummary'),
-    path: '/reporting-system/show-project-date',
-    icon: 'tabler:IconHexagonNumber6',
+    title: t('sidebar.location'),
+    path: '/reporting-system/locations',
+    icon: 'tabler:IconMapPin',
   },
   {
     title: t('sidebar.newproject'),

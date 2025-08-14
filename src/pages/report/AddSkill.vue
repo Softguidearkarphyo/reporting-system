@@ -299,7 +299,10 @@ watch(
   () => route.params.skillSheetId,
   async (id) => {
     if (!id) return;
-    const res = await skillSheetStore.fetchSkillSheet({ id });
+    const res = await skillSheetStore.fetchSkillSheet({
+      id,
+      staff_project: {},
+    });
     fetchedSkillSheet.value = res?.data?.[0] ?? null;
     await nextTick();
     const data = fetchedSkillSheet.value;
