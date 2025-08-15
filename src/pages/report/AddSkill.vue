@@ -300,7 +300,7 @@ watch(
   async (id) => {
     if (!id) return;
     const res = await skillSheetStore.fetchSkillSheet({
-      id,
+      id: parseInt(id),
       staff_project: {},
     });
     fetchedSkillSheet.value = res?.data?.[0] ?? null;

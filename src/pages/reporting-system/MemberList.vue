@@ -158,7 +158,7 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  await memberStore.fetchMember();
+  await memberStore.fetchMember({ leave: {}, over_time: {} });
   const tmpMembers = memberStore.getMembers?.map((member) => ({
     ...member,
     position:

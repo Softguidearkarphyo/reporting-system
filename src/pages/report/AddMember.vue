@@ -299,10 +299,13 @@ const newImageSelected = ref(false);
 
 watch(
   () => route.params.memberId,
-  async (val) => {
-    if (val) {
+  async (id) => {
+    if (id) {
       isEditMode.value = true;
-      const res = await memberStore.fetchMember({ id: val, staff_project: {} });
+      const res = await memberStore.fetchMember({
+        id: parseInt(id),
+        staff_project: {},
+      });
       const data = res?.data?.[0];
       existingFileName.value = data?.staff_image_url?.split('/').pop();
       console.log(existingFileName.value, 'hello world');
