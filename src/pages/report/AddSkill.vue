@@ -301,7 +301,10 @@ watch(
     if (!id) return;
     const res = await skillSheetStore.fetchSkillSheet({
       id: parseInt(id),
+      staff: {},
       staff_project: {},
+      staff_responsibility: {},
+      tech_stack_proficiencies: {},
     });
     fetchedSkillSheet.value = res?.data?.[0] ?? null;
     await nextTick();

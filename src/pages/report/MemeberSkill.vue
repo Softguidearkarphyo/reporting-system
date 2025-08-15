@@ -26,6 +26,26 @@
   </v-row>
   <ParentCard>
     <BaseTable :headers="headers" :items="items">
+      <template #[`item.position`]="{ item }">
+        <span class="time-box d-inline-flex justify-center align-center">
+          {{ item.position }}
+        </span>
+      </template>
+      <template #[`item.grade`]="{ item }">
+        <span class="money-box d-inline-flex justify-center align-center">
+          {{ item.grade }}
+        </span>
+      </template>
+      <template #[`item.japanese_level`]="{ item }">
+        <span class="time d-inline-flex justify-center align-center">
+          {{ item.japanese_level }}
+        </span>
+      </template>
+      <template #[`item.major_tech_stack`]="{ item }">
+        <span class="money d-inline-flex justify-center align-center">
+          {{ item.major_tech_stack }}
+        </span>
+      </template>
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
@@ -140,7 +160,12 @@ const headers = computed(() => {
 
 const fetch = async () => {
   await systemStore.fetchTechStacks(),
-    await skillSheetStore.fetchSkillSheet({ staff_project: {} });
+    await skillSheetStore.fetchSkillSheet({
+      staff: {},
+      staff_project: {},
+      staff_responsibility: {},
+      tech_stack_proficiencies: {},
+    });
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
     id: item.id,
@@ -173,7 +198,10 @@ onMounted(async () => {
 });
 
 const viewSkillSheet = async (id) => {
-  const res = await skillSheetStore.fetchSkillSheet({ id });
+  const res = await skillSheetStore.fetchSkillSheet({
+    id,
+    tech_stack_proficiencies: {},
+  });
   fetchedSkillSheet.value = res?.data?.[0] ?? null;
   const data = fetchedSkillSheet.value;
   staffName.value = data?.staff?.eng_name ?? '';
@@ -204,5 +232,37 @@ watch(
 <style>
 .small-text-field label {
   font-size: 13px;
+}
+.time-box {
+  background-color: rgba(var(--v-theme-primary), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-primary));
+}
+.time {
+  background-color: rgba(50, 127, 230, 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #327fe6 !important;
+}
+.money-box {
+  background-color: rgba(250, 179, 61, 0.2);
+  padding: 3px 13px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #fab33d !important;
+  font-weight: 800;
+}
+.money {
+  background-color: rgb(187, 255, 247, 0.3);
+  padding: 3px 13px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #10b3a1 !important;
+  font-weight: 800;
 }
 </style>
