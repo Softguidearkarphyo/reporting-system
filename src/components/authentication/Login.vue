@@ -108,12 +108,12 @@ const handleLogin = async () => {
   apiErrors.username = '';
   apiErrors.password = '';
   try {
-    const pos = await getCurrentPosition();
+    const [lat, lon] = await getCurrentPosition();
     await authStore.login(
       username.value,
       password.value,
-      pos?.coords?.latitude,
-      pos?.coords?.longitude
+      lat,
+      lon
     );
     router.push('/reporting-system/dashboard');
   } catch (e) {
@@ -140,12 +140,20 @@ const handleLogin = async () => {
   }
 };
 
-const getCurrentPosition = (
-  options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-) => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, options);
-  });
+const getCurrentPosition = async () => {
+  try {
+    let lat, lon = 0;
+    const response = await axios.get(`http://ip-api.com/json`);
+      if (response.data) {
+        lat = response.data.lat || 0;
+        lon = response.data.lon || 0;
+      }
+    return [lat, lon];
+
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    return [0, 0];
+  }
 };
 </script>
 

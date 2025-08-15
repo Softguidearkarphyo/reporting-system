@@ -32,6 +32,7 @@
             <v-img v-if="item.staff_image_url" :src="item.staff_image_url" />
             <v-img
               v-else
+              class="profileImage"
               :src="profileImgPath(isJapanese ? item.jp_name : item.eng_name)"
             />
           </v-avatar>
