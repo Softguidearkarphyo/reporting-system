@@ -91,15 +91,6 @@ const EditEmployee = () => {
 .v-list-item-title {
   font-size: 14px !important;
 }
-.profileImage {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: block;
-  object-fit: cover;
-  background-color: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 ::v-deep(.v-list-item__spacer) {
   display: none !important;
