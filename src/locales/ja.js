@@ -253,6 +253,11 @@ export default {
       ot_date: '残業日',
       ot_time: '残業時間',
       permanent_date: '正社員日',
+      offdays: '休暇日',
+      calculate: '計算',
+      full_date: '年末日',
+      total_days: '合計日数',
+      multiple_leave: '複数休暇',
     },
     table: {
       name: '従業員名',

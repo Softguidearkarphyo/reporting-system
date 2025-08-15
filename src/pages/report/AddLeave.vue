@@ -109,7 +109,7 @@
               <template v-if="multipleLeave">
                 <Field name="duration">
                   <BaseTextField
-                    v-model="formData.duration"
+                    v-model="durationCount"
                     :label="t('creatLeave.form.duration')"
                     class="mx-auto"
                     item-title="name"
@@ -126,6 +126,7 @@
                     :label="t('creatLeave.form.duration')"
                     class="mx-auto"
                     :items="durationHour"
+                    item-value="id"
                     item-title="name"
                     prependIcon="tabler:IconClockQuestion"
                     :width="'300px'"
@@ -148,11 +149,11 @@
                 ></BaseTextField>
               </Field>
             </v-col>
-            <v-col cols="12" md="6" class="d-flex justify-start ml-1">
+            <v-col cols="12" md="6" class="d-flex justify-start">
               <v-switch
                 v-model="multipleLeave"
                 class="custom-switch-label"
-                label="MULTIPLE LEAVE"
+                :label="t('creatLeave.form.multiple_leave')"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -173,7 +174,7 @@
             <v-col cols="12" md="6">
               <BaseButton
                 type="button"
-                @click="calculateOffDay"
+                @click="calculateLeaves"
                 style="width: 200px"
                 v-if="selectedPotion === 'potions2'"
               >
@@ -271,6 +272,17 @@
               unpaid
             </span>
           </template>
+          <template #[`item.duration`]="{ item }">
+            <span v-if="item.duration == 1"> Full day </span>
+            <span v-else-if="item.duration == 2"> Half day </span>
+            <span v-else-if="item.duration == 3"> 3 Hrs : 30 Min </span>
+            <span v-else-if="item.duration == 4"> 3 Hrs </span>
+            <span v-else-if="item.duration == 5"> 2 Hrs : 30 Min </span>
+            <span v-else-if="item.duration == 6"> 2 Hrs </span>
+            <span v-else-if="item.duration == 7"> 1 Hrs : 30 Min </span>
+            <span v-else-if="item.duration == 8"> 1 Hrs </span>
+            <span v-else-if="item.duration == 9"> 30 Min </span>
+          </template>
         </BaseTable>
         <BaseTable
           v-if="selectedPotion === 'potions2'"
@@ -333,7 +345,6 @@ const formData = ref({
 });
 
 // Data
-const memberList = ref([]);
 const checkID = ref([]);
 const leaveRequests = ref([]);
 const leaveRecords = ref([]);
@@ -341,6 +352,8 @@ const overtimes = ref([]);
 
 // Computed
 const LeaveFormSchema = computed(() => leaveSchema(t, checkID.value));
+
+const durationCount = computed(() => formData.value.start_date.length);
 
 const selectedMember = computed(() => {
   if (!memberList.value || !selectedMemberId.value) return null;
@@ -358,7 +371,7 @@ const multiHeaders1 = computed(() => {
       key: 'eng_name',
     },
     {
-      title: 'Leave Type',
+      title: t('creatLeave.form.leave_type'),
       key: 'leave_type',
     },
     {
@@ -417,14 +430,22 @@ const multiHeaders3 = computed(() => {
   return tmpHeaders;
 });
 
-// Array Data
-const leaveTypes = [
-  { id: 1, name: 'Annual Leave' },
-  { id: 2, name: 'Sick Leave' },
-  { id: 3, name: 'Maternity Leave' },
-  { id: 4, name: 'Paternity Leave' },
-  { id: 5, name: 'Unpaid Leave' },
-];
+const memberList = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return (
+    memberStore.getMembers
+      ?.map((member) => ({
+        id: member.id,
+        name: isJapanese ? member.jp_name : member.eng_name,
+        sort_key: member.sort_key,
+      }))
+      ?.sort((a, b) => {
+        if (!a.sort_key) return 1;
+        if (!b.sort_key) return -1;
+        return a.sort_key - b.sort_key;
+      }) || []
+  );
+});
 
 // Method
 function onCheckboxChange(value) {
@@ -434,33 +455,10 @@ function onCheckboxChange(value) {
   }
 }
 
-// const setSubmitType = (type) => {
-//   console.log('Setting submit type to:', type);
-//   submitType.value = type;
-// };
-
-// const formSubmit = async (values) => {
-//   console.log('test');
-
-//   if (submitType.value === 'ot') {
-//     await submitOt(values);
-//   }
-// };
-
 // Data Fetch
 const fetchData = async () => {
   try {
     await memberStore.fetchMember();
-    const tmpMembers = memberStore.getMembers?.map((member) => ({
-      id: member.id,
-      name: member.eng_name,
-    }));
-    tmpMembers?.sort((a, b) => {
-      if (!a.sort_key) return 1;
-      if (!b.sort_key) return -1;
-      return a.sort_key - b.sort_key;
-    });
-
     await leaveStore.fetchLeave();
     const tmpLeave = (leaveStore.getLeaves ?? []).map((leave) => ({
       eng_name: leave.eng_name,
@@ -483,7 +481,6 @@ const fetchData = async () => {
 
     overtimes.value = tmpOverTime || [];
     leaveRecords.value = tmpLeaveRecord || [];
-    memberList.value = tmpMembers || [];
     leaveRequests.value = tmpLeave || [];
   } catch (error) {
     console.error('Error fetching members:', error);
@@ -543,63 +540,12 @@ async function submitLeave() {
   }
 }
 
-function calculateOffDay() {
-  calculateLeaves(formData.value.permanent_date);
-}
-
-const calculateLeaves = async (dateStr) => {
-  const date = new Date(dateStr);
-  const yearStart = new Date(date.getFullYear(), 0, 1);
-  const yearEnd = new Date(date.getFullYear(), 11, 31);
-  const totalDays = (yearEnd - yearStart) / (1000 * 60 * 60 * 24) + 1;
-  const remainingDays = (yearEnd - date) / (1000 * 60 * 60 * 24) + 1;
-  const leave = Math.round((remainingDays / totalDays) * 10 * 2) / 2;
-  const year = date.getFullYear();
-  const firstHalfStart = new Date(year, 0, 1);
-  const firstHalfEnd = new Date(date.getFullYear(), 5, 30);
-  const secondHalfStart = new Date(date.getFullYear(), 6, 1);
-  let firstHalfLeave = 0;
-  if (date <= firstHalfEnd) {
-    const totalFirstHalfDays =
-      (firstHalfEnd - firstHalfStart) / (1000 * 60 * 60 * 24) + 1;
-    const remainingFirstHalfDays =
-      (firstHalfEnd - date) / (1000 * 60 * 60 * 24) + 1;
-
-    firstHalfLeave =
-      Math.round((remainingFirstHalfDays / totalFirstHalfDays) * 5 * 2) / 2;
-  }
-
-  formData.value.offDays = leave;
-  formData.value.firstHalfLeave = firstHalfLeave;
-
-  let secondHalfLeave = 0;
-
-  if (date <= firstHalfEnd) {
-    const firstHalfDaysLeft = (firstHalfEnd - date) / (1000 * 60 * 60 * 24) + 1;
-    const secondHalfDays =
-      (yearEnd - secondHalfStart) / (1000 * 60 * 60 * 24) + 1;
-
-    firstHalfLeave = Math.round((firstHalfDaysLeft / totalDays) * 10 * 2) / 2;
-    secondHalfLeave = Math.round((secondHalfDays / totalDays) * 10 * 2) / 2;
-  } else {
-    const secondHalfDaysLeft = (yearEnd - date) / (1000 * 60 * 60 * 24) + 1;
-
-    firstHalfLeave = 0;
-    secondHalfLeave = Math.round((secondHalfDaysLeft / totalDays) * 10 * 2) / 2;
-  }
-
-  formData.value.offDays = leave;
-  const permanent_date = formData.value.permanent_date;
-
+const calculateLeaves = async () => {
   try {
     if (selectedMemberId.value) {
       const payload = {
         staff_id: selectedMemberId.value,
-        permanent_date: permanent_date,
-        remain_leaves: leave,
-        total_leaves: leave,
-        first_annual: firstHalfLeave,
-        second_annual: secondHalfLeave,
+        permanent_date: formData.value.permanent_date,
       };
       await leaveRecordStore.createLeaveRecord(payload);
       fetchData();
@@ -650,6 +596,8 @@ onMounted(async () => {
 .v-switch {
   transform: scale(0.8);
   transform-origin: left center;
+  margin-left: 7px;
+  text-transform: uppercase;
 }
 .status {
   background-color: rgba(var(--v-theme-complete), 0.2);
