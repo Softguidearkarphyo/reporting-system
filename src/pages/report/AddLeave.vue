@@ -54,7 +54,7 @@
     </v-row>
   </ParentCard>
   <v-row dense v-if="selectedMember && selectedPotion">
-    <v-col cols="12" md="7">
+    <v-col cols="12" md="5">
       <ParentCard>
         <v-row dense>
           <v-col class="d-flex justify-center">
@@ -80,28 +80,16 @@
         >
           <v-row v-if="selectedPotion === 'potions1'" dense>
             <v-col cols="12" md="6">
-              <Field name="leave_type">
-                <BaseSelect
-                  v-model="formData.leave_type"
-                  :label="t('creatLeave.form.leave_type')"
-                  class="mx-auto"
-                  :items="leaveTypes"
-                  item-title="name"
-                  prependIcon="tabler:IconSpeakerphone"
-                  :width="'400px'"
-                />
-              </Field>
-            </v-col>
-            <v-col cols="12" md="6">
               <template v-if="multipleLeave">
                 <Field name="start_date">
-                  <BaseDatePicker
+                  <BaseMultDate
                     v-model="formData.start_date"
-                    :label="t('creatLeave.form.start_date')"
+                    :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
-                    :width="'400px'"
-                  ></BaseDatePicker>
+                    :width="'300px'"
+                    :multiple="true"
+                  ></BaseMultDate>
                 </Field>
               </template>
               <template v-else>
@@ -111,24 +99,24 @@
                     :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
-                    :width="'400px'"
+                    :width="'300px'"
                     :error-messages="errorMessage"
                   ></BaseDatePicker>
                 </Field>
               </template>
             </v-col>
-          </v-row>
-          <v-row dense v-if="selectedPotion === 'potions1'">
             <v-col cols="12" md="6">
               <template v-if="multipleLeave">
-                <Field name="end_date">
-                  <BaseDatePicker
-                    v-model="formData.end_date"
-                    :label="t('creatLeave.form.end_date')"
+                <Field name="duration">
+                  <BaseTextField
+                    v-model="formData.duration"
+                    :label="t('creatLeave.form.duration')"
                     class="mx-auto"
-                    prependIcon="tabler:IconCalendarPin"
-                    :width="'400px'"
-                  ></BaseDatePicker>
+                    item-title="name"
+                    prependIcon="tabler:IconClockQuestion"
+                    :width="'300px'"
+                    readonly
+                  />
                 </Field>
               </template>
               <template v-else>
@@ -137,14 +125,16 @@
                     v-model="formData.duration"
                     :label="t('creatLeave.form.duration')"
                     class="mx-auto"
-                    :items="leaveDurations"
+                    :items="durationHour"
                     item-title="name"
                     prependIcon="tabler:IconClockQuestion"
-                    :width="'400px'"
+                    :width="'300px'"
                   />
                 </Field>
               </template>
             </v-col>
+          </v-row>
+          <v-row dense v-if="selectedPotion === 'potions1'">
             <v-col cols="12" md="6">
               <Field name="reason">
                 <BaseTextField
@@ -154,11 +144,11 @@
                   type="text"
                   variant="plain"
                   prependIcon="tabler:IconHelpCircle"
-                  :width="'400px'"
+                  :width="'300px'"
                 ></BaseTextField>
               </Field>
             </v-col>
-            <v-col cols="12" md="6" class="d-flex justify-start ml-5">
+            <v-col cols="12" md="6" class="d-flex justify-start ml-1">
               <v-switch
                 v-model="multipleLeave"
                 class="custom-switch-label"
@@ -176,7 +166,7 @@
                   class="mx-auto"
                   prependIcon="tabler:IconCalendarPin"
                   :error-messages="errorMessage"
-                  :width="'400px'"
+                  :width="'300px'"
                 ></BaseDatePicker
               ></Field>
             </v-col>
@@ -204,7 +194,7 @@
                     :label="t('creatLeave.form.ot_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
-                    :width="'400px'"
+                    :width="'300px'"
                     :error-messages="errorMessage"
                   ></BaseDatePicker>
                 </Field>
@@ -215,11 +205,11 @@
                     v-model="formData.ot_time"
                     :label="t('creatLeave.form.ot_time')"
                     class="mx-auto"
-                    :items="otList"
+                    :items="durationHour"
                     item-title="name"
                     prependIcon="tabler:IconAlarm"
                     :error-messages="errorMessage"
-                    :width="'400px'"
+                    :width="'300px'"
                   />
                 </Field>
               </v-col>
@@ -233,7 +223,7 @@
                 @click="submitLeave"
                 style="width: 200px"
               >
-                {{ t('common.submit') }} leave
+                {{ t('common.submit') }}
               </BaseButton>
               <BaseButton
                 v-if="selectedPotion === 'potions3'"
@@ -241,7 +231,7 @@
                 @click="submitOt"
                 style="width: 200px"
               >
-                {{ t('common.submit') }} ot
+                {{ t('common.submit') }}
               </BaseButton>
             </v-col>
           </v-row>
@@ -249,7 +239,7 @@
       </ParentCard>
     </v-col>
 
-    <v-col cols="12" md="5">
+    <v-col cols="12" md="7">
       <ParentCard>
         <BaseTitle v-if="selectedPotion === 'potions1'">{{
           t('creatLeave.title')
@@ -267,6 +257,20 @@
           items-per-page="10"
           class="elevation-1"
         >
+          <template #[`item.leave_type`]="{ item }">
+            <span
+              v-if="item.leave_type === 1"
+              class="status d-inline-flex justify-center align-center"
+            >
+              paid
+            </span>
+            <span
+              v-else
+              class="status1 d-inline-flex justify-center align-center"
+            >
+              unpaid
+            </span>
+          </template>
         </BaseTable>
         <BaseTable
           v-if="selectedPotion === 'potions2'"
@@ -297,7 +301,7 @@ import { useLeaveStore } from '@/stores/leave/leave.js';
 import { useLeaveRecordStore } from '@/stores/leaveRecord/leaveRecord.js';
 import { useOverTimeStore } from '@/stores/overtime/overtime.js';
 import { leaveSchema } from '@/plugins/validations/leave.js';
-import { Form, Field } from 'vee-validate';
+import { durationHour } from '@/utils/date.js';
 
 const { t, locale } = useI18n();
 
@@ -318,13 +322,14 @@ const formData = ref({
   staff_id: '',
   permanent_date: null,
   leave_date: null,
-  start_date: null,
-  end_date: null,
+  start_date: [],
   duration: '',
   reason: '',
   ot_date: null,
   ot_time: null,
   offDays: 0,
+  firstHalfLeave: 0,
+  secondHalfLeave: 0,
 });
 
 // Data
@@ -353,7 +358,7 @@ const multiHeaders1 = computed(() => {
       key: 'eng_name',
     },
     {
-      title: t('creatLeave.form.leave_type'),
+      title: 'Leave Type',
       key: 'leave_type',
     },
     {
@@ -388,7 +393,7 @@ const multiHeaders2 = computed(() => {
     },
     {
       title: t('creatLeave.form.offdays'),
-      key: 'total_leaves',
+      key: 'offDays',
     },
   ];
   return tmpHeaders;
@@ -420,27 +425,6 @@ const leaveTypes = [
   { id: 4, name: 'Paternity Leave' },
   { id: 5, name: 'Unpaid Leave' },
 ];
-const leaveDurations = [
-  { id: 1, name: 'Half Day' },
-  { id: 2, name: '30 Minutes' },
-  { id: 3, name: '1 Hour' },
-  { id: 4, name: '1 Hour 30 Minutes' },
-  { id: 5, name: '2 Hours' },
-  { id: 6, name: '2 Hours 30 Minutes' },
-  { id: 7, name: '3 Hours' },
-  { id: 8, name: '3 Hours 30 Minutes' },
-];
-
-const otList = [
-  { id: 1, name: 'Half Day' },
-  { id: 2, name: '30 Minutes' },
-  { id: 3, name: '1 Hour' },
-  { id: 4, name: '1 Hour 30 Minutes' },
-  { id: 5, name: '2 Hours' },
-  { id: 6, name: '2 Hours 30 Minutes' },
-  { id: 7, name: '3 Hours' },
-  { id: 8, name: '3 Hours 30 Minutes' },
-];
 
 // Method
 function onCheckboxChange(value) {
@@ -463,6 +447,7 @@ function onCheckboxChange(value) {
 //   }
 // };
 
+// Data Fetch
 const fetchData = async () => {
   try {
     await memberStore.fetchMember();
@@ -486,7 +471,7 @@ const fetchData = async () => {
     const tmpLeaveRecord = leaveRecordStore.getLeaveRecord?.map((record) => ({
       permanent_date: record.permanent_date,
       eng_name: record.eng_name,
-      total_leaves: record.total_leaves,
+      offDays: record.total_leaves,
     }));
 
     await overTimeStore.fetchOverTime();
@@ -530,44 +515,33 @@ const selectMember = async (id) => {
   }
 };
 
+// Submit Process
 async function submitLeave() {
   try {
     if (selectedMemberId.value) {
       const payload = {
         staff_id: selectedMemberId.value,
-        leave_type: formData.value.leave_type,
         reason: formData.value.reason,
       };
 
       if (multipleLeave.value) {
         payload.start_date = formData.value.start_date;
-        payload.end_date = formData.value.end_date;
-        payload.duration = 'full';
+        payload.duration = 'Full Day';
       } else {
         payload.leave_date = formData.value.leave_date;
         payload.duration = formData.value.duration;
       }
       await leaveStore.createLeave(payload);
       fetchData();
+      formData.value.leave_date = '';
+      formData.value.duration = '';
+      formData.value.start_date = '';
+      formData.value.reason = '';
     }
   } catch (error) {
     console.error('Error creating leave:', error);
   }
 }
-
-const submitOt = async () => {
-  try {
-    const payload = {
-      staff_id: selectedMemberId.value,
-      ot_date: formData.value.ot_date,
-      ot_time: formData.value.ot_time,
-    };
-    await overTimeStore.createOverTime(payload);
-    fetchData();
-  } catch (error) {
-    console.error('Error creating Over Time:', error);
-  }
-};
 
 function calculateOffDay() {
   calculateLeaves(formData.value.permanent_date);
@@ -580,6 +554,40 @@ const calculateLeaves = async (dateStr) => {
   const totalDays = (yearEnd - yearStart) / (1000 * 60 * 60 * 24) + 1;
   const remainingDays = (yearEnd - date) / (1000 * 60 * 60 * 24) + 1;
   const leave = Math.round((remainingDays / totalDays) * 10 * 2) / 2;
+  const year = date.getFullYear();
+  const firstHalfStart = new Date(year, 0, 1);
+  const firstHalfEnd = new Date(date.getFullYear(), 5, 30);
+  const secondHalfStart = new Date(date.getFullYear(), 6, 1);
+  let firstHalfLeave = 0;
+  if (date <= firstHalfEnd) {
+    const totalFirstHalfDays =
+      (firstHalfEnd - firstHalfStart) / (1000 * 60 * 60 * 24) + 1;
+    const remainingFirstHalfDays =
+      (firstHalfEnd - date) / (1000 * 60 * 60 * 24) + 1;
+
+    firstHalfLeave =
+      Math.round((remainingFirstHalfDays / totalFirstHalfDays) * 5 * 2) / 2;
+  }
+
+  formData.value.offDays = leave;
+  formData.value.firstHalfLeave = firstHalfLeave;
+
+  let secondHalfLeave = 0;
+
+  if (date <= firstHalfEnd) {
+    const firstHalfDaysLeft = (firstHalfEnd - date) / (1000 * 60 * 60 * 24) + 1;
+    const secondHalfDays =
+      (yearEnd - secondHalfStart) / (1000 * 60 * 60 * 24) + 1;
+
+    firstHalfLeave = Math.round((firstHalfDaysLeft / totalDays) * 10 * 2) / 2;
+    secondHalfLeave = Math.round((secondHalfDays / totalDays) * 10 * 2) / 2;
+  } else {
+    const secondHalfDaysLeft = (yearEnd - date) / (1000 * 60 * 60 * 24) + 1;
+
+    firstHalfLeave = 0;
+    secondHalfLeave = Math.round((secondHalfDaysLeft / totalDays) * 10 * 2) / 2;
+  }
+
   formData.value.offDays = leave;
   const permanent_date = formData.value.permanent_date;
 
@@ -590,6 +598,8 @@ const calculateLeaves = async (dateStr) => {
         permanent_date: permanent_date,
         remain_leaves: leave,
         total_leaves: leave,
+        first_annual: firstHalfLeave,
+        second_annual: secondHalfLeave,
       };
       await leaveRecordStore.createLeaveRecord(payload);
       fetchData();
@@ -599,58 +609,62 @@ const calculateLeaves = async (dateStr) => {
   }
 };
 
+const submitOt = async () => {
+  try {
+    const payload = {
+      staff_id: selectedMemberId.value,
+      ot_date: formData.value.ot_date,
+      ot_time: formData.value.ot_time,
+    };
+    await overTimeStore.createOverTime(payload);
+    fetchData();
+    formData.value.ot_date = '';
+    formData.value.ot_time = '';
+  } catch (error) {
+    console.error('Error creating Over Time:', error);
+  }
+};
+
 onMounted(async () => {
   await fetchData();
 });
-
-// function calculateOffDay() {
-//   const permanent = new Date(formData.value.permanent_date);
-//   const current = new Date();
-//   const currentYear = current.getFullYear();
-//   const joinedYear = permanent.getFullYear();
-
-//   let offdays = 0;
-
-//   if (joinedYear < currentYear) {
-//     const monthDiff =
-//       (current.getFullYear() - permanent.getFullYear()) * 12 +
-//       (current.getMonth() - permanent.getMonth());
-
-//     const fullYears = Math.floor(monthDiff / 12);
-//     const remainingMonths = monthDiff % 12;
-
-//     offdays = fullYears * 10 + Math.floor(remainingMonths / 6) * 5;
-//   } else if (joinedYear === currentYear) {
-//     const joinMonth = permanent.getMonth();
-//     const joinDay = permanent.getDate();
-//     let monthsWorked = 12 - joinMonth;
-
-//     if (joinDay > 15) {
-//       monthsWorked -= 0.5;
-//     }
-//     offdays = Math.floor((monthsWorked / 12) * 10 * 2) / 2;
-//   } else {
-//     offdays = 0;
-//   }
-//   formData.value.offdays = offdays;
-// }
 </script>
 <style>
 .custom-checkbox .v-label {
-  font-size: 0.7rem;
-  font-weight: 900;
-  color: rgb(var(--v-theme-primary));
+  font-size: 0.7rem !important;
+  font-weight: 900 !important;
+  color: rgb(var(--v-theme-primary)) !important;
 }
 .v-data-table .v-btn {
-  margin-left: 4px;
+  margin-left: 4px !important;
 }
 
 .custom-checkbox .v-icon {
   color: rgb(var(--v-theme-primary)) !important;
 }
 .custom-switch-label .v-label {
-  font-size: 13px;
+  font-size: 13px !important;
   color: rgb(var(--v-theme-primary)) !important;
-  font-weight: 600;
+  font-weight: 600 !important;
+}
+.v-switch {
+  transform: scale(0.8);
+  transform-origin: left center;
+}
+.status {
+  background-color: rgba(var(--v-theme-complete), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-complete));
+}
+.status1 {
+  background-color: rgba(var(--v-theme-error), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-error));
 }
 </style>
