@@ -20,6 +20,7 @@ declare module 'vue' {
     BaseConfirmDelete: typeof import('./components/bases/BaseConfirmDelete.vue')['default']
     BaseDatePicker: typeof import('./components/bases/BaseDatePicker.vue')['default']
     BaseFileInput: typeof import('./components/bases/BaseFileInput.vue')['default']
+    BaseMultDate: typeof import('./components/bases/BaseMultDate.vue')['default']
     BaseMultiSelect: typeof import('./components/bases/BaseMultiSelect.vue')['default']
     BaseSelect: typeof import('./components/bases/BaseSelect.vue')['default']
     BaseTable: typeof import('./components/bases/BaseTable.vue')['default']
