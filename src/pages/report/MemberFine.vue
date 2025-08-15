@@ -330,7 +330,6 @@ const fetchMemberFines = async () => {
         date: memberFine.date,
         time: memberFine.time,
         status: memberFine.status,
-        total: memberFine.total,
         fine: parseInt(memberFine.amount),
         switchValue: memberFine.status === 1,
       })
