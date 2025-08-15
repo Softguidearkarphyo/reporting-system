@@ -137,7 +137,7 @@ const fillData = (sheet, skillSheet, skills, tableStartRow) => {
 
     skills.forEach((skillName, skillIndex) => {
       const prof = item.tech_stack_proficiencies?.find(
-        (p) => p.tech_stack_name === skillName
+        (p) => p.tech_stack_name === skillName && p.proficiency_level_id !== 1
       );
       sheet
         .cell(rowNum, startCol + skillIndex + 1)

@@ -7,7 +7,6 @@ services:
   app:
     build:
       context: .
-      target: dev
     image: vue-vite-dev
     ports:
        - "3030:5173"
