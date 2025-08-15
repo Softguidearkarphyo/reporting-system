@@ -1,54 +1,53 @@
 <template>
   <BaseTitle class="mb-4"> {{ t('showProject.title') }} </BaseTitle>
   <ParentCard class="pa-4 mb-4">
-    <Form ref="formRef" :validation-schema="projectSchema" @submit="submit">
-      <v-row class="mt-2">
-        <v-col cols="12" class="px-2" md="3">
-          <Field name="end_date" v-slot="{ field, errorMessage }">
-            <BaseDatePicker
-              v-model="field.value"
-              v-bind="field"
-              :label="t('showProject.end_date')"
-              class="mx-auto"
-              prependIcon="mdi-calendar-month"
-              :width="'330px'"
-              :error-messages="errorMessage"
-            ></BaseDatePicker>
-          </Field>
-        </v-col>
-        <v-col cols="12" class="px-2" md="3">
-          <Field name="week_date" v-slot="{ field, errorMessage }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('showProject.week_date')"
-              class="mx-auto"
-              :items="week_date"
-              item-title="name"
-              item-value="id"
-              prependIcon="mdi-seat"
-              :width="'330px'"
-              :error-messages="errorMessage"
-            >
-            </BaseSelect>
-          </Field>
-        </v-col>
-        <v-col cols="12" md="5" class="ml-2 mt-n1">
-          <BaseButton type="submit">
-            {{ t('common.search') }}
-          </BaseButton>
-          <BaseButton
-            v-if="originalItems.length > 0 && searchFlg"
-            :width="'100px'"
-            >EXCEL</BaseButton
-          >
-        </v-col>
-      </v-row>
-    </Form>
+    <v-row>
+      <v-col cols="10" md="10" class="mx-auto">
+        <Form ref="formRef" :validation-schema="projectSchema" @submit="submit">
+           <div class="d-flex align-center justify-space-evenly">
+                <Field name="end_date" v-slot="{ field, errorMessage }">
+                  <BaseDatePicker
+                    v-model="field.value"
+                    v-bind="field"
+                    :label="t('showProject.end_date')"
+                    prependIcon="mdi-calendar-month"
+                    :width="'330px'"
+                    :error-messages="errorMessage"
+                    style="flex: none;"
+                  ></BaseDatePicker>
+                </Field>
+                <Field name="week_date" v-slot="{ field, errorMessage }">
+                  <BaseSelect
+                    v-model="field.value"
+                    v-bind="field"
+                    :label="t('showProject.week_date')"
+                    :items="week_date"
+                    item-title="name"
+                    item-value="id"
+                    prependIcon="mdi-calendar-week"
+                    :width="'330px'"
+                    :error-messages="errorMessage"
+                    style="flex: none;"
+                  >
+                  </BaseSelect>
+                </Field>
+                <div style="width: 300px; flex: none;" class="d-flex justify-space-between" >
+                  <BaseButton type="submit" :width="'100px'">
+                    {{ t('common.search') }}
+                  </BaseButton>
+                  <BaseButton :width="'100px'" @click="clearFormTable()">{{
+                      t('common.clear')
+                    }}</BaseButton>
+                </div>
+            </div>
+        </Form>
+      </v-col>
+    </v-row>
   </ParentCard>
-  <v-row class="align-center mt-3">
+  <div v-if="initialData">
+    <v-row class="align-center">
     <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-      <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
+      <BaseTitle> {{  t('showProject.title') }} </BaseTitle>
     </v-col>
     <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
       <BaseTextField
@@ -56,167 +55,203 @@
         :label="t('common.search')"
         color="primary"
         prepend-icon="mdi-magnify"
+        class="mb-n5"
+        type="text"
+        variant="plain"
+        dense
       >
       </BaseTextField>
+      <BaseButton
+        @click="excelExport(items,{ t, locale })"
+        :disabled="!items.length"
+        style="width: 100px"
+      >
+          {{t('common.excel')}}
+      </BaseButton>
     </v-col>
   </v-row>
-  <v-card>
-    <BaseTable :headers="headers" :items="originalItems">
-      <template #[`item.user_id`]="{ item }">
-        <div
-          v-if="searchFlg"
-          class="rounded-pill py-1 px-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '75px',
-            fontSize: '11px',
-          }"
-        >
-          {{ item.user_id }}
-        </div>
-      </template>
-      <template #[`item.user_name`]="{ item }">
-        <div
-          v-if="searchFlg"
-          class="rounded-pill py-1 px-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '75px',
-            fontSize: '11px',
-          }"
-        >
-          {{ item.user_name }}
-        </div>
-      </template>
-      <template #[`item.total_working_hour`]="{ item }">
-        <div
-          v-if="searchFlg"
-          class="rounded-pill py-1 px-1 text-center mx-auto"
-          :style="{
-            backgroundColor: item.position?.color,
-            width: '75px',
-            fontSize: '11px',
-          }"
-        >
-          {{ item.total_working_hour }}
-        </div>
-      </template>
-    </BaseTable>
-  </v-card>
+    <div v-for="week in items" :key="week.weekLabel" class="mb-3">
+      <h2 class="ms-3">{{ week.weekLabel }}</h2>
+        <v-card class="mb-2 pa-5">
+        <v-row>
+          <v-col
+            v-for="project in week.projects"
+            :key="project.project_id"
+            cols="6"
+            md="6"
+          >
+              <h3 class="mb-2">
+                {{ projectNameLang ? project.project_eng : project.project_jp }}
+              </h3>
+
+              <BaseTable :headers="headers" :items="project.project_info">
+                <template #[`item.periods`]="{ item }">
+                  <span>
+                    {{ item.periods[0] }} {{ t('workingTime.hour') }}
+                    {{
+                      item.periods[1] == 5
+                        ? '30 ' + t('workingTime.minutes')
+                        : ''
+                    }}
+                  </span>
+                </template>
+              </BaseTable>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
+  </div>
 </template>
 
 <script setup>
+import { excelExport } from '@/excel-export/showproject/excel'
 import { useI18n } from 'vue-i18n';
-import BaseDatePicker from '../../components/bases/BaseDatePicker.vue';
-import BaseButton from '../../components/bases/BaseButton.vue';
-import BaseTitle from '../../components/bases/BaseTitle.vue';
 import { showProjectSchema } from '@/plugins/validations/show-project.js';
 import { week_date } from '@/utils/data';
+import { useShowProject } from '@/stores/projectHour/project-user-hour.js';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const projectSchema = computed(() => showProjectSchema(t));
 const search = ref('');
 const searchFlg = ref(false);
-const formData = ref({
-  end_date: null,
-  week_date: null,
-});
-const originalItems = ref([]);
-const headers = computed(() => [
-  { title: t('showProject.table.user_name'), key: 'user_id', align: 'center' },
-  {
-    title: t('showProject.table.user_id'),
-    key: 'user_name',
-    align: 'center',
-    sortable: false,
-  },
-  {
-    title: t('showProject.table.total_working_hour'),
-    key: 'total_working_hour',
-    align: 'center',
-    sortable: false,
-  },
-]);
+const formRef = ref(null);
+const items = ref([]);
+const showProject = useShowProject();
+const initialData = ref(false);
+let originalItems = [];
 
-const getItems = [
-  {
-    user_id: 'TS',
-    user_name: 'AA',
-    total_working_hour: 20,
-    created_at: '12-07-2025',
-  },
-  {
-    user_id: 'Tb',
-    user_name: 'AA',
-    total_working_hour: 10,
-    created_at: '26-06-2025',
-  },
-  {
-    user_id: 'T',
-    user_name: 'AA',
-    total_working_hour: 5,
-    created_at: '19-06-2025',
-  },
-  {
-    user_id: 'Test',
-    user_name: 'AA',
-    total_working_hour: 10,
-    created_at: '10-07-2025',
-  },
-];
+const headers = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  const tmpHeaders = [
+    {
+      title: t('workingTime.staffName'),
+      key: isJapanese ? 'jp_name' : 'eng_name',
+    },
+    {
+      title: t('workingTime.workingHours'),
+      key: 'periods',
+    },
+  ];
+  return tmpHeaders;
+});
+
+const projectNameLang = computed((project)=>{
+  const currentLang = locale.value === 'en';
+  return currentLang 
+})
 
 onMounted(() => {
-  originalItems.value = [...getItems];
   searchFlg.value = true;
 });
 
-const submit = (values) => {
-  formData.value.end_date = values.end_date;
-  formData.value.week_date = values.week_date;
+const submit = async (values) => {
+  const projectWorkHour = await showProject.fetchProjecthour(values);
+  initialData.value = projectWorkHour.data.length > 0 ? true : false;
 
-  const endDate = new Date(values.end_date);
-  const weekKey = values.week_date;
+  const weekRangeMap = getWeekRangeMap(values.end_date, values.week_date);
+  const weekGroups = {};
 
-  let subtractDays = 0;
-  if (weekKey === 1) subtractDays = 7;
-  else if (weekKey === 2) subtractDays = 14;
-  else if (weekKey === 3) subtractDays = 21;
-  else if (weekKey === 4) subtractDays = 28;
+  projectWorkHour.data.forEach((entry) => {
+    const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
+    const hours = 0.5;
 
-  const targetDate = new Date(endDate);
-  targetDate.setDate(targetDate.getDate() - subtractDays);
-  const formattedTarget = formatDate(targetDate);
+    const weekLabel = weekRangeMap[date];
 
-  const filteredItems = getItems.filter(
-    (item) => item.created_at === formattedTarget
-  );
-  if (filteredItems.length > 0) {
-    originalItems.value = filteredItems;
-    searchFlg.value = true;
-  } else {
-    originalItems.value = [];
-    searchFlg.value = false;
-  }
+    if (!weekGroups[weekLabel]) {
+      weekGroups[weekLabel] = { weekLabel, projects: {} };
+    }
+
+    if (!weekGroups[weekLabel].projects[project_id]) {
+      weekGroups[weekLabel].projects[project_id] = {
+        project_id,
+        project_eng,
+        project_jp,
+        staffMap: {}
+      };
+    }
+
+    if (!weekGroups[weekLabel].projects[project_id].staffMap[staff_id]) {
+      weekGroups[weekLabel].projects[project_id].staffMap[staff_id] = {
+        staff_id,
+        eng_name,
+        jp_name,
+        totalHour: 0
+      };
+    }
+
+    weekGroups[weekLabel].projects[project_id].staffMap[staff_id].totalHour += hours;
+  });
+
+  const groupedResult = Object.values(weekGroups).map(week => ({
+    weekLabel: week.weekLabel,
+    projects: Object.values(week.projects).map(project => ({
+      project_id: project.project_id,
+      project_eng: project.project_eng,
+      project_jp: project.project_jp,
+      project_info: Object.values(project.staffMap).map(staff => ({
+        staff_id: staff.staff_id,
+        eng_name: staff.eng_name,
+        jp_name: staff.jp_name,
+        periods: hourMinConvert(staff.totalHour)
+      }))
+    }))
+  }));
+
+  items.value = groupedResult;
+  originalItems = [...groupedResult];
 };
 
-function formatDate(date) {
-  const d = date.getDate().toString().padStart(2, '0');
-  const m = (date.getMonth() + 1).toString().padStart(2, '0');
-  const y = date.getFullYear();
-  return `${d}-${m}-${y}`;
+function hourMinConvert(hour) {
+  if (hour.toString().includes('.')) {
+    const arr = hour.toString().split('.');
+    return arr;
+  }
+  return [hour];
 }
+
+function getWeekRangeMap(inputDate, weeks) {
+  const map = {};
+  let endDate = new Date(inputDate);
+
+    const format = (d) => d.toISOString().slice(0, 10);
+
+      for (let i = 0; i < weeks; i++) {
+        const startDate = new Date(endDate);
+        startDate.setDate(endDate.getDate() - 6); 
+
+        const rangeLabel = `${format(endDate)} to ${format(startDate)}`;
+
+        let loopDate = new Date(endDate);
+        while (loopDate >= startDate) {
+          map[format(loopDate)] = rangeLabel;
+          loopDate.setDate(loopDate.getDate() - 1);
+        }
+
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() - 1);
+      }
+
+  return map; 
+}
+
+const clearFormTable = () => {
+  formRef.value.resetForm();
+  initialData.value = false;
+};
+
 watch(
   () => search.value,
   (newVal) => {
     if (newVal) {
-      originalItems.value = getItems.filter((item) =>
+      items.value = originalItems.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(newVal.toLowerCase())
         )
       );
     } else {
-      originalItems.value = [...getItems];
+      items.value = [...originalItems];
     }
+    window._rowIndex = 0;
   }
 );
 </script>

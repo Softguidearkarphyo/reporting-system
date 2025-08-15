@@ -94,10 +94,10 @@ export const project = ref([
   },
 ]);
 export const week_date = ref([
-  { id: 1, name: 'one_week' },
-  { id: 2, name: 'two_week' },
-  { id: 3, name: 'three_week' },
-  { id: 4, name: 'four_week' },
+  { id: 1, name: 'one week' },
+  { id: 2, name: 'two week' },
+  { id: 3, name: 'three week' },
+  { id: 4, name: 'four week' },
 ]);
 
 export const dedicatedPosition = ref([
