@@ -204,8 +204,8 @@ export const periods = ref([
   {
     id: 2,
     name: '1:00 ~ 5:30',
-    startTime: '1:00',
-    finishTime: '5:30',
+    startTime: '13:00',
+    finishTime: '17:30',
   },
 ]);
 

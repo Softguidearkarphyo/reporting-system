@@ -13,7 +13,7 @@
         v-bind="{ ...activatorProps, ...$attrs }"
         :model-value="formattedValue"
         @update:model-value="$emit('update:modelValue', $event)"
-        :style="{ width }"
+        :style="{ width: textFieldWidth }"
         :label="label"
         readonly
         :disabled="disabled"
@@ -54,6 +54,10 @@ const props = defineProps({
     type: String,
     default: '310px',
   },
+  textWidth: {
+    type: String,
+    default: '',
+  },
   width: {
     type: String,
     default: '400px',
@@ -85,6 +89,8 @@ const emit = defineEmits(['update:modelValue']);
 
 const menu = ref(false);
 const internalValue = ref(null);
+
+const textFieldWidth = computed(() => props.textWidth || props.width);
 
 const formattedValue = computed(() => {
   if (!props.modelValue) return '';

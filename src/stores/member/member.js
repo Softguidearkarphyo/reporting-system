@@ -22,7 +22,12 @@ export const useMemberStore = defineStore('member', () => {
     try {
       const response = await api.post(
         '/reporting-system/staff/create',
-        payload
+        payload,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
       toast.success('Member Created Successfully.');
       return response;

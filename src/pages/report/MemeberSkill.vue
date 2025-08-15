@@ -1,5 +1,5 @@
 <template>
-  <v-row class="align-center mb-3">
+  <v-row class="align-center">
     <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
       <BaseTitle> {{ t('addMemberSkill.employee_competency') }} </BaseTitle>
     </v-col>
@@ -9,21 +9,23 @@
         :label="t('common.search')"
         color="primary"
         prepend-icon="mdi-magnify"
+        class="mb-n5"
         type="text"
         variant="plain"
         dense
-        autocomplete="test"
       >
       </BaseTextField>
-    </v-col>
-    <v-col class="text-end">
-      <BaseButton @click="exportExcel" style="width: 200px">
+      <BaseButton
+        @click="exportFile"
+        :disabled="!items.length"
+        style="width: 100px"
+      >
         Export
       </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :items-count="itemsCount">
+    <BaseTable :headers="headers" :items="items">
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
@@ -53,7 +55,7 @@
   <v-bottom-sheet v-model="showSheet">
     <v-card>
       <v-card-title class="text-h6 d-flex flex-column">
-        Skill Sheet
+        {{ t('addMemberSkill.employee_competency') }}
         <h3 class="text-subtitle-2 mt-1">{{ staffName }}</h3>
       </v-card-title>
       <v-card-text>
@@ -67,6 +69,7 @@
 </template>
 
 <script setup>
+import { exportExcel } from '@/excel-export/skillsheet/excel';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
@@ -136,7 +139,8 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  await systemStore.fetchTechStacks(), await skillSheetStore.fetchSkillSheet();
+  await systemStore.fetchTechStacks(),
+    await skillSheetStore.fetchSkillSheet({ staff_project: {} });
 
   const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
     id: item.id,
@@ -161,10 +165,7 @@ const fetch = async () => {
   originalItems = [...items.value];
 
   techStackList.value =
-    systemStore?.getTechStacks?.map((item) => ({
-      id: item.id,
-      name: item.name,
-    })) ?? [];
+    systemStore?.getTechStacks?.map((item) => item?.name) ?? [];
 };
 
 onMounted(async () => {
@@ -182,7 +183,9 @@ const viewSkillSheet = async (id) => {
 const pushToEdit = (id) => {
   router.push({ name: 'edit-employee-skill', params: { skillSheetId: id } });
 };
-
+const exportFile = () => {
+  exportExcel(skillSheetStore.getSkillSheets, techStackList.value);
+};
 watch(
   () => search.value,
   (newVal) => {

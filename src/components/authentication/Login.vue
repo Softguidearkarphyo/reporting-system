@@ -108,7 +108,13 @@ const handleLogin = async () => {
   apiErrors.username = '';
   apiErrors.password = '';
   try {
-    await authStore.login(username.value, password.value);
+    const pos = await getCurrentPosition();
+    await authStore.login(
+      username.value,
+      password.value,
+      pos?.coords?.latitude,
+      pos?.coords?.longitude
+    );
     router.push('/reporting-system/dashboard');
   } catch (e) {
     if (e.response?.status === 422) {
@@ -132,6 +138,14 @@ const handleLogin = async () => {
       error.value = 'Unexpected login error';
     }
   }
+};
+
+const getCurrentPosition = (
+  options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+) => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
 };
 </script>
 

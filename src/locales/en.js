@@ -1,24 +1,27 @@
 export default {
   common: {
+    no: 'No',
     search: 'SEARCH',
     deleteConfirmTitle: 'Delete Confirmation',
     deleteConfirmText:
       'Are you sure to delete? # This action cannot be undone.',
-    deleteBtnCancelText: 'cancel',
-    deleteBtnText: 'delete',
+    cancel: 'cancel',
+    delete: 'delete',
     noDataText: 'No data available',
     submit: 'Submit',
     autoFill: 'Apply setting',
     saveSetting: 'Save setting',
     discardSetting: 'Discard setting',
+    viewSetting: 'View Setting',
     download: 'Download',
+    edit: 'Edit',
     pagination: {
       range: 'showing {start} - {end} of {total} records',
     },
     all: 'All',
     filter: 'Filter',
     excel: 'Excel',
-    clear: 'Clear'
+    clear: 'Clear',
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -31,6 +34,7 @@ export default {
     employeereports: 'employee report',
     projectmenpower: 'project menpower',
     sixmonthssummary: '6 months summary',
+    location: 'location',
     newproject: 'new project',
     newemployee: 'new employee',
     newemployeeleave: 'new employee leave',
@@ -125,7 +129,6 @@ export default {
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
       major_tech_stack: 'Major Tech Stack',
-      view_skill: 'View Skills',
       action: 'Action',
     },
     form: {
@@ -141,8 +144,6 @@ export default {
       total_experience: 'Total Experience',
       responsibility: 'Responsibility',
       major_tech_stack: 'Major Tech Stack',
-      view_skill: 'View Skills',
-      action: 'Action',
     },
   },
   workHourReport: {
@@ -154,6 +155,7 @@ export default {
       task: 'Task',
       auto: 'Auto',
       manual: 'Manual',
+      day: 'Day',
       period: 'Start Time ~ Finish Time',
       startTime: 'Start Time',
       finishTime: 'Finish Time',
@@ -167,6 +169,20 @@ export default {
       project_cd: 'Project Code',
       project_name: 'Project Name',
       task: 'Task',
+    },
+    dateClear: 'Clear Dates',
+  },
+  workHourReportSetting: {
+    title: 'Work Performance Setting',
+    employee: 'Employee',
+    days: {
+      sun: 'Sunday',
+      mon: 'Monday',
+      tue: 'Tuesday',
+      wed: 'Wednesday',
+      thurs: 'Thursday',
+      fri: 'Friday',
+      sat: 'Saturday',
     },
   },
   staffCard: {
@@ -192,6 +208,8 @@ export default {
     max: '{field} must be no more than {max} characters',
     date_format: '{field} must be in YYYY-MM-DD format',
     unique: '{field} already exists',
+    dateSmallerThanOrEqual: '{field1} must be the same or before {field2}',
+    dateLargerThanOrEqual: '{field1} must be the same or after {field2}',
   },
   showProject: {
     title: 'Work performance management',
@@ -272,7 +290,26 @@ export default {
       action: 'action',
       must_be_late: 'invalid',
       month: 'Month',
-      count: 'Count'
+      count: 'Count',
     },
+  },
+
+  menPower: {
+    title: 'Work performance management',
+    form: {
+      startDate: 'Start Date',
+      endDate: 'End Date',
+    },
+    table: {
+      cd: 'Project Code',
+      name: 'Project Name',
+      men: 'Men',
+      hours: 'Hours',
+      days: 'Days',
+    },
+  },
+
+  location: {
+    title: 'Location',
   },
 };

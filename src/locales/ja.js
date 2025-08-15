@@ -1,24 +1,27 @@
 export default {
   common: {
+    no: '番号',
     search: '検索',
     deleteConfirmTitle: '削除のご確認',
     deleteConfirmText:
       'これを削除してもよろしいですか？ # この操作は元に戻せません。',
-    deleteBtnCancelText: 'キャンセル',
-    deleteBtnText: '削除',
+    cancel: 'キャンセル',
+    delete: '削除',
     noDataText: 'データはありません。',
     submit: '保存',
     autoFill: '自動設定で実行する',
     saveSetting: '自動設定として保存する',
     discardSetting: '自動設定を破棄する',
+    viewSetting: '自動設定を見る',
     download: 'ダウンロード',
+    edit: '編集',
     pagination: {
       range: '{total} 件中 {start} ～ {end} 件を表示',
     },
     all: 'すべて',
     filter: '濾過',
     excel: 'エクセル',
-    clear: 'クリア'
+    clear: 'クリア',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -31,6 +34,7 @@ export default {
     employeereports: 'メンバーレポート',
     projectmenpower: 'プロジェクト人員',
     sixmonthssummary: '6ヶ月まとめ',
+    location: '現在地',
     newproject: 'プロジェクト追加',
     newemployee: 'メンバー追加',
     newemployeeleave: '休暇追加',
@@ -107,16 +111,35 @@ export default {
     },
   },
   addMemberSkill: {
+    employee_competency: '従業員の能力リスト',
     title: 'メンバースキル作成',
-    form: {
-      name: '名前',
-      staff: 'スタッフ',
-      date: '日付',
-      role: '役割',
-      team: 'チーム',
-      permanent_date: '正社員日付',
+    table: {
+      staff: '名前',
+      project: 'プロジェクト',
+      position: '役職',
+      grade: '等級',
+      join_date: '入社日',
       japanese_level: '日本語レベル',
-      experience: '経験',
+      sg_experience: 'SG経験',
+      prev_experience: '以前経験',
+      total_experience: '総経験',
+      responsibility: '担当',
+      major_tech_stack: '専任',
+      view_skill: '閲覧',
+      action: '操作',
+    },
+    form: {
+      staff: '名前',
+      project: 'プロジェクト',
+      position: '役職',
+      grade: '等級',
+      join_date: '入社日',
+      japanese_level: '日本語レベル',
+      sg_experience: 'SG経験',
+      prev_experience: '以前経験',
+      total_experience: '総経験',
+      responsibility: '担当',
+      major_tech_stack: '専任',
     },
   },
   workHourReport: {
@@ -128,6 +151,7 @@ export default {
       task: '作業',
       auto: '自動設定',
       manual: '手動設定',
+      day: '日付',
       period: '開始時間 ～ 終了時間',
       startTime: '開始時間',
       finishTime: '終了時間',
@@ -141,6 +165,20 @@ export default {
       project_cd: '作番',
       project_name: '作番名',
       task: '作業',
+    },
+    dateClear: '日付をクリア',
+  },
+  workHourReportSetting: {
+    title: '作業実績設定',
+    employee: '職員名',
+    days: {
+      sun: '日曜日',
+      mon: '月曜日',
+      tue: '火曜日',
+      wed: '水曜日',
+      thurs: '木曜日',
+      fri: '金曜日',
+      sat: '土曜日',
     },
   },
   staffCard: {
@@ -166,6 +204,10 @@ export default {
     max: '{field}は{max}文字以内で入力してください',
     date_format: '{field}はYYYY-MM-DD形式で入力してください',
     unique: '{field} は重複しています',
+    dateSmallerThanOrEqual:
+      '{field1}は{field2}と同じか、それ以前の日付でなければなりません',
+    dateLargerThanOrEqual:
+      '{field1}は{field2}と同じか、それ以降の日付でなければなりません',
   },
   showProject: {
     title: '作業実績管理',
@@ -179,7 +221,7 @@ export default {
   },
   workingTime: {
     title1: 'ユーザー管理',
-    title2: 'Working Times',
+    title2: '勤務時間',
     number: 'No',
     staffName: '職員氏名',
     workingHours: '作業時間',
@@ -238,7 +280,26 @@ export default {
       action: '操作',
       must_be_late: '無効',
       month: '月',
-      count: '合計遅延'
+      count: '合計遅延',
     },
+  },
+
+  menPower: {
+    title: '作業実績管理',
+    form: {
+      startDate: '開始日',
+      endDate: '終了日',
+    },
+    table: {
+      cd: '作業番',
+      name: '作業名',
+      men: '工数',
+      hours: '作業時間',
+      days: '日数',
+    },
+  },
+
+  location: {
+    title: '現在所',
   },
 };

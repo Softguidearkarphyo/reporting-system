@@ -52,7 +52,7 @@ onMounted(() => {
   if (storedImg) {
     profileImage.value = storedImg;
   } else {
-    const username = sessionStorage.getItem('username');
+    const username = sessionStorage.getItem('staffname');
     if (username) {
       profileImage.value = profileImgPath(username);
     }
@@ -70,7 +70,6 @@ const EditEmployee = () => {
     router.push(`/reporting-system/edit-members/${memberId}`);
   }
 };
-
 </script>
 <style scoped>
 .v-theme--dark .color {
