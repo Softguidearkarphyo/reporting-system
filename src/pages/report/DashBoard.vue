@@ -119,29 +119,28 @@
           <v-row>
             <v-col cols="6">
               <v-card outlined>
-                <v-card-title>Employees Skill</v-card-title>
+                <v-card-title>Project Men Power</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
-                  <canvas id="leaveChart"></canvas>
+                  <canvas id="menPowerChart"></canvas>
                 </v-card-text>
               </v-card>
             </v-col>
 
             <v-col cols="6">
               <v-card outlined>
-                <v-card-title>Japanese Level </v-card-title>
+                <v-card-title>Employees' Skill</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
-                  <canvas id="fineChart"></canvas>
+                  <canvas id="leaveChart"></canvas>
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
         </v-col>
-
         <v-col cols="4">
-          <v-card outlined>
-            <v-card-title class="text-h6">Employee Dashboard</v-card-title>
+          <v-card class="card-chart" outlined>
+            <v-card-title class="text-h6">Leave Record</v-card-title>
             <v-list>
               <v-list-item v-for="(member, index) in members" :key="index">
                 <v-list-item-avatar>
@@ -158,6 +157,30 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-row>
+            <v-col cols="4">
+              <v-card class="card-chart" outlined>
+                <v-card-title>Japanese Level </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <canvas id="fineChart"></canvas>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="8">
+              <v-card class="card-chart" outlined>
+                <v-card-title></v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <canvas id="fineChart"></canvas>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-main>
   </v-container>
 </template>
@@ -169,9 +192,13 @@ import { useAuthStore } from '@/stores/auth/auth.js';
 import { useMemberStore } from '@/stores/member/member.js';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-const authStore = useAuthStore();
+import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
+import { object } from 'yup';
+
 const { t, locale } = useI18n();
+const authStore = useAuthStore();
 const memberStore = useMemberStore();
+const menPowerStore = useMenPowerStoreStore();
 const staff = authStore.loginStaff;
 const japaneseLevel = ref([]);
 const majorSkill = ref([]);
@@ -179,6 +206,7 @@ const staffId = staff.id;
 const role = staff.sort_key;
 const memberLeave = ref([]);
 const memberFine = ref([]);
+const menPower = ref({});
 
 const fineHeader = computed(() => {
   const lan = locale.value;
@@ -269,6 +297,10 @@ const fetchData = async () => {
     count: item?.count,
     fine: item?.amount,
   }));
+  await menPowerStore.fetchMenPower();
+  menPowerStore.getMenPower.forEach((mp) => {
+    menPower.value[mp.eng_name] = mp.hours;
+  });
 };
 const renderPieChart = (canvasId, labels, data) => {
   const ctx = document.getElementById(canvasId).getContext('2d');
@@ -279,13 +311,6 @@ const renderPieChart = (canvasId, labels, data) => {
       datasets: [
         {
           data,
-          backgroundColor: [
-            '#4B77BE',
-            '#26A65B',
-            '#F4D03F',
-            '#E67E22',
-            '#E74C3C',
-          ],
           borderWidth: 0,
         },
       ],
@@ -366,7 +391,53 @@ const renderChart = (canvasId, labels, data) => {
     },
   });
 };
-
+const renderChart1 = (canvasId, labels, data) => {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      cutout: '50%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
+            padding: 15,
+            font: {
+              size: 12,
+              weight: 'bold',
+            },
+          },
+        },
+        datalabels: {
+          color: '#fff',
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          formatter: (value, context) => {
+            const dataset = context.chart.data.datasets[0].data.map(Number);
+            const total = dataset.reduce((a, b) => a + b, 0);
+            const percentage = ((Number(value) / total) * 100).toFixed(1);
+            return `${percentage}%`;
+          },
+        },
+      },
+    },
+    plugins: [ChartDataLabels],
+  });
+};
 onMounted(async () => {
   await fetchData();
 
@@ -382,9 +453,13 @@ onMounted(async () => {
     (label) => japaneseLevel.value[label]
   );
 
+  const menPowerLabel = Object.keys(menPower.value);
+  const menPowerData = menPowerLabel.map((label) => menPower.value[label]);
+
   if (role === 1) {
     renderChart('leaveChart', skillLabel, skillData);
     renderPieChart('fineChart', JapaneseLevelLabel, japaneseLevelData);
+    renderChart1('menPowerChart', menPowerLabel, menPowerData);
   }
 });
 </script>
@@ -394,8 +469,9 @@ onMounted(async () => {
   background-color: transparent;
 }
 #leaveChart,
-#fineChart {
-  max-width: 580;
-  max-height: 480px;
+#fineChart,
+#menPowerChart {
+  max-width: 380px;
+  max-height: 320px;
 }
 </style>
