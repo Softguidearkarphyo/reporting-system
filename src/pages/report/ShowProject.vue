@@ -5,6 +5,43 @@
       <v-col cols="10" md="10" class="mx-auto">
         <Form ref="formRef" :validation-schema="projectSchema" @submit="submit">
            <div class="d-flex align-center justify-space-evenly">
+            
+                <div class="d-flex align-center">
+                  <Field name="start_date" v-slot="{ field, errorMessage }" v-if="checkboxFlg">
+                    <BaseDatePicker
+                      v-model="field.value"
+                      v-bind="field"
+                      :label="t('showProject.start_date')"
+                      prependIcon="mdi-calendar-month"
+                      :width="'330px'"
+                      :error-messages="errorMessage"
+                      style="flex: none;"
+                    ></BaseDatePicker>
+                  </Field>
+                   <Field name="week_date" v-slot="{ field, errorMessage }" v-if="!checkboxFlg">
+                    <BaseSelect
+                      v-model="field.value"
+                      v-bind="field"
+                      :label="t('showProject.week_date')"
+                      :items="week_date"
+                      item-title="name"
+                      item-value="id"
+                      prependIcon="mdi-calendar-week"
+                      :width="'330px'"
+                      :error-messages="errorMessage"
+                      style="flex: none;"
+                    >
+                    </BaseSelect>
+                  </Field>
+                  <div class="ms-3">
+                      <v-checkbox
+                      v-model="checkboxFlg"
+                      hide-details 
+                      @click="toggleField()" >
+                        <v-tooltip activator="parent" location="top">month filter</v-tooltip>
+                      </v-checkbox>
+                  </div>
+                </div>
                 <Field name="end_date" v-slot="{ field, errorMessage }">
                   <BaseDatePicker
                     v-model="field.value"
@@ -15,21 +52,6 @@
                     :error-messages="errorMessage"
                     style="flex: none;"
                   ></BaseDatePicker>
-                </Field>
-                <Field name="week_date" v-slot="{ field, errorMessage }">
-                  <BaseSelect
-                    v-model="field.value"
-                    v-bind="field"
-                    :label="t('showProject.week_date')"
-                    :items="week_date"
-                    item-title="name"
-                    item-value="id"
-                    prependIcon="mdi-calendar-week"
-                    :width="'330px'"
-                    :error-messages="errorMessage"
-                    style="flex: none;"
-                  >
-                  </BaseSelect>
                 </Field>
                 <div style="width: 300px; flex: none;" class="d-flex justify-space-between" >
                   <BaseButton type="submit" :width="'100px'">
@@ -62,7 +84,7 @@
       >
       </BaseTextField>
       <BaseButton
-        @click="excelExport(items,{ t, locale })"
+        @click="excelExport(items,{ t, locale }, checkboxFlg)"
         :disabled="!items.length"
         style="width: 100px"
       >
@@ -109,15 +131,17 @@ import { useI18n } from 'vue-i18n';
 import { showProjectSchema } from '@/plugins/validations/show-project.js';
 import { week_date } from '@/utils/data';
 import { useShowProject } from '@/stores/projectHour/project-user-hour.js';
+import { startOfMonth as getStartOfMonth, endOfMonth as getEndOfMonth,format } from 'date-fns';
 
 const { t, locale } = useI18n();
-const projectSchema = computed(() => showProjectSchema(t));
-const search = ref('');
-const searchFlg = ref(false);
-const formRef = ref(null);
-const items = ref([]);
-const showProject = useShowProject();
-const initialData = ref(false);
+const checkboxFlg = ref(false)
+const projectSchema = computed(() => showProjectSchema(t, checkboxFlg));
+const search = ref('')
+const searchFlg = ref(false)
+const formRef = ref(null)
+const items = ref([]) 
+const showProject = useShowProject()
+const initialData = ref(false)
 let originalItems = [];
 
 const headers = computed(() => {
@@ -135,7 +159,7 @@ const headers = computed(() => {
   return tmpHeaders;
 });
 
-const projectNameLang = computed((project)=>{
+const projectNameLang = computed(()=>{
   const currentLang = locale.value === 'en';
   return currentLang 
 })
@@ -155,8 +179,7 @@ const submit = async (values) => {
     const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
     const hours = 0.5;
 
-    const weekLabel = weekRangeMap[date];
-
+    const weekLabel = checkboxFlg.value == true ? getMonth(date) : weekRangeMap[date];
     if (!weekGroups[weekLabel]) {
       weekGroups[weekLabel] = { weekLabel, projects: {} };
     }
@@ -219,7 +242,7 @@ function getWeekRangeMap(inputDate, weeks) {
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6); 
 
-        const rangeLabel = `${format(endDate)} to ${format(startDate)}`;
+        const rangeLabel = `${format(endDate)} ~ ${format(startDate)}`;
 
         let loopDate = new Date(endDate);
         while (loopDate >= startDate) {
@@ -237,17 +260,35 @@ function getWeekRangeMap(inputDate, weeks) {
 const clearFormTable = () => {
   formRef.value.resetForm();
   initialData.value = false;
+  checkboxFlg.value = false;
 };
+
+const getMonth = (date)=>{
+  const dateChange = new Date(date)
+  const startOfMonth = format(getStartOfMonth(dateChange), 'yyyy-MM-dd');
+  const lastOfMonth = format(getEndOfMonth(dateChange), 'yyyy-MM-dd');
+  return `${startOfMonth} ~ ${lastOfMonth}`;
+}
+
+const toggleField = ()=>{
+  checkboxFlg.value = !checkboxFlg.value;
+}
 
 watch(
   () => search.value,
   (newVal) => {
     if (newVal) {
-      items.value = originalItems.filter((item) =>
-        Object.values(item).some((val) =>
+      console.log(items.value)
+      const dateSearch = originalItems.filter((item) =>{
+         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(newVal.toLowerCase())
         )
-      );
+        if(!dateSearch){
+          const projectSearch = originalItems.project.filter((e)=> {
+
+          })
+        }
+    })   
     } else {
       items.value = [...originalItems];
     }
