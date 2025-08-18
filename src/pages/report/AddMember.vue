@@ -308,7 +308,6 @@ watch(
       });
       const data = res?.data?.[0];
       existingFileName.value = data?.staff_image_url?.split('/').pop();
-      console.log(existingFileName.value, 'hello world');
       formRef.value?.setValues({
         eng_name: data.eng_name,
         jp_name: data.jp_name,
@@ -328,6 +327,7 @@ watch(
       });
     } else {
       isEditMode.value = false;
+      formRef.value?.resetForm();
     }
   },
   { immediate: true }

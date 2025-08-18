@@ -298,31 +298,35 @@ const skillSheetCreateSchema = computed(() => skillSheetSchema(t));
 watch(
   () => route.params.skillSheetId,
   async (id) => {
-    if (!id) return;
-    const res = await skillSheetStore.fetchSkillSheet({
-      id: parseInt(id),
-      staff: {},
-      staff_project: {},
-      staff_responsibility: {},
-      tech_stack_proficiencies: {},
-    });
-    fetchedSkillSheet.value = res?.data?.[0] ?? null;
-    await nextTick();
-    const data = fetchedSkillSheet.value;
-    formRef.value.setValues({
-      staff_id: data.staff?.id,
-      project: data.staff_project?.map((p) => p.project.id) || [],
-      position: data.position?.id,
-      grade: data.grade?.id,
-      join_date: data.join_date,
-      japanese_level: data.japanese_level?.id,
-      sg_experience: data.sg_experience,
-      prev_experience: data.prev_experience,
-      total_experience: data.total_experience,
-      responsibility:
-        data.staff_responsibility?.map((r) => r.responsibility.id) || [],
-      major_tech_stack_id: data.major_tech_stack?.id,
-    });
+    if (id) {
+      const res = await skillSheetStore.fetchSkillSheet({
+        id: parseInt(id),
+        staff: {},
+        staff_project: {},
+        staff_responsibility: {},
+        tech_stack_proficiencies: {},
+      });
+      fetchedSkillSheet.value = res?.data?.[0] ?? null;
+      await nextTick();
+      const data = fetchedSkillSheet.value;
+      formRef.value.setValues({
+        staff_id: data.staff?.id,
+        project: data.staff_project?.map((p) => p.project.id) || [],
+        position: data.position?.id,
+        grade: data.grade?.id,
+        join_date: data.join_date,
+        japanese_level: data.japanese_level?.id,
+        sg_experience: data.sg_experience,
+        prev_experience: data.prev_experience,
+        total_experience: data.total_experience,
+        responsibility:
+          data.staff_responsibility?.map((r) => r.responsibility.id) || [],
+        major_tech_stack_id: data.major_tech_stack?.id,
+      });
+    } else {
+      formRef.value?.resetForm();
+      fetchedSkillSheet.value = null;
+    }
   },
   { immediate: true }
 );
