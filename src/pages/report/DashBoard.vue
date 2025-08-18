@@ -1,188 +1,180 @@
 <template>
-  <v-container>
-    <v-main v-if="role !== 1" class="pa-6 pt-4">
-      <v-row class="mb-6" justify="space-between">
-        <v-col
-          v-for="(type, i) in leaveTypes"
-          :key="i"
-          cols="12"
-          sm="6"
-          md="2"
-          class="px-1"
-        >
-          <v-card :class="borderClass" class="pa-3" rounded elevation="1">
-            <div class="d-flex align-center">
-              <v-progress-circular
-                :model-value="type.remaining * 12.5"
-                color="primary"
-                size="60"
-                width="6"
-              >
-                {{ type.remaining }}
-              </v-progress-circular>
-              <div class="ml-4">
-                <div class="text-caption">Remaining</div>
-                <div class="text-h6 font-weight-bold">{{ type.name }}</div>
-              </div>
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <!-- Leave Approval + Chart -->
-      <v-row class="mb-6" dense>
-        <v-col cols="12" md="6">
-          <v-card rounded="lg" elevation="1">
-            <v-card-title class="text-h6">Leave Record</v-card-title>
-            <BaseTable
-              :headers="leaveHeader"
-              :items="memberLeave"
-              class="elevation-0"
+  <v-main v-if="role !== 1" class="pa-6 pt-4">
+    <v-row class="mb-6" justify="space-between">
+      <v-col
+        v-for="(type, i) in leaveTypes"
+        :key="i"
+        cols="12"
+        sm="6"
+        md="2"
+        class="px-1"
+      >
+        <v-card :class="borderClass" class="pa-3" rounded elevation="1">
+          <div class="d-flex align-center">
+            <v-progress-circular
+              :model-value="type.remaining * 12.5"
+              color="primary"
+              size="60"
+              width="6"
             >
-              <template #[`item.status`]="{ item }">
-                <v-chip color="warning" text-color="black" size="small" label>{{
-                  item.status
-                }}</v-chip>
-              </template>
-              <template #[`item.action`]="">
-                <v-btn icon size="x-small" color="green">
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
-                <v-btn icon size="x-small" color="red">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-            </BaseTable>
-          </v-card>
-        </v-col>
+              {{ type.remaining }}
+            </v-progress-circular>
+            <div class="ml-4">
+              <div class="text-caption">Remaining</div>
+              <div class="text-h6 font-weight-bold">{{ type.name }}</div>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <v-col cols="12" md="6">
-          <v-card rounded="lg" elevation="1">
-            <v-card-title class="text-h6">Fine Record</v-card-title>
-            <BaseTable :headers="fineHeader" :items="memberFine">
-              <template #[`item.time`]="{ item }">
-                <span
-                  class="time-box d-inline-flex justify-center align-center"
-                >
-                  <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                  {{ item.time }}
-                </span>
-              </template>
-              <template #[`item.fine`]="{ item }">
-                <span
-                  class="money-box d-inline-flex justify-center align-center"
-                >
-                  {{ item.fine + ' Ks' }}
-                </span>
-              </template>
-              <template #[`item.count`]="{ item }">
-                <span
-                  class="time-box d-inline-flex justify-center align-center p-2 rounded-pill"
-                >
-                  {{ item.count }}
-                </span>
-                <v-icon
-                  v-if="item.count > 2"
-                  :style="{
-                    color: item.count > 3 ? '#d00000' : '#ffba08',
-                  }"
-                  class="ms-1"
-                  >{{
-                    item.count > 3
-                      ? 'mdi-fire-alert'
-                      : 'mdi-alert-decagram-outline'
-                  }}
-                </v-icon>
-              </template>
-              <template #[`item.action`]="{ item }">
-                <span class="d-flex justify-left align-center p-0">
-                  <BaseButton
-                    elevation="0"
-                    color=""
-                    class="delete-btn"
-                    size="small"
-                    :add-class="['ma-1']"
-                    @click.stop="showConfirmDelete(item.id)"
-                  >
-                    <v-icon icon="tabler:IconTrash" size="15" />
-                  </BaseButton>
-                </span>
-              </template>
-            </BaseTable>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-main>
-    <v-main v-else class="pa-6 pt-4">
-      <v-row>
-        <v-col cols="8">
-          <v-row>
-            <v-col cols="6">
-              <v-card outlined>
-                <v-card-title>Project Men Power</v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <canvas id="menPowerChart"></canvas>
-                </v-card-text>
-              </v-card>
-            </v-col>
+    <!-- Leave Approval + Chart -->
+    <v-row class="mb-6" dense>
+      <v-col cols="12" md="6">
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6">Leave Record</v-card-title>
+          <BaseTable
+            :headers="leaveHeader"
+            :items="memberLeave"
+            class="elevation-0"
+          >
+            <template #[`item.status`]="{ item }">
+              <v-chip color="warning" text-color="black" size="small" label>{{
+                item.status
+              }}</v-chip>
+            </template>
+            <template #[`item.action`]="">
+              <v-btn icon size="x-small" color="green">
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+              <v-btn icon size="x-small" color="red">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+          </BaseTable>
+        </v-card>
+      </v-col>
 
-            <v-col cols="6">
-              <v-card outlined>
-                <v-card-title>Employees' Skill</v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <canvas id="leaveChart"></canvas>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col cols="4">
-          <v-card class="card-chart" outlined>
-            <v-card-title class="text-h6">Leave Record</v-card-title>
-            <v-list>
-              <v-list-item v-for="(member, index) in members" :key="index">
-                <v-list-item-avatar>
-                  <v-img :src="member.avatar"></v-img>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>{{ member.name }}</v-list-item-title>
-                </v-list-item-content>
-                <v-chip :color="member.teamColor" small>{{
-                  member.team
-                }}</v-chip>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-row>
-            <v-col cols="4">
-              <v-card class="card-chart" outlined>
-                <v-card-title>Japanese Level </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <canvas id="fineChart"></canvas>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <v-col cols="8">
-              <v-card class="card-chart" outlined>
-                <v-card-title></v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                  <canvas id="fineChart"></canvas>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-main>
-  </v-container>
+      <v-col cols="12" md="6">
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6">Fine Record</v-card-title>
+          <BaseTable :headers="fineHeader" :items="memberFine">
+            <template #[`item.time`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center">
+                <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+                {{ item.time }}
+              </span>
+            </template>
+            <template #[`item.fine`]="{ item }">
+              <span class="money-box d-inline-flex justify-center align-center">
+                {{ item.fine + ' Ks' }}
+              </span>
+            </template>
+            <template #[`item.count`]="{ item }">
+              <span
+                class="time-box d-inline-flex justify-center align-center p-2 rounded-pill"
+              >
+                {{ item.count }}
+              </span>
+              <v-icon
+                v-if="item.count > 2"
+                :style="{
+                  color: item.count > 3 ? '#d00000' : '#ffba08',
+                }"
+                class="ms-1"
+                >{{
+                  item.count > 3
+                    ? 'mdi-fire-alert'
+                    : 'mdi-alert-decagram-outline'
+                }}
+              </v-icon>
+            </template>
+            <template #[`item.action`]="{ item }">
+              <span class="d-flex justify-left align-center p-0">
+                <BaseButton
+                  elevation="0"
+                  color=""
+                  class="delete-btn"
+                  size="small"
+                  :add-class="['ma-1']"
+                  @click.stop="showConfirmDelete(item.id)"
+                >
+                  <v-icon icon="tabler:IconTrash" size="15" />
+                </BaseButton>
+              </span>
+            </template>
+          </BaseTable>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-main>
+  <v-main v-else class="pa-6 pt-4">
+    <v-row>
+      <v-col cols="8">
+        <v-row>
+          <v-col cols="6">
+            <v-card outlined>
+              <v-card-title>Project Men Power</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <canvas id="menPowerChart"></canvas>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="6">
+            <v-card outlined>
+              <v-card-title>Employees' Skill</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <canvas id="leaveChart"></canvas>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="4">
+        <v-card class="card-chart" outlined>
+          <v-card-title class="text-h6">Leave Record</v-card-title>
+          <v-list>
+            <v-list-item v-for="(member, index) in members" :key="index">
+              <v-list-item-avatar>
+                <v-img :src="member.avatar"></v-img>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>{{ member.name }}</v-list-item-title>
+              </v-list-item-content>
+              <v-chip :color="member.teamColor" small>{{ member.team }}</v-chip>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="4">
+            <v-card class="card-chart" outlined>
+              <v-card-title>Japanese Level </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <canvas id="fineChart"></canvas>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="8">
+            <v-card class="card-chart" outlined>
+              <v-card-title></v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <canvas id="fineChart"></canvas>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-main>
 </template>
 
 <script setup>

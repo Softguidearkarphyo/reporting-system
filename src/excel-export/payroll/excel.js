@@ -9,6 +9,7 @@ const COLUMNS = [
   'OVER TIME',
   'NET HOUR',
   'LEAVE DAY',
+  'NET AMOUNT',
   'GROSS SALARY',
 ];
 
@@ -55,9 +56,19 @@ const fillData = (sheet, staff, tableStartRow) => {
     sheet.cell(`E${row}`).value(otHour);
     sheet.cell(`F${row}`).formula(`ABS(D${row} - E${row})`);
     sheet.cell(`G${row}`).value(leaveDay);
-
     sheet
       .cell(`H${row}`)
+      .formula(
+        `IF(C${row}="", "", ` +
+          `IF(D${row}=E${row}, "", ` +
+          `IF(D${row}>E${row}, -MROUND((C${row}/22/8)*(D${row}-E${row}), 100), ` +
+          `MROUND((C${row}/22/8)*(E${row}-D${row})*1.5, 100)` +
+          `)` +
+          `))`
+      );
+
+    sheet
+      .cell(`I${row}`)
       .formula(
         `IF(C${row}="", "", MROUND(` +
           `IF(D${row}=E${row}, C${row}, ` +
@@ -80,12 +91,13 @@ const styleSheet = (sheet, lastCol, tableStartRow, lastRow) => {
   const columnWidths = {
     1: 15,
     2: 20,
-    3: 27,
+    3: 12,
     4: 12,
-    5: 12,
-    6: 12,
-    7: 12,
-    8: 27,
+    5: 10,
+    6: 10,
+    7: 10,
+    8: 12,
+    9: 14,
   };
   Object.entries(columnWidths).forEach(([col, width]) => {
     sheet.column(Number(col)).width(width);
