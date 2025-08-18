@@ -74,28 +74,29 @@
           </v-col>
         </v-row>
         <Form
-          ref="formRef"
           :validation-schema="LeaveFormSchema"
+          ref="FormRef"
           @submit="submitLeave"
         >
           <v-row v-if="selectedPotion === 'potions1'" dense>
             <v-col cols="12" md="6">
               <template v-if="multipleLeave">
-                <Field name="start_date">
+                <Field name="leave_date" v-slot="{ field, errorMessage }">
                   <BaseMultDate
-                    v-model="formData.start_date"
+                    v-model="field.value"
                     :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
                     :width="'300px'"
                     :multiple="true"
+                    :error-messages="errorMessage"
                   ></BaseMultDate>
                 </Field>
               </template>
               <template v-else>
-                <Field name="leave_date" v-slot="{ errorMessage }">
+                <Field name="leave_date" v-slot="{ field, errorMessage }">
                   <BaseDatePicker
-                    v-model="formData.leave_date"
+                    v-model="field.value"
                     :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
@@ -120,9 +121,9 @@
                 </Field>
               </template>
               <template v-else>
-                <Field name="duration">
+                <Field name="duration" v-slot="{ field, errorMessage }">
                   <BaseSelect
-                    v-model="formData.duration"
+                    v-model="field.value"
                     :label="t('creatLeave.form.duration')"
                     class="mx-auto"
                     :items="durationHour"
@@ -130,6 +131,7 @@
                     item-title="name"
                     prependIcon="tabler:IconClockQuestion"
                     :width="'300px'"
+                    :error-messages="errorMessage"
                   />
                 </Field>
               </template>
@@ -137,15 +139,16 @@
           </v-row>
           <v-row dense v-if="selectedPotion === 'potions1'">
             <v-col cols="12" md="6">
-              <Field name="reason">
+              <Field name="reason" v-slot="{ field, errorMessage }">
                 <BaseTextField
-                  v-model="formData.reason"
+                  v-model="field.value"
                   :label="t('creatLeave.form.reason')"
                   class="mx-auto"
                   type="text"
                   variant="plain"
                   prependIcon="tabler:IconHelpCircle"
                   :width="'300px'"
+                  :error-messages="errorMessage"
                 ></BaseTextField>
               </Field>
             </v-col>
@@ -157,79 +160,79 @@
                 color="primary"
               ></v-switch>
             </v-col>
-          </v-row>
-          <v-row dense v-if="selectedPotion === 'potions2'">
-            <v-col cols="12" md="6">
-              <Field name="permanent_date" v-slot="{ errorMessage }">
-                <BaseDatePicker
-                  v-model="formData.permanent_date"
-                  :label="t('creatLeave.form.permanent_date')"
-                  class="mx-auto"
-                  prependIcon="tabler:IconCalendarPin"
-                  :error-messages="errorMessage"
-                  :width="'300px'"
-                ></BaseDatePicker
-              ></Field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <BaseButton
-                type="button"
-                @click="calculateLeaves"
-                style="width: 200px"
-                v-if="selectedPotion === 'potions2'"
-              >
-                {{ t('creatLeave.form.calculate') }}
-              </BaseButton>
-            </v-col>
-          </v-row>
-          <Form
-            :validation-schema="LeaveFormSchema"
-            ref="otFormRef"
-            @submit="submitOt"
-          >
-            <v-row v-if="selectedPotion === 'potions3'" dense>
-              <v-col cols="12" md="6">
-                <Field name="ot_date" v-slot="{ errorMessage }">
-                  <BaseDatePicker
-                    v-model="formData.ot_date"
-                    :label="t('creatLeave.form.ot_date')"
-                    class="mx-auto"
-                    prependIcon="tabler:IconCalendarPin"
-                    :width="'300px'"
-                    :error-messages="errorMessage"
-                  ></BaseDatePicker>
-                </Field>
-              </v-col>
-              <v-col cols="12" md="6">
-                <Field name="ot_time" v-slot="{ errorMessage }">
-                  <BaseSelect
-                    v-model="formData.ot_time"
-                    :label="t('creatLeave.form.ot_time')"
-                    class="mx-auto"
-                    :items="durationHour"
-                    item-title="name"
-                    prependIcon="tabler:IconAlarm"
-                    :error-messages="errorMessage"
-                    :width="'300px'"
-                  />
-                </Field>
-              </v-col>
-            </v-row>
-          </Form>
-          <v-row dense>
             <v-col class="d-flex justify-center">
               <BaseButton
                 v-if="selectedPotion === 'potions1'"
                 type="submit"
-                @click="submitLeave"
                 style="width: 200px"
               >
                 {{ t('common.submit') }}
               </BaseButton>
+            </v-col>
+          </v-row>
+        </Form>
+        <v-row dense v-if="selectedPotion === 'potions2'">
+          <v-col cols="12" md="6">
+            <Field name="permanent_date" v-slot="{ errorMessage }">
+              <BaseDatePicker
+                v-model="formData.permanent_date"
+                :label="t('creatLeave.form.permanent_date')"
+                class="mx-auto"
+                prependIcon="tabler:IconCalendarPin"
+                :error-messages="errorMessage"
+                :width="'300px'"
+              ></BaseDatePicker
+            ></Field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <BaseButton
+              type="button"
+              @click="calculateLeaves"
+              style="width: 200px"
+              v-if="selectedPotion === 'potions2'"
+            >
+              {{ t('creatLeave.form.calculate') }}
+            </BaseButton>
+          </v-col>
+        </v-row>
+        <Form
+          :validation-schema="LeaveFormSchema"
+          ref="FormRef"
+          @submit="submitOt"
+        >
+          <v-row v-if="selectedPotion === 'potions3'" dense>
+            <v-col cols="12" md="6">
+              <Field name="ot_date" v-slot="{ field, errorMessage }">
+                <BaseDatePicker
+                  v-model="field.value"
+                  :label="t('creatLeave.form.ot_date')"
+                  class="mx-auto"
+                  prependIcon="tabler:IconCalendarPin"
+                  :width="'300px'"
+                  :error-messages="errorMessage"
+                ></BaseDatePicker>
+              </Field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <Field name="ot_time" v-slot="{ field, errorMessage }">
+                <BaseSelect
+                  v-model="field.value"
+                  :label="t('creatLeave.form.ot_time')"
+                  class="mx-auto"
+                  :items="durationHour"
+                  item-title="name"
+                  prependIcon="tabler:IconAlarm"
+                  :error-messages="errorMessage"
+                  :width="'300px'"
+                />
+              </Field>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col class="d-flex justify-center">
               <BaseButton
                 v-if="selectedPotion === 'potions3'"
-                type="button"
-                @click="submitOt"
+                type="submit"
                 style="width: 200px"
               >
                 {{ t('common.submit') }}
@@ -324,6 +327,7 @@ const leaveRecordStore = useLeaveRecordStore();
 const overTimeStore = useOverTimeStore();
 
 // Ref
+const FormRef = ref([]);
 const selectedPotion = ref('potions1');
 const selectedMemberId = ref(null);
 const isChecked = ref(true);
