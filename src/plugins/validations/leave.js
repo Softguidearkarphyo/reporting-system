@@ -1,8 +1,11 @@
 import { object, string } from 'yup';
 export function leaveSchema(t, checkId = []) {
   return object({
-    leave_type: string().required(
-      t('validation.required', { field: t('creatLeave.form.leave_type') })
+    leave_date: string().required(
+      t('validation.required', { field: t('creatLeave.form.leave_date') })
+    ),
+    duration: string().required(
+      t('validation.required', { field: t('creatLeave.form.duration') })
     ),
     permanent_date: string()
       .required(
@@ -16,10 +19,6 @@ export function leaveSchema(t, checkId = []) {
           return !checkId?.includes(value);
         }
       ),
-
-    reason: string().required(
-      t('validation.required', { field: t('creatLeave.form.reason') })
-    ),
     ot_date: string().required(
       t('validation.required', { field: t('creatLeave.form.ot_date') })
     ),
