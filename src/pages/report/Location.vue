@@ -4,12 +4,12 @@
     <div id="map" style="height: 600px; border-radius: 10px"></div>
     <div class="mt-3 mb-n2">
       <BaseTextField
-          v-model="search"
-          :label="t('common.search')"
-          color="primary"
-          prepend-icon="mdi-magnify"
-        >
-        </BaseTextField>
+        v-model="search"
+        :label="t('common.search')"
+        color="primary"
+        prepend-icon="mdi-magnify"
+      >
+      </BaseTextField>
     </div>
     <!-- Active -->
     <div class="d-flex flex-wrap align-items-center">
@@ -70,30 +70,30 @@
       </div>
     </div>
     <!-- Inactive Staffs -->
-      <div class="d-flex flex-wrap align-items-center">
-        <v-avatar
-          v-for="staff in inactiveStaffs"
-          :key="staff.id"
+    <div class="d-flex flex-wrap align-items-center">
+      <v-avatar
+        v-for="staff in inactiveStaffs"
+        :key="staff.id"
+        color="error"
+        size="40"
+        class="cursor-pointer border-error border-lg ma-2"
+      >
+        <v-img v-if="staff.staff_image_url" :src="staff.staff_image_url" />
+        <v-img
+          v-else
+          class="profileImage"
+          :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)"
+        />
+        <v-tooltip
           color="error"
-          size="40"
-          class="cursor-pointer border-error border-lg ma-2"
+          activator="parent"
+          location="bottom"
+          transition="fade-transition"
         >
-          <v-img v-if="staff.staff_image_url" :src="staff.staff_image_url" />
-          <v-img
-            v-else
-            class="profileImage"
-            :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)"
-          />
-          <v-tooltip
-            color="error"
-            activator="parent"
-            location="bottom"
-            transition="fade-transition"
-          >
-            {{ isJapanese ? staff.jp_name : staff.eng_name }}
-          </v-tooltip>
-        </v-avatar>
-      </div>
+          {{ isJapanese ? staff.jp_name : staff.eng_name }}
+        </v-tooltip>
+      </v-avatar>
+    </div>
   </div>
 </template>
 
@@ -154,7 +154,7 @@ const addMarkers = async () => {
     markers.value = [];
     return;
   }
-  
+
   staffs.value.forEach((staff) => {
     const { lat, lon } = staff?.location || {};
     if (lat && lon) {
@@ -162,7 +162,9 @@ const addMarkers = async () => {
       if (staff.staff_image_url) {
         popupContent = `
       <div style="text-align:center;">
-        <img src="${staff.staff_image_url}" alt="${isJapanese.value ? staff.jp_name : staff.eng_name}" style="width:50px;height:50px;border-radius:50%;">
+        <img src="${staff.staff_image_url}" alt="${
+          isJapanese.value ? staff.jp_name : staff.eng_name
+        }" style="width:50px;height:50px;border-radius:50%;">
         <div>${isJapanese.value ? staff.jp_name : staff.eng_name}</div>
       </div>
     `;
@@ -194,8 +196,7 @@ const goToStaff = (staffId) => {
   const targetMarker = markers
     .getLayers()
     .find(
-      (layer) =>
-        layer instanceof L.Marker && layer.options.staffId === staffId
+      (layer) => layer instanceof L.Marker && layer.options.staffId === staffId
     );
   if (!targetMarker) return;
   map.flyTo(targetMarker.getLatLng(), 16, {

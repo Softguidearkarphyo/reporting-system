@@ -15,9 +15,9 @@ export const useAuthStore = defineStore('auth', () => {
   const staffRole = computed(() => (staff.value ? staff.value.role : ''));
 
   // Actions
-  async function login(username, password, lat, lng) {
+  async function login(username, password, lat, lon) {
     try {
-      const res = await api.post('/login', { username, password, lat, lng });
+      const res = await api.post('/login', { username, password, lat, lon });
       token.value = res.data.token;
       staff.value = res.data.staff;
       localStorage.setItem('token', token.value);
