@@ -213,6 +213,7 @@ export default {
     title: '作業実績管理',
     end_date: '終了日',
     week_date: '週期間',
+    start_date: '開始日',
     table: {
       user_id: '職員',
       user_name: '職員氏名',

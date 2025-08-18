@@ -215,6 +215,7 @@ export default {
     title: 'Work performance management',
     end_date: 'End Date',
     week_date: 'Week Date',
+    start_date: 'Start Date',
     table: {
       user_id: 'UserId',
       user_name: 'User Name',
