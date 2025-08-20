@@ -236,6 +236,7 @@ export default {
     title1: '休暇登録フォーム',
     title2: '休暇計算',
     title3: '残業時間登録',
+    title4: '休暇中',
     options: {
       selection: 'オプションタイプを選択：',
       existing: '既存の従業員用',

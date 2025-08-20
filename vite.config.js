@@ -23,4 +23,23 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 8000,
+    rollupOptions: {
+      output: {
+        // Split vendor code into separate chunks
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('xlsx-populate')) {
+              return 'xlsx'; // heavy Excel lib in its own chunk
+            }
+            if (id.includes('pinia')) {
+              return 'pinia'; // state management separate
+            }
+            return 'vendor'; // everything else
+          }
+        },
+      },
+    },
+  },
 });
