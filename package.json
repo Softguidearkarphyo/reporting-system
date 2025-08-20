@@ -19,6 +19,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "core-js": "^3.8.3",
     "croppie": "^2.6.5",
+    "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
