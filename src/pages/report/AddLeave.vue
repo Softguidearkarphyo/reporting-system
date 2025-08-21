@@ -81,27 +81,29 @@
           <v-row v-if="selectedPotion === 'potions1'" dense>
             <v-col cols="12" md="6">
               <template v-if="multipleLeave">
-                <Field name="leave_date" v-slot="{ field, errorMessage }">
+                <Field name="multi_date" v-slot="{ errorMessage }">
                   <BaseMultDate
-                    v-model="field.value"
+                    :error-messages="errorMessage"
+                    v-model="formData.multi_date"
                     :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
                     :width="'300px'"
                     :multiple="true"
-                    :error-messages="errorMessage"
                   ></BaseMultDate>
                 </Field>
               </template>
               <template v-else>
                 <Field name="leave_date" v-slot="{ field, errorMessage }">
                   <BaseDatePicker
-                    v-model="field.value"
+                    v-bind="field"
+                    v-model="formData.leave_date"
                     :label="t('creatLeave.form.leave_date')"
                     class="mx-auto"
                     prependIcon="tabler:IconCalendarPin"
                     :width="'300px'"
                     :error-messages="errorMessage"
+                    clearable
                   ></BaseDatePicker>
                 </Field>
               </template>
@@ -123,7 +125,8 @@
               <template v-else>
                 <Field name="duration" v-slot="{ field, errorMessage }">
                   <BaseSelect
-                    v-model="field.value"
+                    v-bind="field"
+                    v-model="formData.duration"
                     :label="t('creatLeave.form.duration')"
                     class="mx-auto"
                     :items="durationHour"
@@ -141,7 +144,8 @@
             <v-col cols="12" md="6">
               <Field name="reason" v-slot="{ field, errorMessage }">
                 <BaseTextField
-                  v-model="field.value"
+                  v-bind="field"
+                  v-model="formData.reason"
                   :label="t('creatLeave.form.reason')"
                   class="mx-auto"
                   type="text"
@@ -196,7 +200,7 @@
           </v-col>
         </v-row>
         <Form
-          :validation-schema="LeaveFormSchema"
+          :validation-schema="OtFormSchema"
           ref="FormRef"
           @submit="submitOt"
         >
@@ -204,7 +208,8 @@
             <v-col cols="12" md="6">
               <Field name="ot_date" v-slot="{ field, errorMessage }">
                 <BaseDatePicker
-                  v-model="field.value"
+                  v-bind="field"
+                  v-model="formData.ot_date"
                   :label="t('creatLeave.form.ot_date')"
                   class="mx-auto"
                   prependIcon="tabler:IconCalendarPin"
@@ -216,7 +221,8 @@
             <v-col cols="12" md="6">
               <Field name="ot_time" v-slot="{ field, errorMessage }">
                 <BaseSelect
-                  v-model="field.value"
+                  v-bind="field"
+                  v-model="formData.ot_time"
                   :label="t('creatLeave.form.ot_time')"
                   class="mx-auto"
                   :items="durationHour"
@@ -315,7 +321,7 @@ import { useMemberStore } from '@/stores/member/member.js';
 import { useLeaveStore } from '@/stores/leave/leave.js';
 import { useLeaveRecordStore } from '@/stores/leaveRecord/leaveRecord.js';
 import { useOverTimeStore } from '@/stores/overtime/overtime.js';
-import { leaveSchema } from '@/plugins/validations/leave.js';
+import { leaveSchema, otSchema } from '@/plugins/validations/leave.js';
 import { durationHour } from '@/utils/date.js';
 
 const { t, locale } = useI18n();
@@ -333,12 +339,11 @@ const selectedMemberId = ref(null);
 const isChecked = ref(true);
 const multipleLeave = ref(false);
 const showNewEmployee = ref(false);
-const formRef = ref(null);
 const formData = ref({
   staff_id: '',
   permanent_date: null,
   leave_date: null,
-  start_date: [],
+  multi_date: [],
   duration: '',
   reason: '',
   ot_date: null,
@@ -348,16 +353,10 @@ const formData = ref({
   secondHalfLeave: 0,
 });
 
-// Data
-const checkID = ref([]);
-const leaveRequests = ref([]);
-const leaveRecords = ref([]);
-const overtimes = ref([]);
-
 // Computed
-const LeaveFormSchema = computed(() => leaveSchema(t, checkID.value));
-
-const durationCount = computed(() => formData.value.start_date.length);
+const LeaveFormSchema = computed(() => leaveSchema(t, multipleLeave.value));
+const OtFormSchema = computed(() => otSchema(t));
+const durationCount = computed(() => formData.value.multi_date.length);
 
 const selectedMember = computed(() => {
   if (!memberList.value || !selectedMemberId.value) return null;
@@ -372,7 +371,7 @@ const multiHeaders1 = computed(() => {
   const tmpHeaders = [
     {
       title: t('creatLeave.form.name'),
-      key: 'eng_name',
+      key: 'name',
     },
     {
       title: t('creatLeave.form.leave_type'),
@@ -402,7 +401,7 @@ const multiHeaders2 = computed(() => {
   const tmpHeaders = [
     {
       title: t('creatLeave.form.name'),
-      key: 'eng_name',
+      key: 'name',
     },
     {
       title: t('creatLeave.form.permanent_date'),
@@ -420,7 +419,7 @@ const multiHeaders3 = computed(() => {
   const tmpHeaders = [
     {
       title: t('creatLeave.form.name'),
-      key: 'eng_name',
+      key: 'name',
     },
     {
       title: t('creatLeave.form.ot_date'),
@@ -451,6 +450,32 @@ const memberList = computed(() => {
   );
 });
 
+const leaveRequests = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return (leaveStore.getLeaves ?? []).map((leave) => ({
+    name: isJapanese ? leave.jp_name : leave.eng_name,
+    ...leave,
+  }));
+});
+
+const leaveRecords = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return leaveRecordStore.getLeaveRecord?.map((record) => ({
+    permanent_date: record.permanent_date,
+    name: isJapanese ? record.jp_name : record.eng_name,
+    offDays: record.total_leaves,
+  }));
+});
+
+const overtimes = computed(() => {
+  const isJapanese = locale.value === 'ja';
+  return overTimeStore.getOverTime?.map((ot) => ({
+    name: isJapanese ? ot.jp_name : ot.eng_name,
+    ot_date: ot.ot_date,
+    ot_time: ot.ot_time,
+  }));
+});
+
 // Method
 function onCheckboxChange(value) {
   if (!value) {
@@ -464,28 +489,8 @@ const fetchData = async () => {
   try {
     await memberStore.fetchMember();
     await leaveStore.fetchLeave();
-    const tmpLeave = (leaveStore.getLeaves ?? []).map((leave) => ({
-      eng_name: leave.eng_name,
-      ...leave,
-    }));
-
     await leaveRecordStore.fetchLeaveRecord();
-    const tmpLeaveRecord = leaveRecordStore.getLeaveRecord?.map((record) => ({
-      permanent_date: record.permanent_date,
-      eng_name: record.eng_name,
-      offDays: record.total_leaves,
-    }));
-
     await overTimeStore.fetchOverTime();
-    const tmpOverTime = overTimeStore.getOverTime?.map((ot) => ({
-      eng_name: ot.eng_name,
-      ot_date: ot.ot_date,
-      ot_time: ot.ot_time,
-    }));
-
-    overtimes.value = tmpOverTime || [];
-    leaveRecords.value = tmpLeaveRecord || [];
-    leaveRequests.value = tmpLeave || [];
   } catch (error) {
     console.error('Error fetching members:', error);
   }
@@ -517,26 +522,31 @@ const selectMember = async (id) => {
 };
 
 // Submit Process
-async function submitLeave() {
+async function submitLeave(values, { resetForm }) {
+  console.log(formData.value.multi_date);
+
   try {
     if (selectedMemberId.value) {
       const payload = {
         staff_id: selectedMemberId.value,
-        reason: formData.value.reason,
+        reason: values.reason,
       };
 
       if (multipleLeave.value) {
-        payload.start_date = formData.value.start_date;
+        payload.multi_date = formData.value.multi_date;
         payload.duration = 'Full Day';
       } else {
-        payload.leave_date = formData.value.leave_date;
-        payload.duration = formData.value.duration;
+        payload.leave_date = values.leave_date;
+        payload.duration = values.duration;
       }
+      console.log('submit', payload);
+
       await leaveStore.createLeave(payload);
       fetchData();
+      resetForm();
       formData.value.leave_date = '';
       formData.value.duration = '';
-      formData.value.start_date = '';
+      formData.value.multi_date = '';
       formData.value.reason = '';
     }
   } catch (error) {
@@ -559,15 +569,16 @@ const calculateLeaves = async () => {
   }
 };
 
-const submitOt = async () => {
+const submitOt = async (values, { resetForm }) => {
   try {
     const payload = {
       staff_id: selectedMemberId.value,
-      ot_date: formData.value.ot_date,
-      ot_time: formData.value.ot_time,
+      ot_date: values.ot_date,
+      ot_time: values.ot_time,
     };
     await overTimeStore.createOverTime(payload);
     fetchData();
+    resetForm();
     formData.value.ot_date = '';
     formData.value.ot_time = '';
   } catch (error) {
