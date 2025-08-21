@@ -15,20 +15,26 @@
         dense
       >
       </BaseTextField>
+      <BaseButton
+        @click="exportFile"
+        :disabled="!items.length"
+        style="width: 100px"
+      >
+        Export
+      </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable
-      :headers="headers"
-      :items="items"
-      :items-count="itemsCount"
-      :density="true"
-    >
+    <BaseTable :headers="headers" :items="items" :density="true">
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
             <v-img v-if="item.staff_image_url" :src="item.staff_image_url" />
-            <v-img v-else src="https://randomuser.me/api/portraits/men/5.jpg" />
+            <v-img
+              v-else
+              class="profileImage"
+              :src="profileImgPath(isJapanese ? item.jp_name : item.eng_name)"
+            />
           </v-avatar>
           <div>
             <div class="font-weight-medium">
@@ -93,6 +99,8 @@ import { useMemberStore } from '@/stores/member/member.js';
 import { position } from '@/utils/data';
 import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
+import { exportExcel } from '@/excel-export/payroll/excel';
+import { profileImgPath } from '@/utils/helper';
 
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
@@ -149,17 +157,9 @@ const headers = computed(() => {
     title: header.title.toUpperCase(),
   }));
 });
-// let windowHeight, itemsCount;
-// if (window.innerWidth > 1366) {
-//   windowHeight = window.innerHeight / 1.4;
-//   itemsCount = 10;
-// } else {
-//   windowHeight = window.innerHeight / 1.8;
-//   itemsCount = 5;
-// }
 
 const fetch = async () => {
-  await memberStore.fetchMember();
+  await memberStore.fetchMember({ leave: {}, over_time: {} });
   const tmpMembers = memberStore.getMembers?.map((member) => ({
     ...member,
     position:
@@ -189,7 +189,9 @@ const deleteMember = async () => {
 const pushToEdit = (id) => {
   router.push({ name: 'edit-members', params: { memberId: id } });
 };
-
+const exportFile = () => {
+  exportExcel(items.value);
+};
 watch(
   () => search.value,
   (newVal) => {

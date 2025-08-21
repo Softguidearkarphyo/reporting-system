@@ -238,41 +238,16 @@
             >
             </BaseSelect>
           </Field>
-          <!-- <Field name="project" v-slot="{ field }">
-            <BaseMultiSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMember.form.project')"
-              class="mx-auto"
-              :items="project"
-              prependIcon="mdi-microsoft-teams"
-              :width="'320px'"
-              item-title="name"
-              item-value="id"
-              :disabled="roleId === 2"
-            >
-            </BaseMultiSelect>
-          </Field> -->
         </v-col>
 
         <v-col cols="12" md="6" lg="4">
-          <!-- <v-text-field
-            label="Upload Image"
-            v-model="fileName"
-            prepend-inner-icon="mdi-upload"
-            readonly
-            class="file-upload"
-            width="320px"
-            @click="triggerFileInput"
-          /> -->
+          <!-- <Field name="fileName" v-slot="{ field, errorMessage }"> -->
           <BaseTextField
-            v-model="fileName"
-            v-bind="field"
+            v-model="displayedFileName"
             :label="t('addMember.form.staff_image')"
             class="mx-auto"
             prependIcon="tabler:IconPhotoCheck"
             :width="'320px'"
-            :error-messages="errorMessage"
             :disabled="roleId === 2"
             @click="triggerFileInput"
           >
@@ -284,22 +259,7 @@
             @change="handleFileChange"
             style="display: none"
           />
-          <!-- <Field name="sort_key" v-slot="{ field, errorMessage }">
-            <BaseSelect
-              v-model="field.value"
-              v-bind="field"
-              :label="t('addMember.form.sort_key')"
-              class="mx-auto"
-              :items="sortKey"
-              prependIcon="mdi-sort"
-              :width="'320px'"
-              item-title="value"
-              item-value="id"
-              :error-messages="errorMessage"
-              :disabled="roleId === 2"
-            >
-            </BaseSelect>
-          </Field> -->
+          <!-- </Field> -->
         </v-col>
         <v-col cols="12">
           <div class="d-flex justify-center">
@@ -333,14 +293,21 @@ const authStore = useAuthStore();
 const roleId = computed(() => authStore.staff?.role ?? 0);
 const fileInput = ref(null);
 const fileName = ref('');
+const selectedFile = ref(null);
+const existingFileName = ref(null);
+const newImageSelected = ref(false);
 
 watch(
   () => route.params.memberId,
-  async (val) => {
-    if (val) {
+  async (id) => {
+    if (id) {
       isEditMode.value = true;
-      const res = await memberStore.fetchMember({ id: val });
+      const res = await memberStore.fetchMember({
+        id: parseInt(id),
+        staff_project: {},
+      });
       const data = res?.data?.[0];
+      existingFileName.value = data?.staff_image_url?.split('/').pop();
       formRef.value?.setValues({
         eng_name: data.eng_name,
         jp_name: data.jp_name,
@@ -360,28 +327,18 @@ watch(
       });
     } else {
       isEditMode.value = false;
+      formRef.value?.resetForm();
     }
   },
   { immediate: true }
 );
-
-const submit = async (values) => {
-  let res;
-  if (memberId) {
-    const payload = { ...values, id: memberId };
-    res = await memberStore.updateMember(payload);
+const displayedFileName = computed(() => {
+  if (newImageSelected.value && fileName) {
+    return fileName.value;
   } else {
-    res = await memberStore.createMember(values);
+    return existingFileName.value;
   }
-
-  if (res?.data?.status === 200) {
-    const updatedMember = res.data.staff;
-    if (Number(memberId) === authStore.loginStaff?.id) {
-      authStore.setStaff(updatedMember);
-    }
-    router.push({ name: 'member-lists' });
-  }
-};
+});
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -391,8 +348,44 @@ const handleFileChange = (e) => {
   const file = e.target.files[0];
   if (file) {
     fileName.value = file.name;
-    // Handle file here (emit, save, etc.)
-    console.log('Selected:', file);
+    selectedFile.value = file;
+    newImageSelected.value = true;
+  }
+};
+
+const submit = async (values) => {
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key];
+    if (value !== null && value !== undefined && value !== '') {
+      formData.append(key, value);
+    }
+  }
+
+  formData.append(
+    'staff_image',
+    newImageSelected.value && selectedFile.value
+      ? selectedFile.value
+      : displayedFileName.value
+  );
+
+  if (memberId) {
+    formData.append('id', memberId);
+  }
+  let res;
+  console.log(formData, 'hello');
+  if (memberId) {
+    res = await memberStore.updateMember(formData);
+  } else {
+    res = await memberStore.createMember(formData);
+  }
+
+  if (res?.data?.status === 200) {
+    const updatedMember = res.data.staff;
+    if (Number(memberId) === authStore.loginStaff?.id) {
+      authStore.setStaff(updatedMember);
+    }
+    router.push({ name: 'member-lists' });
   }
 };
 </script>

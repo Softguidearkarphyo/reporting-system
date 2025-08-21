@@ -31,17 +31,33 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" class="d-flex justify-center mb-n3">
-                    <span class="mr-5 mt-4" style="font-size: 1rem">{{
-                      t('workHourReport.form.single')
-                    }}</span>
+                    <span
+                      class="mr-5 mt-4"
+                      :style="{
+                        fontSize: '1rem',
+                        color: !isDayMultiple
+                          ? 'rgb(var(--v-theme-primary))'
+                          : '',
+                        fontWeight: !isDayMultiple ? 800 : '',
+                      }"
+                      >{{ t('workHourReport.form.single') }}</span
+                    >
                     <v-switch
                       v-model="isDayMultiple"
                       color="primary"
                       :value="true"
                     ></v-switch>
-                    <span class="ml-5 mt-4" style="font-size: 1rem">{{
-                      t('workHourReport.form.multiple')
-                    }}</span>
+                    <span
+                      class="ml-5 mt-4"
+                      :style="{
+                        fontSize: '1rem',
+                        color: isDayMultiple
+                          ? 'rgb(var(--v-theme-primary))'
+                          : '',
+                        fontWeight: isDayMultiple ? 800 : '',
+                      }"
+                      >{{ t('workHourReport.form.multiple') }}</span
+                    >
                   </v-col>
                 </v-row>
                 <v-row
@@ -51,6 +67,7 @@
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
+                      :disabled="selectedEmployee.length === 0"
                       @click="applySetting"
                     >
                       <v-icon> tabler:IconPlayerPlay </v-icon>
@@ -62,38 +79,15 @@
                       >
                     </v-btn>
                     <v-btn
-                      v-if="showSavedBookmark"
-                      icon
-                      class="circle-btn"
-                      density="comfortable"
-                      :disabled="
-                        selectedEmployee.length > 1 ||
-                        Object.keys(dateTaskGroups ?? {})?.length === 0
-                      "
-                      @click="discardSetting"
-                    >
-                      <v-icon color="primary">
-                        tabler:IconBookmarksFilled
-                      </v-icon>
-                      <v-tooltip activator="parent" location="bottom">{{
-                        t('common.discardSetting')
-                      }}</v-tooltip>
-                    </v-btn>
-                    <v-btn
-                      v-else
                       icon
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
-                      :disabled="
-                        selectedEmployee.length > 1 ||
-                        Object.keys(dateTaskGroups ?? {})?.length === 0
-                      "
-                      @click="saveSetting"
+                      @click="viewSetting"
                     >
-                      <v-icon> tabler:IconBookmarks </v-icon>
+                      <v-icon> tabler:IconSettings </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
-                        t('common.saveSetting')
+                        t('common.viewSetting')
                       }}</v-tooltip>
                     </v-btn>
                     <v-btn
@@ -101,10 +95,11 @@
                       color="primary"
                       class="circle-btn"
                       density="comfortable"
+                      @click="clearDates"
                     >
-                      <v-icon> tabler:IconCloudDown </v-icon>
+                      <v-icon> tabler:IconTrash </v-icon>
                       <v-tooltip activator="parent" location="bottom">{{
-                        t('common.download')
+                        t('workHourReport.dateClear')
                       }}</v-tooltip>
                     </v-btn>
                   </v-col>
@@ -117,6 +112,7 @@
                       name="employee"
                       v-slot="{ field: { value, ...field }, errorMessage }"
                     >
+                      <span class="d-none">{{ value }}</span>
                       <BaseAutoComplete
                         v-if="role === ADMIN"
                         v-model="selectedEmployee"
@@ -313,23 +309,27 @@
             :value="index"
           >
             <ParentCard>
-              <h3 class="color-primary text-center">
+              <h3 class="color-primary text-center mb-4">
                 {{ selectedIsoDate }}
               </h3>
 
               <BaseTable
                 :headers="headers"
                 :items="dateTaskGroups?.[selectedIsoDate]"
-                :items-count="itemsCount"
-                :style="{ minHeight: windowHeight }"
                 :pagination="false"
-                density="compact"
                 style="width: 92%"
                 class="mx-auto dense-table"
               >
-              </BaseTable> </ParentCard
-          ></v-carousel-item> </v-carousel
-      ></v-col>
+                <template #[`item.period`]="{ item }">
+                  <span class="period-box">
+                    {{ format12Hour(item.period) }}
+                  </span>
+                </template>
+              </BaseTable>
+            </ParentCard></v-carousel-item
+          >
+        </v-carousel></v-col
+      >
     </v-row>
 
     <BaseConfirmDelete
@@ -349,11 +349,19 @@ import { useReportingStore } from '@/stores/reporting/reporting.js';
 import { getReportingSchema } from '@/plugins/validations/reporting.js';
 import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
-import { changeDateTimeZone } from '@/utils/helper';
+import {
+  changeDateTimeZone,
+  generatePeriods,
+  generateExtraPeriods,
+  format12Hour,
+  fillPeriods,
+} from '@/utils/helper';
+import { useRouter } from 'vue-router';
 
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const reportingStore = useReportingStore();
+const router = useRouter();
 const role = authStore.staffRole;
 const staff = authStore.loginStaff;
 const staffName = computed(() =>
@@ -365,7 +373,6 @@ const reportingSchema = computed(() =>
 const formRef = ref(null);
 const timeSelectionMode = ref(0);
 const selectedDates = ref([]);
-const isEditMode = ref(false);
 const search = ref('');
 const warnDateSelection = ref(false);
 const deleteTarget = ref(undefined);
@@ -382,17 +389,6 @@ const selectedEmployeeInfo = computed(() => {
   } else {
     return employeeItems.value;
   }
-});
-const showSavedBookmark = computed(() => {
-  if (role === ADMIN) {
-    return (
-      selectedEmployeeInfo.value?.length > 0 &&
-      selectedEmployeeInfo.value?.every(
-        (employee) => employee.task_performance_setting?.length > 0
-      )
-    );
-  }
-  return selectedEmployeeInfo.value?.[0]?.task_performance_setting?.length > 0;
 });
 const selectedPeriod = ref([1, 2]);
 const isDayMultiple = ref(true);
@@ -454,14 +450,6 @@ const headers = computed(() => {
     },
   ];
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const fetch = async () => {
   formRef.value?.resetForm();
@@ -487,6 +475,9 @@ const selectPreviousOfficeDays = () => {
     }
   }
   selectedDates.value = result.reverse();
+};
+const clearDates = () => {
+  selectedDates.value = [];
 };
 const getList = async () => {
   const memberPayload = {
@@ -529,46 +520,14 @@ const getList = async () => {
     return a.sort_key - b.sort_key;
   });
   employeeItems.value = [...tmpMembers];
+  selectedEmployee.value = [staff.id];
+  await nextTick();
+  selectedPeriod.value = [1, 2];
+  formRef.value?.setValues({
+    employee: selectedEmployee.value,
+    period: selectedPeriod.value,
+  });
   groupDates();
-};
-const generatePeriods = (startTime, endTime) => {
-  const slots = [];
-  let id = 1;
-  const [startHour, startMin] = startTime.split(':').map(Number);
-  const [endHour, endMin] = endTime.split(':').map(Number);
-  const start = new Date();
-  start.setHours(startHour, startMin, 0, 0);
-  const end = new Date();
-  end.setHours(endHour, endMin, 0, 0);
-  end.setMinutes(end.getMinutes() - 30);
-  while (start <= end) {
-    let hours = start.getHours();
-    const minutes = start.getMinutes().toString().padStart(2, '0');
-    const seconds = start.getSeconds().toString().padStart(2, '0');
-    hours = hours % 12 || 12;
-    hours = hours.toString().padStart(2, '0');
-    slots.push(`${hours}:${minutes}:${seconds}`);
-    start.setMinutes(start.getMinutes() + 30);
-  }
-  return slots;
-};
-const generateExtraPeriods = (startTime, hours) => {
-  const slots = [];
-  const [startHour, startMin] = startTime.split(':').map(Number);
-  const start = new Date();
-  start.setHours(startHour, startMin, 0, 0);
-  start.setMinutes(start.getMinutes() + 30);
-  const end = new Date(start.getTime() + (hours - 0.5) * 60 * 60 * 1000);
-  while (start <= end) {
-    let hours = start.getHours();
-    const minutes = start.getMinutes().toString().padStart(2, '0');
-    const seconds = start.getSeconds().toString().padStart(2, '0');
-    hours = hours % 12 || 12;
-    hours = hours.toString().padStart(2, '0');
-    slots.push(`${hours}:${minutes}:${seconds}`);
-    start.setMinutes(start.getMinutes() + 30);
-  }
-  return slots;
 };
 const submit = async (values) => {
   if (selectedIsoDates.value?.length === 0) {
@@ -658,6 +617,10 @@ const groupDates = () => {
     },
     {}
   );
+  Object.keys(dateTaskGroups.value).forEach((date) => {
+    dateTaskGroups.value[date].sort((a, b) => a.period.localeCompare(b.period));
+  });
+  dateTaskGroups.value = fillPeriods(dateTaskGroups.value);
   const lastDate = isDayMultiple.value
     ? selectedDates.value[selectedDates.value?.length - 1]
     : selectedDates.value;
@@ -669,8 +632,6 @@ const groupDates = () => {
   }
 };
 const applySetting = async () => {
-  console.log(selectedEmployeeInfo.value);
-  console.log(selectedIsoDates.value);
   const settings = [];
   selectedEmployeeInfo.value?.forEach((info) => {
     selectedIsoDates.value?.forEach((dateStr) => {
@@ -729,6 +690,9 @@ const discardSetting = async () => {
   });
   await getList();
 };
+const viewSetting = async () => {
+  router.push({ name: 'reporting-setting' });
+};
 watch(
   () => formRef.value?.values?.project,
   (val) => {
@@ -778,11 +742,13 @@ watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
   position: absolute !important;
   top: 15px !important;
   left: 15px !important;
+  color: rgb(var(--v-theme-primary));
 }
 ::v-deep(.v-window__right) {
   position: absolute;
   top: 15px !important;
   right: 15px !important;
+  color: rgb(var(--v-theme-primary));
 }
 /* .v-tooltip > ::v-deep(.v-overlay__content) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;

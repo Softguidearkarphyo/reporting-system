@@ -108,7 +108,13 @@ const handleLogin = async () => {
   apiErrors.username = '';
   apiErrors.password = '';
   try {
-    await authStore.login(username.value, password.value);
+    const [lat, lon] = await getCurrentPosition();
+    await authStore.login(
+      username.value,
+      password.value,
+      lat,
+      lon
+    );
     router.push('/reporting-system/dashboard');
   } catch (e) {
     if (e.response?.status === 422) {
@@ -131,6 +137,22 @@ const handleLogin = async () => {
     } else {
       error.value = 'Unexpected login error';
     }
+  }
+};
+
+const getCurrentPosition = async () => {
+  try {
+    let lat, lon = 0;
+    const response = await axios.get(`http://ip-api.com/json`);
+      if (response.data) {
+        lat = response.data.lat || 0;
+        lon = response.data.lon || 0;
+      }
+    return [lat, lon];
+
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    return [0, 0];
   }
 };
 </script>

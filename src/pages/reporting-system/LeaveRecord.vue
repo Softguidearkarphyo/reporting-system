@@ -1,50 +1,31 @@
 <template>
-  <v-container fluid class="pa-0">
-    <!-- Top Navigation -->
-    <v-app-bar color="white" elevation="1">
-      <v-row class="w-100 align-center px-4">
-        <v-col cols="auto">
-          <v-avatar size="36" color="yellow">
-            <v-icon>mdi-briefcase-clock</v-icon>
-          </v-avatar>
-        </v-col>
-        <v-col>
-          <div class="font-weight-bold">Leave Management System</div>
-        </v-col>
-        <v-col class="d-flex justify-end">
-          <v-btn color="primary" class="text-white">Apply Leave</v-btn>
-        </v-col>
-      </v-row>
-    </v-app-bar>
-
-    <!-- Tabs -->
-    <v-tabs background-color="white" class="px-4" v-model="tab">
-      <v-tab>Dashboard</v-tab>
-      <v-tab>Leave Management</v-tab>
-      <v-tab>Policy Management</v-tab>
-    </v-tabs>
-
+  <v-container>
     <v-main class="pa-6 pt-4">
       <!-- Leave Availability Cards -->
       <v-row class="mb-6" justify="space-between">
-        <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2">
-          <v-card
-            :class="borderClass"
-            style="padding: 10px"
-            rounded="lg"
-            elevation="1"
-          >
-            <div class="text-caption">Remaining</div>
-            <div class="text-h6 font-weight-bold">{{ type.name }}</div>
-            <v-progress-circular
-              :model-value="type.remaining * 12.5"
-              color="primary"
-              size="60"
-              width="6"
-              class="mt-3"
-            >
-              {{ type.remaining }}
-            </v-progress-circular>
+        <v-col
+          v-for="(type, i) in leaveTypes"
+          :key="i"
+          cols="12"
+          sm="6"
+          md="2"
+          class="px-1"
+        >
+          <v-card :class="borderClass" class="pa-3" rounded elevation="1">
+            <div class="d-flex align-center">
+              <v-progress-circular
+                :model-value="type.remaining * 12.5"
+                color="primary"
+                size="60"
+                width="6"
+              >
+                {{ type.remaining }}
+              </v-progress-circular>
+              <div class="ml-4">
+                <div class="text-caption">Remaining</div>
+                <div class="text-h6 font-weight-bold">{{ type.name }}</div>
+              </div>
+            </div>
           </v-card>
         </v-col>
       </v-row>
@@ -91,7 +72,7 @@
       </v-row>
 
       <!-- Leave Calendar -->
-      <v-card rounded="lg" elevation="1">
+      <!-- <v-card rounded="lg" elevation="1">
         <v-card-title class="text-h6 d-flex justify-space-between">
           <div>Leave Calendar</div>
           <div class="text-caption text-grey">July 2023</div>
@@ -127,7 +108,7 @@
             </v-col>
           </v-row>
         </v-card-text>
-      </v-card>
+      </v-card> -->
     </v-main>
   </v-container>
 </template>

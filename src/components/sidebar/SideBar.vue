@@ -59,7 +59,6 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { ADMIN } from '@/utils/constant';
 import { useDisplay } from 'vuetify';
-
 const display = useDisplay();
 const { t } = useI18n();
 const authStore = useAuthStore();
@@ -86,11 +85,15 @@ const navbars = computed(() => [
     path: '/reporting-system/leave-records',
     icon: 'tabler:IconFileReport',
   },
-  {
-    title: t('sidebar.employeecompetency'),
-    path: '/reporting-system/employee-competency',
-    icon: 'tabler:IconAward',
-  },
+  ...(role.value === ADMIN
+    ? [
+        {
+          title: t('sidebar.employeecompetency'),
+          path: '/reporting-system/employee-competency',
+          icon: 'tabler:IconAward',
+        },
+      ]
+    : []),
   {
     title: t('sidebar.reporting'),
     path: '/reporting-system/reporting',
@@ -119,10 +122,15 @@ const settings = computed(() => [
     path: '/reporting-system/show-men-powers',
     icon: 'tabler:IconUserHexagon',
   },
+  // {
+  //   title: t('sidebar.sixmonthssummary'),
+  //   path: '/reporting-system/show-project-date',
+  //   icon: 'tabler:IconHexagonNumber6',
+  // },
   {
-    title: t('sidebar.sixmonthssummary'),
-    path: '/reporting-system/show-project-date',
-    icon: 'tabler:IconHexagonNumber6',
+    title: t('sidebar.location'),
+    path: '/reporting-system/locations',
+    icon: 'tabler:IconMapPin',
   },
   {
     title: t('sidebar.newproject'),

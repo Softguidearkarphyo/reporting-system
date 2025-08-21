@@ -13,7 +13,7 @@
         v-bind="{ ...activatorProps, ...$attrs }"
         :model-value="formattedValue"
         @update:model-value="$emit('update:modelValue', $event)"
-        :style="{ width: textFieldWidth }"
+        :style="{ width }"
         :label="label"
         readonly
         :disabled="disabled"
@@ -54,10 +54,6 @@ const props = defineProps({
     type: String,
     default: '310px',
   },
-  textWidth: {
-    type: String,
-    default: '',
-  },
   width: {
     type: String,
     default: '400px',
@@ -90,12 +86,18 @@ const emit = defineEmits(['update:modelValue']);
 const menu = ref(false);
 const internalValue = ref(null);
 
-const textFieldWidth = computed(() => props.textWidth || props.width);
-
 const formattedValue = computed(() => {
-  if (!props.modelValue) return '';
-  if (props.multiple && Array.isArray(props.modelValue)) {
-    return props.modelValue.join(', ');
+  if (
+    !props.modelValue ||
+    !Array.isArray(props.modelValue) ||
+    props.modelValue.length === 0
+  ) {
+    return '';
+  }
+  if (props.modelValue) {
+    const length = props.modelValue.length;
+    if (length === 1) return props.modelValue[0];
+    return `${props.modelValue[0]} (+${length - 1} more)`;
   }
   return props.modelValue;
 });
@@ -123,7 +125,6 @@ function onDateSelected(val) {
   } else {
     emit('update:modelValue', formatDate(val));
   }
-  menu.value = false;
 }
 
 function formatDate(date) {

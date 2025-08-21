@@ -15,14 +15,15 @@ export const useAuthStore = defineStore('auth', () => {
   const staffRole = computed(() => (staff.value ? staff.value.role : ''));
 
   // Actions
-  async function login(username, password) {
+  async function login(username, password, lat, lon) {
     try {
-      const res = await api.post('/login', { username, password });
+      const res = await api.post('/login', { username, password, lat, lon });
       token.value = res.data.token;
       staff.value = res.data.staff;
       localStorage.setItem('token', token.value);
       sessionStorage.setItem('staffname', staff.value.eng_name);
-      const profileImg = profileImgPath(staff.value.eng_name);
+      const profileImg =
+        staff.value?.staff_image_url || profileImgPath(staff.value.eng_name);
       sessionStorage.setItem('profileImg', profileImg);
       sessionStorage.setItem('role', staff.value.role);
     } catch (error) {

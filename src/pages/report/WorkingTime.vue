@@ -6,39 +6,40 @@
         <Form
           ref="formRef"
           :validation-schema="searchWithDateSchema"
-          @submit="filterByDate">
+          @submit="filterByDate"
+        >
           <div class="d-flex flex-wrap align-center justify-space-around">
-              <Field name="start_date" v-slot="{ field, errorMessage }">
-                <BaseDatePicker
-                  v-model="field.value"
-                  v-bind="field"
-                  :label="t('workingTime.start_date')"
-                  :width="'400px'"
-                  :error-messages="errorMessage"
-                  prependIcon="mdi-calendar-month"
-                  style="flex: none"
-                ></BaseDatePicker>
-              </Field>
-              <Field name="end_date" v-slot="{ field, errorMessage }">
-                <BaseDatePicker
-                  v-model="field.value"
-                  v-bind="field"
-                  :label="t('workingTime.end_date')"
-                  :width="'400px'"
-                  :error-messages="errorMessage"
-                  prependIcon="mdi-calendar-month"
-                  style="flex: none"
-                ></BaseDatePicker>
-              </Field>
-              <BaseButton type="submit" :width="'200px'" class="mx-6">{{
-                t('common.search')
-              }}</BaseButton>
-              <BaseButton :width="'200px'"
-                >{{t('common.excel')}}</BaseButton
-              >
-              <BaseButton :width="'200px'" @click="clearFormTable()"
-                >{{t('common.clear')}}</BaseButton
-              >
+            <Field name="start_date" v-slot="{ field, errorMessage }">
+              <BaseDatePicker
+                v-model="field.value"
+                v-bind="field"
+                :label="t('workingTime.start_date')"
+                :width="'400px'"
+                :error-messages="errorMessage"
+                prependIcon="mdi-calendar-month"
+                style="flex: none"
+              ></BaseDatePicker>
+            </Field>
+            <Field name="end_date" v-slot="{ field, errorMessage }">
+              <BaseDatePicker
+                v-model="field.value"
+                v-bind="field"
+                :label="t('workingTime.end_date')"
+                :width="'400px'"
+                :error-messages="errorMessage"
+                prependIcon="mdi-calendar-month"
+                style="flex: none"
+              ></BaseDatePicker>
+            </Field>
+            <BaseButton type="submit" :width="'200px'" class="mx-6">{{
+              t('common.search')
+            }}</BaseButton>
+            <BaseButton :width="'200px'" @click="clearFormTable()">{{
+              t('common.clear')
+            }}</BaseButton>
+            <BaseButton :width="'200px'" @click="excelExport()">{{
+              t('common.excel')
+            }}</BaseButton>
           </div>
         </Form>
       </v-col>
@@ -59,14 +60,14 @@
       </div>
     </div>
     <ParentCard>
-      <BaseTable
-        :headers="headers"
-        :style="{ minHeight: windowHeight }"
-        :items-count="itemsCount"
-        :items="items"
-      >
+      <BaseTable :headers="headers" :items="items">
         <template #[`item.periods`]="{ item }">
-          <span>{{ item.periods[0] }}  {{ t('workingTime.hour') }} {{ item.periods[1] }}  {{ t('workingTime.minutes') }}</span>
+          <span
+            >{{ item.periods[0] }} {{ t('workingTime.hour') }}
+            {{
+              item.periods[1] == 5 ? '30 ' + t('workingTime.minutes') : ''
+            }}</span
+          >
         </template>
       </BaseTable>
     </ParentCard>
@@ -76,17 +77,15 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { Form, Field } from 'vee-validate';
-import BaseButton from '../../components/bases/BaseButton.vue';
-import BaseTitle from '../../components/bases/BaseTitle.vue';
-import BaseTable from '../../components/bases/BaseTable.vue';
 import { dateSchema } from '@/plugins/validations/working-time.js';
 import { useReportingStore } from '@/stores/reporting/reporting.js';
+import XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
 
 const reportingStore = useReportingStore();
 const { t, locale } = useI18n();
 const formRef = ref(null);
 const search = ref('');
-const initialData = ref(false)
+const initialData = ref(false);
 let originalItems = [];
 const items = ref(null);
 const searchWithDateSchema = computed(() => dateSchema(t));
@@ -104,69 +103,105 @@ const headers = computed(() => {
   ];
   return tmpHeaders;
 });
-let windowHeight, itemsCount;
-if (window.innerWidth > 1366) {
-  windowHeight = window.innerHeight / 1.4;
-  itemsCount = 10;
-} else {
-  windowHeight = window.innerHeight / 1.8;
-  itemsCount = 5;
-}
 
 const filterByDate = async (values) => {
   try {
-  const workTimes = await reportingStore.fetchWorkTime(values)
-  initialData.value = workTimes.data.length === 0 ? false : true;
-  const staffPeriods = {};
+    const workTimes = await reportingStore.fetchWorkTime(values);
+    initialData.value = workTimes.data.length === 0 ? false : true;
+    const staffPeriods = {};
 
-  workTimes.data.forEach(entry => {
-    const staffId = entry.staff_id;
-    const jp_name = entry.jp_name;
-    const eng_name = entry.eng_name;
-    const minutes = timeToMinutes(entry.periods);
+    workTimes.data.forEach((entry) => {
+      const staffId = entry.staff_id;
+      const jp_name = entry.jp_name;
+      const eng_name = entry.eng_name;
+      const hours = +0.5;
 
-    if (!staffPeriods[staffId]) {
-      staffPeriods[staffId] = {
-        staff_id: staffId,
-        eng_name: eng_name,
-        jp_name: jp_name,
-        totalMinutes: 0,
-      };
-    }
+      if (!staffPeriods[staffId]) {
+        staffPeriods[staffId] = {
+          staff_id: staffId,
+          eng_name: eng_name,
+          jp_name: jp_name,
+          totalHour: 0,
+        };
+      }
+      staffPeriods[staffId].totalHour += hours;
+    });
 
-    staffPeriods[staffId].totalMinutes += minutes;
-  });
+    const result = Object.values(staffPeriods).map((staff) => ({
+      staff_id: staff.staff_id,
+      eng_name: staff.eng_name,
+      jp_name: staff.jp_name,
+      periods: hourMinConvert(staff.totalHour),
+    }));
 
-  const result = Object.values(staffPeriods).map((staff) => ({
-    staff_id: staff.staff_id,
-    eng_name: staff.eng_name,
-    jp_name: staff.jp_name,
-    periods: minutesToTimeStr(staff.totalMinutes),
-  }));
+    console.log(result);
 
-  items.value = result;
-  originalItems = [...result];
-
+    items.value = result;
+    originalItems = [...result];
   } catch (error) {
     console.error('Error fetching members:', error);
   }
 };
 
-function timeToMinutes(timeStr) {
-  const [hours, minutes, seconds] = timeStr.split(':').map(Number);
-  return hours * 60 + minutes;
-}
-
-function minutesToTimeStr(totalMinutes) {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  const hourArr = [hours, minutes];
-  return hourArr
+function hourMinConvert(hour) {
+  if (hour.toString().includes('.')) {
+    const arr = hour.toString().split('.');
+    return arr;
+  }
+  return [hour];
 }
 
 const clearFormTable = () => {
   formRef.value.resetForm();
-  initialData.value = false
+  initialData.value = false;
+};
+
+const excelExport = () => {
+  XlsxPopulate.fromBlankAsync().then((workbook) => {
+    const sheet = workbook.sheet(0);
+    const isENglish = locale.value === 'en';
+    // Set headers with styles and width
+    sheet
+      .cell('A1')
+      .value(t('common.no'))
+      .style({ bold: true, fill: 'D9E1F2' });
+    sheet
+      .cell('B1')
+      .value(t('workingTime.staffName'))
+      .style({ bold: true, fill: 'D9E1F2' });
+    sheet
+      .cell('C1')
+      .value(t('workingTime.workingHours'))
+      .style({ bold: true, fill: 'D9E1F2' });
+    sheet.column(1).width(10);
+    sheet.column(2).width(30);
+    sheet.column(3).width(30);
+
+    // Fill in data
+    items.value.forEach((e, i) => {
+      const row = i + 2;
+      sheet.cell(`A${row}`).value(i + 1);
+      sheet.cell(`B${row}`).value(isENglish ? e.eng_name : e.jp_name);
+      sheet
+        .cell(`C${row}`)
+        .value(
+          e.periods[0] +
+            t('workingTime.hour') +
+            ' ' +
+            (e.periods[1] ? e.periods[1] + t('workingTime.hour') : '')
+        );
+    });
+
+    // Export file
+    workbook.outputAsync().then((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${t('workingTime.title2')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  });
 };
 
 watch(
