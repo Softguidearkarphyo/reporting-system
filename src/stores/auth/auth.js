@@ -4,66 +4,56 @@ import api from '@/plugins/axios';
 import { profileImgPath } from '@/utils/helper';
 
 export const useAuthStore = defineStore('auth', () => {
-  // State
-  const token = ref(localStorage.getItem('token') || null);
   const staff = ref(null);
 
-  // Getters
   const loginStaff = computed(() => staff.value);
-  const isLoggedIn = computed(() => !!token.value);
+  const isLoggedIn = computed(() => !!staff.value);
   const staffName = computed(() => (staff.value ? staff.value.name : ''));
   const staffRole = computed(() => (staff.value ? staff.value.role : ''));
 
-  // Actions
-  async function login(username, password, lat, lon) {
+
+  async function login(username, password) {
     try {
-      const res = await api.post('/login', { username, password, lat, lon });
-      token.value = res.data.token;
+      await api.get('../sanctum/csrf-cookie');
+      const res = await api.post('/login', { username, password });
       staff.value = res.data.staff;
-      localStorage.setItem('token', token.value);
-      sessionStorage.setItem('staffname', staff.value.eng_name);
-      const profileImg =
-        staff.value?.staff_image_url || profileImgPath(staff.value.eng_name);
+      const profileImg = staff.value?.staff_image_url || profileImgPath(staff.value.eng_name);
+      localStorage.setItem('token', res.data.token); 
       sessionStorage.setItem('profileImg', profileImg);
-      sessionStorage.setItem('role', staff.value.role);
+      localStorage.setItem('staff-role', staff.value.role);
+      return staff.value;
     } catch (error) {
-      token.value = null;
-      staff.value = null;
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('staffname');
-      sessionStorage.removeItem('profileImg');
-      sessionStorage.removeItem('role');
       throw error;
     }
   }
 
   async function fetchStaff() {
     try {
-      const res = await api.get('/user');
+      const res = await api.get('/reporting-system/staff/get'); 
       staff.value = res.data;
+      return staff.value;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        staff.value = null;
+        localStorage.removeItem('token');
+        localStorage.removeItem('staff-role');
+      }
+      throw error;
+    }
+  }
+
+  async function logout() {
+    try {
+      staff.value = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('staff-role');
+      sessionStorage.removeItem('profileImg');
     } catch (error) {
       throw error;
     }
   }
 
-  async function setStaff(newStaff) {
-    staff.value = newStaff;
-    sessionStorage.setItem('staffname', staff.value.eng_name);
-    const profileImg = profileImgPath(staff.value.eng_name);
-    sessionStorage.setItem('profileImg', profileImg);
-    sessionStorage.setItem('role', staff.value.role);
-  }
-
-  function logout() {
-    token.value = null;
-    staff.value = null;
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('staffname');
-    sessionStorage.removeItem('profileImg');
-  }
-
   return {
-    token,
     staff,
     loginStaff,
     isLoggedIn,
@@ -71,7 +61,6 @@ export const useAuthStore = defineStore('auth', () => {
     staffRole,
     login,
     fetchStaff,
-    logout,
-    setStaff,
+    logout
   };
 });

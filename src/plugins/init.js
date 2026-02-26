@@ -3,11 +3,11 @@ import { profileImgPath } from '@/utils/helper';
 
 export async function initPlugin() {
   const authStore = useAuthStore();
-  await authStore.fetchStaff();
-  if (authStore.staff?.id) {
-    const staff = authStore.staff;
-    sessionStorage.setItem('staffname', staff.eng_name);
-    const profileImg = staff.staff_image_url || profileImgPath(staff.eng_name);
-    sessionStorage.setItem('profileImg', profileImg);
+  if (localStorage.getItem('token')) {
+    try {
+      await authStore.fetchStaff();
+    } catch (error) {
+      console.warn('Initial auth fetch failed:', error);
+    }
   }
 }
