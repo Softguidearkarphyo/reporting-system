@@ -8,6 +8,7 @@ export async function initPlugin() {
       await authStore.fetchStaff();
     } catch (error) {
       console.warn('Initial auth fetch failed:', error);
+      await authStore.logout();
     }
   }
 }

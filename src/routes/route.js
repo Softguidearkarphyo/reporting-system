@@ -22,13 +22,17 @@ import MemberSkill from '../pages/report/MemeberSkill.vue';
 import AddSkill from '../pages/report/AddSkill.vue';
 import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
-import AuthPage from '../pages/authentication/Auth.vue';
 
 const routes = [
   {
     path: '/',
+    name: 'home',
+    component: Login,
+  },
+  {
+    path: '/login',
     name: 'login',
-    component: AuthPage,
+    component: Login,
   },
   {
     path: '/reporting-system/dashboard',
@@ -184,13 +188,9 @@ const router = createRouter({
 // ✅ login guard
 router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('token');
-  if (to.path === '/login' && !isLoggedIn) {
-    next('/');
-  }
-  // else if ((to.path === '/' || to.path === '/login') && isLoggedIn) {
-  //   next('/reporting-system/dashboard');
-  // }
-  else if (to.meta.requiresAuth && !isLoggedIn) {
+  if (to.path === '/login' && isLoggedIn) {
+    next('/reporting-system/dashboard');
+  } else if (to.meta.requiresAuth && !isLoggedIn) {
     next('/');
   } else {
     next();

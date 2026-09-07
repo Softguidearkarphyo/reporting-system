@@ -1,8 +1,8 @@
 <template>
   <Login />
 </template>
-<script>
-export default {};
+<script setup>
+import Login from '@/components/authentication/Login.vue';
 </script>
 
 <style></style>

@@ -24,32 +24,34 @@
         rounded
       ></v-list-item>
 
-      <v-list-group v-if="role === ADMIN">
-        <template v-slot:activator="{ props }">
-          <v-list-item
-            v-bind="props"
-            prepend-icon="tabler:IconSettings"
-            :title="$t('sidebar.adminsetting')"
-            class="list-item mb-1"
-          ></v-list-item>
-        </template>
+      <template v-if="role === ADMIN">
         <v-list-item
-          v-for="(item, index) in settings"
-          :key="index"
-          :to="item.path"
-          :title="item.title"
-          :value="item.title"
-          link
-          exact
-          density="compact"
-          class="mb-1"
+          prepend-icon="tabler:IconSettings"
+          :title="$t('sidebar.adminsetting')"
+          :append-icon="settingsOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+          class="list-item mb-1"
           rounded
-        >
-          <template #prepend>
-            <v-icon>{{ item.icon }}</v-icon>
-          </template>
-        </v-list-item>
-      </v-list-group>
+          @click="settingsOpen = !settingsOpen"
+        />
+        <div v-show="settingsOpen" class="v-list-group__items">
+          <v-list-item
+            v-for="(item, index) in settings"
+            :key="index"
+            :to="item.path"
+            :title="item.title"
+            :value="item.title"
+            link
+            exact
+            density="compact"
+            class="mb-1"
+            rounded
+          >
+            <template #prepend>
+              <v-icon>{{ item.icon }}</v-icon>
+            </template>
+          </v-list-item>
+        </div>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -68,6 +70,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:drawer']);
 const role = ref(authStore.staffRole);
+const settingsOpen = ref(true);
 
 const navbars = computed(() => [
   {

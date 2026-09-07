@@ -1,9 +1,8 @@
 <template>
-  <v-app>
-    <v-main
-      class="d-flex justify-center align-center fill-height"
-      style="background: #e3f2fd"
-    >
+  <v-main
+    class="d-flex justify-center align-center fill-height"
+    style="background: #e3f2fd"
+  >
       <v-container>
         <v-row justify="center">
           <v-col cols="12" xs="10" sm="8" md="6" lg="4" xl="3">
@@ -65,8 +64,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-main>
-  </v-app>
+  </v-main>
 </template>
 
 <script setup>
