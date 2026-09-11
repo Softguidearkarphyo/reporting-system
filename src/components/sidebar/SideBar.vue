@@ -9,14 +9,19 @@
     clipped
     color="surface"
   >
-    <v-list density="compact" nav>
+    <v-list
+      v-model:opened="openedGroups"
+      open-strategy="multiple"
+      density="compact"
+      nav
+    >
       <v-list-item
         v-for="(item, index) in navbars"
         :key="index"
         :to="item.path"
         :prepend-icon="item.icon"
         :title="item.title"
-        :value="item.title"
+        :value="item.path"
         link
         exact
         density="compact"
@@ -24,7 +29,7 @@
         rounded
       ></v-list-item>
 
-      <v-list-group v-if="role === ADMIN">
+      <v-list-group v-if="role === ADMIN" value="admin-settings">
         <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
@@ -38,7 +43,7 @@
           :key="index"
           :to="item.path"
           :title="item.title"
-          :value="item.title"
+          :value="item.path"
           link
           exact
           density="compact"
@@ -53,21 +58,27 @@
     </v-list>
   </v-navigation-drawer>
 </template>
+
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { ADMIN } from '@/utils/constant';
 import { useDisplay } from 'vuetify';
+
 const display = useDisplay();
 const { t } = useI18n();
 const authStore = useAuthStore();
+
 const props = defineProps({
   drawer: Boolean,
   rail: Boolean,
 });
 const emit = defineEmits(['update:drawer']);
 const role = ref(authStore.staffRole);
+
+
+const openedGroups = ref(['admin-settings']);
 
 const navbars = computed(() => [
   {
@@ -122,11 +133,6 @@ const settings = computed(() => [
     path: '/reporting-system/show-men-powers',
     icon: 'tabler:IconUserHexagon',
   },
-  // {
-  //   title: t('sidebar.sixmonthssummary'),
-  //   path: '/reporting-system/show-project-date',
-  //   icon: 'tabler:IconHexagonNumber6',
-  // },
   {
     title: t('sidebar.location'),
     path: '/reporting-system/locations',
@@ -169,6 +175,7 @@ const settings = computed(() => [
   },
 ]);
 </script>
+
 <style scoped>
 ::v-deep(.v-navigation-drawer) {
   height: 100vh !important;
@@ -184,10 +191,7 @@ const settings = computed(() => [
   text-transform: uppercase !important;
 }
 
-::v-deep(
-  .v-navigation-drawer:not(.v-navigation-drawer--rail)
-    .v-navigation-drawer__content
-) {
+::v-deep(.v-navigation-drawer:not(.v-navigation-drawer--rail) .v-navigation-drawer__content) {
   max-width: 100% !important;
 }
 
@@ -200,13 +204,16 @@ const settings = computed(() => [
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
   color: rgb(var(--v-theme-primary)) !important;
 }
+
 .v-list-group__items .v-list-item {
   padding-inline-start: 10px !important;
   margin: 0 0 2px;
 }
+
 .v-navigation-drawer--rail .v-list-group__items .v-list-item {
   padding-inline-end: 36px !important;
 }
+
 .v-navigation-drawer--rail .v-list-group__items .v-list-item {
   background: transparent !important;
   color: rgb(var(--v-theme-font)) !important;
@@ -216,11 +223,11 @@ const settings = computed(() => [
 .v-navigation-drawer--rail .v-list-group__items .v-list-item:hover {
   color: rgb(var(--v-theme-primary)) !important;
 }
-.v-navigation-drawer--rail
-  .v-list-group__items
-  .v-list-item.v-list-item--active {
+
+.v-navigation-drawer--rail .v-list-group__items .v-list-item.v-list-item--active {
   color: rgb(var(--v-theme-primary)) !important;
 }
+
 ::v-deep(.v-list-item__overlay) {
   all: unset !important;
   display: none !important;
