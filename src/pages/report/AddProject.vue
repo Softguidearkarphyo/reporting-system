@@ -51,14 +51,25 @@
                 style="flex: none"
               ></BaseTextField>
             </Field>
-            <BaseButton type="submit" :width="'200px'">
-              {{ t('common.submit') }}
-            </BaseButton>
+
+            <div class="d-flex ga-2 align-center">
+              <BaseButton type="submit" :width="'200px'">
+                {{t('common.submit') }}
+              </BaseButton>
+              <BaseButton
+                v-if="isEditMode"
+                type="button"
+                @click="resetToCreateMode"
+              >
+                {{ t('common.cancel') }}
+              </BaseButton>
+            </div>
           </div>
         </Form>
       </v-col>
     </v-row>
   </ParentCard>
+
   <div v-if="hasInitialData">
     <v-row class="align-center mt-3">
       <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
@@ -74,6 +85,7 @@
         </BaseTextField>
       </v-col>
     </v-row>
+
     <ParentCard>
       <BaseTable :headers="headers" :items="items">
         <template #[`item.position`]="{ item }">
@@ -115,6 +127,7 @@
         </template>
       </BaseTable>
     </ParentCard>
+
     <BaseConfirmDelete
       v-model="confirmDelete"
       :text="t('addProject.deleteConfirmText')"
@@ -130,19 +143,20 @@
     ></BaseConfirmDelete>
   </div>
 </template>
+
 <script setup>
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Form, Field } from 'vee-validate';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { useProjectStore } from '@/stores/project/project.js';
 import { getProjectCreateSchema } from '@/plugins/validations/project-create.js';
 import { ADMIN } from '@/utils/constant';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
-const projectCreateSchema = computed(() =>
-  getProjectCreateSchema(t, checkPrjCds.value)
-);
+
 const role = authStore.staffRole;
 const formRef = ref(null);
 const isEditMode = ref(false);
@@ -154,6 +168,11 @@ const checkPrjCds = ref([]);
 let originalItems = [];
 const items = ref([]);
 const hasInitialData = ref(false);
+
+const projectCreateSchema = computed(() =>
+  getProjectCreateSchema(t, checkPrjCds.value)
+);
+
 const headers = computed(() => {
   const tmpHeaders = [
     {
@@ -191,12 +210,23 @@ const headers = computed(() => {
   }));
 });
 
-const fetch = async () => {
+// Edit Mode မှ Create Mode သို့ Reset ပြုလုပ်ပေးသည့် Helper Function
+const resetToCreateMode = () => {
+  isEditMode.value = false;
+  updateTarget.value = undefined;
   formRef.value?.resetForm();
+  checkPrjCds.value = originalItems?.map((prj) => prj.cd) || [];
+};
+
+const fetch = async () => {
+  // 1. Edit mode များကို reset လုပ်ပါ
+  resetToCreateMode();
+
+  // 2. Data များ ပြန်လည် ခေါ်ယူပါ
   await projectStore.fetchProject();
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
-  checkPrjCds.value = originalItems?.map((prj) => prj.cd);
+  checkPrjCds.value = originalItems?.map((prj) => prj.cd) || [];
   hasInitialData.value = originalItems.length > 0;
 };
 
@@ -205,39 +235,60 @@ fetch();
 const scrollToEdit = async (id) => {
   await projectStore.fetchProject({ id });
   const data = projectStore.getProjects?.[0];
-  isEditMode.value = true;
   if (data) {
+    isEditMode.value = true;
+    updateTarget.value = data.id;
+    
+    // Edit ပြုလုပ်မည့် Project ၏ Code ကို Duplicate validation မှ ခဏဖယ်ထုတ်ထားမည်
     checkPrjCds.value = originalItems
       ?.filter((prj) => prj.id !== id)
-      ?.map((prj) => prj.cd);
+      ?.map((prj) => prj.cd) || [];
+
     formRef.value?.setValues({
       cd: data.cd,
       eng_name: data.eng_name,
       jp_name: data.jp_name,
     });
-    updateTarget.value = data.id;
   }
   window.scrollTo({
     top: 0,
     behavior: 'smooth',
   });
 };
+
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
   confirmDelete.value = true;
 };
+
 const deleteProject = async () => {
-  await projectStore.deleteProject({ id: deleteTarget.value });
-  deleteTarget.value = undefined;
-  fetch();
-};
-const submit = async (values) => {
-  if (isEditMode.value) {
-    await projectStore.updateProject({ id: updateTarget.value, ...values });
-  } else {
-    await projectStore.createProject(values);
+  if (!deleteTarget.value) return;
+  try {
+    await projectStore.deleteProject({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    await fetch();
+  } catch (error) {
+    console.error('Delete Project Error:', error);
   }
-  fetch();
+};
+
+const submit = async (values, { setErrors }) => {
+  try {
+    if (isEditMode.value) {
+      await projectStore.updateProject({ id: updateTarget.value, ...values });
+    } else {
+      await projectStore.createProject(values);
+    }
+    // Submit အောင်မြင်ပါက Form နှင့် Mode များကို Reset ပြုလုပ်ပါမည်
+    await fetch();
+  } catch (error) {
+    // Backend မှ 422 Error ပြန်လာပါက Vee-Validate Error Messages အဖြစ် သတ်မှတ်ပေးပါမည်
+    if (error.response?.status === 422 && error.response?.data?.errors) {
+      setErrors(error.response.data.errors);
+    } else {
+      console.error('Submit Error:', error);
+    }
+  }
 };
 
 watch(
