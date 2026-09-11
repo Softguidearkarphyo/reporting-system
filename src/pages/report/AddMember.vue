@@ -231,7 +231,7 @@
               :items="sortKey"
               prependIcon="mdi-sort"
               :width="'320px'"
-              item-title="value"
+              item-title="id"
               item-value="id"
               :error-messages="errorMessage"
               :disabled="roleId === 2"
@@ -307,6 +307,7 @@ watch(
         staff_project: {},
       });
       const data = res?.data?.[0];
+       console.log("sort key"+data.sort_key);
       existingFileName.value = data?.staff_image_url?.split('/').pop();
       formRef.value?.setValues({
         eng_name: data.eng_name,
@@ -323,8 +324,11 @@ watch(
         ref_person: data.ref_person,
         ref_ph_number: data.ref_ph_number,
         project: data.staff_project?.map((p) => p.project_id) || [],
-        sort_key: data.sort_key,
+        sort_key: typeof data.sort_key === 'object' && data.sort_key !== null 
+            ? data.sort_key.id 
+            : data.sort_key,
       });
+     
     } else {
       isEditMode.value = false;
       formRef.value?.resetForm();

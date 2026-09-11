@@ -210,7 +210,6 @@ const headers = computed(() => {
   }));
 });
 
-// Edit Mode မှ Create Mode သို့ Reset ပြုလုပ်ပေးသည့် Helper Function
 const resetToCreateMode = () => {
   isEditMode.value = false;
   updateTarget.value = undefined;
@@ -219,10 +218,8 @@ const resetToCreateMode = () => {
 };
 
 const fetch = async () => {
-  // 1. Edit mode များကို reset လုပ်ပါ
   resetToCreateMode();
 
-  // 2. Data များ ပြန်လည် ခေါ်ယူပါ
   await projectStore.fetchProject();
   items.value = [...projectStore.getProjects];
   originalItems = [...items.value];
@@ -239,7 +236,6 @@ const scrollToEdit = async (id) => {
     isEditMode.value = true;
     updateTarget.value = data.id;
     
-    // Edit ပြုလုပ်မည့် Project ၏ Code ကို Duplicate validation မှ ခဏဖယ်ထုတ်ထားမည်
     checkPrjCds.value = originalItems
       ?.filter((prj) => prj.id !== id)
       ?.map((prj) => prj.cd) || [];
@@ -279,10 +275,8 @@ const submit = async (values, { setErrors }) => {
     } else {
       await projectStore.createProject(values);
     }
-    // Submit အောင်မြင်ပါက Form နှင့် Mode များကို Reset ပြုလုပ်ပါမည်
     await fetch();
   } catch (error) {
-    // Backend မှ 422 Error ပြန်လာပါက Vee-Validate Error Messages အဖြစ် သတ်မှတ်ပေးပါမည်
     if (error.response?.status === 422 && error.response?.data?.errors) {
       setErrors(error.response.data.errors);
     } else {
