@@ -295,6 +295,7 @@ const fetchedSkillSheet = ref(null);
 const skillSheetId = route.params.skillSheetId;
 const techStackList = ref([]);
 const skillSheetCreateSchema = computed(() => skillSheetSchema(t));
+
 watch(
   () => route.params.skillSheetId,
   async (id) => {
@@ -403,15 +404,14 @@ const fetch = async () => {
     systemStore.fetchJapaneseLevel(),
     projectStore.fetchProject(),
   ]);
-  memberList.value =
-    (skillSheetId
-      ? memberStore.getMembers
-      : memberStore.getMembers?.filter((member) => !member.skill_sheet)
-    )?.map((item) => ({
-      id: item.id,
-      name: item.eng_name,
-    })) ?? [];
-
+  memberList.value = memberStore.getMembers.map((item)=> ({id: item.id, name: item.eng_name})) ?? [];
+    // (skillSheetId
+    //   ? memberStore.getMembers
+    //   : memberStore.getMembers?.filter((member) => !member.skill_sheet)
+    // )?.map((item) => ({
+    //   id: item.id,
+    //   name: item.eng_name,
+    // })) ?? [];
   projectList.value =
     projectStore.getProjects?.map((item) => ({
       id: item.id,
