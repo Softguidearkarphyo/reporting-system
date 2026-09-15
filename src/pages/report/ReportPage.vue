@@ -82,19 +82,19 @@ const headers = computed(() => {
       key: isJapanese ? 'staff_jp_name' : 'staff_eng_name',
     },
     {
-      title: t('workingTime.date'),
+      title: t('memberFine.form.date'),
       key: 'date',
     },
     {
-      title: t('workingTime.projectName') ,
+      title: t('workHourReport.table.project_name') ,
       key: isJapanese ? 'project_jp_name' : 'project_eng_name',
     },
     {
-      title: t('workingTime.taskName'),
+      title: t('workHourReport.table.task'),
       key: 'task_display',
     },
     {
-      title: t('workingTime.period'),
+      title: t('workHourReport.table.period'),
       key: 'period',
     },
   ];
