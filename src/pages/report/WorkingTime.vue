@@ -77,9 +77,10 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { Form, Field } from 'vee-validate';
-import { dateSchema } from '@/plugins/validations/working-time.js';
+// import { dateSchema } from '@/plugins/validations/working-time.js';
 import { useReportingStore } from '@/stores/reporting/reporting.js';
 import XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
+import { getMenPowerSchema } from '@/plugins/validations/menpower.js';
 
 const reportingStore = useReportingStore();
 const { t, locale } = useI18n();
@@ -88,7 +89,7 @@ const search = ref('');
 const initialData = ref(false);
 let originalItems = [];
 const items = ref(null);
-const searchWithDateSchema = computed(() => dateSchema(t));
+const searchWithDateSchema = computed(() => getMenPowerSchema(t));
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
