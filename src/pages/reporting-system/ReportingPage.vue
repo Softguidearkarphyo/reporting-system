@@ -114,7 +114,7 @@
                     >
                       <span class="d-none">{{ value }}</span>
                       <BaseAutoComplete
-                        v-if="role === ADMIN"
+                        v-if="isAdmin"
                         v-model="selectedEmployee"
                         v-bind="field"
                         :label="t('workHourReport.form.employee')"
@@ -349,6 +349,7 @@ import { useReportingStore } from '@/stores/reporting/reporting.js';
 import { getReportingSchema } from '@/plugins/validations/reporting.js';
 import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
+import { ref, computed, watch } from 'vue';
 import {
   changeDateTimeZone,
   generatePeriods,
@@ -362,13 +363,21 @@ const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const reportingStore = useReportingStore();
 const router = useRouter();
-const role = authStore.staffRole;
+const role = computed(() => {
+  const staffRole = authStore.staffRole;
+  if (staffRole !== undefined && staffRole !== null && staffRole !== '') {
+    return String(staffRole);
+  }
+  return localStorage.getItem('staff-role') || '';
+});
+
+const isAdmin = computed(() => String(role.value) === String(ADMIN));
 const staff = authStore.loginStaff;
 const staffName = computed(() =>
   locale.value === 'ja' ? staff?.jp_name : staff?.eng_name
 );
 const reportingSchema = computed(() =>
-  getReportingSchema(t, timeSelectionMode.value, role === ADMIN)
+  getReportingSchema(t, timeSelectionMode.value, String(role.value) === String(ADMIN))
 );
 const formRef = ref(null);
 const timeSelectionMode = ref(0);
@@ -382,7 +391,7 @@ let originalItems = [];
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
 const selectedEmployeeInfo = computed(() => {
-  if (role === ADMIN) {
+  if (String(role.value) === String(ADMIN)) {
     return employeeItems.value?.filter((item) =>
       selectedEmployee.value?.includes(item.id)
     );
@@ -453,10 +462,17 @@ const headers = computed(() => {
 
 const fetch = async () => {
   formRef.value?.resetForm();
+
+  if (!authStore.staff) {
+    await authStore.fetchStaff();
+  }
+
   await reportingStore.fetchProject();
   projectItems.value = [...reportingStore.getProjects];
+  
   await reportingStore.fetchTask();
   taskItems.value = [...reportingStore.getTasks];
+  
   await getList();
   selectPreviousOfficeDays();
 };
@@ -486,7 +502,7 @@ const getList = async () => {
     task: {},
     task_performance_setting: {},
   };
-  if (role !== ADMIN) {
+  if (String(role.value) !== String(ADMIN)) {
     memberPayload.id = staff.id;
   }
   await reportingStore.fetchMember(memberPayload);
@@ -520,7 +536,11 @@ const getList = async () => {
     return a.sort_key - b.sort_key;
   });
   employeeItems.value = [...tmpMembers];
-  selectedEmployee.value = [staff.id];
+if (employeeItems.value?.length > 0) {
+  selectedEmployee.value = [staff?.id || employeeItems.value[0]?.id];
+} else {
+  selectedEmployee.value = [];
+}
   await nextTick();
   selectedPeriod.value = [1, 2];
   formRef.value?.setValues({
@@ -562,7 +582,7 @@ const submit = async (values) => {
       );
     }
     const targetEmployees =
-      role === ADMIN ? selectedEmployee.value : [staff.id];
+      String(role.value) === String(ADMIN) ? selectedEmployee.value : [staff.id];
     if (values.project) {
       targetEmployees?.forEach((employee) => {
         totalDates?.forEach((date) => {
@@ -596,7 +616,7 @@ const submit = async (values) => {
   await getList();
 };
 const groupDates = () => {
-  if (role !== ADMIN) {
+  if (String(role.value) !== String(ADMIN)) {
     currentEmployee.value = employeeItems.value?.[0];
   } else if (selectedEmployee.value?.length === 1) {
     currentEmployee.value = employeeItems.value?.find(
@@ -605,6 +625,7 @@ const groupDates = () => {
   } else {
     currentEmployee.value = undefined;
   }
+
   dateTaskGroups.value = currentEmployee.value?.task_performance?.reduce(
     (acc, task) => {
       if (selectedIsoDates.value?.includes(task.date)) {
@@ -616,17 +637,24 @@ const groupDates = () => {
       return acc;
     },
     {}
-  );
-  Object.keys(dateTaskGroups.value).forEach((date) => {
-    dateTaskGroups.value[date].sort((a, b) => a.period.localeCompare(b.period));
-  });
-  dateTaskGroups.value = fillPeriods(dateTaskGroups.value);
+  ) || {}; 
+
+  if (dateTaskGroups.value && typeof dateTaskGroups.value === 'object') {
+    Object.keys(dateTaskGroups.value).forEach((date) => {
+      dateTaskGroups.value[date]?.sort((a, b) => 
+        (a.period || '').localeCompare(b.period || '')
+      );
+    });
+  }
+
+  dateTaskGroups.value = fillPeriods(dateTaskGroups.value || {});
+
   const lastDate = isDayMultiple.value
     ? selectedDates.value[selectedDates.value?.length - 1]
     : selectedDates.value;
   if (lastDate) {
     const index = selectedIsoDates.value?.indexOf(changeDateTimeZone(lastDate));
-    if (index !== -1) {
+    if (index !== -1 && index !== undefined) {
       carouselIndex.value = index;
     }
   }
@@ -686,7 +714,7 @@ const saveSetting = async () => {
 };
 const discardSetting = async () => {
   await reportingStore.discardSetting({
-    delete_array: role === ADMIN ? selectedEmployee.value : [staff.id],
+    delete_array: String(role.value) === String(ADMIN) ? selectedEmployee.value : [staff.id],
   });
   await getList();
 };

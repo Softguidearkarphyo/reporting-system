@@ -1,55 +1,18 @@
 <template>
-  <v-navigation-drawer
-    :model-value="drawer"
-    @update:model-value="emit('update:drawer', $event)"
-    :rail="!display.smAndDown.value && rail"
-    :permanent="!display.smAndDown.value"
-    :temporary="display.smAndDown.value"
-    app
-    clipped
-    color="surface"
-  >
-    <v-list
-      v-model:opened="openedGroups"
-      open-strategy="multiple"
-      density="compact"
-      nav
-    >
-      <v-list-item
-        v-for="(item, index) in navbars"
-        :key="index"
-        :to="item.path"
-        :prepend-icon="item.icon"
-        :title="item.title"
-        :value="item.path"
-        link
-        exact
-        density="compact"
-        class="mb-1"
-        rounded
-      ></v-list-item>
+  <v-navigation-drawer :model-value="drawer" @update:model-value="emit('update:drawer', $event)"
+    :rail="!display.smAndDown.value && rail" :permanent="!display.smAndDown.value" :temporary="display.smAndDown.value"
+    app clipped color="surface">
+    <v-list v-model:opened="openedGroups" open-strategy="multiple" density="compact" nav>
+      <v-list-item v-for="(item, index) in navbars" :key="index" :to="item.path" :prepend-icon="item.icon"
+        :title="item.title" :value="item.path" link exact density="compact" class="mb-1" rounded></v-list-item>
 
-      <v-list-group v-if="role === ADMIN" value="admin-settings">
+      <v-list-group v-if="isAdmin" value="admin-settings">
         <template v-slot:activator="{ props }">
-          <v-list-item
-            v-bind="props"
-            prepend-icon="tabler:IconSettings"
-            :title="$t('sidebar.adminsetting')"
-            class="list-item mb-1"
-          ></v-list-item>
+          <v-list-item v-bind="props" prepend-icon="tabler:IconSettings" :title="$t('sidebar.adminsetting')"
+            class="list-item mb-1"></v-list-item>
         </template>
-        <v-list-item
-          v-for="(item, index) in settings"
-          :key="index"
-          :to="item.path"
-          :title="item.title"
-          :value="item.path"
-          link
-          exact
-          density="compact"
-          class="mb-1"
-          rounded
-        >
+        <v-list-item v-for="(item, index) in settings" :key="index" :to="item.path" :title="item.title"
+          :value="item.path" link exact density="compact" class="mb-1" rounded>
           <template #prepend>
             <v-icon>{{ item.icon }}</v-icon>
           </template>
@@ -75,8 +38,15 @@ const props = defineProps({
   rail: Boolean,
 });
 const emit = defineEmits(['update:drawer']);
-const role = ref(authStore.staffRole);
 
+const role = computed(() => {
+  const currentRole = authStore.staffRole || localStorage.getItem('staff-role');
+  return currentRole ? String(currentRole).trim() : '';
+});
+
+const isAdmin = computed(() => {
+  return role.value.toLowerCase() === String(ADMIN).toLowerCase();
+});
 
 const openedGroups = ref(['admin-settings']);
 
@@ -98,12 +68,12 @@ const navbars = computed(() => [
   },
   ...(role.value === ADMIN
     ? [
-        {
-          title: t('sidebar.employeecompetency'),
-          path: '/reporting-system/employee-competency',
-          icon: 'tabler:IconAward',
-        },
-      ]
+      {
+        title: t('sidebar.employeecompetency'),
+        path: '/reporting-system/employee-competency',
+        icon: 'tabler:IconAward',
+      },
+    ]
     : []),
   {
     title: t('sidebar.reporting'),
@@ -111,6 +81,10 @@ const navbars = computed(() => [
     icon: 'tabler:IconReport',
   },
 ]);
+
+// console.log("Current Role Value:", role.value);
+// console.log("ADMIN Constant Value:", ADMIN);
+// console.log("Is Equals?:", role.value === ADMIN);
 
 const settings = computed(() => [
   {

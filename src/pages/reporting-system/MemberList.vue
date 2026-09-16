@@ -101,12 +101,12 @@ import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
 import { exportExcel } from '@/excel-export/payroll/excel';
 import { profileImgPath } from '@/utils/helper';
-
+import { ref, computed, watch } from 'vue';
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const memberStore = useMemberStore();
 const router = useRouter();
-const role = authStore.staffRole;
+const role = computed(() => authStore.staffRole || localStorage.getItem('staff-role'))
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
@@ -143,15 +143,17 @@ const headers = computed(() => {
       sortable: false,
     },
   ];
-  if (role === ADMIN) {
-    tmpHeaders.push({
-      title: t('memberList.table.action'),
-      key: 'action',
-      align: 'center',
-      sortable: false,
-      width: '10%',
-    });
-  }
+
+
+if (String(role.value) === String(ADMIN)) {
+  tmpHeaders.push({
+    title: t('memberList.table.action'),
+    key: 'action',
+    align: 'center',
+    sortable: false,
+    width: '10%',
+  });
+}
   return tmpHeaders.map((header) => ({
     ...header,
     title: header.title.toUpperCase(),

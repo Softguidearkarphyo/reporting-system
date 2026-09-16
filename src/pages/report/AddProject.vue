@@ -157,7 +157,8 @@ const { t } = useI18n();
 const authStore = useAuthStore();
 const projectStore = useProjectStore();
 
-const role = authStore.staffRole;
+const role = computed(() => authStore.staffRole || localStorage.getItem('staff-role'));
+
 const formRef = ref(null);
 const isEditMode = ref(false);
 const search = ref('');
@@ -195,7 +196,8 @@ const headers = computed(() => {
       sortable: false,
     },
   ];
-  if (role === ADMIN) {
+
+  if (String(role.value) === String(ADMIN)) {
     tmpHeaders.push({
       title: t('memberList.table.action'),
       key: 'action',
@@ -204,6 +206,7 @@ const headers = computed(() => {
       width: '10%',
     });
   }
+
   return tmpHeaders.map((header) => ({
     ...header,
     title: header.title.toUpperCase(),
@@ -218,6 +221,14 @@ const resetToCreateMode = () => {
 };
 
 const fetch = async () => {
+  if (!authStore.staff) {
+    try {
+      await authStore.fetchStaff();
+    } catch (e) {
+      console.error('Fetch staff error:', e);
+    }
+  }
+
   resetToCreateMode();
 
   await projectStore.fetchProject();
