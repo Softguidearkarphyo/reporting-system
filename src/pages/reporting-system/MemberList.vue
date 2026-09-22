@@ -29,7 +29,10 @@
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
-            <v-img v-if="item.staff_image_url" :src="item.staff_image_url" />
+            <v-img 
+              v-if="item.staff_image_url && item.staff_image_url !== 'undefined'" 
+              :src="item.staff_image_url" 
+            />
             <v-img
               v-else
               class="profileImage"
@@ -60,8 +63,9 @@
           >
             <v-icon icon="tabler:IconEdit" size="15" />
           </BaseButton>
+
           <BaseButton
-            v-if="authStore.loginStaff?.id !== item.id"
+            v-if="!isSelf(item.id)"
             elevation="0"
             @click.stop="showConfirmDelete(item.id)"
             color=""
@@ -77,6 +81,7 @@
       </template>
     </BaseTable>
   </ParentCard>
+
   <BaseConfirmDelete
     v-model="confirmDelete"
     :text="t('memberList.deleteConfirmText')"
@@ -101,12 +106,13 @@ import { ADMIN } from '@/utils/constant';
 import { useRouter } from 'vue-router';
 import { exportExcel } from '@/excel-export/payroll/excel';
 import { profileImgPath } from '@/utils/helper';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
+
 const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const memberStore = useMemberStore();
 const router = useRouter();
-const role = computed(() => authStore.staffRole || localStorage.getItem('staff-role'))
+const role = computed(() => authStore.staffRole || localStorage.getItem('staff-role'));
 const confirmDelete = ref(false);
 const deleteTarget = ref(undefined);
 const search = ref('');
@@ -115,18 +121,48 @@ const width = '10px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const isJapanese = computed(() => locale.value === 'ja');
+
+const currentStaffId = computed(() => {
+  const staffData = authStore.staff || authStore.loginStaff;
+
+  if (staffData && !Array.isArray(staffData)) {
+    return staffData.id || staffData.staff_id || null;
+  }
+
+  if (Array.isArray(staffData) && staffData.length > 0) {
+    const savedImg = sessionStorage.getItem('profileImg');
+
+    if (savedImg) {
+      const match = staffData.find((s) => {
+        const customImg = s.staff_image_url;
+        const defaultEngImg = profileImgPath(s.eng_name);
+        const defaultJpImg = profileImgPath(s.jp_name);
+
+        return (
+          customImg === savedImg ||
+          defaultEngImg === savedImg ||
+          defaultJpImg === savedImg
+        );
+      });
+
+      if (match) return match.id;
+    }
+  }
+
+  return localStorage.getItem('staff-id') || null;
+});
+
+const isSelf = (itemId) => {
+  if (!currentStaffId.value) return false;
+  return Number(currentStaffId.value) === Number(itemId);
+};
+
 const headers = computed(() => {
   const tmpHeaders = [
     {
       title: t('memberList.table.name'),
       key: 'name',
     },
-    // {
-    //   title: t('memberList.table.position'),
-    //   key: 'position',
-    //   align: 'center',
-    //   sortable: false,
-    // },
     {
       title: t('memberList.table.phone'),
       key: 'ph_number',
@@ -144,16 +180,15 @@ const headers = computed(() => {
     },
   ];
 
-
-if (String(role.value) === String(ADMIN)) {
-  tmpHeaders.push({
-    title: t('memberList.table.action'),
-    key: 'action',
-    align: 'center',
-    sortable: false,
-    width: '10%',
-  });
-}
+  if (String(role.value) === String(ADMIN)) {
+    tmpHeaders.push({
+      title: t('memberList.table.action'),
+      key: 'action',
+      align: 'center',
+      sortable: false,
+      width: '10%',
+    });
+  }
   return tmpHeaders.map((header) => ({
     ...header,
     title: header.title.toUpperCase(),
@@ -177,23 +212,32 @@ const fetch = async () => {
   originalItems = [...items.value];
 };
 
-fetch();
+onMounted(async () => {
+  if (!authStore.staff) {
+    await authStore.fetchStaff();
+  }
+  await fetch();
+});
 
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
   confirmDelete.value = true;
 };
+
 const deleteMember = async () => {
   await memberStore.deleteMember({ id: deleteTarget.value });
   deleteTarget.value = undefined;
   fetch();
 };
+
 const pushToEdit = (id) => {
   router.push({ name: 'edit-members', params: { memberId: id } });
 };
+
 const exportFile = () => {
   exportExcel(items.value);
 };
+
 watch(
   () => search.value,
   (newVal) => {
@@ -209,13 +253,9 @@ watch(
   }
 );
 </script>
+
 <style>
 .small-text-field label {
   font-size: 13px;
 }
-/* .edit-btn,
-.delete-btn {
-  min-width: 0 !important;
-  padding: 0 !important;
-} */
 </style>

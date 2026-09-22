@@ -241,7 +241,6 @@
         </v-col>
 
         <v-col cols="12" md="6" lg="4">
-          <!-- <Field name="fileName" v-slot="{ field, errorMessage }"> -->
           <BaseTextField
             v-model="displayedFileName"
             :label="t('addMember.form.staff_image')"
@@ -277,9 +276,9 @@ import { position, role, sortKey, project } from '@/utils/data';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useI18n } from 'vue-i18n';
 import { memberSchema } from '@/plugins/validations/add-member.js';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth/auth.js';
+import { ref, computed, watch } from 'vue';
 
 const { t } = useI18n();
 const formRef = ref(null);
@@ -307,8 +306,13 @@ watch(
         staff_project: {},
       });
       const data = res?.data?.[0];
-       console.log("sort key"+data.sort_key);
-      existingFileName.value = data?.staff_image_url?.split('/').pop();
+      
+      if (data?.staff_image_url && !data.staff_image_url.includes('undefined')) {
+        existingFileName.value = data.staff_image_url.split('/').pop();
+      } else {
+        existingFileName.value = null;
+      }
+
       formRef.value?.setValues({
         eng_name: data.eng_name,
         jp_name: data.jp_name,
@@ -317,8 +321,8 @@ watch(
         staff_no: data.staff_no,
         address: data.address,
         ph_number: data.ph_number,
-        position: data.position,
-        role: data.role,
+        position: typeof data.position === 'object' && data.position !== null ? data.position.id : data.position,
+        role: typeof data.role === 'object' && data.role !== null ? data.role.id : data.role,
         email: data.email,
         permanent_date: data.permanent_date,
         ref_person: data.ref_person,
@@ -331,17 +335,18 @@ watch(
      
     } else {
       isEditMode.value = false;
+      existingFileName.value = null;
       formRef.value?.resetForm();
     }
   },
   { immediate: true }
 );
+
 const displayedFileName = computed(() => {
-  if (newImageSelected.value && fileName) {
+  if (newImageSelected.value && fileName.value) {
     return fileName.value;
-  } else {
-    return existingFileName.value;
   }
+  return existingFileName.value || '';
 });
 
 const triggerFileInput = () => {
@@ -359,9 +364,16 @@ const handleFileChange = (e) => {
 
 const submit = async (values) => {
   const formData = new FormData();
+
   for (const key in values) {
     const value = values[key];
-    if (value !== null && value !== undefined && value !== '') {
+
+    if (key === 'password') {
+      if (value && value.trim() !== '') {
+        formData.append('password', value);
+      }
+    } 
+    else if (value !== null && value !== undefined && value !== '') {
       formData.append(key, value);
     }
   }
@@ -376,8 +388,8 @@ const submit = async (values) => {
   if (memberId) {
     formData.append('id', memberId);
   }
+
   let res;
-  console.log(formData, 'hello');
   if (memberId) {
     res = await memberStore.updateMember(formData);
   } else {
@@ -386,9 +398,12 @@ const submit = async (values) => {
 
   if (res?.data?.status === 200) {
     const updatedMember = res.data.staff;
-    if (Number(memberId) === authStore.loginStaff?.id) {
-      authStore.setStaff(updatedMember);
+    const currentLoginId = authStore.loginStaff?.id || authStore.staff?.id;
+
+    if (Number(memberId) === Number(currentLoginId)) {
+      authStore.staff = updatedMember;
     }
+
     router.push({ name: 'member-lists' });
   }
 };
