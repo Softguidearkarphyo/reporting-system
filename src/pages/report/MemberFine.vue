@@ -5,41 +5,74 @@
     <v-row class="align-center">
       <v-col cols="12" md="12">
         <Form ref="formRef" :validation-schema="memberFineValidation" @submit="submit">
-          <v-card flat class="pa-4 rounded-lg bg-surface-variant-light">
-            <v-row class="ga-y-4 ga-x-6 align-start justify-space-between">
-              <v-col cols="12" sm="6" md="3" class="pa-0">
-                <Field name="staff" v-slot="{ field, errorMessage }">
-                  <BaseSelect v-model="field.value" v-bind="field" item-value="id" item-title="name" :items="memberList"
-                    :label="t('memberFine.form.name')" variant="outlined" density="compact"
-                    prepend-inner-icon="mdi-account-tie" :error-messages="errorMessage" hide-details="auto" />
-                </Field>
-              </v-col>
+  <v-card flat class="pa-4 rounded-lg bg-surface-variant-light">
+    <div class="d-flex flex-column flex-md-row align-center ga-4">
+      
+      <div class="flex-1-1">
+        <Field name="staff" v-slot="{ field, errorMessage }">
+          <BaseSelect
+            v-model="field.value"
+            v-bind="field"
+            item-value="id"
+            item-title="name"
+            :items="memberList"
+            :label="t('memberFine.form.name')"
+            variant="outlined"
+            density="compact"
+            prepend-inner-icon="mdi-account-tie"
+            :error-messages="errorMessage"
+            hide-details="auto"
+          />
+        </Field>
+      </div>
 
-              <v-col cols="12" sm="6" md="3" class="pa-0">
-                <Field name="date" v-slot="{ field, errorMessage }">
-                  <BaseDatePicker v-model="field.value" v-bind="field" :label="t('memberFine.form.date')"
-                    prepend-inner-icon="mdi-calendar-month" variant="outlined" density="compact"
-                    :error-messages="errorMessage" hide-details="auto" />
-                </Field>
-              </v-col>
+      <div class="flex-1-1">
+        <Field name="date" v-slot="{ field, errorMessage }">
+          <BaseDatePicker
+            v-model="field.value"
+            v-bind="field"
+            :label="t('memberFine.form.date')"
+            prepend-inner-icon="mdi-calendar-month"
+            variant="outlined"
+            density="compact"
+            :error-messages="errorMessage"
+            hide-details="auto"
+          />
+        </Field>
+      </div>
 
-              <v-col cols="12" sm="6" md="3" class="pa-0">
-                <Field name="time" v-slot="{ field, errorMessage }">
-                  <v-text-field :model-value="field.value" @update:model-value="field.onChange" @blur="field.onBlur"
-                    type="time" :label="t('memberFine.form.time')" :error-messages="errorMessage"
-                    prepend-inner-icon="mdi-clock-outline" variant="outlined" density="compact" hide-details="auto" />
-                </Field>
-              </v-col>
+      <div class="flex-1-1">
+        <Field name="time" v-slot="{ field, errorMessage }">
+          <v-text-field
+            :model-value="field.value"
+            @update:model-value="field.onChange"
+            @blur="field.onBlur"
+            type="time"
+            :label="t('memberFine.form.time')"
+            :error-messages="errorMessage"
+            prepend-inner-icon="mdi-clock-outline"
+            variant="outlined"
+            density="compact"
+            hide-details="auto"
+          />
+        </Field>
+      </div>
 
-              <v-col cols="12" sm="6" md="2" class="pa-0 d-flex align-start">
-                <BaseButton type="submit" block color="primary" size="large"
-                  class="submit-btn text-none font-weight-bold">
-                  {{ t('common.submit') }}
-                </BaseButton>
-              </v-col>
-            </v-row>
-          </v-card>
-        </Form>
+      <div class="flex-1-1">
+        <BaseButton
+          type="submit"
+          block
+          color="primary"
+          class="submit-btn text-none font-weight-bold"
+          style="height: 40px;"
+        >
+          {{ t('common.submit') }}
+        </BaseButton>
+      </div>
+
+    </div>
+  </v-card>
+</Form>
       </v-col>
     </v-row>
   </ParentCard>

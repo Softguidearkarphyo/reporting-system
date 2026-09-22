@@ -29,6 +29,7 @@ export const useLeaveRecordStore = defineStore('leaveRecord', () => {
         payload
       );
       toast.success('Leave Record Created Successfully.');
+      // console.log("response "+ JSON.stringify(response))
       return response;
     } catch (error) {
       toast.error('Fail to create leave record');
