@@ -10,8 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const loginStaff = computed(() => staff.value);
   const isLoggedIn = computed(() => !!staff.value);
-  const staffName = computed(() => (staff.value ? staff.value.name : ''));
-  const staffRole = computed(() => (staff.value ? staff.value.role : ''));
+  const staffName = computed(() => (staff.value ? staff.value.eng_name : ''));
+  const staffRole = computed(() => (staff.value ? String(staff.value.role) : localStorage.getItem('staff-role')));
 
   async function login(username, password) {
     try {
@@ -19,11 +19,15 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await api.post('/login', { username, password });
 
       staff.value = res.data.staff;
-      const profileImg = staff.value?.staff_image_url || profileImgPath(staff.value.eng_name);
+      console.log("staff value ", staff.value.staff_image, staff)
+      const profileImg = staff.value?.staff_image_url 
+        || (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null) 
+        || profileImgPath(staff.value.eng_name);
 
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('staff-id', String(staff.value.id));
+      localStorage.setItem('staff-role', String(staff.value.role));
       sessionStorage.setItem('profileImg', profileImg);
-      localStorage.setItem('staff-role', staff.value.role);
 
       return staff.value;
     } catch (error) {
@@ -31,11 +35,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-
-
   async function fetchStaff() {
     try {
       const token = localStorage.getItem('token');
+      const savedStaffId = localStorage.getItem('staff-id');
 
       if (!token) {
         staff.value = null;
@@ -44,9 +47,19 @@ export const useAuthStore = defineStore('auth', () => {
 
       const res = await api.post('/reporting-system/staff/get');
 
-      staff.value = res.data;
-      // staff.value = res.data?.data || res.data;
+      if (Array.isArray(res.data)) {
+        if (savedStaffId) {
+          staff.value = res.data.find((s) => String(s.id) === String(savedStaffId)) || null;
+        } else {
+          staff.value = null;
+        }
+      } else {
+        staff.value = res.data?.data || res.data;
+      }
 
+      if (staff.value?.id) {
+        localStorage.setItem('staff-id', String(staff.value.id));
+      }
       if (staff.value?.role !== undefined) {
         localStorage.setItem('staff-role', String(staff.value.role));
       }
@@ -57,6 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
         staff.value = null;
         localStorage.removeItem('token');
         localStorage.removeItem('staff-role');
+        localStorage.removeItem('staff-id');
         sessionStorage.removeItem('profileImg');
 
         if (router) {
@@ -66,17 +80,15 @@ export const useAuthStore = defineStore('auth', () => {
       return null;
     }
   }
+
   async function logout() {
-    try {
-      staff.value = null;
-      localStorage.removeItem('token');
-      localStorage.removeItem('staff-role');
-      sessionStorage.removeItem('profileImg');
-      if (router) {
-        router.push('/login');
-      }
-    } catch (error) {
-      throw error;
+    staff.value = null;
+    localStorage.removeItem('token');
+    localStorage.removeItem('staff-role');
+    localStorage.removeItem('staff-id');
+    sessionStorage.removeItem('profileImg');
+    if (router) {
+      router.push('/login');
     }
   }
 

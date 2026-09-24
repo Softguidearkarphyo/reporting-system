@@ -22,6 +22,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="jp_name" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -39,6 +40,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="username" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -54,6 +56,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="password" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -71,6 +74,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="staff_no" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -82,11 +86,12 @@
               variant="plain"
               prependIcon="mdi-pound-box"
               :width="'320px'"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
               :error-messages="errorMessage"
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="address" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -102,6 +107,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="ph_number" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -119,6 +125,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="position" v-slot="{ field, errorMessage }">
             <BaseSelect
@@ -131,12 +138,13 @@
               item-title="name"
               :width="'320px'"
               item-value="id"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
               :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="role" v-slot="{ field, errorMessage }">
             <BaseSelect
@@ -149,12 +157,13 @@
               item-title="name"
               :width="'320px'"
               item-value="id"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
               :error-messages="errorMessage"
             >
             </BaseSelect>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="email" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -168,11 +177,12 @@
               autocomplete="test"
               prependIcon="mdi-email"
               :width="'320px'"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
               :error-messages="errorMessage"
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="permanent_date" v-slot="{ field, errorMessage }">
             <BaseDatePicker
@@ -183,10 +193,11 @@
               prependIcon="mdi-calendar-month"
               :width="'320px'"
               :error-messages="errorMessage"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
             />
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="ref_person" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -204,6 +215,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="ref_ph_number" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -221,6 +233,7 @@
             ></BaseTextField>
           </Field>
         </v-col>
+
         <v-col cols="12" md="6" lg="4">
           <Field name="sort_key" v-slot="{ field, errorMessage }">
             <BaseSelect
@@ -234,7 +247,7 @@
               item-title="id"
               item-value="id"
               :error-messages="errorMessage"
-              :disabled="roleId === 2"
+              :disabled="!isAdmin"
             >
             </BaseSelect>
           </Field>
@@ -247,7 +260,6 @@
             class="mx-auto"
             prependIcon="tabler:IconPhotoCheck"
             :width="'320px'"
-            :disabled="roleId === 2"
             @click="triggerFileInput"
           >
           </BaseTextField>
@@ -258,8 +270,8 @@
             @change="handleFileChange"
             style="display: none"
           />
-          <!-- </Field> -->
         </v-col>
+
         <v-col cols="12">
           <div class="d-flex justify-center">
             <BaseButton type="submit" style="width: 200px">
@@ -279,6 +291,7 @@ import { memberSchema } from '@/plugins/validations/add-member.js';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { ref, computed, watch } from 'vue';
+import { ADMIN } from '@/utils/constant';
 
 const { t } = useI18n();
 const formRef = ref(null);
@@ -342,12 +355,17 @@ watch(
   { immediate: true }
 );
 
+const isAdmin = computed(() => {
+  const currentRole = authStore.staffRole || localStorage.getItem('staff-role');
+  return String(currentRole) === String(ADMIN);
+});
 const displayedFileName = computed(() => {
   if (newImageSelected.value && fileName.value) {
     return fileName.value;
   }
   return existingFileName.value || '';
 });
+
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -362,6 +380,7 @@ const handleFileChange = (e) => {
   }
 };
 
+
 const submit = async (values) => {
   const formData = new FormData();
 
@@ -372,8 +391,7 @@ const submit = async (values) => {
       if (value && value.trim() !== '') {
         formData.append('password', value);
       }
-    } 
-    else if (value !== null && value !== undefined && value !== '') {
+    } else if (value !== null && value !== undefined && value !== '') {
       formData.append(key, value);
     }
   }
@@ -396,15 +414,33 @@ const submit = async (values) => {
     res = await memberStore.createMember(formData);
   }
 
-  if (res?.data?.status === 200) {
-    const updatedMember = res.data.staff;
-    const currentLoginId = authStore.loginStaff?.id || authStore.staff?.id;
+ if (res?.data?.status === 200) {
+  const updatedMember = res.data.staff;
+  const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
 
-    if (Number(memberId) === Number(currentLoginId)) {
-      authStore.staff = updatedMember;
+  if (Number(memberId) === Number(loggedInId) || !memberId) {
+    const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
+
+    sessionStorage.setItem('profileImg', fullImageUrl);
+    if (updatedMember.role !== undefined) {
+      localStorage.setItem('staff-role', String(updatedMember.role));
     }
 
-    router.push({ name: 'member-lists' });
+    if (Array.isArray(authStore.staff)) {
+      const idx = authStore.staff.findIndex((s) => Number(s.id) === Number(updatedMember.id));
+      if (idx !== -1) {
+        authStore.staff[idx] = { ...authStore.staff[idx], ...updatedMember, staff_image_url: fullImageUrl };
+      }
+    } else {
+      authStore.staff = {
+        ...authStore.staff,
+        ...updatedMember,
+        staff_image_url: fullImageUrl
+      };
+    }
   }
+
+  router.push({ name: 'member-lists' });
+}
 };
 </script>

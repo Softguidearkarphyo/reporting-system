@@ -18,9 +18,7 @@
           <template v-slot:prepend>
             <v-icon class="profile">mdi-account</v-icon>
           </template>
-          <v-list-item-title class="pl-2 text-body-1"
-            >My Profile</v-list-item-title
-          >
+          <v-list-item-title class="pl-2 text-body-1">My Profile</v-list-item-title>
         </v-list-item>
       </v-list>
       <div class="pt-2 pb-2 px-3 text-center">
@@ -38,34 +36,40 @@
   </v-menu>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { profileImgPath } from '@/utils/helper';
 
 const router = useRouter();
 const authStore = useAuthStore();
-const profileImage = ref('');
 
-onMounted(() => {
-  const storedImg = sessionStorage.getItem('profileImg');
-  if (storedImg) {
-    profileImage.value = storedImg;
-  } else {
-    const username = sessionStorage.getItem('staffname');
-    if (username) {
-      profileImage.value = profileImgPath(username);
-    }
+const profileImage = computed(() => {
+  if (!Array.isArray(authStore.staff) && authStore.staff?.staff_image_url) {
+    return authStore.staff.staff_image_url;
   }
+
+  const storedImg = sessionStorage.getItem('profileImg');
+  if (storedImg && !storedImg.startsWith('data:image/svg')) {
+    return storedImg;
+  }
+
+  const staffName = sessionStorage.getItem('staffname');
+  if (staffName) {
+    return profileImgPath(staffName);
+  }
+
+  return storedImg || '';
 });
 
 const handleLogout = async () => {
   await authStore.logout();
   router.push('/');
 };
+
 const EditEmployee = () => {
-  const staff = authStore.loginStaff;
-  const memberId = staff?.id;
+  const staffData = authStore.staff;
+  const memberId = Array.isArray(staffData) ? staffData[0]?.id : staffData?.id;
   if (memberId) {
     router.push(`/reporting-system/edit-members/${memberId}`);
   }
