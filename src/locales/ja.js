@@ -22,6 +22,8 @@ export default {
     filter: '濾過',
     excel: 'エクセル',
     clear: 'クリア',
+    adminView: '管理者モード',
+    standardView: '標準モード',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -91,6 +93,7 @@ export default {
   },
   addMember: {
     title: 'メンバー登録',
+    editTitle: 'メンバーを編集',
     form: {
       eng_name: '英語名',
       jp_name: '日本語名',

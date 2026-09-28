@@ -181,7 +181,7 @@ const router = createRouter({
   routes,
 });
 
-// ✅ login guard
+// login guard
 router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('token');
   if (to.path === '/login' && !isLoggedIn) {

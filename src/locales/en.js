@@ -22,6 +22,8 @@ export default {
     filter: 'Filter',
     excel: 'Excel',
     clear: 'Clear',
+    adminView: 'admin mode',
+    standardView: 'standard mode',
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -95,6 +97,7 @@ export default {
   },
   addMember: {
     title: 'Employee Registration',
+    editTitle: 'Edit Member',
     form: {
       eng_name: 'English Name',
       jp_name: 'Japanese Name',

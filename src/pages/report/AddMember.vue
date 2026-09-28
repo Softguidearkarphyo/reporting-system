@@ -1,5 +1,27 @@
 <template>
-  <BaseTitle> {{ t('addMember.title') }} </BaseTitle>
+  <div class="d-flex align-center justify-space-between">
+    <div class="d-flex align-center gap-2">
+      <BaseTitle>
+        {{ isEditMode ? t('addMember.editTitle', 'Edit Member') : t('addMember.title') }}
+      </BaseTitle>
+      
+      <!-- Operational Mode Badge -->
+     <!-- <v-chip
+  size="small"
+  :color="isAdmin ? 'primary' : 'info'"
+  variant="tonal"
+  class="font-weight-bold text-uppercase"
+>
+  <v-icon
+    start
+    :icon="isAdmin ? 'tabler:IconShieldCheck' : 'tabler:IconUserCheck'"
+    size="14"
+  />
+  {{ isAdmin ? t('common.adminView', 'Admin Mode') : t('common.standardView', 'Standard Mode') }}
+</v-chip> -->
+    </div>
+  </div>
+
   <ParentCard class="pa-6">
     <Form
       ref="formRef"
@@ -82,13 +104,22 @@
               v-bind="field"
               :label="t('addMember.form.staff_no')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               type="text"
               variant="plain"
               prependIcon="mdi-pound-box"
               :width="'320px'"
               :disabled="!isAdmin"
               :error-messages="errorMessage"
-            ></BaseTextField>
+            >
+              <template v-if="!isAdmin" #append-inner>
+                <v-tooltip text="Only Administrators can edit Staff No" location="top">
+                  <template #activator="{ props }">
+                    <v-icon v-bind="props" icon="tabler:IconLock" size="16" color="grey" />
+                  </template>
+                </v-tooltip>
+              </template>
+            </BaseTextField>
           </Field>
         </v-col>
 
@@ -133,6 +164,7 @@
               v-bind="field"
               :label="t('addMember.form.position')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               :items="position"
               prependIcon="mdi-seat"
               item-title="name"
@@ -152,6 +184,7 @@
               v-bind="field"
               :label="t('addMember.form.role')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               :items="role"
               prependIcon="mdi-account-supervisor"
               item-title="name"
@@ -171,6 +204,7 @@
               v-bind="field"
               :label="t('addMember.form.email')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               type="email"
               variant="plain"
               dense
@@ -190,6 +224,7 @@
               v-bind="field"
               :label="t('addMember.form.permanent_date')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               prependIcon="mdi-calendar-month"
               :width="'320px'"
               :error-messages="errorMessage"
@@ -241,6 +276,7 @@
               v-bind="field"
               :label="t('addMember.form.sort_key')"
               class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
               :items="sortKey"
               prependIcon="mdi-sort"
               :width="'320px'"
@@ -260,6 +296,7 @@
             class="mx-auto"
             prependIcon="tabler:IconPhotoCheck"
             :width="'320px'"
+            readonly
             @click="triggerFileInput"
           >
           </BaseTextField>
@@ -283,8 +320,9 @@
     </Form>
   </ParentCard>
 </template>
+
 <script setup>
-import { position, role, sortKey, project } from '@/utils/data';
+import { position, role, sortKey } from '@/utils/data';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useI18n } from 'vue-i18n';
 import { memberSchema } from '@/plugins/validations/add-member.js';
@@ -302,12 +340,24 @@ const route = useRoute();
 const router = useRouter();
 const memberId = route.params.memberId;
 const authStore = useAuthStore();
-const roleId = computed(() => authStore.staff?.role ?? 0);
 const fileInput = ref(null);
 const fileName = ref('');
 const selectedFile = ref(null);
 const existingFileName = ref(null);
 const newImageSelected = ref(false);
+const targetMemberRole = ref(null);
+
+const isAdmin = computed(() => {
+  const currentRole = authStore.staffRole || localStorage.getItem('staff-role');
+  return String(currentRole) === String(ADMIN);
+});
+
+const isTargetAdmin = computed(() => String(targetMemberRole.value) === String(ADMIN));
+
+const targetRoleLabel = computed(() => {
+  if (targetMemberRole.value === null || targetMemberRole.value === undefined) return '';
+  return isTargetAdmin.value ? 'ADMIN' : 'STANDARD';
+});
 
 watch(
   () => route.params.memberId,
@@ -319,35 +369,39 @@ watch(
         staff_project: {},
       });
       const data = res?.data?.[0];
-      
-      if (data?.staff_image_url && !data.staff_image_url.includes('undefined')) {
-        existingFileName.value = data.staff_image_url.split('/').pop();
-      } else {
-        existingFileName.value = null;
-      }
 
-      formRef.value?.setValues({
-        eng_name: data.eng_name,
-        jp_name: data.jp_name,
-        username: data.username,
-        password: '',
-        staff_no: data.staff_no,
-        address: data.address,
-        ph_number: data.ph_number,
-        position: typeof data.position === 'object' && data.position !== null ? data.position.id : data.position,
-        role: typeof data.role === 'object' && data.role !== null ? data.role.id : data.role,
-        email: data.email,
-        permanent_date: data.permanent_date,
-        ref_person: data.ref_person,
-        ref_ph_number: data.ref_ph_number,
-        project: data.staff_project?.map((p) => p.project_id) || [],
-        sort_key: typeof data.sort_key === 'object' && data.sort_key !== null 
-            ? data.sort_key.id 
-            : data.sort_key,
-      });
-     
+      if (data) {
+        targetMemberRole.value = typeof data.role === 'object' && data.role !== null ? data.role.id : data.role;
+
+        if (data?.staff_image_url && !data.staff_image_url.includes('undefined')) {
+          existingFileName.value = data.staff_image_url.split('/').pop();
+        } else {
+          existingFileName.value = null;
+        }
+
+        formRef.value?.setValues({
+          eng_name: data.eng_name,
+          jp_name: data.jp_name,
+          username: data.username,
+          password: '',
+          staff_no: data.staff_no,
+          address: data.address,
+          ph_number: data.ph_number,
+          position: typeof data.position === 'object' && data.position !== null ? data.position.id : data.position,
+          role: targetMemberRole.value,
+          email: data.email,
+          permanent_date: data.permanent_date,
+          ref_person: data.ref_person,
+          ref_ph_number: data.ref_ph_number,
+          project: data.staff_project?.map((p) => p.project_id) || [],
+          sort_key: typeof data.sort_key === 'object' && data.sort_key !== null 
+              ? data.sort_key.id 
+              : data.sort_key,
+        });
+      }
     } else {
       isEditMode.value = false;
+      targetMemberRole.value = null;
       existingFileName.value = null;
       formRef.value?.resetForm();
     }
@@ -355,17 +409,12 @@ watch(
   { immediate: true }
 );
 
-const isAdmin = computed(() => {
-  const currentRole = authStore.staffRole || localStorage.getItem('staff-role');
-  return String(currentRole) === String(ADMIN);
-});
 const displayedFileName = computed(() => {
   if (newImageSelected.value && fileName.value) {
     return fileName.value;
   }
   return existingFileName.value || '';
 });
-
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -379,7 +428,6 @@ const handleFileChange = (e) => {
     newImageSelected.value = true;
   }
 };
-
 
 const submit = async (values) => {
   const formData = new FormData();
@@ -414,33 +462,44 @@ const submit = async (values) => {
     res = await memberStore.createMember(formData);
   }
 
- if (res?.data?.status === 200) {
-  const updatedMember = res.data.staff;
-  const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
+  if (res?.data?.status === 200) {
+    const updatedMember = res.data.staff;
+    const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
 
-  if (Number(memberId) === Number(loggedInId) || !memberId) {
-    const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
+    if (Number(memberId) === Number(loggedInId) || !memberId) {
+      const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
 
-    sessionStorage.setItem('profileImg', fullImageUrl);
-    if (updatedMember.role !== undefined) {
-      localStorage.setItem('staff-role', String(updatedMember.role));
-    }
-
-    if (Array.isArray(authStore.staff)) {
-      const idx = authStore.staff.findIndex((s) => Number(s.id) === Number(updatedMember.id));
-      if (idx !== -1) {
-        authStore.staff[idx] = { ...authStore.staff[idx], ...updatedMember, staff_image_url: fullImageUrl };
+      sessionStorage.setItem('profileImg', fullImageUrl);
+      if (updatedMember.role !== undefined) {
+        localStorage.setItem('staff-role', String(updatedMember.role));
       }
-    } else {
-      authStore.staff = {
-        ...authStore.staff,
-        ...updatedMember,
-        staff_image_url: fullImageUrl
-      };
-    }
-  }
 
-  router.push({ name: 'member-lists' });
-}
+      if (Array.isArray(authStore.staff)) {
+        const idx = authStore.staff.findIndex((s) => Number(s.id) === Number(updatedMember.id));
+        if (idx !== -1) {
+          authStore.staff[idx] = { ...authStore.staff[idx], ...updatedMember, staff_image_url: fullImageUrl };
+        }
+      } else {
+        authStore.staff = {
+          ...authStore.staff,
+          ...updatedMember,
+          staff_image_url: fullImageUrl
+        };
+      }
+    }
+
+    router.push({ name: 'member-lists' });
+  }
 };
 </script>
+
+<style scoped>
+.gap-2 {
+  gap: 8px;
+}
+
+.field-disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+</style>

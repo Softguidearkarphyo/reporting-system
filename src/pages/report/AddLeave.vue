@@ -154,32 +154,27 @@
 
         <Form v-if="selectedPotion === 'potions2'" ref="LeaveRecordFormRef" :validation-schema="LeaveRecordFormSchema"
           :initial-values="leaveRecordInitialValues" @submit="submitLeaveRecord">
-          <v-row dense>
-            <v-col cols="12" md="6">
-              <Field name="permanent_date" v-slot="{
-                value,
-                handleChange,
-                errorMessage
-              }">
-                <BaseDatePicker :model-value="value" :label="t(
-                  'creatLeave.form.permanent_date'
-                )
-                  " class="mx-auto" prependIcon="tabler:IconCalendarPin" width="300px" :error-messages="errorMessage"
-                  clearable @update:modelValue="
-                    (date) => {
-                      handleChange(date);
-                      formData.permanent_date = date;
-                    }
-                  " />
-              </Field>
-            </v-col>
+        <v-row dense>
+  <v-col cols="12" md="6">
+    <Field name="permanent_date" v-slot="{ value, errorMessage }">
+      <BaseDatePicker
+        :model-value="value"
+        :label="t('creatLeave.form.permanent_date')"
+        class="mx-auto"
+        prependIcon="tabler:IconCalendarPin"
+        width="300px"
+        :error-messages="errorMessage"
+        readonly
+      />
+    </Field>
+  </v-col>
 
-            <v-col cols="12" md="6" class="d-flex align-center justify-center">
-              <BaseButton type="submit" style="width: 200px">
-                {{ t('creatLeave.form.calculate') }}
-              </BaseButton>
-            </v-col>
-          </v-row>
+  <v-col cols="12" md="6" class="d-flex align-center justify-center">
+    <BaseButton type="submit" style="width: 200px">
+      {{ t('creatLeave.form.calculate') }}
+    </BaseButton>
+  </v-col>
+</v-row>
         </Form>
 
 

@@ -39,19 +39,31 @@ export const useMemberStore = defineStore('member', () => {
     }
   };
 
-  const updateMember = async (payload) => {
-    try {
-      const response = await api.post(
-        '/reporting-system/staff/update',
-        payload
-      );
-      toast.success('Member Updated Successfully.');
-      return response;
-    } catch (error) {
-      toast.error('Fail to Update Member.');
-      return error;
+ const updateMember = async (payload) => {
+  try {
+    const response = await api.post(
+      '/reporting-system/staff/update',
+      payload
+    );
+
+    const message = response.data?.message || 'Member Updated Successfully.';
+  
+    if (response.data?.status && response.data.status !== 200) {
+      toast.error(message);
+    } else {
+      toast.success(message);
     }
-  };
+
+    return response;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      'Fail to Update Member.';
+    toast.error(errorMessage);
+    return error;
+  }
+};
 
   const deleteMember = async (payload) => {
     try {

@@ -19,7 +19,6 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await api.post('/login', { username, password });
 
       staff.value = res.data.staff;
-      console.log("staff value ", staff.value.staff_image, staff)
       const profileImg = staff.value?.staff_image_url 
         || (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null) 
         || profileImgPath(staff.value.eng_name);

@@ -70,26 +70,18 @@ export const useLeaveStore = defineStore('leave', () => {
     }
   };
 
-  const createLeave = async (payload) => {
-    try {
-      const response = await api.post(
-        '/reporting-system/leave/create',
-        payload
-      );
-      toast.success('Leave Created Successfully.');
-      return response;
-    } catch (error) {
-      // toast.error('Fail to create leave');
-      // return error;
-      if (error.response && error.response.status === 422) {
-      console.error('Laravel Validation Errors:', error.response.data.errors);
-      toast.error('Validation failed: ' + JSON.stringify(error.response.data.errors));
-    } else {
-      toast.error('Fail to create leave');
-    }
-    throw error;
-    }
-  };
+const createLeave = async (payload) => {
+  try {
+    const response = await api.post(
+      '/reporting-system/leave/create',
+      payload
+    );
+    toast.success('Leave Created Successfully.');
+    return response;
+  } catch (error) {
+    toast.error('Fail to create leave.Calculate leave record first.');
+  }
+};
 
   return {
     leaves,
