@@ -29,84 +29,107 @@
     </v-row>
 
     <!-- Leave Record + Fine Record -->
-    <v-row class="mb-6" dense>
-      <v-col cols="12" md="6">
-        <v-card rounded="lg" elevation="1">
-          <v-card-title class="text-h6">Leave Record</v-card-title>
-          <BaseTable
-            :headers="leaveHeader"
-            :items="memberLeave"
-            class="elevation-0"
-          >
-            <template #[`item.status`]="{ item }">
-              <v-chip color="warning" text-color="black" size="small" label>{{
-                item.status
-              }}</v-chip>
-            </template>
-            <template #[`item.action`]="{ item }">
-              <v-btn icon size="x-small" color="green">
-                <v-icon>mdi-check</v-icon>
-              </v-btn>
-              <v-btn icon size="x-small" color="red">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-          </BaseTable>
-        </v-card>
-      </v-col>
+<v-row class="mb-6" dense>
+  <!-- Leave Record (Full Width) -->
+  <v-col cols="12">
+    <v-card rounded="lg" elevation="1">
+      <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+      <v-divider></v-divider>
 
-      <v-col cols="12" md="6">
-        <v-card rounded="lg" elevation="1">
-          <v-card-title class="text-h6">Fine Record</v-card-title>
-          <BaseTable :headers="fineHeader" :items="memberFine">
-            <template #[`item.time`]="{ item }">
-              <span class="time-box d-inline-flex justify-center align-center">
-                <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                {{ item.time }}
-              </span>
-            </template>
-            <template #[`item.fine`]="{ item }">
-              <span class="money-box d-inline-flex justify-center align-center">
-                {{ item.fine + ' Ks' }}
-              </span>
-            </template>
-            <template #[`item.count`]="{ item }">
-              <span
-                class="time-box d-inline-flex justify-center align-center p-2 rounded-pill"
-              >
-                {{ item.count }}
-              </span>
-              <v-icon
-                v-if="item.count > 2"
-                :style="{
-                  color: item.count > 3 ? '#d00000' : '#ffba08',
-                }"
-                class="ms-1"
-                >{{
-                  item.count > 3
-                    ? 'mdi-fire-alert'
-                    : 'mdi-alert-decagram-outline'
-                }}
-              </v-icon>
-            </template>
-            <template #[`item.action`]="{ item }">
-              <span class="d-flex justify-left align-center p-0">
-                <BaseButton
-                  elevation="0"
-                  color=""
-                  class="delete-btn"
-                  size="small"
-                  :add-class="['ma-1']"
-                  @click.stop="showConfirmDelete(item.id)"
-                >
-                  <v-icon icon="tabler:IconTrash" size="15" />
-                </BaseButton>
-              </span>
-            </template>
-          </BaseTable>
-        </v-card>
-      </v-col>
-    </v-row>
+      <BaseTable
+        :headers="leaveHeader"
+        :items="memberLeave"
+        :items-per-page="-1"
+        hide-default-footer
+        class="elevation-0 pa-2 no-scroll-table"
+      >
+        <!-- Employee Name -->
+        <template #[`item.eng_name`]="{ item }">
+          <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+        </template>
+
+        <!-- Leave Type: Paid / Unpaid -->
+        <template #[`item.leave_type`]="{ item }">
+          <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+            paid
+          </span>
+          <span v-else class="status1 d-inline-flex justify-center align-center">
+            unpaid
+          </span>
+        </template>
+
+        <!-- Duration Mapping -->
+        <template #[`item.duration`]="{ item }">
+          <span v-if="item.duration == 1">Full day</span>
+          <span v-else-if="item.duration == 2">Half day</span>
+          <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 4">3 Hrs</span>
+          <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 6">2 Hrs</span>
+          <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 8">1 Hrs</span>
+          <span v-else-if="item.duration == 9">30 Min</span>
+          <span v-else>{{ item.duration }}</span>
+        </template>
+
+        <!-- Reason -->
+        <template #[`item.reason`]="{ item }">
+          <span>{{ item.reason || '-' }}</span>
+        </template>
+      </BaseTable>
+    </v-card>
+  </v-col>
+
+  <!-- Fine Record (Full Width) -->
+  <v-col cols="12">
+    <v-card rounded="lg" elevation="1">
+      <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+      <v-divider></v-divider>
+      
+      <BaseTable 
+        :headers="fineHeader" 
+        :items="memberFine" 
+        :items-per-page="-1"
+        hide-default-footer
+        class="elevation-0 pa-2 no-scroll-table"
+      >
+        <!-- Employee Name Slot -->
+        <template #[`item.eng_name`]="{ item }">
+          <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+        </template>
+
+        <!-- Time Slot -->
+        <template #[`item.time`]="{ item }">
+          <span class="time-box d-inline-flex justify-center align-center">
+            <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+            {{ item.time }}
+          </span>
+        </template>
+
+        <!-- Fine Amount Slot -->
+        <template #[`item.fine`]="{ item }">
+          <span class="money-box d-inline-flex justify-center align-center">
+            {{ item.fine + ' Ks' }}
+          </span>
+        </template>
+
+        <!-- Count & Alert Icon Slot -->
+        <template #[`item.count`]="{ item }">
+          <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+            {{ item.count }}
+          </span>
+          <v-icon
+            v-if="item.count > 2"
+            :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }"
+            class="ms-1"
+          >
+            {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+          </v-icon>
+        </template>
+      </BaseTable>
+    </v-card>
+  </v-col>
+</v-row>
   </v-main>
 
   <v-main v-else class="pa-6 pt-4">
@@ -134,24 +157,45 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="4">
-        <v-card class="card-chart" outlined>
-          <v-card-title class="text-h6">Leave Record</v-card-title>
-          <v-list>
-            <v-list-item v-for="(member, index) in members" :key="index">
-              <template #prepend>
-                <v-avatar size="40">
-                  <v-img :src="member.avatar"></v-img>
-                </v-avatar>
-              </template>
-              <v-list-item-title>{{ member.name }}</v-list-item-title>
-              <template #append>
-                <v-chip :color="member.teamColor" size="small">{{ member.team }}</v-chip>
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-col>
+      <BaseTable
+  :headers="leaveHeader"
+  :items="memberLeave"
+  class="elevation-0 pa-2"
+>
+  <!-- Employee Name -->
+  <template #[`item.eng_name`]="{ item }">
+    <span class="font-weight-medium">{{ item.eng_name }}</span>
+  </template>
+
+  <!-- Leave Type: Paid / Unpaid -->
+  <template #[`item.leave_type`]="{ item }">
+    <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+      paid
+    </span>
+    <span v-else class="status1 d-inline-flex justify-center align-center">
+      unpaid
+    </span>
+  </template>
+
+  <!-- Duration Mapping -->
+  <template #[`item.duration`]="{ item }">
+    <span v-if="item.duration == 1">Full day</span>
+    <span v-else-if="item.duration == 2">Half day</span>
+    <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+    <span v-else-if="item.duration == 4">3 Hrs</span>
+    <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+    <span v-else-if="item.duration == 6">2 Hrs</span>
+    <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+    <span v-else-if="item.duration == 8">1 Hrs</span>
+    <span v-else-if="item.duration == 9">30 Min</span>
+    <span v-else>{{ item.duration }}</span>
+  </template>
+
+  <!-- Reason -->
+  <template #[`item.reason`]="{ item }">
+    <span>{{ item.reason || '-' }}</span>
+  </template>
+</BaseTable>
     </v-row>
 
     <v-row>
@@ -166,15 +210,54 @@
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="8">
-            <v-card class="card-chart" outlined>
-              <v-card-title>Overview</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <canvas id="overviewChart"></canvas>
-              </v-card-text>
-            </v-card>
-          </v-col>
+          <v-col cols="12" md="8">
+  <v-card rounded="lg" elevation="1">
+    <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+    <v-divider></v-divider>
+
+    <BaseTable 
+      :headers="fineHeader" 
+      :items="memberFine" 
+      :items-per-page="-1"
+      hide-default-footer
+      class="elevation-0 pa-2 no-scroll-table"
+    >
+      <!-- Employee Name Slot -->
+      <template #[`item.eng_name`]="{ item }">
+        <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+      </template>
+
+      <!-- Time Slot -->
+      <template #[`item.time`]="{ item }">
+        <span class="time-box d-inline-flex justify-center align-center">
+          <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+          {{ item.time }}
+        </span>
+      </template>
+
+      <!-- Fine Amount Slot -->
+      <template #[`item.fine`]="{ item }">
+        <span class="money-box d-inline-flex justify-center align-center">
+          {{ item.fine + ' Ks' }}
+        </span>
+      </template>
+
+      <!-- Count & Alert Icon Slot -->
+      <template #[`item.count`]="{ item }">
+        <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+          {{ item.count }}
+        </span>
+        <v-icon
+          v-if="item.count > 2"
+          :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }"
+          class="ms-1"
+        >
+          {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+        </v-icon>
+      </template>
+    </BaseTable>
+  </v-card>
+</v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -191,12 +274,16 @@ import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
 import { ADMIN } from '@/utils/constant';
+import { useLeaveStore } from '@/stores/leave/leave';
+import {useMemberFineStore} from '@/stores/member/member-fine.js'
 
 const { t, locale } = useI18n();
+const lan = ref('en');
 const authStore = useAuthStore();
 const memberStore = useMemberStore();
 const menPowerStore = useMenPowerStoreStore();
-
+const leaveStore = useLeaveStore();
+const fineStore = useMemberFineStore();
 const staff = computed(() => authStore.loginStaff);
 const staffId = computed(() => staff.value?.id);
 
@@ -207,7 +294,6 @@ const role = computed(() => {
 });
 
 const isAdmin = computed(() => role.value === String(ADMIN));
-
 const japaneseLevel = ref({});
 const majorSkill = ref({});
 const memberLeave = ref([]);
@@ -215,8 +301,44 @@ const memberFine = ref([]);
 const menPower = ref({});
 const members = ref([]); // Admin View Member List 
 
+
+const leaveHeader = computed(() => {
+  const tmpHeaders = [
+    { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
+    { title: t('creatLeave.form.leave_date'), key: 'leave_date' },
+    { title: t('creatLeave.table.leave_type'), key: 'leave_type' },
+    { title: t('creatLeave.table.duration'), key: 'duration' },
+    { title: t('creatLeave.form.total_days'), key: 'day_count' },
+    { title: t('creatLeave.table.reason'), key: 'reason' },
+  ];
+  return tmpHeaders.map((header) => ({
+    ...header,
+    title: header.title ? header.title.toUpperCase() : '',
+  }));
+});
+
+// const fineHeader = computed(() => {
+//   const tmpHeaders = [
+//     { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
+//     { title: t('creatLeave.form.date'), key: 'date' },
+//     { title: t('creatLeave.form.time'), key: 'time' },
+//     { title: t('creatLeave.table.count'), key: 'count' },
+//     { title: t('creatLeave.table.fine'), key: 'fine' },
+//   ];
+//   return tmpHeaders.map((header) => ({
+//     ...header,
+//     title: header.title ? header.title.toUpperCase() : '',
+//   }));
+// });
+
+// Fine Header Computed Property
 const fineHeader = computed(() => {
   const tmpHeaders = [
+    {
+      title: t('memberFine.form.name'),
+      key: lan.value === 'ja' ? 'jp_name' : 'eng_name',
+      align: 'left',
+    },
     {
       title: t('memberFine.form.date'),
       key: 'date',
@@ -234,31 +356,20 @@ const fineHeader = computed(() => {
       key: 'fine',
       align: 'left',
     },
+   
     {
       title: t('memberFine.form.count'),
       key: 'count',
       align: 'left',
     },
+    
   ];
+
   return tmpHeaders.map((header) => ({
     ...header,
-    title: header.title.toUpperCase(),
+    title: header.title ? header.title.toUpperCase() : '',
   }));
 });
-
-const leaveHeader = [
-  { title: 'Leave Type', key: 'leave_type' },
-  { title: 'Leave Date', key: 'leave_date' },
-  { title: 'Duration', key: 'duration' },
-];
-
-const leaveTypes = [
-  { name: 'Sick', remaining: 8 },
-  { name: 'Casual', remaining: 8 },
-  { name: 'Earned', remaining: 8 },
-  { name: 'Comp off', remaining: 8 },
-  { name: 'Annual', remaining: 8 },
-];
 
 const fetchData = async () => {
   if (!staff.value) {
@@ -273,10 +384,43 @@ const fetchData = async () => {
     payload.skill_sheet = {};
   }
 
-  await memberStore.fetchMember(payload);
+  // 1. Fetch Leave Data
+  await leaveStore.fetchLeaveRecord();
+  const allLeaveRecords = leaveStore.getLeaveRecords || [];
 
-  const leaves = memberStore.getMembers?.[0]?.leave || [];
-  const fines = memberStore.getMembers?.[0]?.fine || [];
+  memberLeave.value = allLeaveRecords.flatMap((record) =>
+    (record.leaves || []).map((item) => ({
+      id: item.id,
+      eng_name: record.eng_name || '',
+      leave_date: item.leave_date,
+      leave_type: item.leave_type,
+      duration: item.duration,
+      day_count: item.day_count,
+      reason: item.reason || '-',
+    }))
+  );
+
+  // 2. Fetch Fine Data (Handle nested response object)
+  const fineRes = await fineStore.fetchMemberFine();
+  
+  // Safely extract array from fineRes.data.data or fineRes.data
+  const fineList = Array.isArray(fineRes?.data?.data)
+    ? fineRes.data.data
+    : Array.isArray(fineRes?.data)
+    ? fineRes.data
+    : [];
+
+  memberFine.value = fineList.map((item) => ({
+    id: item.id,
+    eng_name: item.staff?.eng_name || '-',
+    date: item.date,
+    time: item.time,
+    count: item.count,
+    fine: item.amount,
+  }));
+
+  // 3. Fetch Member Skill & Japanese Level Data
+  await memberStore.fetchMember(payload);
 
   const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
     id: item.skill_sheet?.japanese_level?.id,
@@ -298,20 +442,7 @@ const fetchData = async () => {
     return acc;
   }, {});
 
-  memberLeave.value = leaves.map((item) => ({
-    leave_type: item?.leave_type,
-    leave_date: item?.leave_date,
-    duration: item?.duration,
-  }));
-
-  memberFine.value = fines.map((item) => ({
-    date: item?.date,
-    time: item?.time,
-    total: item?.total,
-    count: item?.count,
-    fine: item?.amount,
-  }));
-
+  // 4. Fetch Man Power
   await menPowerStore.fetchMenPower();
   (menPowerStore.getMenPower || []).forEach((mp) => {
     menPower.value[mp.eng_name] = mp.hours;
@@ -499,5 +630,19 @@ onMounted(async () => {
 #menPowerChart {
   max-width: 380px;
   max-height: 320px;
+}
+.no-scroll-table :deep(.v-table__wrapper) {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+.no-scroll-table :deep(table) {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.no-scroll-table :deep(td),
+.no-scroll-table :deep(th) {
+  white-space: nowrap;
 }
 </style>

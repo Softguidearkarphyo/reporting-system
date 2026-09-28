@@ -122,7 +122,6 @@ const fetch = async () => {
   await locationStore.fetchStaffs({ location: {} });
   staffs.value = [...locationStore.getStaffs];
   originalStaffs.value = [...locationStore.getStaffs];
-  console.log(staffs.value);
   addMarkers();
 };
 
@@ -248,11 +247,9 @@ watch(search, (val) => {
   staffs.value = originalStaffs.value?.filter((staff) => {
     const eng = staff.eng_name?.toLowerCase() || '';
     const jp = staff.jp_name?.toLowerCase() || '';
-    console.log(eng.includes(searchVal), 'eng');
-    console.log(jp.includes(searchVal), 'jp');
+    
     return eng.includes(searchVal) || jp.includes(searchVal);
   });
-  console.log(staffs.value);
   addMarkers();
 });
 </script>

@@ -135,7 +135,6 @@ const filterByDate = async (values) => {
       periods: hourMinConvert(staff.totalHour),
     }));
 
-    console.log(result);
 
     items.value = result;
     originalItems = [...result];

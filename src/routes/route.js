@@ -23,6 +23,7 @@ import AddSkill from '../pages/report/AddSkill.vue';
 import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
+import ViewLeave from '../pages/report/ViewLeave.vue';
 
 const routes = [
   {
@@ -153,6 +154,12 @@ const routes = [
         path: '/reporting-system/edit-employee-skill/:skillSheetId',
         name: 'edit-employee-skill',
         component: AddSkill,
+        meta: { requiresAuth: true },
+      },
+       {
+        path: '/reporting-system/view-leaves/:recId',
+        name: 'view-leaves',
+        component: ViewLeave,
         meta: { requiresAuth: true },
       },
       // {

@@ -8,7 +8,6 @@ export const useMemberStore = defineStore('member', () => {
     members.value = data;
   };
   const fetchMember = async (payload) => {
-    // console.log("fetch member "+ JSON.stringify(payload))
     try {
       const response = await api.post('/reporting-system/staff/get', payload);
       setMembers(response.data);

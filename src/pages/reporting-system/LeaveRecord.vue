@@ -1,202 +1,330 @@
 <template>
-  <v-container>
-    <v-main class="pa-6 pt-4">
-      <!-- Leave Availability Cards -->
-      <v-row class="mb-6" justify="space-between">
-        <v-col
-          v-for="(type, i) in leaveTypes"
-          :key="i"
-          cols="12"
-          sm="6"
-          md="2"
-          class="px-1"
-        >
-          <v-card :class="borderClass" class="pa-3" rounded elevation="1">
-            <div class="d-flex align-center">
-              <v-progress-circular
-                :model-value="type.remaining * 12.5"
+  <div class="leave-management-view p-6 bg-gray-50 min-h-screen">
+    <template v-if="isAdmin">
+      <v-row class="align-center mb-3">
+        <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
+          <BaseTitle>{{ t('creatLeave.title') }}</BaseTitle>
+        </v-col>
+        <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+          <BaseTextField
+            v-model="search"
+            :label="t('common.search')"
+            color="primary"
+            prepend-icon="mdi-magnify"
+          />
+        </v-col>
+      </v-row>
+
+      <ParentCard>
+        <BaseTable :headers="adminHeaders" :items="filteredAdminLeaveList" :loading="loading">
+          <template #[`item.name`]="{ item }">
+            <div>
+              <div class="font-weight-medium text-gray-900">{{ item.eng_name || '-' }}</div>
+              <div class="text-caption text-gray-500" v-if="item.jp_name">({{ item.jp_name }})</div>
+            </div>
+          </template>
+
+          <template #[`item.leave_type`]="{ item }">
+            <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+              paid
+            </span>
+            <span v-else class="status1 d-inline-flex justify-center align-center">
+              unpaid
+            </span>
+          </template>
+
+          <template #[`item.duration`]="{ item }">
+            <span v-if="item.duration == 1">Full day</span>
+            <span v-else-if="item.duration == 2">Half day</span>
+            <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 4">3 Hrs</span>
+            <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 6">2 Hrs</span>
+            <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 8">1 Hrs</span>
+            <span v-else-if="item.duration == 9">30 Min</span>
+            <span v-else>{{ item.duration }}</span>
+          </template>
+
+          <template #[`item.day_count`]="{ item }">
+            {{ item.day_count }} Day(s)
+          </template>
+
+          <template #[`item.reason`]="{ item }">
+            {{ item.reason || '-' }}
+          </template>
+
+          <template #[`item.action`]="{ item }">
+            <div class="d-flex justify-end">
+              <v-btn
+                icon
+                size="small"
+                variant="text"
                 color="primary"
-                size="60"
-                width="6"
+                @click.stop="pushToView(item.rec_id)"
               >
-                {{ type.remaining }}
-              </v-progress-circular>
-              <div class="ml-4">
-                <div class="text-caption">Remaining</div>
-                <div class="text-h6 font-weight-bold">{{ type.name }}</div>
-              </div>
+                <v-icon icon="tabler:IconEye" size="18" />
+              </v-btn>
+            </div>
+          </template>
+        </BaseTable>
+      </ParentCard>
+    </template>
+
+    <template v-else>
+      <v-row class="mb-4">
+        <v-col cols="12" class="d-flex align-center">
+          <h2 class="text-h5 font-weight-bold mb-0 d-flex align-center ga-2">
+            <span>{{ employeeInfo.eng_name || authStore.staff?.eng_name || 'My Leave Details' }}</span>
+            <span v-if="employeeInfo.jp_name || authStore.staff?.jp_name" class="text-body-1 text-gray-500">
+              ({{ employeeInfo.jp_name || authStore.staff?.jp_name }})
+            </span>
+          </h2>
+        </v-col>
+      </v-row>
+
+      <v-row class="mb-6">
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-primary me-2">
+                {{ leaveSummary.total_used ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-info me-2">
+                {{ leaveSummary.remain_leaves ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-warning me-2">
+                {{ leaveSummary.first_annual ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-success me-2">
+                {{ leaveSummary.second_annual ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
             </div>
           </v-card>
         </v-col>
       </v-row>
 
-      <!-- Leave Approval + Chart -->
-      <v-row class="mb-6" dense>
-        <v-col cols="12" md="6">
-          <v-card rounded="lg" elevation="1">
-            <v-card-title class="text-h6">Leave Approval</v-card-title>
-            <v-data-table
-              :headers="headers"
-              :items="leaveRequests"
-              class="elevation-0"
-            >
-              <template #[`item.status`]="{ item }">
-                <v-chip color="warning" text-color="black" size="small" label>{{
-                  item.status
-                }}</v-chip>
-              </template>
-              <template #[`item.action`]="">
-                <v-btn icon size="x-small" color="green">
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
-                <v-btn icon size="x-small" color="red">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-col>
+      <ParentCard>
+        <v-row class="align-center mb-3">
+          <v-col cols="6" md="8">
+            <h3 class="text-subtitle-1 font-weight-bold">
+              {{ t('creatLeave.title4') || 'ON LEAVE RECORDS' }}
+            </h3>
+          </v-col>
+          <v-col cols="6" md="4" class="d-flex justify-end">
+            <BaseTextField
+              v-model="search"
+              :label="t('common.search')"
+              color="primary"
+              prepend-icon="mdi-magnify"
+              density="compact"
+            />
+          </v-col>
+        </v-row>
 
-        <v-col cols="12" md="6">
-          <v-card rounded="lg" elevation="1">
-            <v-card-title class="text-h6">Team Leave Track</v-card-title>
-            <v-card-text>
-              <v-chart
-                type="bar"
-                :options="chartOptions"
-                :series="chartSeries"
-              />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
+        <BaseTable :headers="userHeaders" :items="filteredUserLeaveList" :loading="loading">
+          <template #[`item.leave_date`]="{ item }">
+            <span class="font-weight-medium">{{ item.leave_date }}</span>
+          </template>
 
-      <!-- Leave Calendar -->
-      <!-- <v-card rounded="lg" elevation="1">
-        <v-card-title class="text-h6 d-flex justify-space-between">
-          <div>Leave Calendar</div>
-          <div class="text-caption text-grey">July 2023</div>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row class="text-center">
-            <v-col
-              v-for="day in weekDays"
-              :key="day"
-              class="font-weight-medium"
-            >
-              {{ day }}
-            </v-col>
-          </v-row>
-          <v-row class="text-center mt-2" dense>
-            <v-col
-              v-for="(day, i) in calendarDays"
-              :key="i"
-              class="py-2"
-              :class="day.type"
-            >
-              <div>{{ day.date }}</div>
-              <v-chip
-                v-if="day.label"
-                :color="day.color"
-                size="x-small"
-                class="mt-1"
-                label
-              >
-                {{ day.label }}
-              </v-chip>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card> -->
-    </v-main>
-  </v-container>
+          <template #[`item.leave_type`]="{ item }">
+            <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+              paid
+            </span>
+            <span v-else class="status1 d-inline-flex justify-center align-center">
+              unpaid
+            </span>
+          </template>
+
+          <template #[`item.duration`]="{ item }">
+            <span v-if="item.duration == 1">Full day</span>
+            <span v-else-if="item.duration == 2">Half day</span>
+            <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 4">3 Hrs</span>
+            <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 6">2 Hrs</span>
+            <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+            <span v-else-if="item.duration == 8">1 Hrs</span>
+            <span v-else-if="item.duration == 9">30 Min</span>
+            <span v-else>{{ item.duration }}</span>
+          </template>
+
+          <template #[`item.day_count`]="{ item }">
+            {{ item.day_count }} Day(s)
+          </template>
+
+          <template #[`item.reason`]="{ item }">
+            {{ item.reason || '-' }}
+          </template>
+        </BaseTable>
+      </ParentCard>
+    </template>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { borderClass } from '@/utils/border';
-const tab = ref(0);
+import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth/auth.js';
+import { useLeaveStore } from '@/stores/leave/leave.js';
+import { ADMIN } from '@/utils/constant';
 
-const leaveTypes = [
-  { name: 'Sick', remaining: 8 },
-  { name: 'Casual', remaining: 8 },
-  { name: 'Earned', remaining: 8 },
-  { name: 'Comp off', remaining: 8 },
-  { name: 'Annual', remaining: 8 },
-];
+const { t } = useI18n();
+const authStore = useAuthStore();
+const leaveStore = useLeaveStore();
+const router = useRouter();
 
-const headers = [
-  { title: 'Name', key: 'name' },
-  { title: 'Leave Type', key: 'type' },
-  { title: 'Start Date', key: 'start' },
-  { title: 'End Date', key: 'end' },
-  { title: 'Status', key: 'status' },
-  { title: 'Action', key: 'action' },
-];
+const search = ref('');
+const loading = ref(false);
 
-const leaveRequests = [
-  {
-    name: 'Jessica',
-    type: 'Sick Leave',
-    start: 'First Half',
-    end: 'First Half',
-    status: 'Pending',
-  },
-  {
-    name: 'Jenny',
-    type: 'Sick Leave',
-    start: '15 July 2023',
-    end: '15 July 2023',
-    status: 'Pending',
-  },
-  {
-    name: 'John',
-    type: 'Casual Leave',
-    start: '15 July 2023',
-    end: '18 July 2023',
-    status: 'Pending',
-  },
-  {
-    name: 'Jack',
-    type: 'Earned Leave',
-    start: '20 July 2023',
-    end: '23 July 2023',
-    status: 'Pending',
-  },
-];
+const memberRecord = ref(null);
 
-// dummy chart data
-const chartSeries = [{ name: 'Total Leaves', data: [5, 8, 10, 15, 25, 12, 5] }];
-const chartOptions = {
-  chart: { height: 200, type: 'bar' },
-  xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'] },
-  colors: ['#3f51b5'],
+const getStoredStaffId = () => {
+  return localStorage.getItem('staff-id');
 };
 
-// Calendar Data
-const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const role = computed(() => {
+  const r =
+    authStore.staffRole ??
+    authStore.staff?.role ??
+    authStore.staff?.staff_role ??
+    localStorage.getItem('staff-role');
+    
+  return r !== null && r !== undefined ? Number(r) : null;
+});
 
-const calendarDays = [
-  { date: '', type: 'empty' },
-  { date: '26' },
-  { date: '27' },
-  { date: '28' },
-  { date: '29' },
-  { date: '30' },
-  { date: '1', label: 'Sick', color: 'orange' },
-  { date: '2' },
-  { date: '3' },
-  { date: '4' },
-  { date: '5' },
-  { date: '6', label: 'Holiday', color: 'red' },
-  { date: '7' },
-  { date: '8' },
-];
+const isAdmin = computed(() => role.value === ADMIN);
+
+const adminHeaders = computed(() => [
+  { title: t('creatLeave.table.name').toUpperCase(), key: 'name', sortable: true },
+  { title: t('creatLeave.form.leave_date').toUpperCase(), key: 'leave_date' },
+  { title: t('creatLeave.table.leave_type').toUpperCase(), key: 'leave_type' },
+  { title: t('creatLeave.table.duration').toUpperCase(), key: 'duration' },
+  { title: t('creatLeave.form.total_days').toUpperCase(), key: 'day_count' },
+  { title: t('creatLeave.table.reason').toUpperCase(), key: 'reason' },
+  { title: t('memberList.table.action').toUpperCase(), key: 'action', align: 'end', sortable: false },
+]);
+
+const adminLeaveList = computed(() => leaveStore.leaves || leaveStore.getLeaves || []);
+
+const filteredAdminLeaveList = computed(() => {
+  if (!search.value) return adminLeaveList.value;
+  const q = search.value.toLowerCase();
+  return adminLeaveList.value.filter(
+    (item) =>
+      item.eng_name?.toLowerCase().includes(q) ||
+      item.jp_name?.toLowerCase().includes(q) ||
+      item.reason?.toLowerCase().includes(q)
+  );
+});
+
+const userHeaders = computed(() => [
+  { title: t('creatLeave.form.leave_date').toUpperCase(), key: 'leave_date' },
+  { title: t('creatLeave.table.leave_type').toUpperCase(), key: 'leave_type' },
+  { title: t('creatLeave.table.duration').toUpperCase(), key: 'duration' },
+  { title: t('creatLeave.form.day_count').toUpperCase(), key: 'day_count' },
+  { title: t('creatLeave.table.reason').toUpperCase(), key: 'reason' },
+]);
+
+const employeeInfo = computed(() => {
+  return {
+    eng_name: memberRecord.value?.eng_name || authStore.staff?.eng_name,
+    jp_name: memberRecord.value?.jp_name || authStore.staff?.jp_name,
+  };
+});
+
+const leaveSummary = computed(() => {
+  return memberRecord.value || {};
+});
+
+const userLeaveList = computed(() => {
+  return memberRecord.value?.leaves || [];
+});
+
+const filteredUserLeaveList = computed(() => {
+  if (!search.value) return userLeaveList.value;
+  const q = search.value.toLowerCase();
+  return userLeaveList.value.filter(
+    (item) =>
+      item.leave_date?.toLowerCase().includes(q) ||
+      item.reason?.toLowerCase().includes(q)
+  );
+});
+
+const pushToView = (id) => {
+  router.push({ name: 'view-leaves', params: { recId: id } });
+};
+
+const fetchData = async () => {
+  loading.value = true;
+  try {
+    if (!authStore.staff) {
+      await authStore.fetchStaff();
+    }
+
+    if (isAdmin.value) {
+      await leaveStore.fetchLeave({});
+    } else {
+      const staffId =
+        authStore.staff?.staff_id ||
+        authStore.staff?.rec_id ||
+        authStore.staff?.id ||
+        getStoredStaffId();
+
+      if (staffId) {
+        const response = await leaveStore.fetchLeaveRecord({ 
+          staff_id: parseInt(staffId),
+        });
+
+        const rawData = response?.data || response || [];
+        console.log("hi d ", rawData);
+        if (Array.isArray(rawData) && rawData.length > 0) {
+          memberRecord.value = rawData[0];
+        } else if (rawData && typeof rawData === 'object' && !Array.isArray(rawData)) {
+          memberRecord.value = rawData;
+        }
+      } else {
+        console.warn('No staff ID found in auth store or localStorage.');
+      }
+    }
+  } catch (e) {
+    console.error('Failed to fetch leave details:', e);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(async () => {
+  await fetchData();
+});
 </script>
-
-<style scoped>
-.empty {
-  background-color: transparent;
-}
-</style>

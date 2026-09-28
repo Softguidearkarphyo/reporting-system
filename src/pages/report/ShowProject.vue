@@ -278,7 +278,6 @@ watch(
   () => search.value,
   (newVal) => {
     if (newVal) {
-      console.log(items.value)
       const dateSearch = originalItems.filter((item) =>{
          Object.values(item).some((val) =>
           String(val).toLowerCase().includes(newVal.toLowerCase())

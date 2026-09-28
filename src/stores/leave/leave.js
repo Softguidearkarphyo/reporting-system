@@ -4,7 +4,6 @@ import * as yup from 'yup';
 import api from '@/plugins/axios';
 import { toast } from '@/utils/toast';
 
-
 export const leaveSchema = (t, multipleLeave) => {
   return yup.object({
     leave_date: multipleLeave
@@ -49,45 +48,67 @@ export const otSchema = (t) => {
   });
 };
 
-
 export const useLeaveStore = defineStore('leave', () => {
   const leaves = ref([]);
+  const leaveRecords = ref([]);
 
+  // Getters
   const getLeaves = computed(() => leaves.value);
+  const getLeaveRecords = computed(() => leaveRecords.value);
+  
 
   const setLeaves = (data) => {
     leaves.value = data;
   };
+  const setLeaveRecords = (data) => {
+    leaveRecords.value = data;
+  };
 
-  const fetchLeave = async (payload) => {
+
+  // Fetch Leaves API Call
+  const fetchLeave = async (payload = {}) => {
     try {
       const response = await api.post('/reporting-system/leave/get', payload);
       setLeaves(response.data);
-      return response;
+      return response.data;
     } catch (error) {
       toast.error('Fail to Fetch Leaves');
-      return error;
+      throw error;
     }
   };
 
-const createLeave = async (payload) => {
-  try {
-    const response = await api.post(
-      '/reporting-system/leave/create',
-      payload
-    );
-    toast.success('Leave Created Successfully.');
-    return response;
-  } catch (error) {
-    toast.error('Fail to create leave.Calculate leave record first.');
-  }
-};
+   const fetchLeaveRecord = async (payload = {}) => {
+    try {
+      const response = await api.post('/reporting-system/leave-record/get', payload);
+      setLeaveRecords(response.data);
+      return response.data;
+    } catch (error) {
+      toast.error('Fail to Fetch Leaves');
+      throw error;
+    }
+  };
+
+  const createLeave = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/leave/create',
+        payload
+      );
+      toast.success('Leave Created Successfully.');
+      return response;
+    } catch (error) {
+      toast.error('Fail to create leave. Calculate leave record first.');
+    }
+  };
 
   return {
     leaves,
     getLeaves,
+    getLeaveRecords,
     setLeaves,
+    setLeaveRecords,
     fetchLeave,
+    fetchLeaveRecord,
     createLeave,
   };
 });
