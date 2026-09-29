@@ -35,10 +35,37 @@ export const useOverTimeStore = defineStore('overTime', () => {
     }
   };
 
+    const updateOverTimeStatus = async (payload) => {
+    try {
+      const response = await api.post(
+        '/reporting-system/over-time/status-change',
+        payload
+      );
+      toast.success('OverTime Status Changed.');
+      return response;
+    } catch (error) {
+      toast.error('Fail to change status');
+      return error;
+    }
+  };
+
+    const deleteOvertime = async (payload) => {
+    try {
+      const response = await api.post('/reporting-system/over-time/delete', payload);
+      toast.success('Overtime Deleted Successfully.');
+      return response;
+    } catch (error) {
+      toast.success('Fail to Delete Overtime');
+      return error;
+    }
+  }
+
   return {
     getOverTime,
     setOverTime,
     fetchOverTime,
     createOverTime,
+    updateOverTimeStatus,
+    deleteOvertime
   };
 });

@@ -1,22 +1,10 @@
 <template>
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
     <v-row class="mb-6" justify="space-between">
-      <v-col
-        v-for="(type, i) in leaveTypes"
-        :key="i"
-        cols="12"
-        sm="6"
-        md="2"
-        class="px-1"
-      >
+      <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
         <v-card :class="borderClass" class="pa-3" rounded elevation="1">
           <div class="d-flex align-center">
-            <v-progress-circular
-              :model-value="type.remaining * 12.5"
-              color="primary"
-              size="60"
-              width="6"
-            >
+            <v-progress-circular :model-value="type.remaining * 12.5" color="primary" size="60" width="6">
               {{ type.remaining }}
             </v-progress-circular>
             <div class="ml-4">
@@ -28,108 +16,87 @@
       </v-col>
     </v-row>
 
-    <!-- Leave Record + Fine Record -->
-<v-row class="mb-6" dense>
-  <!-- Leave Record (Full Width) -->
-  <v-col cols="12">
-    <v-card rounded="lg" elevation="1">
-      <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
-      <v-divider></v-divider>
+    <v-row class="mb-6" dense>
+      <v-col cols="12">
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+          <v-divider></v-divider>
 
-      <BaseTable
-        :headers="leaveHeader"
-        :items="memberLeave"
-        :items-per-page="-1"
-        hide-default-footer
-        class="elevation-0 pa-2 no-scroll-table"
-      >
-        <!-- Employee Name -->
-        <template #[`item.eng_name`]="{ item }">
-          <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
-        </template>
+          <BaseTable :headers="leaveHeader" :items="memberLeave" :items-per-page="-1" hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table">
+            <template #[`item.eng_name`]="{ item }">
+              <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+            </template>
 
-        <!-- Leave Type: Paid / Unpaid -->
-        <template #[`item.leave_type`]="{ item }">
-          <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
-            paid
-          </span>
-          <span v-else class="status1 d-inline-flex justify-center align-center">
-            unpaid
-          </span>
-        </template>
+            <template #[`item.leave_type`]="{ item }">
+              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+                paid
+              </span>
+              <span v-else class="status1 d-inline-flex justify-center align-center">
+                unpaid
+              </span>
+            </template>
 
-        <!-- Duration Mapping -->
-        <template #[`item.duration`]="{ item }">
-          <span v-if="item.duration == 1">Full day</span>
-          <span v-else-if="item.duration == 2">Half day</span>
-          <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 4">3 Hrs</span>
-          <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 6">2 Hrs</span>
-          <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 8">1 Hrs</span>
-          <span v-else-if="item.duration == 9">30 Min</span>
-          <span v-else>{{ item.duration }}</span>
-        </template>
+            <template #[`item.duration`]="{ item }">
+              <span v-if="item.duration == 1">Full day</span>
+              <span v-else-if="item.duration == 2">Half day</span>
+              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 4">3 Hrs</span>
+              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 6">2 Hrs</span>
+              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 8">1 Hrs</span>
+              <span v-else-if="item.duration == 9">30 Min</span>
+              <span v-else>{{ item.duration }}</span>
+            </template>
 
-        <!-- Reason -->
-        <template #[`item.reason`]="{ item }">
-          <span>{{ item.reason || '-' }}</span>
-        </template>
-      </BaseTable>
-    </v-card>
-  </v-col>
+            <template #[`item.reason`]="{ item }">
+              <span>{{ item.reason || '-' }}</span>
+            </template>
+          </BaseTable>
+        </v-card>
+      </v-col>
 
-  <!-- Fine Record (Full Width) -->
-  <v-col cols="12">
-    <v-card rounded="lg" elevation="1">
-      <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
-      <v-divider></v-divider>
-      
-      <BaseTable 
-        :headers="fineHeader" 
-        :items="memberFine" 
-        :items-per-page="-1"
-        hide-default-footer
-        class="elevation-0 pa-2 no-scroll-table"
-      >
-        <!-- Employee Name Slot -->
-        <template #[`item.eng_name`]="{ item }">
-          <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
-        </template>
+      <v-col cols="12">
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+          <v-divider></v-divider>
 
-        <!-- Time Slot -->
-        <template #[`item.time`]="{ item }">
-          <span class="time-box d-inline-flex justify-center align-center">
-            <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-            {{ item.time }}
-          </span>
-        </template>
+          <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table">
+            <!-- Employee Name Slot -->
+            <template #[`item.eng_name`]="{ item }">
+              <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+            </template>
 
-        <!-- Fine Amount Slot -->
-        <template #[`item.fine`]="{ item }">
-          <span class="money-box d-inline-flex justify-center align-center">
-            {{ item.fine + ' Ks' }}
-          </span>
-        </template>
+            <!-- Time Slot -->
+            <template #[`item.time`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center">
+                <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+                {{ item.time }}
+              </span>
+            </template>
 
-        <!-- Count & Alert Icon Slot -->
-        <template #[`item.count`]="{ item }">
-          <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-            {{ item.count }}
-          </span>
-          <v-icon
-            v-if="item.count > 2"
-            :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }"
-            class="ms-1"
-          >
-            {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
-          </v-icon>
-        </template>
-      </BaseTable>
-    </v-card>
-  </v-col>
-</v-row>
+            <!-- Fine Amount Slot -->
+            <template #[`item.fine`]="{ item }">
+              <span class="money-box d-inline-flex justify-center align-center">
+                {{ item.fine + ' Ks' }}
+              </span>
+            </template>
+
+            <!-- Count & Alert Icon Slot -->
+            <template #[`item.count`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+                {{ item.count }}
+              </span>
+              <v-icon v-if="item.count > 2" :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+              </v-icon>
+            </template>
+          </BaseTable>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-main>
 
   <v-main v-else class="pa-6 pt-4">
@@ -157,45 +124,43 @@
           </v-col>
         </v-row>
       </v-col>
-      <BaseTable
-  :headers="leaveHeader"
-  :items="memberLeave"
-  class="elevation-0 pa-2"
->
-  <!-- Employee Name -->
-  <template #[`item.eng_name`]="{ item }">
-    <span class="font-weight-medium">{{ item.eng_name }}</span>
-  </template>
+      <v-col cols="12" md="8">
+            <v-card rounded="lg" elevation="1">
+              <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+              <v-divider></v-divider>
+      <BaseTable :headers="leaveHeader" :items="memberLeave" class="elevation-0 pa-2">
+        <template #[`item.eng_name`]="{ item }">
+          <span class="font-weight-medium">{{ item.eng_name }}</span>
+        </template>
 
-  <!-- Leave Type: Paid / Unpaid -->
-  <template #[`item.leave_type`]="{ item }">
-    <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
-      paid
-    </span>
-    <span v-else class="status1 d-inline-flex justify-center align-center">
-      unpaid
-    </span>
-  </template>
+        <template #[`item.leave_type`]="{ item }">
+          <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+            paid
+          </span>
+          <span v-else class="status1 d-inline-flex justify-center align-center">
+            unpaid
+          </span>
+        </template>
 
-  <!-- Duration Mapping -->
-  <template #[`item.duration`]="{ item }">
-    <span v-if="item.duration == 1">Full day</span>
-    <span v-else-if="item.duration == 2">Half day</span>
-    <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-    <span v-else-if="item.duration == 4">3 Hrs</span>
-    <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-    <span v-else-if="item.duration == 6">2 Hrs</span>
-    <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-    <span v-else-if="item.duration == 8">1 Hrs</span>
-    <span v-else-if="item.duration == 9">30 Min</span>
-    <span v-else>{{ item.duration }}</span>
-  </template>
+        <template #[`item.duration`]="{ item }">
+          <span v-if="item.duration == 1">Full day</span>
+          <span v-else-if="item.duration == 2">Half day</span>
+          <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 4">3 Hrs</span>
+          <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 6">2 Hrs</span>
+          <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+          <span v-else-if="item.duration == 8">1 Hrs</span>
+          <span v-else-if="item.duration == 9">30 Min</span>
+          <span v-else>{{ item.duration }}</span>
+        </template>
 
-  <!-- Reason -->
-  <template #[`item.reason`]="{ item }">
-    <span>{{ item.reason || '-' }}</span>
-  </template>
-</BaseTable>
+        <!-- Reason -->
+        <template #[`item.reason`]="{ item }">
+          <span>{{ item.reason || '-' }}</span>
+        </template>
+      </BaseTable>
+      </v-card></v-col>
     </v-row>
 
     <v-row>
@@ -211,53 +176,44 @@
             </v-card>
           </v-col>
           <v-col cols="12" md="8">
-  <v-card rounded="lg" elevation="1">
-    <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
-    <v-divider></v-divider>
+            <v-card rounded="lg" elevation="1">
+              <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+              <v-divider></v-divider>
 
-    <BaseTable 
-      :headers="fineHeader" 
-      :items="memberFine" 
-      :items-per-page="-1"
-      hide-default-footer
-      class="elevation-0 pa-2 no-scroll-table"
-    >
-      <!-- Employee Name Slot -->
-      <template #[`item.eng_name`]="{ item }">
-        <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
-      </template>
+              <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
+                class="elevation-0 pa-2 no-scroll-table">
+                <!-- Employee Name Slot -->
+                <template #[`item.eng_name`]="{ item }">
+                  <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+                </template>
 
-      <!-- Time Slot -->
-      <template #[`item.time`]="{ item }">
-        <span class="time-box d-inline-flex justify-center align-center">
-          <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-          {{ item.time }}
-        </span>
-      </template>
+                <!-- Time Slot -->
+                <template #[`item.time`]="{ item }">
+                  <span class="time-box d-inline-flex justify-center align-center">
+                    <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+                    {{ item.time }}
+                  </span>
+                </template>
 
-      <!-- Fine Amount Slot -->
-      <template #[`item.fine`]="{ item }">
-        <span class="money-box d-inline-flex justify-center align-center">
-          {{ item.fine + ' Ks' }}
-        </span>
-      </template>
+                <!-- Fine Amount Slot -->
+                <template #[`item.fine`]="{ item }">
+                  <span class="money-box d-inline-flex justify-center align-center">
+                    {{ item.fine + ' Ks' }}
+                  </span>
+                </template>
 
-      <!-- Count & Alert Icon Slot -->
-      <template #[`item.count`]="{ item }">
-        <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-          {{ item.count }}
-        </span>
-        <v-icon
-          v-if="item.count > 2"
-          :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }"
-          class="ms-1"
-        >
-          {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
-        </v-icon>
-      </template>
-    </BaseTable>
-  </v-card>
-</v-col>
+                <!-- Count & Alert Icon Slot -->
+                <template #[`item.count`]="{ item }">
+                  <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+                    {{ item.count }}
+                  </span>
+                  <v-icon v-if="item.count > 2" :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                    {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+                  </v-icon>
+                </template>
+              </BaseTable>
+            </v-card>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -275,7 +231,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
 import { ADMIN } from '@/utils/constant';
 import { useLeaveStore } from '@/stores/leave/leave';
-import {useMemberFineStore} from '@/stores/member/member-fine.js'
+import { useMemberFineStore } from '@/stores/member/member-fine.js'
 
 const { t, locale } = useI18n();
 const lan = ref('en');
@@ -356,13 +312,13 @@ const fineHeader = computed(() => {
       key: 'fine',
       align: 'left',
     },
-   
+
     {
       title: t('memberFine.form.count'),
       key: 'count',
       align: 'left',
     },
-    
+
   ];
 
   return tmpHeaders.map((header) => ({
@@ -384,7 +340,6 @@ const fetchData = async () => {
     payload.skill_sheet = {};
   }
 
-  // 1. Fetch Leave Data
   await leaveStore.fetchLeaveRecord();
   const allLeaveRecords = leaveStore.getLeaveRecords || [];
 
@@ -400,15 +355,13 @@ const fetchData = async () => {
     }))
   );
 
-  // 2. Fetch Fine Data (Handle nested response object)
   const fineRes = await fineStore.fetchMemberFine();
-  
-  // Safely extract array from fineRes.data.data or fineRes.data
+
   const fineList = Array.isArray(fineRes?.data?.data)
     ? fineRes.data.data
     : Array.isArray(fineRes?.data)
-    ? fineRes.data
-    : [];
+      ? fineRes.data
+      : [];
 
   memberFine.value = fineList.map((item) => ({
     id: item.id,
@@ -419,7 +372,6 @@ const fetchData = async () => {
     fine: item.amount,
   }));
 
-  // 3. Fetch Member Skill & Japanese Level Data
   await memberStore.fetchMember(payload);
 
   const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
@@ -442,7 +394,7 @@ const fetchData = async () => {
     return acc;
   }, {});
 
-  // 4. Fetch Man Power
+
   await menPowerStore.fetchMenPower();
   (menPowerStore.getMenPower || []).forEach((mp) => {
     menPower.value[mp.eng_name] = mp.hours;
@@ -625,12 +577,14 @@ onMounted(async () => {
 .empty {
   background-color: transparent;
 }
+
 #leaveChart,
 #fineChart,
 #menPowerChart {
   max-width: 380px;
   max-height: 320px;
 }
+
 .no-scroll-table :deep(.v-table__wrapper) {
   overflow: hidden !important;
   max-height: none !important;
