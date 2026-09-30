@@ -1,23 +1,11 @@
 <template>
   <div>
     <!-- Data Table -->
-    <v-data-table
-      v-model:page="page"
-      :headers="headers"
-      :items="items"
-      :items-per-page="pagination ? itemsPerPage : items?.length"
-      fixed-header
-      v-bind="$attrs"
-      :show-select="checkbox"
-      :no-data-text="noDataMessageText"
-      class="custom-header-bg"
-      :density="!density ? 'compact' : 'default'"
-      hide-default-footer
-    >
-      <template
-        v-for="header in headers"
-        v-slot:[`item.${header.key}`]="{ item }"
-      >
+    <v-data-table v-model:page="page" :headers="headers" :items="items"
+      :items-per-page="pagination ? itemsPerPage : items?.length" fixed-header v-bind="$attrs" :show-select="checkbox"
+      :no-data-text="noDataMessageText" class="custom-header-bg" :density="!density ? 'compact' : 'default'"
+      hide-default-footer>
+      <template v-for="header in headers" v-slot:[`item.${header.key}`]="{ item }">
         <slot :name="`item.${header.key}`" :item="item">
           {{ item[header.key] }}
         </slot>
@@ -28,18 +16,9 @@
     <div v-if="showPagination" class="mt-4">
       <v-row class="d-flex justify-space-between align-center">
         <v-col>
-          <BaseSelect
-            :model-value="itemsPerPage"
-            :items="itemsPerPageSelectItems"
-            :attr-name="{ title: '', value: 0 }"
-            variant="filled"
-            density="comfortable"
-            dense
-            class="mb-n3 ml-n3"
-            width="200px"
-            label=""
-            @update:model-value="itemsPerPage = parseInt($event, 10)"
-          />
+          <BaseSelect :model-value="itemsPerPage" :items="itemsPerPageSelectItems" :attr-name="{ title: '', value: 0 }"
+            variant="filled" density="comfortable" dense class="mb-n3 ml-n3" width="200px" label=""
+            @update:model-value="itemsPerPage = parseInt($event, 10)" />
         </v-col>
         <v-col>
           <div class="text-subtitle-2">
@@ -54,13 +33,8 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-end">
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-              :total-visible="6"
-              next-icon="mdi-menu-right"
-              prev-icon="mdi-menu-left"
-            />
+            <v-pagination v-model="page" :length="pageCount" :total-visible="6" next-icon="mdi-menu-right"
+              prev-icon="mdi-menu-left" />
           </div>
         </v-col>
       </v-row>
@@ -97,9 +71,9 @@ const props = defineProps({
     required: false,
   },
   density: {
-    type: String,
-    required: false,
-  },
+    type: [String, Boolean],
+    default: 'compact' // or 'default'
+  }
 });
 
 const page = ref(1);
@@ -142,9 +116,11 @@ const noDataMessageText = computed(() => {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
 /* This targets all table data cells inside v-data-table */
 ::v-deep(.v-data-table td) {
-  color: #8c8ea1; /* change to your desired color */
+  color: #8c8ea1;
+  /* change to your desired color */
 }
 
 ::v-deep(.v-data-table td:first-child) {
@@ -170,6 +146,7 @@ const noDataMessageText = computed(() => {
 ::v-deep(.v-data-table .v-btn.edit-btn:hover) {
   background-color: rgba(var(--v-theme-primary), 0.2);
 }
+
 ::v-deep(.v-data-table .v-btn.edit-btn:hover .v-icon) {
   color: rgba(var(--v-theme-primary));
 }
@@ -177,6 +154,7 @@ const noDataMessageText = computed(() => {
 ::v-deep(.v-data-table .v-btn.delete-btn:hover) {
   background-color: #f0bbc0;
 }
+
 ::v-deep(.v-data-table .v-btn.delete-btn:hover .v-icon) {
   color: rgb(252, 3, 3);
 }

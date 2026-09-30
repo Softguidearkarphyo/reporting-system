@@ -25,7 +25,7 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :density="true">
+    <BaseTable  :headers="headers" :items="items" :density="true">
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">

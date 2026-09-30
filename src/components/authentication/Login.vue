@@ -128,7 +128,7 @@ const { loginStaff, isLoggedIn, staffName, staffRole } = authStore;
 const username = ref('');
 const password = ref('');
 const error = ref('');
-
+const showPassword = ref(false);
 //loading
 const isLoading = ref(false);
 

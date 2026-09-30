@@ -129,7 +129,7 @@
           <v-row class="align-center mb-3">
             <v-col cols="12">
               <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
-                {{ t('creatLeave.otTitle') || 'OVERTIME RECORDS' }}
+                {{ t('creatLeave.title3') || 'OVERTIME RECORDS' }}
               </h3>
             </v-col>
           </v-row>
@@ -263,7 +263,7 @@ const headers = computed(() => {
     { title: t('creatLeave.form.leave_date'), key: 'leave_date' },
     { title: t('creatLeave.table.leave_type'), key: 'leave_type' },
     { title: t('creatLeave.table.duration'), key: 'duration' },
-    { title: t('creatLeave.form.day_count'), key: 'day_count' },
+    { title: t('creatLeave.form.total_days'), key: 'day_count' },
     { title: t('creatLeave.table.reason'), key: 'reason' }
   ];
 

@@ -233,6 +233,7 @@ const leaveStore = useLeaveStore();
 const fineStore = useMemberFineStore();
 const staff = computed(() => authStore.loginStaff);
 const staffId = computed(() => staff.value?.id);
+const leaveTypes = ref([])
 
 const role = computed(() => {
   const r = authStore.staffRole ?? localStorage.getItem('staff-role');
@@ -320,31 +321,35 @@ const fetchData = async () => {
 
   const fineRes = await fineStore.fetchMemberFine();
 
-  const fineList = Array.isArray(fineRes?.data?.data)
-    ? fineRes.data.data
-    : Array.isArray(fineRes?.data)
-      ? fineRes.data
-      : [];
+const fineList = Array.isArray(fineRes?.data?.data)
+  ? fineRes.data.data
+  : Array.isArray(fineRes?.data)
+    ? fineRes.data
+    : [];
 
-  const groupedFineMap = fineList.reduce((acc, item) => {
-    const staffId = item.staff_id || item.staff?.id;
-    const name = item.staff?.eng_name || item.eng_name || '-';
-    const amount = Number(item.amount || item.fine || 0);
-
-    if (!acc[staffId]) {
-      acc[staffId] = {
-        staff_id: staffId,
-        eng_name: name,
-        total_fines_amount: 0,
-        total_fine_records: 0,
-      };
-    }
-
-    acc[staffId].total_fines_amount += amount;
-    acc[staffId].total_fine_records += 1;
-
+const groupedFineMap = fineList.reduce((acc, item) => {
+  if (Number(item.status) === 1) {
     return acc;
-  }, {});
+  }
+
+  const staffId = item.staff_id || item.staff?.id;
+  const name = item.staff?.eng_name || item.eng_name || '-';
+  const amount = Number(item.amount || item.fine || 0);
+
+  if (!acc[staffId]) {
+    acc[staffId] = {
+      staff_id: staffId,
+      eng_name: name,
+      total_fines_amount: 0,
+      total_fine_records: 0,
+    };
+  }
+
+  acc[staffId].total_fines_amount += amount;
+  acc[staffId].total_fine_records += 1;
+
+  return acc;
+}, {});
 
   memberFine.value = Object.values(groupedFineMap);
 
@@ -547,6 +552,8 @@ onMounted(async () => {
     renderChart1('menPowerChart', menPowerLabel, menPowerData);
   }
 });
+
+
 </script>
 
 <style scoped>
