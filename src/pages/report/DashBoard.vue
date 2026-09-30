@@ -125,42 +125,42 @@
         </v-row>
       </v-col>
       <v-col cols="12" md="8">
-            <v-card rounded="lg" elevation="1">
-              <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
-              <v-divider></v-divider>
-      <BaseTable :headers="leaveHeader" :items="memberLeave" class="elevation-0 pa-2">
-        <template #[`item.eng_name`]="{ item }">
-          <span class="font-weight-medium">{{ item.eng_name }}</span>
-        </template>
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+          <v-divider></v-divider>
+          <BaseTable :headers="leaveHeader" :items="memberLeave" class="elevation-0 pa-2">
+            <template #[`item.eng_name`]="{ item }">
+              <span class="font-weight-medium">{{ item.eng_name }}</span>
+            </template>
 
-        <template #[`item.leave_type`]="{ item }">
-          <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
-            paid
-          </span>
-          <span v-else class="status1 d-inline-flex justify-center align-center">
-            unpaid
-          </span>
-        </template>
+            <template #[`item.leave_type`]="{ item }">
+              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+                paid
+              </span>
+              <span v-else class="status1 d-inline-flex justify-center align-center">
+                unpaid
+              </span>
+            </template>
 
-        <template #[`item.duration`]="{ item }">
-          <span v-if="item.duration == 1">Full day</span>
-          <span v-else-if="item.duration == 2">Half day</span>
-          <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 4">3 Hrs</span>
-          <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 6">2 Hrs</span>
-          <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-          <span v-else-if="item.duration == 8">1 Hrs</span>
-          <span v-else-if="item.duration == 9">30 Min</span>
-          <span v-else>{{ item.duration }}</span>
-        </template>
+            <template #[`item.duration`]="{ item }">
+              <span v-if="item.duration == 1">Full day</span>
+              <span v-else-if="item.duration == 2">Half day</span>
+              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 4">3 Hrs</span>
+              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 6">2 Hrs</span>
+              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 8">1 Hrs</span>
+              <span v-else-if="item.duration == 9">30 Min</span>
+              <span v-else>{{ item.duration }}</span>
+            </template>
 
-        <!-- Reason -->
-        <template #[`item.reason`]="{ item }">
-          <span>{{ item.reason || '-' }}</span>
-        </template>
-      </BaseTable>
-      </v-card></v-col>
+            <!-- Reason -->
+            <template #[`item.reason`]="{ item }">
+              <span>{{ item.reason || '-' }}</span>
+            </template>
+          </BaseTable>
+        </v-card></v-col>
     </v-row>
 
     <v-row>
@@ -176,43 +176,34 @@
             </v-card>
           </v-col>
           <v-col cols="12" md="8">
-            <v-card rounded="lg" elevation="1">
-              <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
-              <v-divider></v-divider>
+              <v-card rounded="lg" elevation="1">
+                <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+                <v-divider></v-divider>
 
-              <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
-                class="elevation-0 pa-2 no-scroll-table">
-                <!-- Employee Name Slot -->
-                <template #[`item.eng_name`]="{ item }">
-                  <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
-                </template>
+                <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
+                  class="elevation-0 pa-2 no-scroll-table">
 
-                <!-- Time Slot -->
-                <template #[`item.time`]="{ item }">
-                  <span class="time-box d-inline-flex justify-center align-center">
-                    <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                    {{ item.time }}
-                  </span>
-                </template>
+                  <template #[`item.eng_name`]="{ item }">
+                    <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+                  </template>
 
-                <!-- Fine Amount Slot -->
-                <template #[`item.fine`]="{ item }">
-                  <span class="money-box d-inline-flex justify-center align-center">
-                    {{ item.fine + ' Ks' }}
-                  </span>
-                </template>
+                  <template #[`item.total_fines_amount`]="{ item }">
+                    <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
+                      {{ item.total_fines_amount.toLocaleString() }} Ks
+                    </span>
+                  </template>
 
-                <!-- Count & Alert Icon Slot -->
-                <template #[`item.count`]="{ item }">
-                  <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-                    {{ item.count }}
-                  </span>
-                  <v-icon v-if="item.count > 2" :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
-                    {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
-                  </v-icon>
-                </template>
-              </BaseTable>
-            </v-card>
+                  <template #[`item.total_fine_records`]="{ item }">
+                    <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+                      {{ item.total_fine_records }}
+                    </span>
+                    <v-icon v-if="item.total_fine_records > 2"
+                      :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                      {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+                    </v-icon>
+                  </template>
+                </BaseTable>
+              </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -243,7 +234,6 @@ const fineStore = useMemberFineStore();
 const staff = computed(() => authStore.loginStaff);
 const staffId = computed(() => staff.value?.id);
 
-// Safe Role Computed
 const role = computed(() => {
   const r = authStore.staffRole ?? localStorage.getItem('staff-role');
   return r !== null && r !== undefined ? String(r) : '';
@@ -255,7 +245,7 @@ const majorSkill = ref({});
 const memberLeave = ref([]);
 const memberFine = ref([]);
 const menPower = ref({});
-const members = ref([]); // Admin View Member List 
+const members = ref([]);
 
 
 const leaveHeader = computed(() => {
@@ -273,21 +263,6 @@ const leaveHeader = computed(() => {
   }));
 });
 
-// const fineHeader = computed(() => {
-//   const tmpHeaders = [
-//     { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
-//     { title: t('creatLeave.form.date'), key: 'date' },
-//     { title: t('creatLeave.form.time'), key: 'time' },
-//     { title: t('creatLeave.table.count'), key: 'count' },
-//     { title: t('creatLeave.table.fine'), key: 'fine' },
-//   ];
-//   return tmpHeaders.map((header) => ({
-//     ...header,
-//     title: header.title ? header.title.toUpperCase() : '',
-//   }));
-// });
-
-// Fine Header Computed Property
 const fineHeader = computed(() => {
   const tmpHeaders = [
     {
@@ -296,29 +271,17 @@ const fineHeader = computed(() => {
       align: 'left',
     },
     {
-      title: t('memberFine.form.date'),
-      key: 'date',
+      title: 'TOTAL FINE AMOUNT',
+      key: 'total_fines_amount',
       align: 'left',
       sortable: true,
-      sortDirection: 'desc',
     },
     {
-      title: t('memberFine.form.time'),
-      key: 'time',
+      title: 'TOTAL FINE RECORDS',
+      key: 'total_fine_records',
       align: 'left',
+      sortable: true,
     },
-    {
-      title: t('memberFine.form.fine'),
-      key: 'fine',
-      align: 'left',
-    },
-
-    {
-      title: t('memberFine.form.count'),
-      key: 'count',
-      align: 'left',
-    },
-
   ];
 
   return tmpHeaders.map((header) => ({
@@ -363,14 +326,27 @@ const fetchData = async () => {
       ? fineRes.data
       : [];
 
-  memberFine.value = fineList.map((item) => ({
-    id: item.id,
-    eng_name: item.staff?.eng_name || '-',
-    date: item.date,
-    time: item.time,
-    count: item.count,
-    fine: item.amount,
-  }));
+  const groupedFineMap = fineList.reduce((acc, item) => {
+    const staffId = item.staff_id || item.staff?.id;
+    const name = item.staff?.eng_name || item.eng_name || '-';
+    const amount = Number(item.amount || item.fine || 0);
+
+    if (!acc[staffId]) {
+      acc[staffId] = {
+        staff_id: staffId,
+        eng_name: name,
+        total_fines_amount: 0,
+        total_fine_records: 0,
+      };
+    }
+
+    acc[staffId].total_fines_amount += amount;
+    acc[staffId].total_fine_records += 1;
+
+    return acc;
+  }, {});
+
+  memberFine.value = Object.values(groupedFineMap);
 
   await memberStore.fetchMember(payload);
 

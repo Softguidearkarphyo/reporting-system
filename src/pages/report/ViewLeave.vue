@@ -1,6 +1,5 @@
 <template>
   <div class="member-leave-detail p-6 bg-gray-50 min-h-screen">
-    <!-- Header Row -->
     <v-row class="mb-4">
       <v-col cols="12" class="d-flex align-center">
         <v-btn icon variant="text" color="primary" class="me-2" @click="goBack">
@@ -16,68 +15,56 @@
       </v-col>
     </v-row>
 
-    <!-- Leave & Overtime Summary Cards -->
-    <v-row class="mb-6">
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card class="pa-4 rounded-lg" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-primary me-2">
-              {{ leaveSummary.total_used ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
-          </div>
-        </v-card>
-      </v-col>
+    <div class="d-flex flex-wrap ga-4 mb-6">
+      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
+        <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
+        <div class="d-flex align-baseline">
+          <span class="text-h4 font-weight-bold text-primary me-2">
+            {{ leaveSummary.total_used ?? 0 }}
+          </span>
+          <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
+        </div>
+      </v-card>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card class="pa-4 rounded-lg" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-info me-2">
-              {{ leaveSummary.remain_leaves ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
-      </v-col>
+      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
+        <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
+        <div class="d-flex align-baseline">
+          <span class="text-h4 font-weight-bold text-info me-2">
+            {{ leaveSummary.remain_leaves ?? 0 }}
+          </span>
+          <span class="text-body-2 text-gray-500">Days</span>
+        </div>
+      </v-card>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card class="pa-4 rounded-lg" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-warning me-2">
-              {{ leaveSummary.first_annual ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
-      </v-col>
+      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
+        <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
+        <div class="d-flex align-baseline">
+          <span class="text-h4 font-weight-bold text-warning me-2">
+            {{ leaveSummary.first_annual ?? 0 }}
+          </span>
+          <span class="text-body-2 text-gray-500">Days</span>
+        </div>
+      </v-card>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card class="pa-4 rounded-lg" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-success me-2">
-              {{ leaveSummary.second_annual ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
-      </v-col>
+      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
+        <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
+        <div class="d-flex align-baseline">
+          <span class="text-h4 font-weight-bold text-success me-2">
+            {{ leaveSummary.second_annual ?? 0 }}
+          </span>
+          <span class="text-body-2 text-gray-500">Days</span>
+        </div>
+      </v-card>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card class="pa-4 rounded-lg" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL OVERTIME</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-purple me-2">
-              {{ totalOvertimeFormatted }}
-            </span>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
-
+      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
+        <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL OVERTIME</div>
+        <div class="d-flex align-baseline">
+          <span class="text-h4 font-weight-bold text-purple me-2">
+            {{ totalOvertimeFormatted }}
+          </span>
+        </div>
+      </v-card>
+    </div>
     <v-row>
       <v-col cols="12" md="8">
         <ParentCard class="elevation-1 rounded-lg h-100">
@@ -177,20 +164,20 @@
                 </span>
 
                 <span v-if="item.status === 2" class="d-inline-flex align-center">
-                    <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
-                  @update:model-value="onSwitchChange(item)"
-                  style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
+                  <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                    @update:model-value="onSwitchChange(item)"
+                    style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
                 </span>
               </span>
             </template>
-             <template #[`item.action`]="{ item }">
-            <span class="d-flex justify-left align-center p-0">
-              <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
-                @click.stop="showConfirmDelete(item.id)">
-                <v-icon icon="tabler:IconTrash" size="15" />
-              </BaseButton>
-            </span>
-          </template>
+            <template #[`item.action`]="{ item }">
+              <span class="d-flex justify-left align-center p-0">
+                <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+                  @click.stop="showConfirmDelete(item.id)">
+                  <v-icon icon="tabler:IconTrash" size="15" />
+                </BaseButton>
+              </span>
+            </template>
           </BaseTable>
         </ParentCard>
       </v-col>
@@ -206,26 +193,20 @@
     " />
 
 
-<BaseConfirmDelete 
-  v-model="confirmChange" 
-  :text="t('memberFine.statusConfirmText')"
-  :class="{ 'd-none': !confirmChange }" 
-  @yes="
-    confirmChange = false;
+  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }" @yes="
+      confirmChange = false;
     if (switchTarget) {
       onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
       switchTarget = null;
     }
-  " 
-  @no="
-    confirmChange = false;
+    " @no="
+      confirmChange = false;
     switchTarget = null;
-  " 
-/>
+    " />
 </template>
-
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue'; // 1. Fixed missing onMounted import
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLeaveStore } from '@/stores/leave/leave.js';
@@ -245,12 +226,9 @@ const memberLeaves = ref([]);
 const overTimeRecords = ref([]);
 
 const switchTarget = ref(null);
-
 const deleteTarget = ref(undefined);
-
-const confirmDelete = ref(undefined);
-
-const confirmChange = ref(undefined);
+const confirmDelete = ref(false);
+const confirmChange = ref(false);
 
 const otHoursMap = {
   1: 8,
@@ -314,21 +292,24 @@ const multiHeaders3 = computed(() => [
   },
 ]);
 
-
 const getStoredStaffId = () => {
   return localStorage.getItem('staff-id');
 };
+
+// Fallback staff ID from store or localStorage
+const staffId = computed(() => {
+  return (
+    authStore.staff?.staff_id ||
+    authStore.staff?.rec_id ||
+    authStore.staff?.id ||
+    getStoredStaffId()
+  );
+});
 
 const showConfirmDelete = (id) => {
   deleteTarget.value = id;
   confirmDelete.value = true;
 };
-
-const staffId =
-  authStore.staff?.staff_id ||
-  authStore.staff?.rec_id ||
-  authStore.staff?.id ||
-  getStoredStaffId();
 
 const filteredMemberLeaves = computed(() => {
   if (!search.value) return memberLeaves.value;
@@ -379,7 +360,7 @@ const totalOvertimeHours = computed(() => {
   return overTimeRecords.value.reduce((sum, item) => {
     const key = Number(item.ot_time);
     const hours = otHoursMap[key] ?? (parseFloat(item.ot_time) || 0);
-    return sum + hours;
+    return sum + (isNaN(hours) ? 0 : hours);
   }, 0);
 });
 
@@ -393,6 +374,7 @@ const totalOvertimeFormatted = computed(() => {
   }
   return `${hours} Hrs`;
 });
+
 const onSwitchChange = (item) => {
   switchTarget.value = item;
   confirmChange.value = true;
@@ -413,9 +395,9 @@ const onStatusSwitchChange = async (item) => {
   }
 };
 
-const fetchOvertimeData = async (staffId) => {
+const fetchOvertimeData = async (staffIdParam) => {
   try {
-    const res = await overTimeStore.fetchOverTime({ staff_id: parseInt(staffId) });
+    const res = await overTimeStore.fetchOverTime({ staff_id: parseInt(staffIdParam) });
     const data = res?.data || res || [];
     overTimeRecords.value = Array.isArray(data) ? data : [];
   } catch (e) {
@@ -450,15 +432,10 @@ watch(
   { immediate: true }
 );
 
-onMounted(async () => {
-  await getStoredStaffId();
-});
-
 const goBack = () => {
   router.back();
 };
 </script>
-
 <style scoped>
 .status {
   background-color: #e8f5e9;
