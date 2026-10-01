@@ -26,6 +26,11 @@ export default {
     standardView: '標準モード',
     fineRecord: '素晴らしいレコード',
     employeeSkill: '従業員のスキル',
+    totalUsed:'総使用量' ,
+    remainleave: '残りの葉',
+    firstAnnual: '第1回年次',
+    secondAnnual: '第2回',
+    totalOvertime: '総残業時間',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

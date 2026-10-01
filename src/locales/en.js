@@ -25,7 +25,12 @@ export default {
     adminView: 'admin mode',
     standardView: 'standard mode',
     fineRecord : 'fine records',
-    employeeSkill: 'employee\'s skill'
+    employeeSkill: 'employee\'s skill',
+    totalUsed:'total uesd' ,
+    remainleave: 'remain leaves',
+    firstAnnual: 'first annual',
+    secondAnnual: 'second annual',
+    totalOvertime: 'total overtime',
   },
   sidebar: {
     dashboard: 'dashboard',

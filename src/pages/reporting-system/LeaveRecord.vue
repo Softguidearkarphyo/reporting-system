@@ -1,18 +1,30 @@
 <template>
   <div class="bg-gray-50 min-h-screen">
+    <!-- Admin View -->
     <template v-if="isAdmin">
       <v-row class="align-center" density="compact">
         <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
           <BaseTitle>{{ t('creatLeave.title') }}</BaseTitle>
         </v-col>
         <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-          <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-icon="mdi-magnify"
-            density="compact" hide-details />
+          <BaseTextField
+            v-model="search"
+            :label="t('common.search')"
+            color="primary"
+            prepend-icon="mdi-magnify"
+            density="compact"
+            hide-details
+          />
         </v-col>
       </v-row>
 
       <ParentCard>
-        <BaseTable :headers="adminHeaders" :items="filteredAdminLeaveList" :loading="loading">
+        <BaseTable
+          v-if="filteredAdminLeaveList && filteredAdminLeaveList.length"
+          :headers="adminHeaders"
+          :items="filteredAdminLeaveList"
+          :loading="loading"
+        >
           <template #[`item.name`]="{ item }">
             <div>
               <div class="font-weight-medium text-gray-900">{{ item.eng_name || '-' }}</div>
@@ -58,9 +70,16 @@
             </div>
           </template>
         </BaseTable>
+
+        <!-- Admin Table Empty State -->
+        <div v-else class="text-center pa-8 text-gray-500">
+          <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+          <div class="text-body-1">No leave records found</div>
+        </div>
       </ParentCard>
     </template>
 
+    <!-- User View -->
     <template v-else>
       <v-row class="mb-4">
         <v-col cols="12" class="d-flex align-center">
@@ -73,6 +92,7 @@
         </v-col>
       </v-row>
 
+      <!-- Metric Summary Cards -->
       <div class="d-flex flex-wrap flex-md-nowrap ga-3 mb-3">
         <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
           <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
@@ -125,10 +145,9 @@
       </div>
 
       <v-row>
-        <!-- 2/3 Space: ON LEAVE RECORDS -->
+        <!-- 2/3 Width Space: ON LEAVE RECORDS -->
         <v-col cols="12" md="8">
           <ParentCard class="elevation-1 rounded-lg h-100">
-            <!-- Title Header & Search -->
             <v-row class="align-center mb-3">
               <v-col cols="6" md="7">
                 <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
@@ -136,24 +155,40 @@
                 </h3>
               </v-col>
               <v-col cols="6" md="5" class="d-flex justify-end">
-                <BaseTextField v-model="search" :label="t('common.search')" color="primary"
-                  prepend-inner-icon="mdi-magnify" density="compact" variant="outlined" hide-details
-                  class="rounded-lg" />
+                <BaseTextField
+                  v-model="search"
+                  :label="t('common.search')"
+                  color="primary"
+                  prepend-inner-icon="mdi-magnify"
+                  density="compact"
+                  variant="outlined"
+                  hide-details
+                  class="rounded-lg"
+                />
               </v-col>
             </v-row>
 
-            <BaseTable :headers="userHeaders" :items="filteredUserLeaveList" :loading="loading">
+            <BaseTable
+              v-if="filteredUserLeaveList && filteredUserLeaveList.length"
+              :headers="userHeaders"
+              :items="filteredUserLeaveList"
+              :loading="loading"
+            >
               <template #[`item.leave_date`]="{ item }">
                 <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
               </template>
 
               <template #[`item.leave_type`]="{ item }">
-                <span v-if="item.leave_type === 1"
-                  class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success">
+                <span
+                  v-if="item.leave_type === 1"
+                  class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success"
+                >
                   paid
                 </span>
-                <span v-else
-                  class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning">
+                <span
+                  v-else
+                  class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning"
+                >
                   unpaid
                 </span>
               </template>
@@ -183,9 +218,16 @@
                 </span>
               </template>
             </BaseTable>
+
+            <!-- User Leave Records Empty State -->
+            <div v-else class="text-center pa-8 text-gray-500">
+              <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+              <div class="text-body-1">No leave records found</div>
+            </div>
           </ParentCard>
         </v-col>
 
+        <!-- 1/3 Width Space: OVERTIME RECORDS -->
         <v-col cols="12" md="4">
           <ParentCard class="elevation-1 rounded-lg h-100">
             <v-row class="align-center mb-3">
@@ -196,7 +238,12 @@
               </v-col>
             </v-row>
 
-            <BaseTable :headers="multiHeaders3" :items="overtimes" items-per-page="10">
+            <BaseTable
+              v-if="overtimes && overtimes.length"
+              :headers="multiHeaders3"
+              :items="overtimes"
+              items-per-page="10"
+            >
               <template #[`item.ot_time`]="{ item }">
                 <span v-if="item.ot_time == 1">Full day</span>
                 <span v-else-if="item.ot_time == 2">Half day</span>
@@ -218,7 +265,8 @@
                       backgroundColor: item.statusBg,
                       color: item.statusColor,
                       lineHeight: 1.2
-                    }">
+                    }"
+                  >
                     <v-icon size="16" class="mr-1" :color="item.statusColor">
                       {{ item.statusIcon }}
                     </v-icon>
@@ -226,29 +274,46 @@
                   </span>
 
                   <span v-if="item.status === 0" class="d-inline-flex align-center">
-                    <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                    <v-switch
+                      color="primary"
+                      density="compact"
+                      :hide-details="true"
+                      :model-value="item.isComplete"
                       @update:model-value="onSwitchChange(item)"
-                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
+                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
+                    />
                   </span>
                 </span>
               </template>
             </BaseTable>
+
+            <!-- Overtime Records Empty State -->
+            <div v-else class="text-center pa-8 text-gray-500">
+              <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
+              <div class="text-body-1">No overtime records found</div>
+            </div>
           </ParentCard>
         </v-col>
       </v-row>
     </template>
   </div>
-  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
-    :class="{ 'd-none': !confirmChange }" @yes="
+
+  <BaseConfirmDelete
+    v-model="confirmChange"
+    :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }"
+    @yes="
       confirmChange = false;
-    if (switchTarget) {
-      onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
+      if (switchTarget) {
+        onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
+        switchTarget = null;
+      }
+    "
+    @no="
+      confirmChange = false;
       switchTarget = null;
-    }
-    " @no="
-      confirmChange = false;
-    switchTarget = null;
-    " />
+    "
+  />
 </template>
 
 <script setup>

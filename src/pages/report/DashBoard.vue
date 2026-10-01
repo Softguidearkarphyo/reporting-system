@@ -1,5 +1,5 @@
 <template>
-  <!-- Non-Admin Dashboard -->
+  <!-- User Dashboard -->
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
     <v-row class="mb-6" justify="space-between">
       <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
@@ -18,13 +18,20 @@
     </v-row>
 
     <v-row class="mb-6" dense>
-      <v-col cols="12" md="6">
+      <!-- Leave Record (2/3 Width) -->
+      <v-col cols="12" md="8">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable :headers="leaveHeader" :items="memberLeave" :items-per-page="-1" hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table">
+          <BaseTable
+            v-if="memberLeave && memberLeave.length"
+            :headers="leaveHeader"
+            :items="memberLeave"
+            :items-per-page="-1"
+            hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table"
+          >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -55,16 +62,29 @@
               <span>{{ item.reason || '-' }}</span>
             </template>
           </BaseTable>
+
+          <!-- Empty State -->
+          <v-card-text v-else class="text-center pa-8 text-grey">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+            <div class="text-body-1">No leave records found</div>
+          </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="6">
+      <!-- Fine Record (1/3 Width) -->
+      <v-col cols="12" md="4">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table">
+          <BaseTable
+            v-if="memberFine && memberFine.length"
+            :headers="fineHeader"
+            :items="memberFine"
+            :items-per-page="-1"
+            hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table"
+          >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -91,6 +111,12 @@
               </v-icon>
             </template>
           </BaseTable>
+
+          <!-- Empty State -->
+          <v-card-text v-else class="text-center pa-8 text-grey">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
+            <div class="text-body-1">No fine records found</div>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -98,7 +124,7 @@
 
   <!-- Admin Dashboard -->
   <v-main v-else class="pa-6 pt-4">
-    <!-- Charts Row: Manpower, Employee Skill, and Japanese Level -->
+    <!-- Charts Row -->
     <v-row class="mb-6">
       <v-col cols="12" md="4">
         <v-card outlined class="h-100">
@@ -131,13 +157,20 @@
       </v-col>
     </v-row>
 
-    <!-- Records Row: Leave Record and Fine Record -->
+    <!-- Records Row: Leave Record (2/3 Width) and Fine Record (1/3 Width) -->
     <v-row>
-      <v-col cols="12" md="6">
+      <!-- Leave Record (2/3 Width) -->
+      <v-col cols="12" md="8">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
-          <BaseTable :headers="leaveHeader" :items="memberLeave" class="elevation-0 pa-2">
+
+          <BaseTable
+            v-if="memberLeave && memberLeave.length"
+            :headers="leaveHeader"
+            :items="memberLeave"
+            class="elevation-0 pa-2"
+          >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium">{{ item.eng_name }}</span>
             </template>
@@ -168,16 +201,29 @@
               <span>{{ item.reason || '-' }}</span>
             </template>
           </BaseTable>
+
+          <!-- Empty State -->
+          <v-card-text v-else class="text-center pa-8 text-grey">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+            <div class="text-body-1">No leave records found</div>
+          </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="6">
+      <!-- Fine Record (1/3 Width) -->
+      <v-col cols="12" md="4">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table">
+          <BaseTable
+            v-if="memberFine && memberFine.length"
+            :headers="fineHeader"
+            :items="memberFine"
+            :items-per-page="-1"
+            hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table"
+          >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -192,12 +238,21 @@
               <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
                 {{ item.total_fine_records }}
               </span>
-              <v-icon v-if="item.total_fine_records > 2"
-                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+              <v-icon
+                v-if="item.total_fine_records > 2"
+                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }"
+                class="ms-1"
+              >
                 {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
               </v-icon>
             </template>
           </BaseTable>
+
+          <!-- Empty State -->
+          <v-card-text v-else class="text-center pa-8 text-grey">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
+            <div class="text-body-1">No fine records found</div>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>

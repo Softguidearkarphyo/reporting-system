@@ -1,5 +1,6 @@
 <template>
   <div class="member-leave-detail p-6 bg-gray-50 min-h-screen">
+    <!-- Top Bar / Navigation -->
     <v-row class="mb-4">
       <v-col cols="12" class="d-flex align-center">
         <v-btn icon variant="text" color="primary" class="me-2" @click="goBack">
@@ -15,9 +16,10 @@
       </v-col>
     </v-row>
 
+    <!-- Summary Metric Cards -->
     <div class="d-flex flex-wrap ga-4 mb-6">
       <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
+        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}</div>
         <div class="d-flex align-baseline">
           <span class="text-h4 font-weight-bold text-primary me-2">
             {{ leaveSummary.total_used ?? 0 }}
@@ -27,7 +29,7 @@
       </v-card>
 
       <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
+        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}</div>
         <div class="d-flex align-baseline">
           <span class="text-h4 font-weight-bold text-info me-2">
             {{ leaveSummary.remain_leaves ?? 0 }}
@@ -37,7 +39,7 @@
       </v-card>
 
       <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
+        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}</div>
         <div class="d-flex align-baseline">
           <span class="text-h4 font-weight-bold text-warning me-2">
             {{ leaveSummary.first_annual ?? 0 }}
@@ -47,7 +49,7 @@
       </v-card>
 
       <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
+        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}</div>
         <div class="d-flex align-baseline">
           <span class="text-h4 font-weight-bold text-success me-2">
             {{ leaveSummary.second_annual ?? 0 }}
@@ -57,7 +59,7 @@
       </v-card>
 
       <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL OVERTIME</div>
+        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
         <div class="d-flex align-baseline">
           <span class="text-h4 font-weight-bold text-purple me-2">
             {{ totalOvertimeFormatted }}
@@ -65,7 +67,10 @@
         </div>
       </v-card>
     </div>
+
+    <!-- Main Content Grid (2/3 & 1/3 splits) -->
     <v-row>
+      <!-- Leave Records (2/3 width) -->
       <v-col cols="12" md="8">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -75,23 +80,40 @@
               </h3>
             </v-col>
             <v-col cols="6" md="5" class="d-flex justify-end">
-              <BaseTextField v-model="search" :label="t('common.search')" color="primary"
-                prepend-inner-icon="mdi-magnify" density="compact" variant="outlined" hide-details class="rounded-lg" />
+              <BaseTextField
+                v-model="search"
+                :label="t('common.search')"
+                color="primary"
+                prepend-inner-icon="mdi-magnify"
+                density="compact"
+                variant="outlined"
+                hide-details
+                class="rounded-lg"
+              />
             </v-col>
           </v-row>
 
-          <BaseTable :headers="headers" :items="filteredMemberLeaves" :loading="loading">
+          <BaseTable
+            v-if="filteredMemberLeaves && filteredMemberLeaves.length"
+            :headers="headers"
+            :items="filteredMemberLeaves"
+            :loading="loading"
+          >
             <template #[`item.leave_date`]="{ item }">
               <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
             </template>
 
             <template #[`item.leave_type`]="{ item }">
-              <span v-if="item.leave_type === 1"
-                class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success">
+              <span
+                v-if="item.leave_type === 1"
+                class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success"
+              >
                 paid
               </span>
-              <span v-else
-                class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning">
+              <span
+                v-else
+                class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning"
+              >
                 unpaid
               </span>
             </template>
@@ -121,9 +143,16 @@
               </span>
             </template>
           </BaseTable>
+
+          <!-- Leave Records Empty State -->
+          <div v-else class="text-center pa-8 text-gray-500">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+            <div class="text-body-1">No leave records found</div>
+          </div>
         </ParentCard>
       </v-col>
 
+      <!-- Overtime Records (1/3 width) -->
       <v-col cols="12" md="4">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -134,7 +163,13 @@
             </v-col>
           </v-row>
 
-          <BaseTable :headers="multiHeaders3" :items="overtimes" :loading="loading" items-per-page="10">
+          <BaseTable
+            v-if="overtimes && overtimes.length"
+            :headers="multiHeaders3"
+            :items="overtimes"
+            :loading="loading"
+            items-per-page="10"
+          >
             <template #[`item.ot_time`]="{ item }">
               <span v-if="item.ot_time == 1">Full day</span>
               <span v-else-if="item.ot_time == 2">Half day</span>
@@ -156,7 +191,8 @@
                     backgroundColor: item.statusBg,
                     color: item.statusColor,
                     lineHeight: 1.2
-                  }">
+                  }"
+                >
                   <v-icon size="16" class="mr-1" :color="item.statusColor">
                     {{ item.statusIcon }}
                   </v-icon>
@@ -164,49 +200,79 @@
                 </span>
 
                 <span v-if="item.status === 2" class="d-inline-flex align-center">
-                  <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                  <v-switch
+                    color="primary"
+                    density="compact"
+                    :hide-details="true"
+                    :model-value="item.isComplete"
                     @update:model-value="onSwitchChange(item)"
-                    style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
+                    style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
+                  />
                 </span>
               </span>
             </template>
+
             <template #[`item.action`]="{ item }">
               <span class="d-flex justify-left align-center p-0">
-                <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
-                  @click.stop="showConfirmDelete(item.id)">
+                <BaseButton
+                  elevation="0"
+                  color=""
+                  class="delete-btn"
+                  size="small"
+                  :add-class="['ma-1']"
+                  @click.stop="showConfirmDelete(item.id)"
+                >
                   <v-icon icon="tabler:IconTrash" size="15" />
                 </BaseButton>
               </span>
             </template>
           </BaseTable>
+
+          <!-- Overtime Records Empty State -->
+          <div v-else class="text-center pa-8 text-gray-500">
+            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
+            <div class="text-body-1">No overtime records found</div>
+          </div>
         </ParentCard>
       </v-col>
     </v-row>
   </div>
-  <BaseConfirmDelete v-model="confirmDelete" :text="t('memberFine.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }" @yes="
-      confirmDelete = false;
-    deleteOvertime();
-    " @no="
-      confirmDelete = false;
-    deleteTarget = undefined;
-    " />
 
+  <!-- Delete Dialog -->
+  <BaseConfirmDelete
+    v-model="confirmDelete"
+    :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }"
+    @yes="
+      confirmDelete = false;
+      deleteOvertime();
+    "
+    @no="
+      confirmDelete = false;
+      deleteTarget = undefined;
+    "
+  />
 
-  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
-    :class="{ 'd-none': !confirmChange }" @yes="
+  <!-- Status Change Dialog -->
+  <BaseConfirmDelete
+    v-model="confirmChange"
+    :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }"
+    @yes="
       confirmChange = false;
-    if (switchTarget) {
-      onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
+      if (switchTarget) {
+        onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
+        switchTarget = null;
+      }
+    "
+    @no="
+      confirmChange = false;
       switchTarget = null;
-    }
-    " @no="
-      confirmChange = false;
-    switchTarget = null;
-    " />
+    "
+  />
 </template>
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'; // 1. Fixed missing onMounted import
+import { ref, computed, watch, onMounted } from 'vue'; 
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLeaveStore } from '@/stores/leave/leave.js';
