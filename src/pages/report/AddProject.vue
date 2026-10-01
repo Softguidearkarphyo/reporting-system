@@ -1,88 +1,100 @@
 <template>
-  <BaseTitle>
+  <BaseTitle class="mb-3">
     {{ t('addProject.title1') }}
   </BaseTitle>
-  <ParentCard>
-    <v-row class="align-center">
-      <v-col cols="12" md="12">
-        <Form
-          ref="formRef"
-          :validation-schema="projectCreateSchema"
-          @submit="submit"
-        >
-          <div class="d-flex flex-wrap align-center justify-space-around">
-            <Field name="cd" v-slot="{ field, errorMessage }">
-              <BaseTextField
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addProject.form.cd')"
-                type="text"
-                variant="plain"
-                :width="'300px'"
-                prependIcon="mdi-pound-box"
-                :error-messages="errorMessage"
-                style="flex: none"
-              ></BaseTextField>
-            </Field>
-            <Field name="eng_name" v-slot="{ field, errorMessage }">
-              <BaseTextField
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addProject.form.eng_name')"
-                type="text"
-                variant="plain"
-                :width="'300px'"
-                prependIcon="mdi-format-letter-case"
-                :error-messages="errorMessage"
-                style="flex: none"
-              ></BaseTextField>
-            </Field>
-            <Field name="jp_name" v-slot="{ field, errorMessage }">
-              <BaseTextField
-                v-model="field.value"
-                v-bind="field"
-                :label="t('addProject.form.jp_name')"
-                type="text"
-                variant="plain"
-                :width="'300px'"
-                autocomplete="test"
-                prependIcon="mdi-ideogram-cjk"
-                :error-messages="errorMessage"
-                style="flex: none"
-              ></BaseTextField>
-            </Field>
 
-            <div class="d-flex ga-2 align-center">
-              <BaseButton type="submit" :width="'200px'">
-                {{t('common.submit') }}
-              </BaseButton>
-              <BaseButton
-                v-if="isEditMode"
-                type="button"
-                @click="resetToCreateMode"
-              >
-                {{ t('common.cancel') }}
-              </BaseButton>
-            </div>
+  <ParentCard>
+    <Form
+      ref="formRef"
+      :validation-schema="projectCreateSchema"
+      @submit="submit"
+    >
+      <v-row align="center">
+        <!-- CD Input Field -->
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <Field name="cd" v-slot="{ field, errorMessage }">
+            <BaseTextField
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addProject.form.cd')"
+              type="text"
+              variant="plain"
+              prependIcon="mdi-pound-box"
+              :error-messages="errorMessage"
+              class="w-100"
+            ></BaseTextField>
+          </Field>
+        </v-col>
+
+        <!-- English Name Input Field -->
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <Field name="eng_name" v-slot="{ field, errorMessage }">
+            <BaseTextField
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addProject.form.eng_name')"
+              type="text"
+              variant="plain"
+              prependIcon="mdi-format-letter-case"
+              :error-messages="errorMessage"
+              class="w-100"
+            ></BaseTextField>
+          </Field>
+        </v-col>
+
+        <!-- Japanese Name Input Field -->
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <Field name="jp_name" v-slot="{ field, errorMessage }">
+            <BaseTextField
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addProject.form.jp_name')"
+              type="text"
+              variant="plain"
+              autocomplete="test"
+              prependIcon="mdi-ideogram-cjk"
+              :error-messages="errorMessage"
+              class="w-100"
+            ></BaseTextField>
+          </Field>
+        </v-col>
+
+        <!-- Form Action Buttons -->
+        <v-col cols="12" sm="6" md="4" lg="3">
+          <div class="d-flex ga-2 align-center">
+            <BaseButton type="submit" class="w-100">
+              {{ t('common.submit') }}
+            </BaseButton>
+            <BaseButton
+              v-if="isEditMode"
+              type="button"
+              class="w-100"
+              @click="resetToCreateMode"
+            >
+              {{ t('common.cancel') }}
+            </BaseButton>
           </div>
-        </Form>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+    </Form>
   </ParentCard>
 
-  <div v-if="hasInitialData">
-    <v-row class="align-center mt-3">
-      <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-        <BaseTitle> {{ t('addProject.title2') }} </BaseTitle>
+  <!-- Project Table Container -->
+  <div v-if="hasInitialData" class="mt-4">
+    <!-- Header Title and Search Bar -->
+    <v-row align="center" class="mb-3">
+      <v-col cols="12" sm="7" lg="9">
+        <BaseTitle>{{ t('addProject.title2') }}</BaseTitle>
       </v-col>
-      <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
+      <v-col cols="12" sm="5" lg="3">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
           color="primary"
           prepend-icon="mdi-magnify"
-        >
-        </BaseTextField>
+          hide-details
+          class="w-100"
+        ></BaseTextField>
       </v-col>
     </v-row>
 
@@ -104,7 +116,7 @@
           {{ formatDate(item.created_at) }}
         </template>
         <template #[`item.action`]="{ item }">
-          <div class="d-flex justify-end">
+          <div class="d-flex justify-end ga-1">
             <BaseButton
               elevation="0"
               @click.stop="scrollToEdit(item.id)"

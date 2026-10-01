@@ -1,50 +1,59 @@
 <template>
-  <BaseTitle>{{ t('menPower.title') }}</BaseTitle>
+  <BaseTitle class="mb-3">{{ t('menPower.title') }}</BaseTitle>
+
   <Form
     ref="formRef"
     :validation-schema="menPowerSchema"
     :validate-on-change="true"
   >
-    <div class="d-flex justify-content-start align-items-center ga-5 my-5">
-      <div>
+    <!-- Filter Controls Row -->
+    <v-row align="center" class="my-3">
+      <!-- Start Date Picker -->
+      <v-col cols="12" sm="6" md="4" lg="3">
         <Field name="start_date" v-slot="{ field, errorMessage }">
           <BaseDatePicker
             v-model="field.value"
             v-bind="field"
-            text-width="240px"
             location="bottom"
             :label="t('menPower.form.startDate')"
             :error-messages="errorMessage"
             prependIcon="mdi-calendar-month"
+            class="w-100"
             @update:model-value="getList()"
           ></BaseDatePicker>
         </Field>
-      </div>
-      <div>
+      </v-col>
+
+      <!-- End Date Picker -->
+      <v-col cols="12" sm="6" md="4" lg="3">
         <Field name="end_date" v-slot="{ field, errorMessage }">
           <BaseDatePicker
             v-model="field.value"
             v-bind="field"
-            text-width="240px"
             location="bottom"
             :label="t('menPower.form.endDate')"
             :error-messages="errorMessage"
             prependIcon="mdi-calendar-month"
+            class="w-100"
             @update:model-value="getList()"
           ></BaseDatePicker>
         </Field>
-      </div>
-      <div>
+      </v-col>
+
+      <!-- Export Button -->
+      <v-col cols="12" sm="4" md="2">
         <BaseButton
           @click="exportFile"
           :disabled="!items.length"
-          style="width: 100px"
+          class="w-100"
         >
           Export
         </BaseButton>
-      </div>
-    </div>
+      </v-col>
+    </v-row>
   </Form>
+
+  <!-- Data Table Container -->
   <ParentCard>
     <BaseTable :headers="headers" :items="items" :pagination="false">
     </BaseTable>

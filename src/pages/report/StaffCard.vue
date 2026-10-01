@@ -1,15 +1,17 @@
 <template>
-  <BaseTitle>Staff Card</BaseTitle>
+  <BaseTitle class="mb-4">Staff Card</BaseTitle>
+  
   <v-row>
-    <v-col col="12" md="8">
-      <ParentCard height="650px">
+    <!-- Left Column: Card Preview & Selection -->
+    <v-col cols="12" md="8">
+      <ParentCard class="d-flex flex-column h-100 min-h-600">
         <StaffCardCanvas
           ref="cardImage"
           @dropped-image="updateDroppedImage"
           :members="members"
         />
-        <v-card-actions class="mt-5 d-flex justify-center">
-          <div class="my-6">
+        <v-card-actions class="mt-auto pt-4 d-flex justify-center">
+          <div class="w-100 max-w-sm my-4 px-2">
             <BaseSelect
               v-model="selectedItem"
               :label="t('staffCard.name')"
@@ -21,7 +23,7 @@
               @change="selectMember"
             />
 
-            <div class="d-flex justify-space-around mt-5">
+            <div class="d-flex justify-center ga-4 mt-4">
               <v-btn
                 color="primary"
                 class="circle-btn"
@@ -39,6 +41,7 @@
                 ></v-tooltip>
                 <v-icon>tabler:IconDownload</v-icon>
               </v-btn>
+
               <v-btn
                 color="error"
                 icon
@@ -59,9 +62,12 @@
         </v-card-actions>
       </ParentCard>
     </v-col>
-    <v-col col="12" md="4">
-      <ParentCard height="650px">
+
+    <!-- Right Column: Image Editing Controls -->
+    <v-col cols="12" md="4">
+      <ParentCard class="d-flex flex-column h-100 position-relative min-h-600">
         <BaseTitle class="mb-4">{{ t('staffCard.edit') }}</BaseTitle>
+
         <v-file-input
           ref="fileInput"
           v-model="imageFile"
@@ -72,12 +78,13 @@
           style="display: none"
         >
         </v-file-input>
+
         <v-btn
           color="primary"
           v-if="originalImageUrl || cropped"
           variant="text"
           icon
-          class="clear"
+          class="clear position-absolute top-0 end-0 ma-2"
           @click="clearImages"
         >
           <v-tooltip
@@ -87,17 +94,22 @@
             transition="fade-transition"
             open-delay="300"
           ></v-tooltip>
-          <v-icon>tabler:IconX</v-icon></v-btn
-        >
-        <v-card variant="outlined">
-          <div class="text-center pa-8">
+          <v-icon>tabler:IconX</v-icon>
+        </v-btn>
+
+        <!-- Preview Card -->
+        <v-card variant="outlined" class="flex-grow-1 d-flex align-center justify-center overflow-hidden">
+          <div class="text-center pa-4 w-100">
             <div v-if="isProcessing" class="scanning-overlay">
               <div :class="['fingerprint', { scanning: isScanning }]"></div>
             </div>
 
-            <!-- Content -->
+            <!-- Upload Label Trigger -->
             <template v-if="!resultImageUrl && !originalImageUrl">
-              <v-card-text @click="triggerFileInput" style="cursor: pointer">
+              <v-card-text 
+                @click="triggerFileInput" 
+                class="py-8 px-4 text-wrap cursor-pointer"
+              >
                 {{ t('staffCard.label') }}
               </v-card-text>
             </template>
@@ -112,9 +124,10 @@
               v-else-if="resultImageUrl"
               :src="resultImageUrl"
               max-height="350"
-              max-width="380"
+              width="100%"
               contain
               draggable="true"
+              class="mx-auto"
               @dragstart="handleDragStart"
             />
 
@@ -122,23 +135,26 @@
               v-else-if="originalImageUrl"
               :src="originalImageUrl"
               max-height="350"
-              max-width="380"
+              width="100%"
               contain
               draggable="false"
+              class="mx-auto"
             />
           </div>
         </v-card>
 
-        <v-card-actions class="mt-6">
-          <v-row class="w-100" dense>
-            <v-col cols="3">
+        <!-- Action Toolbar -->
+        <v-card-actions class="mt-4 pa-0">
+          <v-row class="w-100 ma-0 justify-center align-center" dense>
+            <v-col cols="6" sm="3" class="d-flex justify-center pa-1">
               <v-btn
                 color="primary"
                 icon
                 density="comfortable"
                 :disabled="!imageFile || isProcessing"
                 @click="removeBackground"
-                ><v-tooltip
+              >
+                <v-tooltip
                   activator="parent"
                   location="bottom"
                   :text="t('staffCard.remove')"
@@ -148,7 +164,8 @@
                 <v-icon>tabler:IconPhoto</v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="3">
+
+            <v-col cols="6" sm="3" class="d-flex justify-center pa-1">
               <v-btn
                 color="primary"
                 icon
@@ -166,7 +183,8 @@
                 <v-icon>tabler:IconWand</v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="3">
+
+            <v-col cols="6" sm="3" class="d-flex justify-center pa-1">
               <v-btn
                 v-if="showCropper"
                 color="primary"
@@ -185,7 +203,8 @@
                 <v-icon>tabler:IconCrop</v-icon>
               </v-btn>
             </v-col>
-            <v-col cols="3" v-if="resultImageUrl">
+
+            <v-col cols="6" sm="3" v-if="resultImageUrl" class="d-flex justify-center pa-1">
               <v-btn
                 color="primary"
                 icon

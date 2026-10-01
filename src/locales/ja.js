@@ -24,6 +24,8 @@ export default {
     clear: 'クリア',
     adminView: '管理者モード',
     standardView: '標準モード',
+    fineRecord: '素晴らしいレコード',
+    employeeSkill: '従業員のスキル',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -276,6 +278,8 @@ export default {
   memberFine: {
     title1: '罰金登録',
     title2: 'ファインリスト',
+    totalFineAmount: '罰金総額',
+    totalFineCount: '罰金件数合計',
     deleteConfirmText:
       'これを削除してもよろしいですか？ この操作は元に戻せません。',
     statusConfirmText: 'このアクションを変更してもよろしいですか?',

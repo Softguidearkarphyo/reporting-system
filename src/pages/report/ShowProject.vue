@@ -2,129 +2,141 @@
   <BaseTitle class="mb-4"> {{ t('showProject.title') }} </BaseTitle>
   <ParentCard class="pa-4 mb-4">
     <v-row>
-      <v-col cols="10" md="10" class="mx-auto">
+      <v-col cols="12" sm="11" md="10" class="mx-auto">
         <Form ref="formRef" :validation-schema="projectSchema" @submit="submit">
-           <div class="d-flex align-center justify-space-evenly">
+          <!-- Responsive Grid Layout for Form Controls -->
+          <v-row class="align-center justify-center">
             
-                <div class="d-flex align-center">
-                  <Field name="start_date" v-slot="{ field, errorMessage }" v-if="checkboxFlg">
-                    <BaseDatePicker
-                      v-model="field.value"
-                      v-bind="field"
-                      :label="t('showProject.start_date')"
-                      prependIcon="mdi-calendar-month"
-                      :width="'330px'"
-                      :error-messages="errorMessage"
-                      style="flex: none;"
-                    ></BaseDatePicker>
-                  </Field>
-                   <Field name="week_date" v-slot="{ field, errorMessage }" v-if="!checkboxFlg">
-                    <BaseSelect
-                      v-model="field.value"
-                      v-bind="field"
-                      :label="t('showProject.week_date')"
-                      :items="week_date"
-                      item-title="name"
-                      item-value="id"
-                      prependIcon="mdi-calendar-week"
-                      :width="'330px'"
-                      :error-messages="errorMessage"
-                      style="flex: none;"
-                    >
-                    </BaseSelect>
-                  </Field>
-                  <div class="ms-3">
-                      <v-checkbox
-                      v-model="checkboxFlg"
-                      hide-details 
-                      @click="toggleField()" >
-                        <v-tooltip activator="parent" location="top">month filter</v-tooltip>
-                      </v-checkbox>
-                  </div>
-                </div>
-                <Field name="end_date" v-slot="{ field, errorMessage }">
+            <!-- Start / Week Date Selection + Checkbox -->
+            <v-col cols="12" md="5" class="d-flex align-center">
+              <div class="flex-grow-1">
+                <Field name="start_date" v-slot="{ field, errorMessage }" v-if="checkboxFlg">
                   <BaseDatePicker
                     v-model="field.value"
                     v-bind="field"
-                    :label="t('showProject.end_date')"
+                    :label="t('showProject.start_date')"
                     prependIcon="mdi-calendar-month"
-                    :width="'330px'"
                     :error-messages="errorMessage"
-                    style="flex: none;"
+                    class="w-100"
                   ></BaseDatePicker>
                 </Field>
-                <div style="width: 300px; flex: none;" class="d-flex justify-space-between" >
-                  <BaseButton type="submit" :width="'100px'">
-                    {{ t('common.search') }}
-                  </BaseButton>
-                  <BaseButton :width="'100px'" @click="clearFormTable()">{{
-                      t('common.clear')
-                    }}</BaseButton>
-                </div>
-            </div>
+                <Field name="week_date" v-slot="{ field, errorMessage }" v-if="!checkboxFlg">
+                  <BaseSelect
+                    v-model="field.value"
+                    v-bind="field"
+                    :label="t('showProject.week_date')"
+                    :items="week_date"
+                    item-title="name"
+                    item-value="id"
+                    prependIcon="mdi-calendar-week"
+                    :error-messages="errorMessage"
+                    class="w-100"
+                  >
+                  </BaseSelect>
+                </Field>
+              </div>
+              <div class="ms-2 flex-shrink-0">
+                <v-checkbox
+                  v-model="checkboxFlg"
+                  hide-details 
+                  @click="toggleField()" >
+                  <v-tooltip activator="parent" location="top">month filter</v-tooltip>
+                </v-checkbox>
+              </div>
+            </v-col>
+
+            <!-- End Date Selection -->
+            <v-col cols="12" md="4">
+              <Field name="end_date" v-slot="{ field, errorMessage }">
+                <BaseDatePicker
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('showProject.end_date')"
+                  prependIcon="mdi-calendar-month"
+                  :error-messages="errorMessage"
+                  class="w-100"
+                ></BaseDatePicker>
+              </Field>
+            </v-col>
+
+            <!-- Action Buttons -->
+            <v-col cols="12" md="3" class="d-flex justify-space-between justify-md-end ga-2">
+              <BaseButton type="submit" class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;">
+                {{ t('common.search') }}
+              </BaseButton>
+              <BaseButton class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;" @click="clearFormTable()">
+                {{ t('common.clear') }}
+              </BaseButton>
+            </v-col>
+
+          </v-row>
         </Form>
       </v-col>
     </v-row>
   </ParentCard>
+
   <div v-if="initialData">
-    <v-row class="align-center">
-    <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-      <BaseTitle> {{  t('showProject.title') }} </BaseTitle>
-    </v-col>
-    <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        color="primary"
-        prepend-icon="mdi-magnify"
-        class="mb-n5"
-        type="text"
-        variant="plain"
-        dense
-      >
-      </BaseTextField>
-      <BaseButton
-        @click="excelExport(items,{ t, locale }, checkboxFlg)"
-        :disabled="!items.length"
-        style="width: 100px"
-      >
-          {{t('common.excel')}}
-      </BaseButton>
-    </v-col>
-  </v-row>
+    <!-- Search & Export Header Section -->
+    <v-row class="align-center mb-2">
+      <v-col cols="12" sm="6" md="7" lg="8" class="d-flex justify-start">
+        <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
+      </v-col>
+      <v-col cols="12" sm="6" md="5" lg="4" class="d-flex align-center justify-end ga-3">
+        <BaseTextField
+          v-model="search"
+          :label="t('common.search')"
+          color="primary"
+          prepend-icon="mdi-magnify"
+          type="text"
+          variant="plain"
+          dense
+          class="w-100"
+        >
+        </BaseTextField>
+        <BaseButton
+          @click="excelExport(items,{ t, locale }, checkboxFlg)"
+          :disabled="!items.length"
+          style="min-width: 100px;"
+          class="flex-shrink-0"
+        >
+          {{ t('common.excel') }}
+        </BaseButton>
+      </v-col>
+    </v-row>
+
+    <!-- Project Cards Grid -->
     <div v-for="week in items" :key="week.weekLabel" class="mb-3">
       <h2 class="ms-3">{{ week.weekLabel }}</h2>
-        <v-card class="mb-2 pa-5">
+      <v-card class="mb-2 pa-3 pa-md-5">
         <v-row>
           <v-col
             v-for="project in week.projects"
             :key="project.project_id"
-            cols="6"
+            cols="12"
             md="6"
           >
-              <h3 class="mb-2">
-                {{ projectNameLang ? project.project_eng : project.project_jp }}
-              </h3>
+            <h3 class="mb-2">
+              {{ projectNameLang ? project.project_eng : project.project_jp }}
+            </h3>
 
-              <BaseTable :headers="headers" :items="project.project_info">
-                <template #[`item.periods`]="{ item }">
-                  <span>
-                    {{ item.periods[0] }} {{ t('workingTime.hour') }}
-                    {{
-                      item.periods[1] == 5
-                        ? '30 ' + t('workingTime.minutes')
-                        : ''
-                    }}
-                  </span>
-                </template>
-              </BaseTable>
+            <BaseTable :headers="headers" :items="project.project_info">
+              <template #[`item.periods`]="{ item }">
+                <span>
+                  {{ item.periods[0] }} {{ t('workingTime.hour') }}
+                  {{
+                    item.periods[1] == 5
+                      ? '30 ' + t('workingTime.minutes')
+                      : ''
+                  }}
+                </span>
+              </template>
+            </BaseTable>
           </v-col>
         </v-row>
       </v-card>
     </div>
   </div>
 </template>
-
 <script setup>
 import { excelExport } from '@/excel-export/showproject/excel'
 import { useI18n } from 'vue-i18n';

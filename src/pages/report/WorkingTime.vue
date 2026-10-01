@@ -1,73 +1,97 @@
 <template>
   <BaseTitle class="mb-3">{{ t('workingTime.title1') }}</BaseTitle>
+
   <ParentCard>
     <v-row>
-      <v-col cols="12" md="12">
+      <v-col cols="12">
         <Form
           ref="formRef"
           :validation-schema="searchWithDateSchema"
           @submit="filterByDate"
         >
-          <div class="d-flex flex-wrap align-center justify-space-around">
-            <Field name="start_date" v-slot="{ field, errorMessage }">
-              <BaseDatePicker
-                v-model="field.value"
-                v-bind="field"
-                :label="t('workingTime.start_date')"
-                :width="'400px'"
-                :error-messages="errorMessage"
-                prependIcon="mdi-calendar-month"
-                style="flex: none"
-              ></BaseDatePicker>
-            </Field>
-            <Field name="end_date" v-slot="{ field, errorMessage }">
-              <BaseDatePicker
-                v-model="field.value"
-                v-bind="field"
-                :label="t('workingTime.end_date')"
-                :width="'400px'"
-                :error-messages="errorMessage"
-                prependIcon="mdi-calendar-month"
-                style="flex: none"
-              ></BaseDatePicker>
-            </Field>
-            <BaseButton type="submit" :width="'200px'" class="mx-6">{{
-              t('common.search')
-            }}</BaseButton>
-            <BaseButton :width="'200px'" @click="clearFormTable()">{{
-              t('common.clear')
-            }}</BaseButton>
-            <BaseButton :width="'200px'" @click="excelExport()">{{
-              t('common.excel')
-            }}</BaseButton>
-          </div>
+          <v-row align="center">
+            <!-- Start Date Picker -->
+            <v-col cols="12" sm="6" md="4">
+              <Field name="start_date" v-slot="{ field, errorMessage }">
+                <BaseDatePicker
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('workingTime.start_date')"
+                  :error-messages="errorMessage"
+                  prependIcon="mdi-calendar-month"
+                  class="w-100"
+                ></BaseDatePicker>
+              </Field>
+            </v-col>
+
+            <!-- End Date Picker -->
+            <v-col cols="12" sm="6" md="4">
+              <Field name="end_date" v-slot="{ field, errorMessage }">
+                <BaseDatePicker
+                  v-model="field.value"
+                  v-bind="field"
+                  :label="t('workingTime.end_date')"
+                  :error-messages="errorMessage"
+                  prependIcon="mdi-calendar-month"
+                  class="w-100"
+                ></BaseDatePicker>
+              </Field>
+            </v-col>
+
+            <!-- Action Buttons Group -->
+            <v-col cols="12" md="4">
+              <v-row density="compact">
+                <v-col cols="12" sm="4">
+                  <BaseButton type="submit" class="w-100">
+                    {{ t('common.search') }}
+                  </BaseButton>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <BaseButton class="w-100" @click="clearFormTable()">
+                    {{ t('common.clear') }}
+                  </BaseButton>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <BaseButton class="w-100" @click="excelExport()">
+                    {{ t('common.excel') }}
+                  </BaseButton>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </Form>
       </v-col>
     </v-row>
   </ParentCard>
-  <div v-if="initialData">
-    <div class="d-flex justify-space-between align-center mt-3">
-      <BaseTitle> {{ t('workingTime.title2') }} </BaseTitle>
-      <div>
+
+  <!-- Output Task Performance Table -->
+  <div v-if="initialData" class="mt-4">
+    <!-- Header Title and Search Bar -->
+    <div
+      class="d-flex flex-column flex-md-row justify-space-between align-md-center ga-3 mb-3"
+    >
+      <BaseTitle>{{ t('workingTime.title2') }}</BaseTitle>
+
+      <div class="w-100 w-md-auto" style="min-width: 260px">
         <BaseTextField
           v-model="search"
           :label="t('common.search')"
           color="primary"
-          width="300px"
           prepend-icon="mdi-magnify"
-        >
-        </BaseTextField>
+          hide-details
+          class="w-100"
+        ></BaseTextField>
       </div>
     </div>
+
+    <!-- Data Table Container -->
     <ParentCard>
       <BaseTable :headers="headers" :items="items">
         <template #[`item.periods`]="{ item }">
-          <span
-            >{{ item.periods[0] }} {{ t('workingTime.hour') }}
-            {{
-              item.periods[1] == 5 ? '30 ' + t('workingTime.minutes') : ''
-            }}</span
-          >
+          <span>
+            {{ item.periods[0] }} {{ t('workingTime.hour') }}
+            {{ item.periods[1] == 5 ? '30 ' + t('workingTime.minutes') : '' }}
+          </span>
         </template>
       </BaseTable>
     </ParentCard>

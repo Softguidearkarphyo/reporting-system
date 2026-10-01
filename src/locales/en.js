@@ -24,6 +24,8 @@ export default {
     clear: 'Clear',
     adminView: 'admin mode',
     standardView: 'standard mode',
+    fineRecord : 'fine records',
+    employeeSkill: 'employee\'s skill'
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -279,6 +281,8 @@ export default {
   memberFine: {
     title1: 'Fine Registration',
     title2: 'Fine List',
+    totalFineAmount: 'Total Fine Amount',
+    totalFineCount: 'Total Fine Count',
     deleteConfirmText:
       'Are you sure to delete this member? # This action cannot be undone.',
     statusConfirmText: 'Are you sure to change this action?',

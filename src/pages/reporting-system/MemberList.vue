@@ -1,43 +1,26 @@
 <template>
-  <v-row class="align-center">
-    <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
-      <BaseTitle> {{ t('memberList.title') }} </BaseTitle>
+  <v-row class="align-center" density="compact">
+    <!-- Title Section -->
+    <v-col cols="12" sm="6" md="7" lg="8" class="d-flex align-center">
+      <BaseTitle class="my-0">{{ t('memberList.title') }}</BaseTitle>
     </v-col>
-    <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        color="primary"
-        prepend-icon="mdi-magnify"
-        class="mb-n5"
-        type="text"
-        variant="plain"
-        dense
-      >
-      </BaseTextField>
-      <BaseButton
-        @click="exportFile"
-        :disabled="!items.length"
-        style="width: 100px"
-      >
+
+    <!-- Controls Section (Search & Export) -->
+    <v-col cols="12" sm="6" md="5" lg="4" class="d-flex align-center justify-end ga-3">
+      <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-inner-icon="mdi-magnify"
+        type="text" variant="outlined" density="compact" hide-details class="flex-grow-1" />
+      <BaseButton @click="exportFile" :disabled="!items?.length" color="primary" class="shrink-0">
         Export
       </BaseButton>
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable  :headers="headers" :items="items" :density="true">
+    <BaseTable :headers="headers" :items="items" :density="true">
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
-            <v-img 
-              v-if="item.staff_image_url && item.staff_image_url !== 'undefined'" 
-              :src="item.staff_image_url" 
-            />
-            <v-img
-              v-else
-              class="profileImage"
-              :src="profileImgPath(isJapanese ? item.jp_name : item.eng_name)"
-            />
+            <v-img v-if="item.staff_image_url && item.staff_image_url !== 'undefined'" :src="item.staff_image_url" />
+            <v-img v-else class="profileImage" :src="profileImgPath(isJapanese ? item.jp_name : item.eng_name)" />
           </v-avatar>
           <div>
             <div class="font-weight-medium">
@@ -52,28 +35,13 @@
 
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
-          <BaseButton
-            elevation="0"
-            @click.stop="pushToEdit(item.id)"
-            color=""
-            class="edit-btn"
-            size="small"
-            :style="{ width }"
-            :add-class="['ma-1']"
-          >
+          <BaseButton elevation="0" @click.stop="pushToEdit(item.id)" color="" class="edit-btn" size="small"
+            :style="{ width }" :add-class="['ma-1']">
             <v-icon icon="tabler:IconEdit" size="15" />
           </BaseButton>
 
-          <BaseButton
-            v-if="!isSelf(item.id)"
-            elevation="0"
-            @click.stop="showConfirmDelete(item.id)"
-            color=""
-            class="delete-btn"
-            size="small"
-            :style="{ width }"
-            :add-class="['ma-1']"
-          >
+          <BaseButton v-if="!isSelf(item.id)" elevation="0" @click.stop="showConfirmDelete(item.id)" color=""
+            class="delete-btn" size="small" :style="{ width }" :add-class="['ma-1']">
             <v-icon icon="tabler:IconTrash" size="15" />
           </BaseButton>
           <div v-else style="width: 33%"></div>
@@ -82,19 +50,14 @@
     </BaseTable>
   </ParentCard>
 
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('memberList.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmDelete" :text="t('memberList.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }" @yes="
       confirmDelete = false;
-      deleteMember();
-    "
-    @no="
+    deleteMember();
+    " @no="
       confirmDelete = false;
-      deleteTarget = undefined;
-    "
-  ></BaseConfirmDelete>
+    deleteTarget = undefined;
+    "></BaseConfirmDelete>
 </template>
 
 <script setup>
@@ -162,6 +125,7 @@ const headers = computed(() => {
     {
       title: t('memberList.table.name'),
       key: 'name',
+      value: (item) => (isJapanese.value ? item.jp_name : item.eng_name),
     },
     {
       title: t('memberList.table.phone'),

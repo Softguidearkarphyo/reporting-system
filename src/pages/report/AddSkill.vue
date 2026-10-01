@@ -5,19 +5,19 @@
     :validation-schema="skillSheetCreateSchema"
     @submit="submit"
   >
-    <ParentCard class="pa-2">
+    <ParentCard class="pa-4 pa-sm-6">
       <v-row>
-        <v-col cols="12" md="6" lg="4">
+        <!-- Staff Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="staff_id" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.staff')"
-              class="mx-auto"
+              class="w-100"
               :items="memberList"
               prependIcon="mdi-account"
               :disabled="!!parseInt(skillSheetId)"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -25,16 +25,17 @@
             </BaseSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Project Multi-Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="project" v-slot="{ field, errorMessage }">
             <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.project')"
-              class="mx-auto"
+              class="w-100"
               :items="projectList"
               prependIcon="mdi-microsoft-teams"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :chip-width="140"
@@ -43,16 +44,17 @@
             </BaseMultiSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Position Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="position" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.position')"
-              class="mx-auto"
+              class="w-100"
               :items="positionList"
               prependIcon="mdi-account-supervisor"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -60,16 +62,17 @@
             </BaseSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Grade Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="grade" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.grade')"
-              class="mx-auto"
+              class="w-100"
               :items="gradeList"
               prependIcon="mdi-star"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -77,29 +80,31 @@
             </BaseSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Join Date Picker -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="join_date" v-slot="{ field, errorMessage }">
             <BaseDatePicker
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.join_date')"
-              class="mx-auto"
+              class="w-100"
               prependIcon="mdi-calendar-month"
               :error-messages="errorMessage"
-              :width="'320px'"
             ></BaseDatePicker>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Japanese Level Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="japanese_level" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.japanese_level')"
-              class="mx-auto"
+              class="w-100"
               :items="japaneseLevelList"
               prependIcon="mdi-ideogram-cjk"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -107,58 +112,62 @@
             </BaseSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- SG Experience Textfield -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="sg_experience" v-slot="{ field }">
             <BaseTextField
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.sg_experience')"
-              class="mx-auto"
+              class="w-100"
               type="number"
               prependIcon="mdi-weather-cloudy-clock"
-              :width="'320px'"
             >
             </BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Previous Experience Textfield -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="prev_experience" v-slot="{ field }">
             <BaseTextField
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.prev_experience')"
-              class="mx-auto"
+              class="w-100"
               type="number"
               prependIcon="mdi-history"
-              :width="'320px'"
             >
             </BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Total Experience Textfield -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="total_experience" v-slot="{ field }">
             <BaseTextField
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.total_experience')"
-              class="mx-auto"
+              class="w-100"
               prependIcon="mdi-clock-time-twelve"
-              :width="'320px'"
               :readonly="true"
             >
             </BaseTextField>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Responsibility Multi-Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="responsibility" v-slot="{ field, errorMessage }">
             <BaseMultiSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.responsibility')"
-              class="mx-auto"
+              class="w-100"
               :items="responsibilityList"
               prependIcon="mdi-account-check"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -166,16 +175,17 @@
             </BaseMultiSelect>
           </Field>
         </v-col>
-        <v-col cols="12" md="6" lg="4">
+
+        <!-- Major Tech Stack Select -->
+        <v-col cols="12" sm="6" lg="4">
           <Field name="major_tech_stack_id" v-slot="{ field, errorMessage }">
             <BaseSelect
               v-model="field.value"
               v-bind="field"
               :label="t('addMemberSkill.form.major_tech_stack')"
-              class="mx-auto"
+              class="w-100"
               :items="techStackList"
               prependIcon="mdi-star-shooting"
-              :width="'320px'"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -184,11 +194,12 @@
           </Field>
         </v-col>
       </v-row>
-      <div class="mt-4 mb-4">
+
+      <!-- Skill Table Wrapper for Horizontal Scroll -->
+      <div class="my-6 overflow-x-auto">
         <v-data-table
           hide-default-footer
-          class="skill-table"
-          style="width: 100%"
+          class="skill-table min-w-100"
         >
           <template #body>
             <tbody class="table-center">
@@ -199,8 +210,8 @@
                   style="min-width: 100px; max-width: 130px"
                 >
                   <div class="py-2 text-center">
-                    <div>{{ cell.name }}</div>
-                    <div style="position: relative">
+                    <div class="text-truncate">{{ cell.name }}</div>
+                    <div class="position-relative">
                       <v-menu
                         v-model="openMenus[rowIndex][cellIndex]"
                         :close-on-content-click="false"
@@ -212,7 +223,7 @@
                           <v-btn
                             v-bind="props"
                             elevation="0"
-                            class="mt-2 d-flex justify-center"
+                            class="mt-2 d-flex justify-center mx-auto"
                             :style="{
                               backgroundColor: buttonBgColor,
                               padding: '5px',
@@ -225,7 +236,7 @@
                           </v-btn>
                         </template>
                         <v-card>
-                          <v-card-text class="d-flex">
+                          <v-card-text class="d-flex flex-wrap ga-1 pa-2">
                             <BaseButton
                               v-for="(item, index) in symbolLists"
                               :key="index"
@@ -254,8 +265,9 @@
         </v-data-table>
       </div>
 
-      <div class="d-flex justify-center">
-        <BaseButton type="submit" style="width: 200px">
+      <!-- Action Footer -->
+      <div class="d-flex justify-center mt-6">
+        <BaseButton type="submit" class=" max-w-sm">
           {{ t('common.submit') }}
         </BaseButton>
       </div>

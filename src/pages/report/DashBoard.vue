@@ -1,4 +1,5 @@
 <template>
+  <!-- Non-Admin Dashboard -->
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
     <v-row class="mb-6" justify="space-between">
       <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
@@ -17,9 +18,9 @@
     </v-row>
 
     <v-row class="mb-6" dense>
-      <v-col cols="12">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
-          <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+          <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
           <BaseTable :headers="leaveHeader" :items="memberLeave" :items-per-page="-1" hide-default-footer
@@ -57,19 +58,17 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
-          <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
+          <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
           <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
             class="elevation-0 pa-2 no-scroll-table">
-            <!-- Employee Name Slot -->
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <!-- Time Slot -->
             <template #[`item.time`]="{ item }">
               <span class="time-box d-inline-flex justify-center align-center">
                 <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
@@ -77,14 +76,12 @@
               </span>
             </template>
 
-            <!-- Fine Amount Slot -->
             <template #[`item.fine`]="{ item }">
               <span class="money-box d-inline-flex justify-center align-center">
                 {{ item.fine + ' Ks' }}
               </span>
             </template>
 
-            <!-- Count & Alert Icon Slot -->
             <template #[`item.count`]="{ item }">
               <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
                 {{ item.count }}
@@ -99,34 +96,46 @@
     </v-row>
   </v-main>
 
+  <!-- Admin Dashboard -->
   <v-main v-else class="pa-6 pt-4">
-    <v-row>
-      <v-col cols="8">
-        <v-row>
-          <v-col cols="6">
-            <v-card outlined>
-              <v-card-title>Project Men Power</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <canvas id="menPowerChart"></canvas>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="6">
-            <v-card outlined>
-              <v-card-title>Employees' Skill</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <canvas id="leaveChart"></canvas>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+    <!-- Charts Row: Manpower, Employee Skill, and Japanese Level -->
+    <v-row class="mb-6">
+      <v-col cols="12" md="4">
+        <v-card outlined class="h-100">
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('sidebar.projectmenpower') }}</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <canvas id="menPowerChart"></canvas>
+          </v-card-text>
+        </v-card>
       </v-col>
-      <v-col cols="12" md="8">
+
+      <v-col cols="12" md="4">
+        <v-card outlined class="h-100">
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('common.employeeSkill') }}</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <canvas id="leaveChart"></canvas>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" md="4">
+        <v-card outlined class="h-100">
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('addMemberSkill.table.japanese_level') }}</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <canvas id="fineChart"></canvas>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Records Row: Leave Record and Fine Record -->
+    <v-row>
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
-          <v-card-title class="text-h6 pa-4">Leave Record</v-card-title>
+          <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
           <BaseTable :headers="leaveHeader" :items="memberLeave" class="elevation-0 pa-2">
             <template #[`item.eng_name`]="{ item }">
@@ -155,57 +164,41 @@
               <span v-else>{{ item.duration }}</span>
             </template>
 
-            <!-- Reason -->
             <template #[`item.reason`]="{ item }">
               <span>{{ item.reason || '-' }}</span>
             </template>
           </BaseTable>
-        </v-card></v-col>
-    </v-row>
+        </v-card>
+      </v-col>
 
-    <v-row>
-      <v-col cols="12">
-        <v-row>
-          <v-col cols="4">
-            <v-card class="card-chart" outlined>
-              <v-card-title>Japanese Level</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <canvas id="fineChart"></canvas>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12" md="8">
-              <v-card rounded="lg" elevation="1">
-                <v-card-title class="text-h6 pa-4">Fine Record</v-card-title>
-                <v-divider></v-divider>
+      <v-col cols="12" md="6">
+        <v-card rounded="lg" elevation="1">
+          <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
+          <v-divider></v-divider>
 
-                <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
-                  class="elevation-0 pa-2 no-scroll-table">
+          <BaseTable :headers="fineHeader" :items="memberFine" :items-per-page="-1" hide-default-footer
+            class="elevation-0 pa-2 no-scroll-table">
+            <template #[`item.eng_name`]="{ item }">
+              <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
+            </template>
 
-                  <template #[`item.eng_name`]="{ item }">
-                    <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
-                  </template>
+            <template #[`item.total_fines_amount`]="{ item }">
+              <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
+                {{ item.total_fines_amount ? item.total_fines_amount.toLocaleString() : 0 }} Ks
+              </span>
+            </template>
 
-                  <template #[`item.total_fines_amount`]="{ item }">
-                    <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
-                      {{ item.total_fines_amount.toLocaleString() }} Ks
-                    </span>
-                  </template>
-
-                  <template #[`item.total_fine_records`]="{ item }">
-                    <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-                      {{ item.total_fine_records }}
-                    </span>
-                    <v-icon v-if="item.total_fine_records > 2"
-                      :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
-                      {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
-                    </v-icon>
-                  </template>
-                </BaseTable>
-              </v-card>
-          </v-col>
-        </v-row>
+            <template #[`item.total_fine_records`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
+                {{ item.total_fine_records }}
+              </span>
+              <v-icon v-if="item.total_fine_records > 2"
+                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+              </v-icon>
+            </template>
+          </BaseTable>
+        </v-card>
       </v-col>
     </v-row>
   </v-main>
@@ -248,7 +241,6 @@ const memberFine = ref([]);
 const menPower = ref({});
 const members = ref([]);
 
-
 const leaveHeader = computed(() => {
   const tmpHeaders = [
     { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
@@ -272,13 +264,13 @@ const fineHeader = computed(() => {
       align: 'left',
     },
     {
-      title: 'TOTAL FINE AMOUNT',
+      title: t('memberFine.totalFineAmount'),
       key: 'total_fines_amount',
       align: 'left',
       sortable: true,
     },
     {
-      title: 'TOTAL FINE RECORDS',
+      title: t('memberFine.totalFineCount'),
       key: 'total_fine_records',
       align: 'left',
       sortable: true,

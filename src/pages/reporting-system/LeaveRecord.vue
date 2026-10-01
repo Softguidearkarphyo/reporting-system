@@ -1,12 +1,13 @@
 <template>
-  <div class="leave-management-view p-6 bg-gray-50 min-h-screen">
+  <div class="bg-gray-50 min-h-screen">
     <template v-if="isAdmin">
-      <v-row class="align-center mb-3">
+      <v-row class="align-center" density="compact">
         <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
           <BaseTitle>{{ t('creatLeave.title') }}</BaseTitle>
         </v-col>
         <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-          <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-icon="mdi-magnify" />
+          <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-icon="mdi-magnify"
+            density="compact" hide-details />
         </v-col>
       </v-row>
 
@@ -245,9 +246,9 @@
       switchTarget = null;
     }
     " @no="
-    confirmChange = false;
-  switchTarget = null;
-  " />
+      confirmChange = false;
+    switchTarget = null;
+    " />
 </template>
 
 <script setup>
@@ -319,7 +320,7 @@ const userHeaders = computed(() => [
 ]);
 
 const multiHeaders3 = computed(() => [
- 
+
   {
     title: t('creatLeave.form.ot_date'),
     key: 'ot_date',
