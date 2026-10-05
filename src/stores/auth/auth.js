@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(username, password) {
     try {
+      console.log("second ", username, password)
       await api.get('../sanctum/csrf-cookie');
       const res = await api.post('/login', { username, password });
 
@@ -22,6 +23,8 @@ export const useAuthStore = defineStore('auth', () => {
       const profileImg = staff.value?.staff_image_url 
         || (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null) 
         || profileImgPath(staff.value.eng_name);
+
+        console.log("login data ", res.data.staff)
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staff-id', String(staff.value.id));

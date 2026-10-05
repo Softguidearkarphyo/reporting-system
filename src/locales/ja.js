@@ -31,6 +31,8 @@ export default {
     firstAnnual: '第1回年次',
     secondAnnual: '第2回',
     totalOvertime: '総残業時間',
+    carryLeaves: '葉を運ぶ',
+    accumulatedHours: '累積時間',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

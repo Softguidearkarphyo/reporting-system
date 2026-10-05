@@ -31,6 +31,8 @@ export default {
     firstAnnual: 'first annual',
     secondAnnual: 'second annual',
     totalOvertime: 'total overtime',
+    carryLeaves: 'carry leaves',
+    accumulatedHours: 'accumulated hours',
   },
   sidebar: {
     dashboard: 'dashboard',

@@ -1,5 +1,6 @@
 <template>
   <div class="member-leave-detail p-6 bg-gray-50 min-h-screen">
+    <!-- Header -->
     <v-row class="mb-2">
       <v-col cols="12" class="d-flex align-center">
         <v-btn icon variant="text" color="primary" class="me-2" @click="goBack">
@@ -15,6 +16,7 @@
       </v-col>
     </v-row>
 
+    <!-- First Summary Cards Row (Full Width - 4/4) -->
     <v-row dense class="mb-2">
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
@@ -65,32 +67,53 @@
       </v-col>
     </v-row>
 
+    <!-- Second Summary Cards Row (3/4 Width - cols="12" md="9") -->
     <v-row dense class="mb-3">
-      <v-col cols="12" sm="6">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">ACCUMULATED HOURS</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-teal me-2">
-              {{ accumulatedHoursFormatted }}
-            </span>
-            <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
-          </div>
-        </v-card>
-      </v-col>
+      <v-col cols="12" md="9">
+        <v-row dense>
+          <v-col cols="12" sm="4">
+            <v-card class="pa-4 rounded-lg h-100" elevation="1">
+              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+                {{ t('common.carryLeaves') || 'CARRY LEAVES' }}
+              </div>
+              <div class="d-flex align-baseline">
+                <span class="text-h4 font-weight-bold text-indigo me-2">
+                  {{ leaveSummary.carry_leaves ?? 0 }}
+                </span>
+                <span class="text-body-2 text-gray-500">Days</span>
+              </div>
+            </v-card>
+          </v-col>
 
-      <v-col cols="12" sm="6">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-purple me-2">
-              {{ totalOvertimeFormatted }}
-            </span>
-          </div>
-        </v-card>
+          <v-col cols="12" sm="4">
+            <v-card class="pa-4 rounded-lg h-100" elevation="1">
+              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{ t('common.accumulatedHours') || 'Accumulated Hours' }}</div>
+              <div class="d-flex align-baseline">
+                <span class="text-h4 font-weight-bold text-teal me-2">
+                  {{ accumulatedHoursFormatted }}
+                </span>
+                <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
+              </div>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" sm="4">
+            <v-card class="pa-4 rounded-lg h-100" elevation="1">
+              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
+              <div class="d-flex align-baseline">
+                <span class="text-h4 font-weight-bold text-purple me-2">
+                  {{ totalOvertimeFormatted }}
+                </span>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
 
+    <!-- Main Content Tables -->
     <v-row>
+      <!-- Leave Records Table -->
       <v-col cols="12" md="8">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -177,6 +200,7 @@
         </ParentCard>
       </v-col>
 
+      <!-- Overtime Records Table -->
       <v-col cols="12" md="4">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -261,6 +285,7 @@
     </v-row>
   </div>
 
+  <!-- Delete Modal -->
   <BaseConfirmDelete
     v-model="confirmDelete"
     :text="t('memberFine.deleteConfirmText')"
@@ -275,6 +300,7 @@
     "
   />
 
+  <!-- Status Switch Modal -->
   <BaseConfirmDelete
     v-model="confirmChange"
     :text="t('memberFine.statusConfirmText')"
@@ -345,8 +371,8 @@ const leaveSummary = computed(() => {
   return memberLeaves.value[0]?.leave_record_summary || {};
 });
 
-// Accumulated Hours Formatting
 const accumulatedHoursFormatted = computed(() => {
+  console.log("leave ", JSON.stringify(leaveSummary.value))
   const total = parseFloat(leaveSummary.value.accumulated_hours || 0);
   const hours = Math.floor(total);
   const minutes = Math.round((total - hours) * 60);
@@ -357,7 +383,6 @@ const accumulatedHoursFormatted = computed(() => {
   return `${hours} Hrs`;
 });
 
-// Headers
 const headers = computed(() => {
   const tmpHeaders = [
     { title: t('creatLeave.form.leave_date'), key: 'leave_date' },

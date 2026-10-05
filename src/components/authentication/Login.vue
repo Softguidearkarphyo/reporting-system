@@ -158,6 +158,7 @@ const handleLogin = async () => {
 
   try {
     const [lat, lon] = await getCurrentPosition();
+    console.log("location ", lat, lon);
     await authStore.login(
       username.value,
       password.value,
