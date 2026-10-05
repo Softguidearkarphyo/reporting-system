@@ -66,7 +66,7 @@ const navbars = computed(() => [
     path: '/reporting-system/leave-records',
     icon: 'tabler:IconFileReport',
   },
-  ...(role.value === ADMIN
+  ...(role.value === String(ADMIN)
     ? [
       {
         title: t('sidebar.employeecompetency'),

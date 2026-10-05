@@ -1,7 +1,6 @@
 <template>
   <div class="member-leave-detail p-6 bg-gray-50 min-h-screen">
-    <!-- Top Bar / Navigation -->
-    <v-row class="mb-4">
+    <v-row class="mb-2">
       <v-col cols="12" class="d-flex align-center">
         <v-btn icon variant="text" color="primary" class="me-2" @click="goBack">
           <v-icon icon="tabler:IconArrowLeft" size="22" />
@@ -16,61 +15,82 @@
       </v-col>
     </v-row>
 
-    <!-- Summary Metric Cards -->
-    <div class="d-flex flex-wrap ga-4 mb-6">
-      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}</div>
-        <div class="d-flex align-baseline">
-          <span class="text-h4 font-weight-bold text-primary me-2">
-            {{ leaveSummary.total_used ?? 0 }}
-          </span>
-          <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
-        </div>
-      </v-card>
+    <v-row dense class="mb-2">
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-primary me-2">
+              {{ leaveSummary.total_used ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
+          </div>
+        </v-card>
+      </v-col>
 
-      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}</div>
-        <div class="d-flex align-baseline">
-          <span class="text-h4 font-weight-bold text-info me-2">
-            {{ leaveSummary.remain_leaves ?? 0 }}
-          </span>
-          <span class="text-body-2 text-gray-500">Days</span>
-        </div>
-      </v-card>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-info me-2">
+              {{ leaveSummary.remain_leaves ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">Days</span>
+          </div>
+        </v-card>
+      </v-col>
 
-      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}</div>
-        <div class="d-flex align-baseline">
-          <span class="text-h4 font-weight-bold text-warning me-2">
-            {{ leaveSummary.first_annual ?? 0 }}
-          </span>
-          <span class="text-body-2 text-gray-500">Days</span>
-        </div>
-      </v-card>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-warning me-2">
+              {{ leaveSummary.first_annual ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">Days</span>
+          </div>
+        </v-card>
+      </v-col>
 
-      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}</div>
-        <div class="d-flex align-baseline">
-          <span class="text-h4 font-weight-bold text-success me-2">
-            {{ leaveSummary.second_annual ?? 0 }}
-          </span>
-          <span class="text-body-2 text-gray-500">Days</span>
-        </div>
-      </v-card>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-success me-2">
+              {{ leaveSummary.second_annual ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">Days</span>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <v-card class="pa-4 rounded-lg flex-1-0" elevation="1">
-        <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
-        <div class="d-flex align-baseline">
-          <span class="text-h4 font-weight-bold text-purple me-2">
-            {{ totalOvertimeFormatted }}
-          </span>
-        </div>
-      </v-card>
-    </div>
+    <v-row dense class="mb-3">
+      <v-col cols="12" sm="6">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">ACCUMULATED HOURS</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-teal me-2">
+              {{ accumulatedHoursFormatted }}
+            </span>
+            <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
+          </div>
+        </v-card>
+      </v-col>
 
-    <!-- Main Content Grid (2/3 & 1/3 splits) -->
+      <v-col cols="12" sm="6">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-purple me-2">
+              {{ totalOvertimeFormatted }}
+            </span>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-row>
-      <!-- Leave Records (2/3 width) -->
       <v-col cols="12" md="8">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -106,13 +126,19 @@
             <template #[`item.leave_type`]="{ item }">
               <span
                 v-if="item.leave_type === 1"
-                class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success"
+                class="status d-inline-flex justify-center align-center"
               >
                 paid
               </span>
               <span
+                v-else-if="item.leave_type === 3"
+                class="status-short d-inline-flex justify-center align-center"
+              >
+                short 
+              </span>
+              <span
                 v-else
-                class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning"
+                class="status1 d-inline-flex justify-center align-center"
               >
                 unpaid
               </span>
@@ -144,7 +170,6 @@
             </template>
           </BaseTable>
 
-          <!-- Leave Records Empty State -->
           <div v-else class="text-center pa-8 text-gray-500">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
             <div class="text-body-1">No leave records found</div>
@@ -152,7 +177,6 @@
         </ParentCard>
       </v-col>
 
-      <!-- Overtime Records (1/3 width) -->
       <v-col cols="12" md="4">
         <ParentCard class="elevation-1 rounded-lg h-100">
           <v-row class="align-center mb-3">
@@ -228,7 +252,6 @@
             </template>
           </BaseTable>
 
-          <!-- Overtime Records Empty State -->
           <div v-else class="text-center pa-8 text-gray-500">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
             <div class="text-body-1">No overtime records found</div>
@@ -238,7 +261,6 @@
     </v-row>
   </div>
 
-  <!-- Delete Dialog -->
   <BaseConfirmDelete
     v-model="confirmDelete"
     :text="t('memberFine.deleteConfirmText')"
@@ -253,7 +275,6 @@
     "
   />
 
-  <!-- Status Change Dialog -->
   <BaseConfirmDelete
     v-model="confirmChange"
     :text="t('memberFine.statusConfirmText')"
@@ -271,8 +292,9 @@
     "
   />
 </template>
+
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'; 
+import { ref, computed, watch } from 'vue'; 
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLeaveStore } from '@/stores/leave/leave.js';
@@ -323,6 +345,18 @@ const leaveSummary = computed(() => {
   return memberLeaves.value[0]?.leave_record_summary || {};
 });
 
+// Accumulated Hours Formatting
+const accumulatedHoursFormatted = computed(() => {
+  const total = parseFloat(leaveSummary.value.accumulated_hours || 0);
+  const hours = Math.floor(total);
+  const minutes = Math.round((total - hours) * 60);
+
+  if (minutes > 0) {
+    return `${hours} Hrs : ${minutes} Min`;
+  }
+  return `${hours} Hrs`;
+});
+
 // Headers
 const headers = computed(() => {
   const tmpHeaders = [
@@ -362,7 +396,6 @@ const getStoredStaffId = () => {
   return localStorage.getItem('staff-id');
 };
 
-// Fallback staff ID from store or localStorage
 const staffId = computed(() => {
   return (
     authStore.staff?.staff_id ||
@@ -461,6 +494,16 @@ const onStatusSwitchChange = async (item) => {
   }
 };
 
+const deleteOvertime = async () => {
+  try {
+    await overTimeStore.deleteOvertime({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    fetchOvertimeData(route.params.recId);
+  } catch (error) {
+    console.error('Error deleting member overtime:', error);
+  }
+};
+
 const fetchOvertimeData = async (staffIdParam) => {
   try {
     const res = await overTimeStore.fetchOverTime({ staff_id: parseInt(staffIdParam) });
@@ -502,24 +545,35 @@ const goBack = () => {
   router.back();
 };
 </script>
+
 <style scoped>
 .status {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
+  background-color: rgba(var(--v-theme-complete), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-complete));
+  text-transform: uppercase;
 }
 
 .status1 {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
+  background-color: rgba(var(--v-theme-error), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-error));
+  text-transform: uppercase;
+}
+
+.status-short {
+  background-color: rgba(30, 136, 229, 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e88e5;
+  /* text-transform: uppercase; */
 }
 </style>

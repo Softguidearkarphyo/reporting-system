@@ -55,8 +55,8 @@ export const useLeaveStore = defineStore('leave', () => {
   // Getters
   const getLeaves = computed(() => leaves.value);
   const getLeaveRecords = computed(() => leaveRecords.value);
-  
 
+  // Setters
   const setLeaves = (data) => {
     leaves.value = data;
   };
@@ -64,45 +64,78 @@ export const useLeaveStore = defineStore('leave', () => {
     leaveRecords.value = data;
   };
 
-
   // Fetch Leaves API Call
   const fetchLeave = async (payload = {}) => {
+    console.log("thsi is ", payload)
     try {
       const response = await api.post('/reporting-system/leave/get', payload);
       setLeaves(response.data);
       return response.data;
     } catch (error) {
-      toast.error('Fail to Fetch Leaves');
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Fail to Fetch Leaves';
+      toast.error(errorMsg);
       throw error;
     }
   };
 
-   const fetchLeaveRecord = async (payload = {}) => {
+  // Fetch Leave Records API Call
+  const fetchLeaveRecord = async (payload = {}) => {
+    console.log("user ", JSON.stringify(payload))
     try {
       const response = await api.post('/reporting-system/leave-record/get', payload);
       setLeaveRecords(response.data);
       return response.data;
     } catch (error) {
-      toast.error('Fail to Fetch Leaves');
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Fail to Fetch Leave Records';
+      toast.error(errorMsg);
       throw error;
     }
   };
 
   const createLeave = async (payload) => {
     try {
-      const response = await api.post(
-        '/reporting-system/leave/create',
-        payload
-      );
-      toast.success('Leave Created Successfully.');
-      return response;
+      const shortLeaveDurationIds = [3, 4, 5, 6, 7, 8, 9];
+      const isShortLeave = shortLeaveDurationIds.includes(Number(payload.duration));
+
+      let response;
+
+      console.log('in this :');  
+      if (isShortLeave) {
+        console.log('Short Leave is:', payload); 
+        response = await api.post(
+          '/reporting-system/leave-record/add-short-leave',
+          payload
+        );
+        toast.success('Short Leave Created Successfully.');
+      } else {
+        console.log('else:'); 
+        response = await api.post(
+          '/reporting-system/leave/create',
+          payload
+        );
+        toast.success('Leave Created Successfully.');
+      }
+
+      return response.data;
     } catch (error) {
-      toast.error('Fail to create leave. Calculate leave record first.');
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Fail to process leave.';
+      toast.error(errorMsg);
+      throw error;
     }
   };
 
   return {
     leaves,
+    leaveRecords,
     getLeaves,
     getLeaveRecords,
     setLeaves,

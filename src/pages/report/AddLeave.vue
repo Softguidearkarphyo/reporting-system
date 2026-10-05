@@ -1,64 +1,64 @@
 <template>
   <BaseTitle class="mb-3">{{ t('creatLeave.title') }}</BaseTitle>
 
-<ParentCard>
-  <v-row align="center" justify="start" class="py-1 ga-2 ga-md-4">
-    <v-col cols="12" sm="6" md="4" lg="3">
-      <BaseSelect
-        v-if="!selectedMember"
-        v-model="selectedMemberId"
-        :label="t('creatLeave.options.employee')"
-        :items="memberList"
-        item-value="id"
-        item-title="name"
-        prependIcon="tabler:IconUserCog"
-        class="w-100"
-        @update:modelValue="selectMember"
-      />
+  <ParentCard>
+    <v-row align="center" justify="start" class="py-1 ga-2 ga-md-4">
+      <v-col cols="12" sm="6" md="4" lg="3">
+        <BaseSelect
+          v-if="!selectedMember"
+          v-model="selectedMemberId"
+          :label="t('creatLeave.options.employee')"
+          :items="memberList"
+          item-value="id"
+          item-title="name"
+          prependIcon="tabler:IconUserCog"
+          class="w-100"
+          @update:modelValue="selectMember"
+        />
 
-      <v-checkbox
-        v-else
-        v-model="isChecked"
-        :label="t('creatLeave.options.selected_name') + selectName"
-        hide-details
-        color="primary"
-        class="custom-checkbox"
-        @update:modelValue="onCheckboxChange"
-      />
-    </v-col>
+        <v-checkbox
+          v-else
+          v-model="isChecked"
+          :label="t('creatLeave.options.selected_name') + selectName"
+          hide-details
+          color="primary"
+          class="custom-checkbox"
+          @update:modelValue="onCheckboxChange"
+        />
+      </v-col>
 
-    <!-- Option Checkboxes -->
-    <v-col cols="12" sm="auto" class="d-flex flex-wrap align-center ga-3">
-      <v-checkbox
-        v-model="selectedPotion"
-        color="primary"
-        :label="t('creatLeave.options.existing')"
-        value="potions1"
-        hide-details
-        class="custom-checkbox"
-      />
+      <!-- Option Checkboxes -->
+      <v-col cols="12" sm="auto" class="d-flex flex-wrap align-center ga-3">
+        <v-checkbox
+          v-model="selectedPotion"
+          color="primary"
+          :label="t('creatLeave.options.existing')"
+          value="potions1"
+          hide-details
+          class="custom-checkbox"
+        />
 
-      <v-checkbox
-        v-if="showNewEmployee"
-        v-model="selectedPotion"
-        color="primary"
-        :label="t('creatLeave.options.new')"
-        value="potions2"
-        hide-details
-        class="custom-checkbox"
-      />
+        <v-checkbox
+          v-if="showNewEmployee"
+          v-model="selectedPotion"
+          color="primary"
+          :label="t('creatLeave.options.new')"
+          value="potions2"
+          hide-details
+          class="custom-checkbox"
+        />
 
-      <v-checkbox
-        v-model="selectedPotion"
-        color="primary"
-        :label="t('creatLeave.options.ot')"
-        value="potions3"
-        hide-details
-        class="custom-checkbox"
-      />
-    </v-col>
-  </v-row>
-</ParentCard>
+        <v-checkbox
+          v-model="selectedPotion"
+          color="primary"
+          :label="t('creatLeave.options.ot')"
+          value="potions3"
+          hide-details
+          class="custom-checkbox"
+        />
+      </v-col>
+    </v-row>
+  </ParentCard>
 
   <!-- Main Content Layout -->
   <v-row v-if="selectedMember && selectedPotion" class="mt-2">
@@ -167,6 +167,9 @@
                     (duration) => {
                       handleChange(duration);
                       formData.duration = duration;
+                      if ([3, 4, 5, 6, 7, 8, 9].includes(Number(duration))) {
+                        multipleLeave = false;
+                      }
                     }
                   "
                 />
@@ -205,6 +208,7 @@
                 :label="t('creatLeave.form.multiple_leave')"
                 color="primary"
                 hide-details
+                :disabled="isShortLeaveSelected"
                 @update:modelValue="changeMultipleLeave"
               />
             </v-col>
@@ -337,6 +341,7 @@
           items-per-page="10"
           class="elevation-1"
         >
+          <!-- Leave Type (Paid / Unpaid / Short Leave) -->
           <template #[`item.leave_type`]="{ item }">
             <span
               v-if="item.leave_type === 1"
@@ -344,7 +349,16 @@
             >
               paid
             </span>
-            <span v-else class="status1 d-inline-flex justify-center align-center">
+            <span
+              v-else-if="item.leave_type === 3"
+              class="status-short d-inline-flex justify-center align-center"
+            >
+              short 
+            </span>
+            <span
+              v-else
+              class="status1 d-inline-flex justify-center align-center"
+            >
               unpaid
             </span>
           </template>
@@ -491,12 +505,8 @@ import { useI18n } from 'vue-i18n';
 
 import { useMemberStore } from '@/stores/member/member.js';
 import { useLeaveStore } from '@/stores/leave/leave.js';
-import {
-  useLeaveRecordStore,
-} from '@/stores/leaveRecord/leaveRecord.js';
-import {
-  useOverTimeStore,
-} from '@/stores/overtime/overtime.js';
+import { useLeaveRecordStore } from '@/stores/leaveRecord/leaveRecord.js';
+import { useOverTimeStore } from '@/stores/overtime/overtime.js';
 
 import {
   leaveSchema,
@@ -504,71 +514,46 @@ import {
   otSchema,
 } from '@/plugins/validations/leave.js';
 
-import {
-  durationHour,
-} from '@/utils/date.js';
+import { durationHour } from '@/utils/date.js';
 
-
-const {
-  t,
-  locale,
-} = useI18n();
-
+const { t, locale } = useI18n();
 
 const memberStore = useMemberStore();
 const leaveStore = useLeaveStore();
-const leaveRecordStore =
-  useLeaveRecordStore();
-const overTimeStore =
-  useOverTimeStore();
+const leaveRecordStore = useLeaveRecordStore();
+const overTimeStore = useOverTimeStore();
 
 const LeaveFormRef = ref(null);
 const LeaveRecordFormRef = ref(null);
 const OtFormRef = ref(null);
 
-
 const selectedPotion = ref('potions1');
-
 const selectedMemberId = ref(null);
-
 const isChecked = ref(true);
-
 const multipleLeave = ref(false);
-
 const showNewEmployee = ref(false);
-
 const switchTarget = ref(null);
-
 const deleteTarget = ref(undefined);
-
 const confirmDelete = ref(undefined);
-
 const confirmChange = ref(undefined);
 
 const formData = ref({
   staff_id: '',
-
   permanent_date: null,
-
   leave_date: null,
-
   multi_date: [],
-
   duration: '',
-
   reason: '',
-
   ot_date: null,
-
   ot_time: null,
-
   offDays: 0,
-
   firstHalfLeave: 0,
-
   secondHalfLeave: 0,
 });
 
+const isShortLeaveSelected = computed(() => {
+  return [3, 4, 5, 6, 7, 8, 9].includes(Number(formData.value.duration));
+});
 
 const leaveInitialValues = computed(() => ({
   leave_date: formData.value.leave_date,
@@ -578,8 +563,7 @@ const leaveInitialValues = computed(() => ({
 }));
 
 const leaveRecordInitialValues = computed(() => ({
-  permanent_date:
-    formData.value.permanent_date,
+  permanent_date: formData.value.permanent_date,
 }));
 
 const otInitialValues = computed(() => ({
@@ -588,10 +572,7 @@ const otInitialValues = computed(() => ({
 }));
 
 const LeaveFormSchema = computed(() =>
-  leaveSchema(
-    t,
-    multipleLeave.value
-  )
+  leaveSchema(t, multipleLeave.value)
 );
 
 const LeaveRecordFormSchema = computed(() =>
@@ -603,119 +584,60 @@ const OtFormSchema = computed(() =>
 );
 
 const durationCount = computed(() => {
-  if (
-    !Array.isArray(
-      formData.value.multi_date
-    )
-  ) {
+  if (!Array.isArray(formData.value.multi_date)) {
     return 0;
   }
-
   return formData.value.multi_date.length;
 });
 
 const selectedMember = computed(() => {
-  if (
-    !memberList.value ||
-    !selectedMemberId.value
-  ) {
+  if (!memberList.value || !selectedMemberId.value) {
     return null;
   }
-
-  return memberList.value.find(
-    (member) =>
-      member.id === selectedMemberId.value
-  );
+  return memberList.value.find((member) => member.id === selectedMemberId.value);
 });
 
 const selectName = computed(() => {
-  return selectedMember.value
-    ? selectedMember.value.name
-    : '';
+  return selectedMember.value ? selectedMember.value.name : '';
 });
 
 const memberList = computed(() => {
-  const isJapanese =
-    locale.value === 'ja';
+  const isJapanese = locale.value === 'ja';
 
   return (
     memberStore.getMembers
       ?.map((member) => ({
         id: member.id,
-
-        name: isJapanese
-          ? member.jp_name
-          : member.eng_name,
-
+        name: isJapanese ? member.jp_name : member.eng_name,
         sort_key: member.sort_key,
       }))
       ?.sort((a, b) => {
-        if (!a.sort_key) {
-          return 1;
-        }
-
-        if (!b.sort_key) {
-          return -1;
-        }
-
-        return (
-          a.sort_key - b.sort_key
-        );
+        if (!a.sort_key) return 1;
+        if (!b.sort_key) return -1;
+        return a.sort_key - b.sort_key;
       }) || []
   );
 });
 
 const leaveRequests = computed(() => {
-  const isJapanese =
-    locale.value === 'ja';
+  const isJapanese = locale.value === 'ja';
 
-  return (
-    leaveStore.getLeaves ?? []
-  ).map((leave) => ({
+  return (leaveStore.getLeaves ?? []).map((leave) => ({
     ...leave,
-
-    name: isJapanese
-      ? leave.jp_name
-      : leave.eng_name,
+    name: isJapanese ? leave.jp_name : leave.eng_name,
   }));
 });
 
 const leaveRecords = computed(() => {
-  const isJapanese =
-    locale.value === 'ja';
+  const isJapanese = locale.value === 'ja';
 
-  return (
-    leaveRecordStore
-      .getLeaveRecord ?? []
-  ).map((record) => ({
-    permanent_date:
-      record.permanent_date,
-
-    name: isJapanese
-      ? record.jp_name
-      : record.eng_name,
-
-    offDays:
-      record.total_leaves,
+  return (leaveRecordStore.getLeaveRecord ?? []).map((record) => ({
+    permanent_date: record.permanent_date,
+    name: isJapanese ? record.jp_name : record.eng_name,
+    offDays: record.total_leaves,
   }));
 });
 
-// const overtimes = computed(() => {
-//   const isJapanese =
-//     locale.value === 'ja';
-
-//   return (
-//     overTimeStore.getOverTime ?? []
-//   ).map((ot) => ({
-//     name: isJapanese
-//       ? ot.jp_name
-//       : ot.eng_name,
-
-//     ot_date: ot.ot_date,
-
-//     ot_time: ot.ot_time,
-//   }));
-// });
 const overtimes = computed(() => {
   const isJapanese = locale.value === 'ja';
 
@@ -750,22 +672,13 @@ const showConfirmDelete = (id) => {
   confirmDelete.value = true;
 };
 
-
 const deleteOvertime = async () => {
   try {
-    await overTimeStore.deleteOvertime({
-      id: deleteTarget.value,
-    });
-
-    deleteTarget.value =
-      undefined;
-
-  await overTimeStore.fetchOverTime();
+    await overTimeStore.deleteOvertime({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    await overTimeStore.fetchOverTime();
   } catch (error) {
-    console.error(
-      'Error deleting member overtime:',
-      error
-    );
+    console.error('Error deleting member overtime:', error);
   }
 };
 
@@ -775,11 +688,7 @@ const onSwitchChange = (item) => {
 };
 
 const onStatusSwitchChange = async (item, newValue) => {
-  if (!item || !item.id) {
-    console.error('onStatusSwitchChange: item or item.id is undefined', item);
-    return;
-  }
-
+  if (!item || !item.id) return;
   const updatedStatus = newValue ? 3 : 2;
 
   try {
@@ -787,7 +696,6 @@ const onStatusSwitchChange = async (item, newValue) => {
       id: item.id,
       status: updatedStatus
     });
-
     await overTimeStore.fetchOverTime();
   } catch (error) {
     console.error('Failed to update status:', error);
@@ -795,191 +703,94 @@ const onStatusSwitchChange = async (item, newValue) => {
 };
 
 const multiHeaders1 = computed(() => [
-  {
-    title: t('creatLeave.form.name'),
-    key: 'name',
-  },
-  {
-    title: t('creatLeave.form.leave_type'),
-    key: 'leave_type',
-  },
-  {
-    title: t('creatLeave.form.leave_date'),
-    key: 'leave_date',
-  },
-  {
-    title: t('creatLeave.form.total_days'),
-    key: 'day_count',
-  },
-  {
-    title: t('creatLeave.form.duration'),
-    key: 'duration',
-  },
-  {
-    title: t('creatLeave.form.reason'),
-    key: 'reason',
-  },
+  { title: t('creatLeave.form.name'), key: 'name' },
+  { title: t('creatLeave.form.leave_type'), key: 'leave_type' },
+  { title: t('creatLeave.form.leave_date'), key: 'leave_date' },
+  { title: t('creatLeave.form.total_days'), key: 'day_count' },
+  { title: t('creatLeave.form.duration'), key: 'duration' },
+  { title: t('creatLeave.form.reason'), key: 'reason' },
 ]);
 
 const multiHeaders2 = computed(() => [
-  {
-    title: t('creatLeave.form.name'),
-    key: 'name',
-  },
-  {
-    title: t(
-      'creatLeave.form.permanent_date'
-    ),
-    key: 'permanent_date',
-  },
-  {
-    title: t(
-      'creatLeave.form.offdays'
-    ),
-    key: 'offDays',
-  },
+  { title: t('creatLeave.form.name'), key: 'name' },
+  { title: t('creatLeave.form.permanent_date'), key: 'permanent_date' },
+  { title: t('creatLeave.form.offdays'), key: 'offDays' },
 ]);
 
 const multiHeaders3 = computed(() => [
-  {
-    title: t('creatLeave.form.name'),
-    key: 'name',
-  },
-  {
-    title: t('creatLeave.form.ot_date'),
-    key: 'ot_date',
-  },
-  {
-    title: t('creatLeave.form.ot_time'),
-    key: 'ot_time',
-  },
-  {
-    title: t('memberFine.form.status'),
-    key: 'status',
-  },
-  {
-    title: t('memberFine.form.action'),
-    key: 'action',
-  },
+  { title: t('creatLeave.form.name'), key: 'name' },
+  { title: t('creatLeave.form.ot_date'), key: 'ot_date' },
+  { title: t('creatLeave.form.ot_time'), key: 'ot_time' },
+  { title: t('memberFine.form.status'), key: 'status' },
+  { title: t('memberFine.form.action'), key: 'action' },
 ]);
 
 function changeMultipleLeave(value) {
   if (value) {
     formData.value.leave_date = null;
-
-    if (
-      !Array.isArray(
-        formData.value.multi_date
-      )
-    ) {
+    if (!Array.isArray(formData.value.multi_date)) {
       formData.value.multi_date = [];
     }
-
-    formData.value.duration =
-      durationCount.value > 0
-        ? String(durationCount.value)
-        : '';
+    formData.value.duration = durationCount.value > 0 ? String(durationCount.value) : '';
   } else {
     formData.value.multi_date = [];
-
     formData.value.duration = '';
   }
 
   if (LeaveFormRef.value) {
     LeaveFormRef.value.resetForm({
       values: {
-        leave_date:
-          formData.value.leave_date,
-
-        multi_date:
-          formData.value.multi_date,
-
-        duration:
-          formData.value.duration,
-
-        reason:
-          formData.value.reason,
+        leave_date: formData.value.leave_date,
+        multi_date: formData.value.multi_date,
+        duration: formData.value.duration,
+        reason: formData.value.reason,
       },
     });
   }
 }
 
-function updateMultipleDuration(
-  selectedDates
-) {
-  const dates = Array.isArray(
-    selectedDates
-  )
-    ? selectedDates
-    : [];
-
+function updateMultipleDuration(selectedDates) {
+  const dates = Array.isArray(selectedDates) ? selectedDates : [];
   formData.value.multi_date = dates;
-
-  formData.value.duration =
-    dates.length > 0
-      ? String(dates.length)
-      : '';
+  formData.value.duration = dates.length > 0 ? String(dates.length) : '';
 
   if (LeaveFormRef.value) {
-    LeaveFormRef.value.setFieldValue(
-      'duration',
-      formData.value.duration
-    );
+    LeaveFormRef.value.setFieldValue('duration', formData.value.duration);
   }
 }
 
 function onCheckboxChange(value) {
   if (!value) {
     selectedMemberId.value = null;
-
     isChecked.value = true;
-
     selectedPotion.value = null;
-
     resetAllForms();
   }
 }
 
 function resetAllForms() {
   formData.value.leave_date = null;
-
   formData.value.multi_date = [];
-
   formData.value.duration = '';
-
   formData.value.reason = '';
-
   formData.value.permanent_date = null;
-
   formData.value.ot_date = null;
-
   formData.value.ot_time = '';
 
-  if (LeaveFormRef.value) {
-    LeaveFormRef.value.resetForm();
-  }
-
-  if (LeaveRecordFormRef.value) {
-    LeaveRecordFormRef.value.resetForm();
-  }
-
-  if (OtFormRef.value) {
-    OtFormRef.value.resetForm();
-  }
+  if (LeaveFormRef.value) LeaveFormRef.value.resetForm();
+  if (LeaveRecordFormRef.value) LeaveRecordFormRef.value.resetForm();
+  if (OtFormRef.value) OtFormRef.value.resetForm();
 }
 
 const fetchData = async () => {
   try {
     await Promise.all([
       memberStore.fetchMember(),
-
       leaveStore.fetchLeave(),
-
       leaveRecordStore.fetchLeaveRecord(),
-
       overTimeStore.fetchOverTime(),
     ]);
-  } catch (error) { }
+  } catch (error) {}
 };
 
 const selectMember = async (id) => {
@@ -988,95 +799,46 @@ const selectMember = async (id) => {
       await memberStore.fetchMember();
     }
 
-    const member =
-      memberStore.getMembers.find(
-        (item) => item.id === id
-      );
+    const member = memberStore.getMembers.find((item) => item.id === id);
 
     if (!member) {
       showNewEmployee.value = false;
-
       selectedPotion.value = null;
-
       return;
     }
 
     formData.value.staff_id = id;
-
-    formData.value.permanent_date =
-      member.permanent_date;
-
-    const isInitial = true;
-
-    showNewEmployee.value =
-      isInitial;
-
-    if (!isInitial) {
-      selectedPotion.value = null;
-    }
-  } catch (error) { }
+    formData.value.permanent_date = member.permanent_date;
+    showNewEmployee.value = true;
+  } catch (error) {}
 };
 
-async function submitLeave(
-  values,
-  { resetForm }
-) {
+async function submitLeave(values, { resetForm }) {
   try {
-    if (!selectedMemberId.value) {
-      return;
-    }
+    if (!selectedMemberId.value) return;
 
     let payload;
 
     if (multipleLeave.value) {
-      const dates =
-        Array.isArray(values.multi_date)
-          ? values.multi_date
-          : [];
-
-      if (!dates.length) {
-        return;
-      }
+      const dates = Array.isArray(values.multi_date) ? values.multi_date : [];
+      if (!dates.length) return;
 
       payload = {
-        staff_id:
-          selectedMemberId.value,
-
+        staff_id: selectedMemberId.value,
         multi_date: dates,
-
         duration: 'Full Day',
-
-        reason:
-          values.reason || '',
+        reason: values.reason || '',
       };
     } else {
       payload = {
-        staff_id:
-          selectedMemberId.value,
-
-        leave_date:
-          values.leave_date,
-
-        duration:
-          values.duration,
-
-        reason:
-          values.reason || '',
+        staff_id: selectedMemberId.value,
+        leave_date: values.leave_date,
+        duration: values.duration,
+        reason: values.reason || '',
       };
     }
 
-    // console.log(
-    //   'SUBMIT LEAVE PAYLOAD:',
-    //   JSON.stringify(
-    //     payload,
-    //     null,
-    //     2
-    //   )
-    // );
-
-    await leaveStore.createLeave(
-      payload
-    );
+    await leaveStore.createLeave(payload);
 
     await fetchData();
 
@@ -1089,95 +851,45 @@ async function submitLeave(
       },
     });
 
-    formData.value.leave_date =
-      null;
-
-    formData.value.multi_date =
-      [];
-
-    formData.value.duration =
-      '';
-
-    formData.value.reason =
-      '';
-  } catch (error) { }
+    formData.value.leave_date = null;
+    formData.value.multi_date = [];
+    formData.value.duration = '';
+    formData.value.reason = '';
+  } catch (error) {}
 }
 
-async function submitLeaveRecord(
-  values,
-  { resetForm }
-) {
+async function submitLeaveRecord(values, { resetForm }) {
   try {
-    if (!selectedMemberId.value) {
-      return;
-    }
+    if (!selectedMemberId.value) return;
 
     const payload = {
-      staff_id:
-        selectedMemberId.value,
-
-      permanent_date:
-        values.permanent_date,
+      staff_id: selectedMemberId.value,
+      permanent_date: values.permanent_date,
     };
 
-    // console.log(
-    //   'LEAVE RECORD PAYLOAD:',
-    //   JSON.stringify(
-    //     payload,
-    //     null,
-    //     2
-    //   )
-    // );
-
-    await leaveRecordStore.createLeaveRecord(
-      payload
-    );
-
+    await leaveRecordStore.createLeaveRecord(payload);
     await fetchData();
-
     resetForm();
-  } catch (error) { }
+  } catch (error) {}
 }
 
-async function submitOt(
-  values,
-  { resetForm }
-) {
+async function submitOt(values, { resetForm }) {
   try {
-    if (!selectedMemberId.value) {
-      return;
-    }
+    if (!selectedMemberId.value) return;
 
     const payload = {
-      staff_id:
-        selectedMemberId.value,
-
+      staff_id: selectedMemberId.value,
       ot_date: values.ot_date,
-
       ot_time: values.ot_time,
     };
 
-    // console.log(
-    //   'OVERTIME PAYLOAD:',
-    //   JSON.stringify(
-    //     payload,
-    //     null,
-    //     2
-    //   )
-    // );
-
-    await overTimeStore.createOverTime(
-      payload
-    );
-
+    await overTimeStore.createOverTime(payload);
     await fetchData();
 
     resetForm();
-
     formData.value.ot_date = null;
-
     formData.value.ot_time = null;
-  } catch (error) { }
+  } catch (error) {}
 }
 
 onMounted(async () => {
@@ -1229,5 +941,15 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: rgba(var(--v-theme-error));
+}
+
+.status-short {
+  background-color: rgba(30, 136, 229, 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e88e5;
+  /* text-transform: uppercase; */
 }
 </style>

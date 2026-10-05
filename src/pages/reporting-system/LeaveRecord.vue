@@ -1,6 +1,5 @@
 <template>
   <div class="bg-gray-50 min-h-screen">
-    <!-- Admin View -->
     <template v-if="isAdmin">
       <v-row class="align-center" density="compact">
         <v-col cols="6" md="7" lg="9" class="d-flex justify-start">
@@ -35,6 +34,9 @@
           <template #[`item.leave_type`]="{ item }">
             <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
               paid
+            </span>
+            <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
+              short 
             </span>
             <span v-else class="status1 d-inline-flex justify-center align-center">
               unpaid
@@ -71,7 +73,6 @@
           </template>
         </BaseTable>
 
-        <!-- Admin Table Empty State -->
         <div v-else class="text-center pa-8 text-gray-500">
           <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
           <div class="text-body-1">No leave records found</div>
@@ -79,9 +80,8 @@
       </ParentCard>
     </template>
 
-    <!-- User View -->
     <template v-else>
-      <v-row class="mb-4">
+      <v-row class="mb-2">
         <v-col cols="12" class="d-flex align-center">
           <h2 class="text-h5 font-weight-bold mb-0 d-flex align-center ga-2">
             <span>{{ employeeInfo.eng_name || authStore.staff?.eng_name || 'My Leave Details' }}</span>
@@ -92,60 +92,82 @@
         </v-col>
       </v-row>
 
-      <!-- Metric Summary Cards -->
-      <div class="d-flex flex-wrap flex-md-nowrap ga-3 mb-3">
-        <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-primary me-2">
-              {{ leaveSummary.total_used ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
-          </div>
-        </v-card>
+      <v-row dense class="mb-2">
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-primary me-2">
+                {{ leaveSummary.total_used ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">/ {{ leaveSummary.total_leaves ?? 0 }} Days</span>
+            </div>
+          </v-card>
+        </v-col>
 
-        <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-info me-2">
-              {{ leaveSummary.remain_leaves ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-info me-2">
+                {{ leaveSummary.remain_leaves ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
 
-        <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-warning me-2">
-              {{ leaveSummary.first_annual ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-warning me-2">
+                {{ leaveSummary.first_annual ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
 
-        <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-success me-2">
-              {{ leaveSummary.second_annual ?? 0 }}
-            </span>
-            <span class="text-body-2 text-gray-500">Days</span>
-          </div>
-        </v-card>
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-success me-2">
+                {{ leaveSummary.second_annual ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
 
-        <v-card class="pa-4 rounded-lg flex-1-1" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL OVERTIME</div>
-          <div class="d-flex align-baseline">
-            <span class="text-h4 font-weight-bold text-purple me-2">
-              {{ totalOvertimeFormatted }}
-            </span>
-          </div>
-        </v-card>
-      </div>
+      <v-row dense class="mb-3">
+        <v-col cols="12" sm="6">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">ACCUMULATED HOURS</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-teal me-2">
+                {{ accumulatedHoursFormatted }}
+              </span>
+              <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
+            </div>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL OVERTIME</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-purple me-2">
+                {{ totalOvertimeFormatted }}
+              </span>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
 
       <v-row>
-        <!-- 2/3 Width Space: ON LEAVE RECORDS -->
         <v-col cols="12" md="8">
           <ParentCard class="elevation-1 rounded-lg h-100">
             <v-row class="align-center mb-3">
@@ -181,13 +203,19 @@
               <template #[`item.leave_type`]="{ item }">
                 <span
                   v-if="item.leave_type === 1"
-                  class="status d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-success-lighten-5 text-success"
+                  class="status d-inline-flex justify-center align-center"
                 >
                   paid
                 </span>
                 <span
+                  v-else-if="item.leave_type === 3"
+                  class="status-short d-inline-flex justify-center align-center"
+                >
+                  short leave
+                </span>
+                <span
                   v-else
-                  class="status1 d-inline-flex justify-center align-center px-3 py-1 rounded-pill text-caption font-weight-bold text-uppercase bg-warning-lighten-5 text-warning"
+                  class="status1 d-inline-flex justify-center align-center"
                 >
                   unpaid
                 </span>
@@ -337,6 +365,7 @@ const memberRecord = ref(null);
 const overTimeRecords = ref([]);
 const confirmChange = ref(undefined);
 const switchTarget = ref(null);
+
 const otHoursMap = {
   1: 8,     // Full day
   2: 4,     // Half day
@@ -385,7 +414,6 @@ const userHeaders = computed(() => [
 ]);
 
 const multiHeaders3 = computed(() => [
-
   {
     title: t('creatLeave.form.ot_date'),
     key: 'ot_date',
@@ -406,6 +434,18 @@ const employeeInfo = computed(() => ({
 }));
 
 const leaveSummary = computed(() => memberRecord.value || {});
+
+// Accumulated Hours Formatting
+const accumulatedHoursFormatted = computed(() => {
+  const total = parseFloat(leaveSummary.value.accumulated_hours || 0);
+  const hours = Math.floor(total);
+  const minutes = Math.round((total - hours) * 60);
+
+  if (minutes > 0) {
+    return `${hours} Hrs : ${minutes} Min`;
+  }
+  return `${hours} Hrs`;
+});
 
 const adminLeaveList = computed(() => leaveStore.leaves || leaveStore.getLeaves || []);
 
@@ -486,6 +526,7 @@ const onStatusSwitchChange = async (item) => {
     console.error('Failed to change status:', error);
   }
 };
+
 const totalOvertimeHours = computed(() => {
   return overTimeRecords.value.reduce((sum, item) => {
     const key = Number(item.ot_time);
@@ -504,8 +545,6 @@ const totalOvertimeFormatted = computed(() => {
   }
   return `${hours} Hrs`;
 });
-
-// const overtimeCount = computed(() => overTimeRecords.value.length);
 
 const pushToView = (id) => {
   router.push({ name: 'view-leaves', params: { recId: id } });
@@ -565,3 +604,35 @@ onMounted(async () => {
   await fetchData();
 });
 </script>
+
+<style scoped>
+.status {
+  background-color: rgba(var(--v-theme-complete), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-complete));
+  text-transform: uppercase;
+}
+
+.status1 {
+  background-color: rgba(var(--v-theme-error), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-error));
+  text-transform: uppercase;
+}
+
+.status-short {
+  background-color: rgba(30, 136, 229, 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e88e5;
+  /* text-transform: uppercase; */
+}
+</style>
