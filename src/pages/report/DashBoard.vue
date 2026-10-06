@@ -1,6 +1,57 @@
 <template>
   <!-- User Dashboard -->
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
+
+    <!-- 📍 Attendance Check-In Widget Section (Added for User Dashboard) -->
+    <v-row class="mb-4">
+      <v-col cols="12">
+        <v-card class="pa-4 elevation-1" rounded="lg">
+          <div class="d-flex flex-column flex-sm-row align-center justify-space-between">
+            <div class="d-flex align-center mb-3 mb-sm-0">
+              <v-avatar color="primary-lighten-5" size="48" class="mr-3">
+                <v-icon icon="mdi-map-marker-radius" color="primary" size="28" />
+              </v-avatar>
+              <div>
+                <div class="text-h6 font-weight-bold">Daily Attendance Check-In</div>
+                <div class="text-caption text-grey-darken-1">
+                  <v-icon size="14" class="mr-1">mdi-clock-outline</v-icon>
+                  {{ currentTime }}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <v-btn
+                color="primary"
+                size="large"
+                elevation="2"
+                :loading="isCheckingIn"
+                :disabled="isCheckingIn"
+                @click="handleCheckIn"
+              >
+                <v-icon icon="mdi-clock-check-outline" class="mr-2" />
+                CHECK IN NOW
+              </v-btn>
+            </div>
+          </div>
+
+          <!-- Status / Alert Message -->
+          <v-alert
+            v-if="statusMessage.text"
+            :type="statusMessage.type"
+            variant="tonal"
+            density="compact"
+            closable
+            class="mt-3"
+            @click:close="statusMessage.text = ''"
+          >
+            {{ statusMessage.text }}
+          </v-alert>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Leave Summary Cards -->
     <v-row class="mb-6" justify="space-between">
       <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
         <v-card :class="borderClass" class="pa-3" rounded elevation="1">
@@ -260,7 +311,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, onUnmounted } from 'vue';
 import { borderClass } from '@/utils/border';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
@@ -270,7 +321,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
 import { ADMIN } from '@/utils/constant';
 import { useLeaveStore } from '@/stores/leave/leave';
-import { useMemberFineStore } from '@/stores/member/member-fine.js'
+import { useMemberFineStore } from '@/stores/member/member-fine.js';
 
 const { t, locale } = useI18n();
 const lan = ref('en');
@@ -279,9 +330,10 @@ const memberStore = useMemberStore();
 const menPowerStore = useMenPowerStoreStore();
 const leaveStore = useLeaveStore();
 const fineStore = useMemberFineStore();
+
 const staff = computed(() => authStore.loginStaff);
 const staffId = computed(() => staff.value?.id);
-const leaveTypes = ref([])
+const leaveTypes = ref([]);
 
 const role = computed(() => {
   const r = authStore.staffRole ?? localStorage.getItem('staff-role');
@@ -295,6 +347,89 @@ const memberLeave = ref([]);
 const memberFine = ref([]);
 const menPower = ref({});
 const members = ref([]);
+
+// 📍 Check-in State & Clock
+const isCheckingIn = ref(false);
+const currentTime = ref('');
+let timer = null;
+
+const statusMessage = reactive({
+  type: 'info',
+  text: ''
+});
+
+const updateClock = () => {
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+};
+
+// 📍 Check-In Handler
+// 📍 Check-In Handler
+const handleCheckIn = async () => {
+  statusMessage.text = '';
+  isCheckingIn.value = true;
+
+  if (!navigator.geolocation) {
+    statusMessage.type = 'error';
+    statusMessage.text = 'Geolocation is not supported by your browser.';
+    isCheckingIn.value = false;
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude, accuracy } = position.coords;
+      console.log(`GPS Accuracy: ${accuracy} meters`);
+
+      // 📍 Accuracy မကောင်းပါက (မီတာ ၁၀၀ ထက် ပိုဆိုးနေပါက) အသိပေးရန်
+      if (accuracy > 100) {
+        statusMessage.type = 'warning';
+        statusMessage.text = `GPS Signal အားနည်းနေပါသည် (Accuracy: ${Math.round(accuracy)}m)။ ပြတင်းပေါက်အနီးတွင် ခဏရပ်၍ ပြန်လည် ကြိုးစားပါ။`;
+        isCheckingIn.value = false;
+        return;
+      }
+
+      // Backend Check-in API သို့ ပို့မည်
+      try {
+        const res = await authStore.checkIn(latitude, longitude);
+        statusMessage.type = 'success';
+        statusMessage.text = res.message || 'Check-in အောင်မြင်ပါသည်။';
+      } catch (err) {
+        statusMessage.type = 'error';
+        statusMessage.text = err.response?.data?.message || 'Check-in ပြုလုပ်၍ မရပါ။';
+      } finally {
+        isCheckingIn.value = false;
+      }
+    },
+    (error) => {
+      isCheckingIn.value = false;
+      statusMessage.type = 'error';
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          statusMessage.text = 'GPS location permission denied.';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          statusMessage.text = 'GPS location unavailable.';
+          break;
+        case error.TIMEOUT:
+          statusMessage.text = 'GPS request timed out.';
+          break;
+        default:
+          statusMessage.text = 'An error occurred while fetching GPS location.';
+      }
+    },
+    { 
+      enableHighAccuracy: true, // တိကျသော GPS ရယူရန်
+      timeout: 15000, 
+      maximumAge: 0 // Cache သုံးမထားသော GPS တည်နေရာအသစ် ရယူရန်
+    }
+  );
+};
 
 const leaveHeader = computed(() => {
   const tmpHeaders = [
@@ -368,35 +503,35 @@ const fetchData = async () => {
 
   const fineRes = await fineStore.fetchMemberFine();
 
-const fineList = Array.isArray(fineRes?.data?.data)
-  ? fineRes.data.data
-  : Array.isArray(fineRes?.data)
-    ? fineRes.data
-    : [];
+  const fineList = Array.isArray(fineRes?.data?.data)
+    ? fineRes.data.data
+    : Array.isArray(fineRes?.data)
+      ? fineRes.data
+      : [];
 
-const groupedFineMap = fineList.reduce((acc, item) => {
-  if (Number(item.status) === 1) {
+  const groupedFineMap = fineList.reduce((acc, item) => {
+    if (Number(item.status) === 1) {
+      return acc;
+    }
+
+    const staffId = item.staff_id || item.staff?.id;
+    const name = item.staff?.eng_name || item.eng_name || '-';
+    const amount = Number(item.amount || item.fine || 0);
+
+    if (!acc[staffId]) {
+      acc[staffId] = {
+        staff_id: staffId,
+        eng_name: name,
+        total_fines_amount: 0,
+        total_fine_records: 0,
+      };
+    }
+
+    acc[staffId].total_fines_amount += amount;
+    acc[staffId].total_fine_records += 1;
+
     return acc;
-  }
-
-  const staffId = item.staff_id || item.staff?.id;
-  const name = item.staff?.eng_name || item.eng_name || '-';
-  const amount = Number(item.amount || item.fine || 0);
-
-  if (!acc[staffId]) {
-    acc[staffId] = {
-      staff_id: staffId,
-      eng_name: name,
-      total_fines_amount: 0,
-      total_fine_records: 0,
-    };
-  }
-
-  acc[staffId].total_fines_amount += amount;
-  acc[staffId].total_fine_records += 1;
-
-  return acc;
-}, {});
+  }, {});
 
   memberFine.value = Object.values(groupedFineMap);
 
@@ -421,7 +556,6 @@ const groupedFineMap = fineList.reduce((acc, item) => {
     if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
     return acc;
   }, {});
-
 
   await menPowerStore.fetchMenPower();
   (menPowerStore.getMenPower || []).forEach((mp) => {
@@ -576,6 +710,9 @@ const renderChart1 = (canvasId, labels, data) => {
 };
 
 onMounted(async () => {
+  updateClock();
+  timer = setInterval(updateClock, 1000);
+
   await fetchData();
 
   const skillLabel = Object.keys(majorSkill.value).sort(
@@ -600,7 +737,9 @@ onMounted(async () => {
   }
 });
 
-
+onUnmounted(() => {
+  if (timer) clearInterval(timer);
+});
 </script>
 
 <style scoped>

@@ -193,19 +193,27 @@ const handleLogin = async () => {
   }
 };
 
-const getCurrentPosition = async () => {
-  try {
-    let lat = 0, lon = 0;
-    const response = await axios.get(`http://ip-api.com/json`);
-    if (response.data) {
-      lat = response.data.lat || 0;
-      lon = response.data.lon || 0;
+
+
+// Login.vue ထဲရှိ getCurrentPosition ကို အောက်ပါအတိုင်း ပြင်ပေးပါ:
+const getCurrentPosition = () => {
+  return new Promise((resolve) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve([position.coords.latitude, position.coords.longitude]);
+        },
+        (error) => {
+          console.warn("GPS Permission Denied / Error:", error.message);
+          // GPS ပိတ်ထားပါက Fallback အဖြစ် 0,0 ပြန်ပေးမည်
+          resolve([0, 0]);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    } else {
+      resolve([0, 0]);
     }
-    return [lat, lon];
-  } catch (error) {
-    console.error('Error fetching location:', error);
-    return [0, 0];
-  }
+  });
 };
 </script>
 

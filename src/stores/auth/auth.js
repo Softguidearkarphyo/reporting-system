@@ -1,3 +1,4 @@
+// stores/auth/auth.js
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
@@ -13,18 +14,20 @@ export const useAuthStore = defineStore('auth', () => {
   const staffName = computed(() => (staff.value ? staff.value.eng_name : ''));
   const staffRole = computed(() => (staff.value ? String(staff.value.role) : localStorage.getItem('staff-role')));
 
-  async function login(username, password) {
+  async function login(username, password, lat = 0, lon = 0) {
     try {
-      console.log("second ", username, password)
       await api.get('../sanctum/csrf-cookie');
-      const res = await api.post('/login', { username, password });
+      const res = await api.post('/login', { 
+        username, 
+        password,
+        latitude: lat,
+        longitude: lon
+      });
 
       staff.value = res.data.staff;
       const profileImg = staff.value?.staff_image_url 
         || (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null) 
         || profileImgPath(staff.value.eng_name);
-
-        console.log("login data ", res.data.staff)
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staff-id', String(staff.value.id));
@@ -32,6 +35,22 @@ export const useAuthStore = defineStore('auth', () => {
       sessionStorage.setItem('profileImg', profileImg);
 
       return staff.value;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 📍 Attendance Check-In Action
+  async function checkIn(latitude, longitude) {
+    try {
+      const staffId = staff.value?.id || localStorage.getItem('staff-id');
+      const response = await api.post('/reporting-system/attendance/check-in', {
+        staff_id: staffId,
+        latitude: latitude,
+        longitude: longitude,
+      });
+      console.log('Check-in response:', response.data);
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -101,6 +120,7 @@ export const useAuthStore = defineStore('auth', () => {
     staffName,
     staffRole,
     login,
+    checkIn,
     fetchStaff,
     logout
   };
