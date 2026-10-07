@@ -5,7 +5,7 @@
     </BaseTitle>
     <div class="d-flex justify-space-between align-center" style="width: 100%">
       <BaseSelect
-        v-if="role === ADMIN"
+        v-if="role === String(ADMIN)"
         v-model="selectedEmployee"
         :label="t('workHourReportSetting.employee')"
         :items="employees"
@@ -311,7 +311,7 @@ const employeeName = computed(() =>
     : selectedEmployeeInfo.value?.eng_name
 );
 const reportingSettingSchema = computed(() =>
-  getReportingSettingSchema(t, timeSelectionMode.value, role === ADMIN)
+  getReportingSettingSchema(t, timeSelectionMode.value, role === String(ADMIN))
 );
 const daysOfTheWeek = computed(() => {
   return [
@@ -358,7 +358,7 @@ const showEditForm = ref(false);
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
 const selectedEmployeeInfo = computed(() => {
-  if (role === ADMIN) {
+  if (role === String(ADMIN)) {
     return employeeItems.value?.find(
       (item) => item.id === selectedEmployee.value
     );
@@ -367,7 +367,7 @@ const selectedEmployeeInfo = computed(() => {
   }
 });
 const showSavedBookmark = computed(() => {
-  if (role === ADMIN) {
+  if (role === String(ADMIN)) {
     return (
       selectedEmployeeInfo.value?.length > 0 &&
       selectedEmployeeInfo.value?.every(
@@ -470,7 +470,7 @@ const getList = async () => {
     task: {},
     task_performance_setting: {},
   };
-  if (role !== ADMIN) {
+  if (role !== String(ADMIN)) {
     memberPayload.id = staff.id;
   }
   await reportingStore.fetchMember(memberPayload);

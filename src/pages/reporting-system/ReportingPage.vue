@@ -363,6 +363,8 @@ import { getReportingSchema } from '@/plugins/validations/reporting.js';
 import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
 import { ref, computed, watch } from 'vue';
+import { toast } from '@/utils/toast';
+
 import {
   changeDateTimeZone,
   generatePeriods,
@@ -673,23 +675,50 @@ const groupDates = () => {
   }
 };
 const applySetting = async () => {
+  if (!selectedIsoDates.value || selectedIsoDates.value.length === 0) {
+    warnDateSelection.value = true;
+    return;
+  }
+
   const settings = [];
+  console.log('Selected Dates:', selectedIsoDates.value);
+  console.log('Selected Employee Info:', selectedEmployeeInfo.value);
+  console.log('Employee Settings:', selectedEmployeeInfo.value?.[0]?.task_performance_setting);
+
   selectedEmployeeInfo.value?.forEach((info) => {
+    const rawSettings = info?.task_performance_setting || [];
+    if (rawSettings.length === 0) return;
+
     selectedIsoDates.value?.forEach((dateStr) => {
-      const date = new Date(dateStr);
-      const day = date.getDay();
-      const employeeSettings = info?.task_performance_setting
-        ?.filter((setting) => setting.day === day)
-        ?.map((setting) => ({
+      // Safe local date parsing to prevent UTC day-shift
+      const parts = dateStr.split('-');
+      const date = parts.length === 3 
+        ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])) 
+        : new Date(dateStr);
+      
+      const day = date.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
+
+      const matchedSettings = rawSettings
+        .filter((setting) => Number(setting.day) === day)
+        .map((setting) => ({
           date: dateStr,
           period: setting.period,
           project_id: setting.project_id,
-          staff_id: setting.staff_id,
+          staff_id: setting.staff_id || info.id,
           task_id: setting.task_id,
         }));
-      settings.push(...employeeSettings);
+
+      if (matchedSettings.length > 0) {
+        settings.push(...matchedSettings);
+      }
     });
   });
+
+  if (settings.length === 0) {
+    toast.error('No auto-fill settings found for the selected day(s) and employee(s).');
+    return;
+  }
+
   await reportingStore.createTaskPerformance({ create_array: settings });
   await getList();
 };

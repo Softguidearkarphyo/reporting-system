@@ -1,4 +1,3 @@
-// stores/auth/auth.js
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
@@ -9,11 +8,14 @@ export const useAuthStore = defineStore('auth', () => {
   const staff = ref(null);
   const router = useRouter();
 
+  // Getters / Computed Properties
   const loginStaff = computed(() => staff.value);
   const isLoggedIn = computed(() => !!staff.value);
   const staffName = computed(() => (staff.value ? staff.value.eng_name : ''));
   const staffRole = computed(() => (staff.value ? String(staff.value.role) : localStorage.getItem('staff-role')));
+  const workType = computed(() => staff.value?.work_type || 'onsite'); 
 
+  // Actions
   async function login(username, password, lat = 0, lon = 0) {
     try {
       await api.get('../sanctum/csrf-cookie');
@@ -40,21 +42,30 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // 📍 Attendance Check-In Action
-  async function checkIn(latitude, longitude) {
-    try {
-      const staffId = staff.value?.id || localStorage.getItem('staff-id');
-      const response = await api.post('/reporting-system/attendance/check-in', {
-        staff_id: staffId,
-        latitude: latitude,
-        longitude: longitude,
-      });
-      console.log('Check-in response:', response.data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+/**
+ * Attendance Check-In Action
+ * @param {Object} payload 
+ */
+async function checkIn(payload = {}) {
+  try {
+    const staffId = staff.value?.id || localStorage.getItem('staff-id');
+    
+    const response = await api.post('/reporting-system/attendance/check-in', {
+      staff_id: staffId,
+      latitude: payload.latitude ?? null,
+      longitude: payload.longitude ?? null,
+      accuracy: payload.accuracy ?? null,
+      is_laptop: payload.is_laptop ?? false,
+      device_uuid: payload.device_uuid ?? null,
+    });
+
+    console.log('Check-In Response:', response.data);
+    return response.data;
+    
+  } catch (error) {
+    throw error;
   }
+}
 
   async function fetchStaff() {
     try {
@@ -119,6 +130,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoggedIn,
     staffName,
     staffRole,
+    workType,
     login,
     checkIn,
     fetchStaff,

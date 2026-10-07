@@ -195,7 +195,6 @@ const handleLogin = async () => {
 
 
 
-// Login.vue ထဲရှိ getCurrentPosition ကို အောက်ပါအတိုင်း ပြင်ပေးပါ:
 const getCurrentPosition = () => {
   return new Promise((resolve) => {
     if (navigator.geolocation) {
@@ -205,7 +204,6 @@ const getCurrentPosition = () => {
         },
         (error) => {
           console.warn("GPS Permission Denied / Error:", error.message);
-          // GPS ပိတ်ထားပါက Fallback အဖြစ် 0,0 ပြန်ပေးမည်
           resolve([0, 0]);
         },
         { enableHighAccuracy: true, timeout: 10000 }

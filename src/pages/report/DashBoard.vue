@@ -1,8 +1,6 @@
 <template>
   <!-- User Dashboard -->
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
-
-    <!-- 📍 Attendance Check-In Widget Section (Added for User Dashboard) -->
     <v-row class="mb-4">
       <v-col cols="12">
         <v-card class="pa-4 elevation-1" rounded="lg">
@@ -20,17 +18,15 @@
               </div>
             </div>
 
-            <div>
+            <div class="attendance-container">
               <v-btn
                 color="primary"
-                size="large"
-                elevation="2"
                 :loading="isCheckingIn"
                 :disabled="isCheckingIn"
                 @click="handleCheckIn"
+                class="btn-checkin"
               >
-                <v-icon icon="mdi-clock-check-outline" class="mr-2" />
-                CHECK IN NOW
+                {{ isCheckingIn ? 'Check-in ဝင်နေပါသည်...' : 'Check-In' }}
               </v-btn>
             </div>
           </div>
@@ -56,8 +52,8 @@
       <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
         <v-card :class="borderClass" class="pa-3" rounded elevation="1">
           <div class="d-flex align-center">
-            <v-progress-circular :model-value="type.remaining * 12.5" color="primary" size="60" width="6">
-              {{ type.remaining }}
+            <v-progress-circular :model-value="(type.remaining || 0) * 12.5" color="primary" size="60" width="6">
+              {{ type.remaining || 0 }}
             </v-progress-circular>
             <div class="ml-4">
               <div class="text-caption">Remaining</div>
@@ -88,7 +84,7 @@
             </template>
 
             <template #[`item.leave_type`]="{ item }">
-              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+              <span v-if="Number(item.leave_type) === 1" class="status d-inline-flex justify-center align-center">
                 paid
               </span>
               <span v-else class="status1 d-inline-flex justify-center align-center">
@@ -179,7 +175,9 @@
     <v-row class="mb-6">
       <v-col cols="12" md="4">
         <v-card outlined class="h-100">
-          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('sidebar.projectmenpower') }}</v-card-title>
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">
+            {{ t('sidebar.projectmenpower') }}
+          </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <canvas id="menPowerChart"></canvas>
@@ -189,7 +187,9 @@
 
       <v-col cols="12" md="4">
         <v-card outlined class="h-100">
-          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('common.employeeSkill') }}</v-card-title>
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">
+            {{ t('common.employeeSkill') }}
+          </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <canvas id="leaveChart"></canvas>
@@ -199,7 +199,9 @@
 
       <v-col cols="12" md="4">
         <v-card outlined class="h-100">
-          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">{{ t('addMemberSkill.table.japanese_level') }}</v-card-title>
+          <v-card-title class="text-uppercase text-subtitle-1 font-weight-bold">
+            {{ t('addMemberSkill.table.japanese_level') }}
+          </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <canvas id="fineChart"></canvas>
@@ -208,7 +210,7 @@
       </v-col>
     </v-row>
 
-    <!-- Records Row: Leave Record (2/3 Width) and Fine Record (1/3 Width) -->
+    <!-- Records Row -->
     <v-row>
       <!-- Leave Record (2/3 Width) -->
       <v-col cols="12" md="8">
@@ -227,7 +229,7 @@
             </template>
 
             <template #[`item.leave_type`]="{ item }">
-              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+              <span v-if="Number(item.leave_type) === 1" class="status d-inline-flex justify-center align-center">
                 paid
               </span>
               <span v-else class="status1 d-inline-flex justify-center align-center">
@@ -311,7 +313,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, computed, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import { borderClass } from '@/utils/border';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
@@ -322,8 +324,9 @@ import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
 import { ADMIN } from '@/utils/constant';
 import { useLeaveStore } from '@/stores/leave/leave';
 import { useMemberFineStore } from '@/stores/member/member-fine.js';
+import { getDeviceMetaData } from '@/utils/deviceDetector';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const lan = ref('en');
 const authStore = useAuthStore();
 const memberStore = useMemberStore();
@@ -346,17 +349,14 @@ const majorSkill = ref({});
 const memberLeave = ref([]);
 const memberFine = ref([]);
 const menPower = ref({});
-const members = ref([]);
 
-// 📍 Check-in State & Clock
 const isCheckingIn = ref(false);
 const currentTime = ref('');
 let timer = null;
+const statusMessage = reactive({ type: '', text: '' });
 
-const statusMessage = reactive({
-  type: 'info',
-  text: ''
-});
+// Track active chart instances to prevent canvas re-use crashes
+const chartInstances = {};
 
 const updateClock = () => {
   const now = new Date();
@@ -364,71 +364,84 @@ const updateClock = () => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: true
+    hour12: true,
   });
 };
 
-// 📍 Check-In Handler
-// 📍 Check-In Handler
+const detectLaptopDevice = async () => {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (isMobile) return false;
+
+  if ('getBattery' in navigator) {
+    try {
+      const battery = await navigator.getBattery();
+      const isPluggedDesktopPattern = battery.charging === true && battery.level === 1 && battery.dischargingTime === Infinity;
+      if (!isPluggedDesktopPattern) return true;
+    } catch (e) {
+      console.warn('Battery API error:', e);
+    }
+  }
+
+  return navigator.maxTouchPoints > 0;
+};
+
+const getCoordinates = () => {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve({ latitude: null, longitude: null, accuracy: null });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy || null,
+        });
+      },
+      (error) => {
+        console.warn('GPS Error or Permission Denied:', error.message);
+        resolve({ latitude: null, longitude: null, accuracy: null });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 0,
+      }
+    );
+  });
+};
+
 const handleCheckIn = async () => {
   statusMessage.text = '';
   isCheckingIn.value = true;
 
-  if (!navigator.geolocation) {
+  try {
+    const deviceData = await getDeviceMetaData();
+    const isLaptop = await detectLaptopDevice();
+    const coords = await getCoordinates();
+
+
+    console.log('Device Data:', deviceData);
+    console.log('Is Laptop:', isLaptop);
+    console.log('Coordinates:', coords);
+    const res = await authStore.checkIn({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      accuracy: coords.accuracy,
+      is_laptop: deviceData?.isLaptop ?? isLaptop,
+      device_uuid: deviceData?.deviceUUID || '',
+    });
+
+    statusMessage.type = 'success';
+    statusMessage.text = res.message;
+  } catch (err) {
     statusMessage.type = 'error';
-    statusMessage.text = 'Geolocation is not supported by your browser.';
+    statusMessage.text = err.response?.data?.message || 'Check-in ပြုလုပ်၍မရပါ။';
+  } finally {
     isCheckingIn.value = false;
-    return;
   }
-
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const { latitude, longitude, accuracy } = position.coords;
-      console.log(`GPS Accuracy: ${accuracy} meters`);
-
-      // 📍 Accuracy မကောင်းပါက (မီတာ ၁၀၀ ထက် ပိုဆိုးနေပါက) အသိပေးရန်
-      if (accuracy > 100) {
-        statusMessage.type = 'warning';
-        statusMessage.text = `GPS Signal အားနည်းနေပါသည် (Accuracy: ${Math.round(accuracy)}m)။ ပြတင်းပေါက်အနီးတွင် ခဏရပ်၍ ပြန်လည် ကြိုးစားပါ။`;
-        isCheckingIn.value = false;
-        return;
-      }
-
-      // Backend Check-in API သို့ ပို့မည်
-      try {
-        const res = await authStore.checkIn(latitude, longitude);
-        statusMessage.type = 'success';
-        statusMessage.text = res.message || 'Check-in အောင်မြင်ပါသည်။';
-      } catch (err) {
-        statusMessage.type = 'error';
-        statusMessage.text = err.response?.data?.message || 'Check-in ပြုလုပ်၍ မရပါ။';
-      } finally {
-        isCheckingIn.value = false;
-      }
-    },
-    (error) => {
-      isCheckingIn.value = false;
-      statusMessage.type = 'error';
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          statusMessage.text = 'GPS location permission denied.';
-          break;
-        case error.POSITION_UNAVAILABLE:
-          statusMessage.text = 'GPS location unavailable.';
-          break;
-        case error.TIMEOUT:
-          statusMessage.text = 'GPS request timed out.';
-          break;
-        default:
-          statusMessage.text = 'An error occurred while fetching GPS location.';
-      }
-    },
-    { 
-      enableHighAccuracy: true, // တိကျသော GPS ရယူရန်
-      timeout: 15000, 
-      maximumAge: 0 // Cache သုံးမထားသော GPS တည်နေရာအသစ် ရယူရန်
-    }
-  );
 };
 
 const leaveHeader = computed(() => {
@@ -502,7 +515,6 @@ const fetchData = async () => {
   );
 
   const fineRes = await fineStore.fetchMemberFine();
-
   const fineList = Array.isArray(fineRes?.data?.data)
     ? fineRes.data.data
     : Array.isArray(fineRes?.data)
@@ -510,25 +522,23 @@ const fetchData = async () => {
       : [];
 
   const groupedFineMap = fineList.reduce((acc, item) => {
-    if (Number(item.status) === 1) {
-      return acc;
-    }
+    if (Number(item.status) === 1) return acc;
 
-    const staffId = item.staff_id || item.staff?.id;
+    const sId = item.staff_id || item.staff?.id;
     const name = item.staff?.eng_name || item.eng_name || '-';
     const amount = Number(item.amount || item.fine || 0);
 
-    if (!acc[staffId]) {
-      acc[staffId] = {
-        staff_id: staffId,
+    if (!acc[sId]) {
+      acc[sId] = {
+        staff_id: sId,
         eng_name: name,
         total_fines_amount: 0,
         total_fine_records: 0,
       };
     }
 
-    acc[staffId].total_fines_amount += amount;
-    acc[staffId].total_fine_records += 1;
+    acc[sId].total_fines_amount += amount;
+    acc[sId].total_fine_records += 1;
 
     return acc;
   }, {});
@@ -563,21 +573,22 @@ const fetchData = async () => {
   });
 };
 
-const renderPieChart = (canvasId, labels, data) => {
+const createOrUpdateChart = (canvasId, config) => {
   const el = document.getElementById(canvasId);
   if (!el) return;
+
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy();
+  }
+
   const ctx = el.getContext('2d');
-  new Chart(ctx, {
+  chartInstances[canvasId] = new Chart(ctx, config);
+};
+
+const renderPieChart = (canvasId, labels, data) => {
+  createOrUpdateChart(canvasId, {
     type: 'doughnut',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          borderWidth: 0,
-        },
-      ],
-    },
+    data: { labels, datasets: [{ data, borderWidth: 0 }] },
     options: {
       responsive: true,
       cutout: '70%',
@@ -588,26 +599,16 @@ const renderPieChart = (canvasId, labels, data) => {
             usePointStyle: true,
             pointStyle: 'rectRounded',
             padding: 15,
-            font: {
-              size: 12,
-              weight: 'bold',
-            },
+            font: { size: 12, weight: 'bold' },
           },
         },
         datalabels: {
           color: '#fff',
-          font: {
-            weight: 'bold',
-            size: 14,
-          },
+          font: { weight: 'bold', size: 14 },
           formatter: (value, context) => {
-            const total = context.chart.data.datasets[0].data.reduce(
-              (a, b) => Number(a) + Number(b),
-              0
-            );
+            const total = context.chart.data.datasets[0].data.reduce((a, b) => Number(a) + Number(b), 0);
             if (!total) return '0%';
-            const percentage = ((Number(value) / total) * 100).toFixed(1);
-            return `${percentage}%`;
+            return `${((Number(value) / total) * 100).toFixed(1)}%`;
           },
         },
       },
@@ -617,41 +618,16 @@ const renderPieChart = (canvasId, labels, data) => {
 };
 
 const renderChart = (canvasId, labels, data) => {
-  const el = document.getElementById(canvasId);
-  if (!el) return;
-  const ctx = el.getContext('2d');
-  new Chart(ctx, {
+  createOrUpdateChart(canvasId, {
     type: 'polarArea',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          borderWidth: 0,
-        },
-      ],
-    },
+    data: { labels, datasets: [{ data, borderWidth: 0 }] },
     options: {
       responsive: true,
-      scales: {
-        r: {
-          ticks: {
-            display: false,
-          },
-          pointLabels: {
-            display: true,
-          },
-        },
-      },
+      scales: { r: { ticks: { display: false }, pointLabels: { display: true } } },
       plugins: {
         legend: {
           position: 'bottom',
-          labels: {
-            usePointStyle: true,
-            pointStyle: 'rect',
-            boxWidth: 12,
-            boxHeight: 12,
-          },
+          labels: { usePointStyle: true, pointStyle: 'rect', boxWidth: 12, boxHeight: 12 },
         },
       },
     },
@@ -659,20 +635,9 @@ const renderChart = (canvasId, labels, data) => {
 };
 
 const renderChart1 = (canvasId, labels, data) => {
-  const el = document.getElementById(canvasId);
-  if (!el) return;
-  const ctx = el.getContext('2d');
-  new Chart(ctx, {
+  createOrUpdateChart(canvasId, {
     type: 'doughnut',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          borderWidth: 0,
-        },
-      ],
-    },
+    data: { labels, datasets: [{ data, borderWidth: 0 }] },
     options: {
       responsive: true,
       cutout: '50%',
@@ -683,24 +648,17 @@ const renderChart1 = (canvasId, labels, data) => {
             usePointStyle: true,
             pointStyle: 'rectRounded',
             padding: 15,
-            font: {
-              size: 12,
-              weight: 'bold',
-            },
+            font: { size: 12, weight: 'bold' },
           },
         },
         datalabels: {
           color: '#fff',
-          font: {
-            weight: 'bold',
-            size: 14,
-          },
+          font: { weight: 'bold', size: 14 },
           formatter: (value, context) => {
             const dataset = context.chart.data.datasets[0].data.map(Number);
             const total = dataset.reduce((a, b) => a + b, 0);
             if (!total) return '0%';
-            const percentage = ((Number(value) / total) * 100).toFixed(1);
-            return `${percentage}%`;
+            return `${((Number(value) / total) * 100).toFixed(1)}%`;
           },
         },
       },
@@ -715,22 +673,22 @@ onMounted(async () => {
 
   await fetchData();
 
-  const skillLabel = Object.keys(majorSkill.value).sort(
-    (a, b) => parseInt(a.slice(1) || 0) - parseInt(b.slice(1) || 0)
-  );
-  const skillData = skillLabel.map((label) => majorSkill.value[label]);
-
-  const JapaneseLevelLabel = Object.keys(japaneseLevel.value).sort(
-    (a, b) => parseInt(a.slice(1) || 0) - parseInt(b.slice(1) || 0)
-  );
-  const japaneseLevelData = JapaneseLevelLabel.map(
-    (label) => japaneseLevel.value[label]
-  );
-
-  const menPowerLabel = Object.keys(menPower.value);
-  const menPowerData = menPowerLabel.map((label) => menPower.value[label]);
-
   if (isAdmin.value) {
+    await nextTick();
+
+    const skillLabel = Object.keys(majorSkill.value).sort(
+      (a, b) => parseInt(a.slice(1) || 0) - parseInt(b.slice(1) || 0)
+    );
+    const skillData = skillLabel.map((label) => majorSkill.value[label]);
+
+    const JapaneseLevelLabel = Object.keys(japaneseLevel.value).sort(
+      (a, b) => parseInt(a.slice(1) || 0) - parseInt(b.slice(1) || 0)
+    );
+    const japaneseLevelData = JapaneseLevelLabel.map((label) => japaneseLevel.value[label]);
+
+    const menPowerLabel = Object.keys(menPower.value);
+    const menPowerData = menPowerLabel.map((label) => menPower.value[label]);
+
     renderChart('leaveChart', skillLabel, skillData);
     renderPieChart('fineChart', JapaneseLevelLabel, japaneseLevelData);
     renderChart1('menPowerChart', menPowerLabel, menPowerData);
@@ -739,6 +697,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (timer) clearInterval(timer);
+  Object.values(chartInstances).forEach((instance) => instance?.destroy());
 });
 </script>
 
