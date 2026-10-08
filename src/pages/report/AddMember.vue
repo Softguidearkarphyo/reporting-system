@@ -309,6 +309,26 @@
           />
         </v-col>
 
+          <v-col cols="12" md="6" lg="4">
+          <Field name="work_type" v-slot="{ field, errorMessage }">
+            <BaseSelect
+              v-model="field.value"
+              v-bind="field"
+              :label="t('addMember.form.work_type')"
+              class="mx-auto"
+              :class="{ 'field-disabled': !isAdmin }"
+              :items="work_type"
+              prependIcon="mdi-seat"
+              item-title="name"
+              :width="'320px'"
+              item-value="id"
+              :disabled="!isAdmin"
+              :error-messages="errorMessage"
+            >
+            </BaseSelect>
+          </Field>
+        </v-col>
+
         <v-col cols="12">
           <div class="d-flex justify-center">
             <BaseButton type="submit" style="width: 200px">
@@ -322,7 +342,7 @@
 </template>
 
 <script setup>
-import { position, role, sortKey } from '@/utils/data';
+import { position, role, sortKey,work_type } from '@/utils/data';
 import { useMemberStore } from '@/stores/member/member.js';
 import { useI18n } from 'vue-i18n';
 import { memberSchema } from '@/plugins/validations/add-member.js';
@@ -395,8 +415,9 @@ watch(
           ref_ph_number: data.ref_ph_number,
           project: data.staff_project?.map((p) => p.project_id) || [],
           sort_key: typeof data.sort_key === 'object' && data.sort_key !== null 
-              ? data.sort_key.id 
-              : data.sort_key,
+          ? data.sort_key.id 
+          : data.sort_key,
+          work_type: typeof data.work_type === 'object' && data.work_type !== null ? data.work_type.id : data.work_type,
         });
       }
     } else {

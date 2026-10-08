@@ -19,6 +19,7 @@ export const useMemberStore = defineStore('member', () => {
   };
 
   const createMember = async (payload) => {
+    console.log('payload', payload);  
     try {
       const response = await api.post(
         '/reporting-system/staff/create',
@@ -29,7 +30,8 @@ export const useMemberStore = defineStore('member', () => {
           },
         }
       );
-      toast.success('Member Created Successfully.');
+      // toast.success('Member Created Successfully.');
+      console.log('response', response.data);
       return response;
     } catch (error) {
       const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];

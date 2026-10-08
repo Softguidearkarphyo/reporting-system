@@ -69,5 +69,6 @@ export function memberSchema(t, isEditMode = false) {
     ref_ph_number: yup.string().nullable(),
     project: yup.array().nullable(),
     sort_key: yup.string().nullable(),
+    work_type: yup.string().nullable(),
   });
 }

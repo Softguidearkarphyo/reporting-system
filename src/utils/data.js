@@ -61,6 +61,16 @@ export const role = ref([
     name: 'user',
   },
 ]);
+export const work_type = ref([
+  {
+    id: 1,
+    name: 'onsite',
+  },
+  {
+    id: 2,
+    name: 'remote',
+  },
+]);
 export const sortKey = ref([
   {
     id: 1,
