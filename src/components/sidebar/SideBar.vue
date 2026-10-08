@@ -62,6 +62,11 @@ const navbars = computed(() => [
     icon: 'tabler:IconUsersGroup',
   },
   {
+    title: t('sidebar.attendance'),
+    path: '/reporting-system/attendance',
+    icon: 'tabler:IconUsersGroup',
+  },
+  {
     title: t('sidebar.leaverecords'),
     path: '/reporting-system/leave-records',
     icon: 'tabler:IconFileReport',
@@ -90,6 +95,11 @@ const settings = computed(() => [
   {
     title: t('sidebar.reports'),
     path: '/reporting-system/show',
+    icon: 'tabler:IconReportAnalytics',
+  },
+  {
+    title: t('Remote Location Setting'),
+    path: '/reporting-system/remote-location-setting',
     icon: 'tabler:IconReportAnalytics',
   },
   {

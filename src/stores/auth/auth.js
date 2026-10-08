@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
 import { profileImgPath } from '@/utils/helper';
 import { useRouter } from 'vue-router'; 
+import { toast } from '@/utils/toast';
 
 export const useAuthStore = defineStore('auth', () => {
   const staff = ref(null);
@@ -66,6 +67,39 @@ async function checkIn(payload = {}) {
     throw error;
   }
 }
+
+async function fetchRemoteStaffs() {
+  try {
+    const res = await api.post('/reporting-system/location/remote-location');
+    return res.data;
+  } catch (error) {
+    console.error('Fetch Remote Staffs Error:', error);
+    throw error;
+  }
+}
+
+async function saveStaffLocation(payload) {
+  try {
+    const res = await api.post('/reporting-system/location/save-location', payload);
+    toast.success('Location Updated Successfully.');
+    return res.data;
+  } catch (error) {
+    console.error('Save Staff Location Error:', error);
+    throw error;
+  }
+}
+
+ const deleteLocation = async (payload) => {
+    try {
+      const response = await api.post('/reporting-system/location/delete', payload);
+      toast.success('Location deleted successfully.');
+      return response;
+    } catch (error) {
+      toast.error('Failed to delete location.');
+      return error;
+    }
+  };
+
 
   async function fetchStaff() {
     try {
@@ -134,6 +168,9 @@ async function checkIn(payload = {}) {
     login,
     checkIn,
     fetchStaff,
+    fetchRemoteStaffs,
+    saveStaffLocation,
+    deleteLocation,
     logout
   };
 });

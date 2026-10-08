@@ -16,6 +16,7 @@ import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
 import Location from '../pages/report/Location.vue';
 import AddProject from '../pages/report/AddProject.vue';
+import RemoteLocationSetting from '../pages/report/RemoteLocationSetting.vue';
 import NotFound from '../pages/report/404.vue';
 import StaffCard from '../pages/report/StaffCard.vue';
 import MemberSkill from '../pages/report/MemeberSkill.vue';
@@ -24,6 +25,7 @@ import Login from '../components/authentication/Login.vue';
 import Profile from '../pages/authentication/Profile.vue';
 import AuthPage from '../pages/authentication/Auth.vue';
 import ViewLeave from '../pages/report/ViewLeave.vue';
+import Attendance from '../pages/report/AttendanceList.vue';
 
 const routes = [
   {
@@ -46,6 +48,12 @@ const routes = [
         path: '/reporting-system/employee-lists',
         name: 'member-lists',
         component: MemberList,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reporting-system/attendance',
+        name: 'attendance',
+        component: Attendance,
         meta: { requiresAuth: true },
       },
       {
@@ -76,6 +84,12 @@ const routes = [
         path: '/reporting-system/show',
         name: 'report',
         component: ReportPage,
+        meta: { requiresAuth: true },
+      },
+       {
+        path: '/reporting-system/remote-location-setting',
+        name: 'remote-location-setting',
+        component: RemoteLocationSetting,
         meta: { requiresAuth: true },
       },
       {
