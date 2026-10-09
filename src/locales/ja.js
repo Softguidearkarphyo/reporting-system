@@ -33,6 +33,9 @@ export default {
     totalOvertime: '総残業時間',
     carryLeaves: '葉を運ぶ',
     accumulatedHours: '累積時間',
+    daily_attendance_check_in: '日次出勤チェックイン',
+    check_in: 'チェックイン',
+    checking_in: 'チェックイン中...',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

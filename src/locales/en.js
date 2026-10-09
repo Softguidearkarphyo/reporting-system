@@ -33,6 +33,9 @@ export default {
     totalOvertime: 'total overtime',
     carryLeaves: 'carry leaves',
     accumulatedHours: 'accumulated hours',
+    daily_attendance_check_in: 'Daily Attendance Check-In',
+    check_in: 'Check-In',
+    checking_in: 'Checking In...',
   },
   sidebar: {
     dashboard: 'dashboard',

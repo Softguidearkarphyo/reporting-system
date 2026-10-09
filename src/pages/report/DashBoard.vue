@@ -9,7 +9,7 @@
                 <v-icon icon="mdi-map-marker-radius" color="primary" size="28" />
               </v-avatar>
               <div>
-                <div class="text-h6 font-weight-bold">Daily Attendance Check-In</div>
+                <div class="text-h6 font-weight-bold">{{ t('common.daily_attendance_check_in') }}</div>
                 <div class="text-caption text-grey-darken-1">
                   <v-icon size="14" class="mr-1">mdi-clock-outline</v-icon>
                   {{ currentTime }}
@@ -20,7 +20,7 @@
             <div class="attendance-container">
               <v-btn color="primary" :loading="isCheckingIn" :disabled="isCheckingIn" @click="handleCheckIn"
                 class="btn-checkin">
-                {{ isCheckingIn ? 'Checking In...' : 'Check-In' }}
+                {{ isCheckingIn ? t('common.checking_in') : t('common.check_in') }}
               </v-btn>
             </div>
           </div>
