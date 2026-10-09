@@ -98,12 +98,12 @@ const routes = [
         component: WorkingTime,
         meta: { requiresAuth: true },
       },
-      {
-        path: '/reporting-system/employee-reports',
-        name: 'show-projects',
-        component: MemberReport,
-        meta: { requiresAuth: true },
-      },
+      // {
+      //   path: '/reporting-system/employee-reports',
+      //   name: 'show-projects',
+      //   component: MemberReport,
+      //   meta: { requiresAuth: true },
+      // },
       {
         path: '/reporting-system/show-men-powers',
         name: 'men-power',
