@@ -104,11 +104,11 @@ const settings = computed(() => [
     path: '/reporting-system/weekly-work-time',
     icon: 'tabler:IconClockPause',
   },
-  {
-    title: t('sidebar.employeereports'),
-    path: '/reporting-system/employee-reports',
-    icon: 'tabler:IconUserStar',
-  },
+  // {
+  //   title: t('sidebar.employeereports'),
+  //   path: '/reporting-system/employee-reports',
+  //   icon: 'tabler:IconUserStar',
+  // },
   {
     title: t('sidebar.projectmenpower'),
     path: '/reporting-system/show-men-powers',

@@ -11,7 +11,7 @@
 
   <ParentCard class="pa-6">
     <Form ref="formRef" :validation-schema="memberCreateSchema" @submit="submit">
-      <v-row class="mx-auto px-4 py-4">
+     <v-row class="mx-auto px-4 py-4 gy-6 gx-4">
         <v-col cols="12" md="6" lg="4">
           <Field name="eng_name" v-slot="{ field, errorMessage }">
             <BaseTextField v-model="field.value" v-bind="field" :label="t('addMember.form.eng_name')" class="mx-auto"
@@ -38,9 +38,9 @@
 
         <v-col cols="12" md="6" lg="4">
           <Field name="password" v-slot="{ field, errorMessage }">
-            <BaseTextField v-model="field.value" v-bind="field" :label="t('addMember.form.password')" class="mx-auto"
-              type="password" variant="plain" dense autocomplete="test" prependIcon="mdi-lock-outline" :width="'320px'"
-              :error-messages="errorMessage"></BaseTextField>
+            <BaseTextField v-model="field.value" v-bind="field" :label="t('addMember.form.password')"
+              class="mx-auto custom-password-field" type="password" variant="plain" dense autocomplete="test"
+              prependIcon="mdi-lock-outline" :width="'320px'" :error-messages="errorMessage" />
           </Field>
         </v-col>
 
@@ -222,6 +222,8 @@ watch(
           existingFileName.value = null;
         }
 
+        console.log('Fetched Member Data:', data.sort_key);
+
         formRef.value?.setValues({
           eng_name: data.eng_name,
           jp_name: data.jp_name,
@@ -237,12 +239,9 @@ watch(
           ref_person: data.ref_person,
           ref_ph_number: data.ref_ph_number,
           project: data.staff_project?.map((p) => p.project_id) || [],
-          // sort_key: typeof data.sort_key === 'object' && data.sort_key !== null
-          //   ? data.sort_key.id
-          //   : data.sort_key,
-          sort_key: data.sort_key != null
-            ? String(typeof data.sort_key === 'object' ? data.sort_key.id : data.sort_key)
-            : '',
+          sort_key: typeof data.sort_key === 'object' && data.sort_key !== null
+            ? data.sort_key.id
+            : data.sort_key,
           work_type: typeof data.work_type === 'object' && data.work_type !== null ? data.work_type.id : data.work_type,
         });
       }
@@ -304,6 +303,7 @@ const submit = async (values) => {
 
   let res;
   if (memberId) {
+    // console.log('Updating member with ID:', formData);
     res = await memberStore.updateMember(formData);
   } else {
     res = await memberStore.createMember(formData);
@@ -346,5 +346,24 @@ const submit = async (values) => {
 .field-disabled {
   opacity: 0.75;
   cursor: not-allowed;
+}
+
+.v-row > [class*="v-col"] {
+  padding-bottom: 24px !important;
+}
+
+/* 2. Target the prepend/append icon inside Vuetify fields */
+:deep(.v-field__prepend-inner) {
+  margin-right: 12px !important; /* Space between icon and label/text */
+}
+
+:deep(.v-field__append-inner) {
+  padding-left: 12px !important;
+}
+
+/* 3. If targetting browser-native password reveal eye */
+:deep(input::-ms-reveal),
+:deep(input::-webkit-contacts-auto-fill-button) {
+  margin-right: 16px !important;
 }
 </style>
