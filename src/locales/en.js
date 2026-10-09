@@ -56,6 +56,8 @@ export default {
     theme: 'Theme',
     show_project: 'Show Project',
     theme: 'Theme Color',
+    attendanceAccess: 'Attendance Access',
+    attendanceList: 'Attendance List',
   },
   message: {
     error404Text: 'Oooops! Page Not Found',
@@ -124,6 +126,7 @@ export default {
       project: 'Project',
       sort_key: 'Sort Key',
       staff_image: 'Staff Image',
+      work_type: 'Work Type',
     },
   },
   addMemberSkill: {
@@ -211,6 +214,7 @@ export default {
   },
   validation: {
     required: '{field} is required',
+    numeric: '{field} must be a number',
     username_mismatch: 'Username does not match',
     password_mismatch: 'Password does not match',
     email: '{field} must be a valid email',
@@ -282,6 +286,9 @@ export default {
       duration: 'Duration',
       reason: 'Reason',
       action: 'Action',
+      name: 'Name',
+      paidDays: 'Paid Days',
+      unpaidDays: 'Unpaid Days',
     },
   },
 
@@ -324,5 +331,41 @@ export default {
 
   location: {
     title: 'Location',
+    title1: 'Location & Device Registration',
+    title2: 'Location & Device Lists',
+    form: {
+      staff: 'Name',
+      work_type: 'Work Type',
+      lat: 'Latitude',
+      lon: 'Longitude',
+      allow_meter: 'Allow Meter',
+      device_uuid: 'Device UUID',
+    },
+    table: {
+      staff: 'Name', 
+      work_type: 'Work Type',
+      lat: 'Latitude',
+      lon: 'Longitude',
+      allow_meter: 'Allow Meter',
+      device_uuid: 'Device UUID',
+      action: 'Action',
+    },
+    deleteConfirmText:
+      'Are you sure to delete this Location? # This action cannot be undone.',
+  },
+  attendance: {
+    title: 'Attendance',
+    title1: 'Attendance List',
+    table: {
+      staff: 'Name',
+      date: 'Date',
+      checkInTime: 'Check In Time',
+      checkOutTime: 'Check Out Time',
+      status: 'Status',
+      deviceType: 'Device',
+      action: 'Action',
+    },
+    deleteConfirmText:
+      'Are you sure to delete this attendance record? # This action cannot be undone.',
   },
 };

@@ -56,6 +56,8 @@ export default {
     theme: 'テーマ',
     show_project: 'プロジェクトを表示',
     theme: 'テーマカラー',
+    attendanceAccess: '出勤アクセス',
+    attendanceList: '出勤リスト',
   },
 
   message: {
@@ -120,6 +122,7 @@ export default {
       project: 'プロジェクト',
       sort_key: 'ソートキー',
       staff_image: 'スタッフ画像',
+      work_type: '作業タイプ',
     },
   },
   addMemberSkill: {
@@ -207,6 +210,7 @@ export default {
   },
   validation: {
     required: '{field}は必須項目です',
+    numeric: '{field}は数字で入力してください',
     username_mismatch: 'ユーザー名が一致しません',
     password_mismatch: 'パスワードが一致しません',
     jp_character: '{field}は日本語の文字のみで入力してください',
@@ -279,6 +283,9 @@ export default {
       duration: '期間',
       reason: '理由',
       action: '操作',
+      name: '名前',
+      paidDays: '有給日数',
+      unpaidDays: '無給日数',
     },
   },
 
@@ -319,8 +326,43 @@ export default {
       days: '日数',
     },
   },
-
   location: {
-    title: '現在所',
+    title: '位置情報とデバイス登録',
+    title1: '位置情報とデバイス登録',
+    title2: '位置情報とデバイスリスト',
+    form: {
+      staff: '名前',
+      work_type: '作業タイプ',
+      lat: '緯度',
+      lon: '経度',
+      allow_meter: '許可メートル',
+      device_uuid: 'デバイスUUID',
+    },
+    table: {
+      staff: '名前', 
+      work_type: '作業タイプ',
+      lat: '緯度',
+      lon: '経度',
+      allow_meter: '許可メートル',
+      device_uuid: 'デバイスUUID',
+      action: '操作',
+    },
+    deleteConfirmText:
+      'この位置情報を削除してもよろしいですか？ この操作は元に戻せません。',
+  },
+  attendance: {
+    title: '出勤リスト',
+    title1: '出勤リスト',
+    table: {
+      staff: '名前',
+      date: '日付',
+      checkInTime: '入室時間',
+      checkOutTime: '退室時間',
+      status: '状態',
+      deviceType: 'デバイス',
+      action: '操作',
+    },
+    deleteConfirmText:
+      'この出勤記録を削除してもよろしいですか？ この操作は元に戻せません。',
   },
 };

@@ -9,22 +9,20 @@ export const useAuthStore = defineStore('auth', () => {
   const staff = ref(null);
   const router = useRouter();
 
-  // Getters / Computed Properties
   const loginStaff = computed(() => staff.value);
   const isLoggedIn = computed(() => !!staff.value);
   const staffName = computed(() => (staff.value ? staff.value.eng_name : ''));
   const staffRole = computed(() => (staff.value ? String(staff.value.role) : localStorage.getItem('staff-role')));
   const workType = computed(() => staff.value?.work_type || 'onsite'); 
 
-  // Actions
-  async function login(username, password, lat = 0, lon = 0) {
+  async function login(username, password) {
     try {
       await api.get('../sanctum/csrf-cookie');
       const res = await api.post('/login', { 
         username, 
         password,
-        latitude: lat,
-        longitude: lon
+        // latitude: lat,
+        // longitude: lon
       });
 
       staff.value = res.data.staff;
@@ -39,14 +37,11 @@ export const useAuthStore = defineStore('auth', () => {
 
       return staff.value;
     } catch (error) {
+      console.error('Login Error:', error);
       throw error;
     }
   }
 
-/**
- * Attendance Check-In Action
- * @param {Object} payload 
- */
 async function checkIn(payload = {}) {
   try {
     const staffId = staff.value?.id || localStorage.getItem('staff-id');
@@ -60,20 +55,24 @@ async function checkIn(payload = {}) {
       device_uuid: payload.device_uuid ?? null,
     });
 
-    console.log('Check-In Response:', response.data);
+    // console.log('Check-In Response:', response.data);
+    toast.success(response.data?.message || 'Check-in successful.');
     return response.data;
     
   } catch (error) {
+    toast.error(error.response?.data?.message || 'Check-in failed. Please try again.');
+    console.error('Check-In Error:', error);
     throw error;
   }
 }
 
-async function fetchRemoteStaffs() {
+async function fetchLocationStaffs() {
   try {
-    const res = await api.post('/reporting-system/location/remote-location');
+    const res = await api.post('/reporting-system/location/staff-location');
     return res.data;
   } catch (error) {
-    console.error('Fetch Remote Staffs Error:', error);
+    toast.error('Failed to fetch location staffs.');
+    console.error('Fetch Location Staffs Error:', error);
     throw error;
   }
 }
@@ -84,6 +83,7 @@ async function saveStaffLocation(payload) {
     toast.success('Location Updated Successfully.');
     return res.data;
   } catch (error) {
+    toast.error('Failed to save staff location.');
     console.error('Save Staff Location Error:', error);
     throw error;
   }
@@ -168,7 +168,7 @@ async function saveStaffLocation(payload) {
     login,
     checkIn,
     fetchStaff,
-    fetchRemoteStaffs,
+    fetchLocationStaffs,
     saveStaffLocation,
     deleteLocation,
     logout

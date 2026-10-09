@@ -16,7 +16,7 @@ import Addleave from '../pages/report/AddLeave.vue';
 import Fine from '../pages/report/MemberFine.vue';
 import Location from '../pages/report/Location.vue';
 import AddProject from '../pages/report/AddProject.vue';
-import RemoteLocationSetting from '../pages/report/RemoteLocationSetting.vue';
+import LocationSetting from '../pages/report/LocationSetting.vue';
 import NotFound from '../pages/report/404.vue';
 import StaffCard from '../pages/report/StaffCard.vue';
 import MemberSkill from '../pages/report/MemeberSkill.vue';
@@ -87,9 +87,9 @@ const routes = [
         meta: { requiresAuth: true },
       },
        {
-        path: '/reporting-system/remote-location-setting',
-        name: 'remote-location-setting',
-        component: RemoteLocationSetting,
+        path: '/reporting-system/location-setting',
+        name: 'location-setting',
+        component: LocationSetting,
         meta: { requiresAuth: true },
       },
       {

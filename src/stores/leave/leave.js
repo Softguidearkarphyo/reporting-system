@@ -66,7 +66,7 @@ export const useLeaveStore = defineStore('leave', () => {
 
   // Fetch Leaves API Call
   const fetchLeave = async (payload = {}) => {
-    console.log("thsi is ", payload)
+    // console.log("thsi is ", payload)
     try {
       const response = await api.post('/reporting-system/leave/get', payload);
       setLeaves(response.data);
@@ -81,9 +81,8 @@ export const useLeaveStore = defineStore('leave', () => {
     }
   };
 
-  // Fetch Leave Records API Call
   const fetchLeaveRecord = async (payload = {}) => {
-    console.log("user ", JSON.stringify(payload))
+    // console.log("user ", JSON.stringify(payload))
     try {
       const response = await api.post('/reporting-system/leave-record/get', payload);
       setLeaveRecords(response.data);

@@ -1,5 +1,4 @@
 <template>
-  <!-- User Dashboard -->
   <v-main v-if="!isAdmin" class="pa-6 pt-4">
     <v-row class="mb-4">
       <v-col cols="12">
@@ -19,20 +18,14 @@
             </div>
 
             <div class="attendance-container">
-              <v-btn
-                color="primary"
-                :loading="isCheckingIn"
-                :disabled="isCheckingIn"
-                @click="handleCheckIn"
-                class="btn-checkin"
-              >
-                {{ isCheckingIn ? 'Check-in ဝင်နေပါသည်...' : 'Check-In' }}
+              <v-btn color="primary" :loading="isCheckingIn" :disabled="isCheckingIn" @click="handleCheckIn"
+                class="btn-checkin">
+                {{ isCheckingIn ? 'Checking In...' : 'Check-In' }}
               </v-btn>
             </div>
           </div>
 
-          <!-- Status / Alert Message -->
-          <v-alert
+          <!-- <v-alert
             v-if="statusMessage.text"
             :type="statusMessage.type"
             variant="tonal"
@@ -42,12 +35,11 @@
             @click:close="statusMessage.text = ''"
           >
             {{ statusMessage.text }}
-          </v-alert>
+          </v-alert> -->
         </v-card>
       </v-col>
     </v-row>
 
-    <!-- Leave Summary Cards -->
     <v-row class="mb-6" justify="space-between">
       <v-col v-for="(type, i) in leaveTypes" :key="i" cols="12" sm="6" md="2" class="px-1">
         <v-card :class="borderClass" class="pa-3" rounded elevation="1">
@@ -65,52 +57,40 @@
     </v-row>
 
     <v-row class="mb-6" dense>
-      <!-- Leave Record (2/3 Width) -->
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable
-            v-if="memberLeave && memberLeave.length"
-            :headers="leaveHeader"
-            :items="memberLeave"
-            :items-per-page="-1"
-            hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table"
-          >
+          <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
+            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.leave_type`]="{ item }">
-              <span v-if="Number(item.leave_type) === 1" class="status d-inline-flex justify-center align-center">
-                paid
-              </span>
-              <span v-else class="status1 d-inline-flex justify-center align-center">
-                unpaid
+            <template #[`item.total_paid_days`]="{ item }">
+              <span class="status d-inline-flex justify-center align-center">
+                {{ item.total_paid_days }} {{ item.total_paid_days === 1 ? 'day' : 'days' }}
               </span>
             </template>
 
-            <template #[`item.duration`]="{ item }">
-              <span v-if="item.duration == 1">Full day</span>
-              <span v-else-if="item.duration == 2">Half day</span>
-              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 4">3 Hrs</span>
-              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 6">2 Hrs</span>
-              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 8">1 Hrs</span>
-              <span v-else-if="item.duration == 9">30 Min</span>
-              <span v-else>{{ item.duration }}</span>
+            <template #[`item.total_unpaid_days`]="{ item }">
+              <span class="status1 d-inline-flex justify-center align-center">
+                {{ item.total_unpaid_days }} {{ item.total_unpaid_days === 1 ? 'day' : 'days' }}
+              </span>
             </template>
 
-            <template #[`item.reason`]="{ item }">
-              <span>{{ item.reason || '-' }}</span>
+            <template #[`item.total_days`]="{ item }">
+              <span class="font-weight-bold">{{ item.total_days }}</span>
+            </template>
+
+            <template #[`item.total_records`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center px-2 py-1 rounded-pill">
+                {{ item.total_records }}
+              </span>
             </template>
           </BaseTable>
 
-          <!-- Empty State -->
           <v-card-text v-else class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
             <div class="text-body-1">No leave records found</div>
@@ -118,20 +98,13 @@
         </v-card>
       </v-col>
 
-      <!-- Fine Record (1/3 Width) -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable
-            v-if="memberFine && memberFine.length"
-            :headers="fineHeader"
-            :items="memberFine"
-            :items-per-page="-1"
-            hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table"
-          >
+          <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
+            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -213,45 +186,37 @@
     <!-- Records Row -->
     <v-row>
       <!-- Leave Record (2/3 Width) -->
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable
-            v-if="memberLeave && memberLeave.length"
-            :headers="leaveHeader"
-            :items="memberLeave"
-            class="elevation-0 pa-2"
-          >
+          <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
+            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
-              <span class="font-weight-medium">{{ item.eng_name }}</span>
+              <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.leave_type`]="{ item }">
-              <span v-if="Number(item.leave_type) === 1" class="status d-inline-flex justify-center align-center">
-                paid
-              </span>
-              <span v-else class="status1 d-inline-flex justify-center align-center">
-                unpaid
+            <template #[`item.total_paid_days`]="{ item }">
+              <span class="status d-inline-flex justify-center align-center">
+                {{ item.total_paid_days }} {{ item.total_paid_days === 1 ? 'day' : 'days' }}
               </span>
             </template>
 
-            <template #[`item.duration`]="{ item }">
-              <span v-if="item.duration == 1">Full day</span>
-              <span v-else-if="item.duration == 2">Half day</span>
-              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 4">3 Hrs</span>
-              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 6">2 Hrs</span>
-              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-              <span v-else-if="item.duration == 8">1 Hrs</span>
-              <span v-else-if="item.duration == 9">30 Min</span>
-              <span v-else>{{ item.duration }}</span>
+            <template #[`item.total_unpaid_days`]="{ item }">
+              <span class="status1 d-inline-flex justify-center align-center">
+                {{ item.total_unpaid_days }} {{ item.total_unpaid_days === 1 ? 'day' : 'days' }}
+              </span>
             </template>
 
-            <template #[`item.reason`]="{ item }">
-              <span>{{ item.reason || '-' }}</span>
+            <template #[`item.total_days`]="{ item }">
+              <span class="font-weight-bold">{{ item.total_days }}</span>
+            </template>
+
+            <template #[`item.total_records`]="{ item }">
+              <span class="time-box d-inline-flex justify-center align-center px-2 py-1 rounded-pill">
+                {{ item.total_records }}
+              </span>
             </template>
           </BaseTable>
 
@@ -264,19 +229,13 @@
       </v-col>
 
       <!-- Fine Record (1/3 Width) -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable
-            v-if="memberFine && memberFine.length"
-            :headers="fineHeader"
-            :items="memberFine"
-            :items-per-page="-1"
-            hide-default-footer
-            class="elevation-0 pa-2 no-scroll-table"
-          >
+          <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
+            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -291,11 +250,8 @@
               <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
                 {{ item.total_fine_records }}
               </span>
-              <v-icon
-                v-if="item.total_fine_records > 2"
-                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }"
-                class="ms-1"
-              >
+              <v-icon v-if="item.total_fine_records > 2"
+                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
                 {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
               </v-icon>
             </template>
@@ -313,8 +269,9 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { borderClass } from '@/utils/border';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
 import { useMemberStore } from '@/stores/member/member.js';
@@ -329,6 +286,7 @@ import { getDeviceMetaData } from '@/utils/deviceDetector';
 const { t } = useI18n();
 const lan = ref('en');
 const authStore = useAuthStore();
+const router = useRouter();
 const memberStore = useMemberStore();
 const menPowerStore = useMenPowerStoreStore();
 const leaveStore = useLeaveStore();
@@ -353,10 +311,12 @@ const menPower = ref({});
 const isCheckingIn = ref(false);
 const currentTime = ref('');
 let timer = null;
-const statusMessage = reactive({ type: '', text: '' });
+// const statusMessage = reactive({ type: '', text: '' });
 
-// Track active chart instances to prevent canvas re-use crashes
 const chartInstances = {};
+
+
+
 
 const updateClock = () => {
   const now = new Date();
@@ -414,7 +374,7 @@ const getCoordinates = () => {
 };
 
 const handleCheckIn = async () => {
-  statusMessage.text = '';
+  // statusMessage.text = '';
   isCheckingIn.value = true;
 
   try {
@@ -423,9 +383,9 @@ const handleCheckIn = async () => {
     const coords = await getCoordinates();
 
 
-    console.log('Device Data:', deviceData);
-    console.log('Is Laptop:', isLaptop);
-    console.log('Coordinates:', coords);
+    // console.log('Device Data:', deviceData);
+    // console.log('Is Laptop:', isLaptop);
+    // console.log('Coordinates:', coords);
     const res = await authStore.checkIn({
       latitude: coords.latitude,
       longitude: coords.longitude,
@@ -434,11 +394,14 @@ const handleCheckIn = async () => {
       device_uuid: deviceData?.deviceUUID || '',
     });
 
-    statusMessage.type = 'success';
-    statusMessage.text = res.message;
+    console.log('Check-In Response:', res);
+    if (res.status === 'success') {
+      router.push({ name: 'attendance' });
+    }
+    // statusMessage.type = 'success';
+    // statusMessage.text = res.message;
   } catch (err) {
-    statusMessage.type = 'error';
-    statusMessage.text = err.response?.data?.message || 'Check-in ပြုလုပ်၍မရပါ။';
+    console.error('Check-In Error:', err);
   } finally {
     isCheckingIn.value = false;
   }
@@ -447,11 +410,9 @@ const handleCheckIn = async () => {
 const leaveHeader = computed(() => {
   const tmpHeaders = [
     { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
-    { title: t('creatLeave.form.leave_date'), key: 'leave_date' },
-    { title: t('creatLeave.table.leave_type'), key: 'leave_type' },
-    { title: t('creatLeave.table.duration'), key: 'duration' },
-    { title: t('creatLeave.form.total_days'), key: 'day_count' },
-    { title: t('creatLeave.table.reason'), key: 'reason' },
+    { title: t('creatLeave.table.paidDays'), key: 'total_paid_days' },
+    { title: t('creatLeave.table.unpaidDays'), key: 'total_unpaid_days' },
+    { title: t('creatLeave.form.total_days'), key: 'total_days' },
   ];
   return tmpHeaders.map((header) => ({
     ...header,
@@ -502,17 +463,39 @@ const fetchData = async () => {
   await leaveStore.fetchLeaveRecord();
   const allLeaveRecords = leaveStore.getLeaveRecords || [];
 
-  memberLeave.value = allLeaveRecords.flatMap((record) =>
-    (record.leaves || []).map((item) => ({
-      id: item.id,
-      eng_name: record.eng_name || '',
-      leave_date: item.leave_date,
-      leave_type: item.leave_type,
-      duration: item.duration,
-      day_count: item.day_count,
-      reason: item.reason || '-',
-    }))
-  );
+  const groupedLeaveMap = allLeaveRecords.reduce((acc, record) => {
+    const staffId = record.staff_id || record.id;
+    const name = record.eng_name || '-';
+
+    if (!acc[staffId]) {
+      acc[staffId] = {
+        staff_id: staffId,
+        eng_name: name,
+        total_paid_days: 0,
+        total_unpaid_days: 0,
+        total_days: 0,
+        total_records: 0,
+      };
+    }
+
+    (record.leaves || []).forEach((item) => {
+      const dayCount = Number(item.day_count || 0);
+      const isPaid = Number(item.leave_type) === 1;
+
+      if (isPaid) {
+        acc[staffId].total_paid_days += dayCount;
+      } else {
+        acc[staffId].total_unpaid_days += dayCount;
+      }
+
+      acc[staffId].total_days += dayCount;
+      acc[staffId].total_records += 1;
+    });
+
+    return acc;
+  }, {});
+
+  memberLeave.value = Object.values(groupedLeaveMap);
 
   const fineRes = await fineStore.fetchMemberFine();
   const fineList = Array.isArray(fineRes?.data?.data)

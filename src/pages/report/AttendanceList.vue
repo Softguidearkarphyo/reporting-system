@@ -1,15 +1,15 @@
 <template>
   <v-row class="align-center" density="compact">
-    <!-- Title Section -->
-    <v-col cols="12" sm="6" md="7" lg="8" class="d-flex align-center">
-      <BaseTitle class="my-0">{{ t('attendanceList.title') }}</BaseTitle>
+    <v-col cols="12" sm="6" md="7" lg="8" class="d-flex align-center ga-2">
+      <BaseTitle class="my-0">{{ t('attendance.title1') }}</BaseTitle>
+      <span class="text-subtitle-2 text-grey-darken-1 font-weight-medium">
+        ({{ todayFormatted }})
+      </span>
     </v-col>
-
   </v-row>
 
   <ParentCard class="mt-4">
-    <BaseTable :headers="headers" :items="items" :density="true">
-      <!-- Staff Name & Avatar Slot -->
+    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true">
       <template #[`item.staff`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
@@ -34,17 +34,14 @@
         </div>
       </template>
 
-      <!-- Date Slot -->
       <template #[`item.date`]="{ item }">
         <span>{{ formatDate(item.date) }}</span>
       </template>
 
-      <!-- Check-in Time Slot -->
       <template #[`item.check_in_time`]="{ item }">
         <span class="font-weight-medium">{{ formatTime(item.check_in_time) }}</span>
       </template>
 
-      <!-- Status Slot (Calculated based on 08:30 AM) -->
       <template #[`item.status`]="{ item }">
         <v-chip
           :color="isLate(item.check_in_time) ? 'warning' : 'success'"
@@ -61,7 +58,6 @@
         </v-chip>
       </template>
 
-      <!-- Device Type Slot -->
       <template #[`item.device_type`]="{ item }">
         <div class="d-flex align-center ga-1 text-capitalize">
           <v-icon size="16" color="grey-darken-1" :icon="getDeviceIcon(item.device_type)" />
@@ -69,8 +65,6 @@
         </div>
       </template>
 
-
-      <!-- Action Slot -->
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
           <BaseButton
@@ -88,12 +82,18 @@
         </span>
       </template>
     </BaseTable>
+
+    <div v-else class="text-center py-10 my-4">
+      <v-icon icon="tabler:IconCalendarX" size="56" color="grey-lighten-1" class="mb-3" />
+      <div class="text-h6 text-grey-darken-1 font-weight-medium">
+        No attendance records found for today
+      </div>
+    </div>
   </ParentCard>
 
-  <!-- Delete Confirmation Modal -->
   <BaseConfirmDelete
     v-model="confirmDelete"
-    :text="t('attendanceList.deleteConfirmText')"
+    :text="t('attendance.deleteConfirmText')"
     :class="{ 'd-none': !confirmDelete }"
     @yes="confirmDelete = false; deleteRecord();"
     @no="confirmDelete = false; deleteTarget = undefined;"
@@ -125,30 +125,40 @@ const items = ref([]);
 const width = '10px';
 let originalItems = [];
 
+const todayFormatted = computed(() => {
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  return new Date().toLocaleDateString(locale.value === 'ja' ? 'ja-JP' : 'en-US', options);
+});
+
 const headers = computed(() => {
   const tmpHeaders = [
     {
-      title: t('attendanceList.table.staff'),
+      title: t('attendance.table.staff'),
       key: 'staff',
       sortable: true,
     },
     {
-      title: t('attendanceList.table.date'),
+      title: t('attendance.table.date'),
       key: 'date',
-      sortable: true,
+      sortable: false,
     },
     {
-      title: t('attendanceList.table.checkInTime'),
+      title: t('attendance.table.checkInTime'),
       key: 'check_in_time',
       sortable: true,
     },
     {
-      title: t('attendanceList.table.status'),
+      title: t('attendance.table.status'),
       key: 'status',
-      sortable: false,
+      sortable: true,
     },
     {
-      title: t('attendanceList.table.device'),
+      title: t('attendance.table.deviceType'),
       key: 'device_type',
       sortable: false,
     },
@@ -156,7 +166,7 @@ const headers = computed(() => {
 
   if (String(role.value) === String(ADMIN)) {
     tmpHeaders.push({
-      title: t('memberList.table.action'),
+      title: t('attendance.table.action'),
       key: 'action',
       align: 'center',
       sortable: false,
@@ -174,7 +184,7 @@ const isLate = (timeString) => {
   if (!timeString) return false;
   const [hours, minutes] = timeString.split(':').map(Number);
   const totalMinutes = hours * 60 + minutes;
-  const cutoffMinutes = 8 * 60 + 30; // 08:30 AM
+  const cutoffMinutes = 8 * 60 + 30;
   return totalMinutes > cutoffMinutes;
 };
 
@@ -247,8 +257,6 @@ const deleteRecord = async () => {
   deleteTarget.value = undefined;
   fetch();
 };
-
-
 
 watch(
   () => search.value,

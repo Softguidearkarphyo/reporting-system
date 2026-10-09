@@ -30,8 +30,8 @@ export const useMemberStore = defineStore('member', () => {
           },
         }
       );
-      // toast.success('Member Created Successfully.');
-      console.log('response', response.data);
+      toast.success('Member Created Successfully.');
+      // console.log('response', response.data);
       return response;
     } catch (error) {
       const errorMsg = Object.values(error.response?.data?.errors)?.[0][0];

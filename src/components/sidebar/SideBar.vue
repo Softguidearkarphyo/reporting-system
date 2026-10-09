@@ -62,9 +62,9 @@ const navbars = computed(() => [
     icon: 'tabler:IconUsersGroup',
   },
   {
-    title: t('sidebar.attendance'),
+    title: t('sidebar.attendanceList'),
     path: '/reporting-system/attendance',
-    icon: 'tabler:IconUsersGroup',
+    icon: 'tabler:IconCalendarTime',
   },
   {
     title: t('sidebar.leaverecords'),
@@ -87,9 +87,6 @@ const navbars = computed(() => [
   },
 ]);
 
-// console.log("Current Role Value:", role.value);
-// console.log("ADMIN Constant Value:", ADMIN);
-// console.log("Is Equals?:", role.value === ADMIN);
 
 const settings = computed(() => [
   {
@@ -98,9 +95,9 @@ const settings = computed(() => [
     icon: 'tabler:IconReportAnalytics',
   },
   {
-    title: t('Remote Location Setting'),
-    path: '/reporting-system/remote-location-setting',
-    icon: 'tabler:IconReportAnalytics',
+    title: t('sidebar.attendanceAccess'),
+    path: '/reporting-system/location-setting',
+    icon: 'tabler:IconIdBadge', 
   },
   {
     title: t('sidebar.weeklyworktime'),

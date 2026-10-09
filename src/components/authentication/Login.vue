@@ -157,13 +157,13 @@ const handleLogin = async () => {
   isLoading.value = true;
 
   try {
-    const [lat, lon] = await getCurrentPosition();
-    console.log("location ", lat, lon);
+    // const [lat, lon] = await getCurrentPosition();
+    // console.log("location ", lat, lon);
     await authStore.login(
       username.value,
       password.value,
-      lat,
-      lon
+      // lat,
+      // lon
     );
     await router.push('/reporting-system/dashboard');
   } catch (e) {
