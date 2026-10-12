@@ -9,55 +9,35 @@
       <!-- Form Section -->
       <v-col cols="12" lg="6">
         <ParentCard>
-          <Form
-            ref="formRef"
-            :validation-schema="reportingSchema"
-            @submit="submit"
-          >
+          <Form ref="formRef" :validation-schema="reportingSchema" @submit="submit">
             <v-row>
               <!-- Left Form Column: Date Picker & Controls -->
               <v-col cols="12" md="6">
                 <!-- Date Picker Row -->
                 <v-row>
                   <v-col cols="12" class="d-flex justify-center">
-                    <v-date-picker
-                      v-model="selectedDates"
-                      rounded="lg"
-                      hide-header
-                      :multiple="isDayMultiple"
-                      class="w-100"
-                    ></v-date-picker>
+                    <v-date-picker v-model="selectedDates" rounded="lg" hide-header :multiple="isDayMultiple"
+                      class="w-100"></v-date-picker>
                   </v-col>
                 </v-row>
 
                 <!-- Toggle Switch Row -->
                 <v-row>
                   <v-col cols="12" class="d-flex align-center justify-center my-2">
-                    <span
-                      class="mr-3"
-                      :style="{
-                        fontSize: '0.95rem',
-                        color: !isDayMultiple ? 'rgb(var(--v-theme-primary))' : '',
-                        fontWeight: !isDayMultiple ? 800 : '',
-                      }"
-                    >
+                    <span class="mr-3" :style="{
+                      fontSize: '0.95rem',
+                      color: !isDayMultiple ? 'rgb(var(--v-theme-primary))' : '',
+                      fontWeight: !isDayMultiple ? 800 : '',
+                    }">
                       {{ t('workHourReport.form.single') }}
                     </span>
-                    <v-switch
-                      v-model="isDayMultiple"
-                      color="primary"
-                      :value="true"
-                      hide-details
-                      density="compact"
-                    ></v-switch>
-                    <span
-                      class="ml-3"
-                      :style="{
-                        fontSize: '0.95rem',
-                        color: isDayMultiple ? 'rgb(var(--v-theme-primary))' : '',
-                        fontWeight: isDayMultiple ? 800 : '',
-                      }"
-                    >
+                    <v-switch v-model="isDayMultiple" color="primary" :value="true" hide-details
+                      density="compact"></v-switch>
+                    <span class="ml-3" :style="{
+                      fontSize: '0.95rem',
+                      color: isDayMultiple ? 'rgb(var(--v-theme-primary))' : '',
+                      fontWeight: isDayMultiple ? 800 : '',
+                    }">
                       {{ t('workHourReport.form.multiple') }}
                     </span>
                   </v-col>
@@ -66,40 +46,22 @@
                 <!-- Quick Action Buttons -->
                 <v-row class="mb-2">
                   <v-col cols="12" class="d-flex justify-space-around align-center">
-                    <v-btn
-                      icon
-                      color="primary"
-                      class="circle-btn"
-                      density="comfortable"
-                      :disabled="selectedEmployee.length === 0"
-                      @click="applySetting"
-                    >
+                    <v-btn icon color="primary" class="circle-btn" density="comfortable"
+                      :disabled="selectedEmployee.length === 0" @click="applySetting">
                       <v-icon>tabler:IconPlayerPlay</v-icon>
                       <v-tooltip activator="parent" location="bottom" color="primary">
                         {{ t('common.autoFill') }}
                       </v-tooltip>
                     </v-btn>
 
-                    <v-btn
-                      icon
-                      color="primary"
-                      class="circle-btn"
-                      density="comfortable"
-                      @click="viewSetting"
-                    >
+                    <v-btn icon color="primary" class="circle-btn" density="comfortable" @click="viewSetting">
                       <v-icon>tabler:IconSettings</v-icon>
                       <v-tooltip activator="parent" location="bottom">
                         {{ t('common.viewSetting') }}
                       </v-tooltip>
                     </v-btn>
 
-                    <v-btn
-                      icon
-                      color="primary"
-                      class="circle-btn"
-                      density="comfortable"
-                      @click="clearDates"
-                    >
+                    <v-btn icon color="primary" class="circle-btn" density="comfortable" @click="clearDates">
                       <v-icon>tabler:IconTrash</v-icon>
                       <v-tooltip activator="parent" location="bottom">
                         {{ t('workHourReport.dateClear') }}
@@ -114,24 +76,25 @@
                 <!-- Employee Selection -->
                 <v-row>
                   <v-col cols="12">
-                    <Field
-                      name="employee"
-                      v-slot="{ field: { value, ...field }, errorMessage }"
-                    >
+                    <Field name="employee" v-slot="{ field: { value, ...field }, errorMessage }">
                       <span class="d-none">{{ value }}</span>
-                      <BaseAutoComplete
-                        v-if="isAdmin"
-                        v-model="selectedEmployee"
-                        v-bind="field"
-                        :label="t('workHourReport.form.employee')"
-                        :items="employees"
-                        prependIcon="tabler:IconUser"
-                        item-title="name"
-                        item-value="id"
-                        class="w-100"
-                        :chip-width="195"
-                        :error-messages="errorMessage"
-                      ></BaseAutoComplete>
+                      <BaseAutoComplete v-if="isAdmin" v-model="selectedEmployee" v-bind="field"
+                        :label="t('workHourReport.form.employee')" :items="employees" prependIcon="tabler:IconUser"
+                        item-title="name" item-value="id" class="w-100" :chip-width="195"
+                        :error-messages="errorMessage">
+                        <template #prepend-item>
+                          <v-list-item @click="toggleSelectAll">
+                            <template #prepend>
+                              <v-checkbox-btn :indeterminate="isSomeSelected && !isAllSelected"
+                                :model-value="isAllSelected"></v-checkbox-btn>
+                            </template>
+                            <v-list-item-title>
+                              {{ isAllSelected ? 'Deselect All' : 'Select All' }}
+                            </v-list-item-title>
+                          </v-list-item>
+                          <v-divider class="mt-2"></v-divider>
+                        </template>
+                      </BaseAutoComplete>
                       <div class="my-3 text-h5 staff-name" v-else>
                         {{ staffName }}
                       </div>
@@ -143,17 +106,9 @@
                 <v-row>
                   <v-col cols="12">
                     <Field name="project" v-slot="{ field, errorMessage }">
-                      <BaseSelect
-                        v-model="field.value"
-                        v-bind="field"
-                        :label="t('workHourReport.form.project')"
-                        :items="projects"
-                        prependIcon="tabler:IconWorldPlus"
-                        item-title="name"
-                        item-value="id"
-                        class="w-100"
-                        :error-messages="errorMessage"
-                      ></BaseSelect>
+                      <BaseSelect v-model="field.value" v-bind="field" :label="t('workHourReport.form.project')"
+                        :items="projects" prependIcon="tabler:IconWorldPlus" item-title="name" item-value="id"
+                        class="w-100" :error-messages="errorMessage"></BaseSelect>
                     </Field>
                   </v-col>
                 </v-row>
@@ -162,17 +117,9 @@
                 <v-row>
                   <v-col cols="12">
                     <Field name="task" v-slot="{ field, errorMessage }">
-                      <BaseSelect
-                        v-model="field.value"
-                        v-bind="field"
-                        :label="t('workHourReport.form.task')"
-                        :items="tasks"
-                        prependIcon="tabler:IconChecklist"
-                        item-title="name"
-                        item-value="id"
-                        class="w-100"
-                        :error-messages="errorMessage"
-                      ></BaseSelect>
+                      <BaseSelect v-model="field.value" v-bind="field" :label="t('workHourReport.form.task')"
+                        :items="tasks" prependIcon="tabler:IconChecklist" item-title="name" item-value="id"
+                        class="w-100" :error-messages="errorMessage"></BaseSelect>
                     </Field>
                   </v-col>
                 </v-row>
@@ -180,29 +127,12 @@
                 <!-- Time Mode Selection -->
                 <v-row>
                   <v-col cols="12">
-                    <Field
-                      name="timeSelectionMode"
-                      rules=""
-                      v-slot="{ errorMessage }"
-                    >
-                      <v-radio-group
-                        v-model="timeSelectionMode"
-                        inline
-                        class="mt-1"
-                        :error-messages="errorMessage"
-                      >
-                        <v-radio
-                          :label="t('workHourReport.form.auto')"
-                          :value="0"
-                          color="primary"
-                          class="radio-btn mr-4"
-                        ></v-radio>
-                        <v-radio
-                          :label="t('workHourReport.form.manual')"
-                          :value="1"
-                          color="primary"
-                          class="radio-btn"
-                        ></v-radio>
+                    <Field name="timeSelectionMode" rules="" v-slot="{ errorMessage }">
+                      <v-radio-group v-model="timeSelectionMode" inline class="mt-1" :error-messages="errorMessage">
+                        <v-radio :label="t('workHourReport.form.auto')" :value="0" color="primary"
+                          class="radio-btn mr-4"></v-radio>
+                        <v-radio :label="t('workHourReport.form.manual')" :value="1" color="primary"
+                          class="radio-btn"></v-radio>
                       </v-radio-group>
                     </Field>
                   </v-col>
@@ -212,17 +142,9 @@
                 <v-row v-if="timeSelectionMode === 0">
                   <v-col cols="12">
                     <Field name="period" v-slot="{ field, errorMessage }">
-                      <BaseMultiSelect
-                        v-model="selectedPeriod"
-                        v-bind="field"
-                        :label="t('workHourReport.form.period')"
-                        :items="periods"
-                        prependIcon="tabler:IconClockHour9"
-                        item-title="name"
-                        item-value="id"
-                        class="w-100"
-                        :error-messages="errorMessage"
-                      ></BaseMultiSelect>
+                      <BaseMultiSelect v-model="selectedPeriod" v-bind="field" :label="t('workHourReport.form.period')"
+                        :items="periods" prependIcon="tabler:IconClockHour9" item-title="name" item-value="id"
+                        class="w-100" :error-messages="errorMessage"></BaseMultiSelect>
                     </Field>
                   </v-col>
                 </v-row>
@@ -231,31 +153,16 @@
                 <v-row v-else>
                   <v-col cols="12" sm="6">
                     <Field name="startTime" v-slot="{ field, errorMessage }">
-                      <BaseSelect
-                        v-model="field.value"
-                        v-bind="field"
-                        :label="t('workHourReport.form.startTime')"
-                        :items="timeSlots"
-                        prependIcon="tabler:IconClockHour5"
-                        item-title="name"
-                        item-value="name"
-                        class="w-100"
-                        :error-messages="errorMessage"
-                      ></BaseSelect>
+                      <BaseSelect v-model="field.value" v-bind="field" :label="t('workHourReport.form.startTime')"
+                        :items="timeSlots" prependIcon="tabler:IconClockHour5" item-title="name" item-value="name"
+                        class="w-100" :error-messages="errorMessage"></BaseSelect>
                     </Field>
                   </v-col>
                   <v-col cols="12" sm="6">
                     <Field name="finishTime" v-slot="{ field, errorMessage }">
-                      <BaseSelect
-                        v-model="field.value"
-                        v-bind="field"
-                        :label="t('workHourReport.form.finishTime')"
-                        :items="timeSlots"
-                        item-title="name"
-                        item-value="name"
-                        class="w-100"
-                        :error-messages="errorMessage"
-                      ></BaseSelect>
+                      <BaseSelect v-model="field.value" v-bind="field" :label="t('workHourReport.form.finishTime')"
+                        :items="timeSlots" item-title="name" item-value="name" class="w-100"
+                        :error-messages="errorMessage"></BaseSelect>
                     </Field>
                   </v-col>
                 </v-row>
@@ -264,11 +171,8 @@
                 <v-row>
                   <v-col cols="12">
                     <div class="d-flex justify-space-between align-center w-100 my-2">
-                      <BaseButton
-                        color="primary"
-                        density="compact"
-                        @click="overTime = overTime > 0 ? overTime - 0.5 : 0"
-                      >
+                      <BaseButton color="primary" density="compact"
+                        @click="overTime = overTime > 0 ? overTime - 0.5 : 0">
                         <v-icon>mdi-minus</v-icon>
                       </BaseButton>
 
@@ -277,16 +181,12 @@
                           overTime === 0
                             ? t('workHourReport.form.overTime')
                             : t('workHourReport.form.overTimeCount', {
-                                duration: overTime,
-                              })
+                              duration: overTime,
+                            })
                         }}
                       </div>
 
-                      <BaseButton
-                        color="primary"
-                        density="compact"
-                        @click="overTime = overTime + 0.5"
-                      >
+                      <BaseButton color="primary" density="compact" @click="overTime = overTime + 0.5">
                         <v-icon>mdi-plus</v-icon>
                       </BaseButton>
                     </div>
@@ -309,29 +209,16 @@
 
       <!-- Preview Carousel Section -->
       <v-col cols="12" lg="6">
-        <v-carousel
-          v-if="selectedIsoDates.length > 0"
-          v-model="carouselIndex"
-          hide-delimiters
-          :show-arrows="isDayMultiple ? 'hover' : false"
-          height="auto"
-        >
-          <v-carousel-item
-            v-for="(selectedIsoDate, index) in selectedIsoDates"
-            :key="selectedIsoDate"
-            :value="index"
-          >
+        <v-carousel v-if="selectedIsoDates.length > 0" v-model="carouselIndex" hide-delimiters
+          :show-arrows="isDayMultiple ? 'hover' : false" height="auto">
+          <v-carousel-item v-for="(selectedIsoDate, index) in selectedIsoDates" :key="selectedIsoDate" :value="index">
             <ParentCard>
               <h3 class="color-primary text-center mb-4">
                 {{ selectedIsoDate }}
               </h3>
 
-              <BaseTable
-                :headers="headers"
-                :items="dateTaskGroups?.[selectedIsoDate]"
-                :pagination="false"
-                class="w-100 dense-table"
-              >
+              <BaseTable :headers="headers" :items="dateTaskGroups?.[selectedIsoDate]" :pagination="false"
+                class="w-100 dense-table">
                 <template #[`item.period`]="{ item }">
                   <span class="period-box">
                     {{ format12Hour(item.period) }}
@@ -345,14 +232,9 @@
     </v-row>
 
     <!-- Dialog -->
-    <BaseConfirmDelete
-      v-model="warnDateSelection"
-      :text="t('workHourReport.warnDateRequiredText')"
-      :class="{ 'd-none': !warnDateSelection }"
-      :hide-cancel-btn="true"
-      @yes="warnDateSelection = false"
-      @no="warnDateSelection = false"
-    ></BaseConfirmDelete>
+    <BaseConfirmDelete v-model="warnDateSelection" :text="t('workHourReport.warnDateRequiredText')"
+      :class="{ 'd-none': !warnDateSelection }" :hide-cancel-btn="true" @yes="warnDateSelection = false"
+      @no="warnDateSelection = false"></BaseConfirmDelete>
   </div>
 </template>
 <script setup>
@@ -364,7 +246,6 @@ import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
 import { ref, computed, watch } from 'vue';
 import { toast } from '@/utils/toast';
-
 import {
   changeDateTimeZone,
   generatePeriods,
@@ -397,12 +278,7 @@ const reportingSchema = computed(() =>
 const formRef = ref(null);
 const timeSelectionMode = ref(0);
 const selectedDates = ref([]);
-const search = ref('');
 const warnDateSelection = ref(false);
-const deleteTarget = ref(undefined);
-const updateTarget = ref(undefined);
-const checkPrjCds = ref([]);
-let originalItems = [];
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
 const selectedEmployeeInfo = computed(() => {
@@ -450,6 +326,21 @@ const selectedIsoDates = computed(() => {
     return [changeDateTimeZone(selectedDates.value)];
   }
 });
+const isAllSelected = computed(() => {
+  return employees.value?.length > 0 && selectedEmployee.value?.length === employees.value?.length;
+});
+
+const isSomeSelected = computed(() => {
+  return selectedEmployee.value?.length > 0 && selectedEmployee.value?.length < employees.value?.length;
+});
+
+const toggleSelectAll = () => {
+  if (isAllSelected.value) {
+    selectedEmployee.value = [];
+  } else {
+    selectedEmployee.value = employees.value?.map((emp) => emp.id) || [];
+  }
+};
 const headers = computed(() => {
   return [
     {
@@ -484,10 +375,10 @@ const fetch = async () => {
 
   await reportingStore.fetchProject();
   projectItems.value = [...reportingStore.getProjects];
-  
+
   await reportingStore.fetchTask();
   taskItems.value = [...reportingStore.getTasks];
-  
+
   await getList();
   selectPreviousOfficeDays();
 };
@@ -551,11 +442,11 @@ const getList = async () => {
     return a.sort_key - b.sort_key;
   });
   employeeItems.value = [...tmpMembers];
-if (employeeItems.value?.length > 0) {
-  selectedEmployee.value = [staff?.id || employeeItems.value[0]?.id];
-} else {
-  selectedEmployee.value = [];
-}
+  if (employeeItems.value?.length > 0) {
+    selectedEmployee.value = [staff?.id || employeeItems.value[0]?.id];
+  } else {
+    selectedEmployee.value = [];
+  }
   await nextTick();
   selectedPeriod.value = [1, 2];
   formRef.value?.setValues({
@@ -564,6 +455,7 @@ if (employeeItems.value?.length > 0) {
   });
   groupDates();
 };
+
 const submit = async (values) => {
   if (selectedIsoDates.value?.length === 0) {
     warnDateSelection.value = true;
@@ -652,11 +544,11 @@ const groupDates = () => {
       return acc;
     },
     {}
-  ) || {}; 
+  ) || {};
 
   if (dateTaskGroups.value && typeof dateTaskGroups.value === 'object') {
     Object.keys(dateTaskGroups.value).forEach((date) => {
-      dateTaskGroups.value[date]?.sort((a, b) => 
+      dateTaskGroups.value[date]?.sort((a, b) =>
         (a.period || '').localeCompare(b.period || '')
       );
     });
@@ -681,9 +573,6 @@ const applySetting = async () => {
   }
 
   const settings = [];
-  console.log('Selected Dates:', selectedIsoDates.value);
-  console.log('Selected Employee Info:', selectedEmployeeInfo.value);
-  console.log('Employee Settings:', selectedEmployeeInfo.value?.[0]?.task_performance_setting);
 
   selectedEmployeeInfo.value?.forEach((info) => {
     const rawSettings = info?.task_performance_setting || [];
@@ -692,10 +581,10 @@ const applySetting = async () => {
     selectedIsoDates.value?.forEach((dateStr) => {
       // Safe local date parsing to prevent UTC day-shift
       const parts = dateStr.split('-');
-      const date = parts.length === 3 
-        ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])) 
+      const date = parts.length === 3
+        ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
         : new Date(dateStr);
-      
+
       const day = date.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
 
       const matchedSettings = rawSettings
@@ -754,12 +643,12 @@ const saveSetting = async () => {
     await getList();
   }
 };
-const discardSetting = async () => {
-  await reportingStore.discardSetting({
-    delete_array: String(role.value) === String(ADMIN) ? selectedEmployee.value : [staff.id],
-  });
-  await getList();
-};
+// const discardSetting = async () => {
+//   await reportingStore.discardSetting({
+//     delete_array: String(role.value) === String(ADMIN) ? selectedEmployee.value : [staff.id],
+//   });
+//   await getList();
+// };
 const viewSetting = async () => {
   router.push({ name: 'reporting-setting' });
 };
@@ -788,38 +677,42 @@ watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
 </script>
 
 <style scoped>
-::v-deep(
-  .v-date-picker-month__day:not(.v-date-picker-month__day--selected)
-    .v-btn.v-date-picker-month__day-btn:hover
-) {
+::v-deep(.v-date-picker-month__day:not(.v-date-picker-month__day--selected) .v-btn.v-date-picker-month__day-btn:hover) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
   color: rgb(var(--v-theme-primary)) !important;
 }
+
 ::v-deep(.v-date-picker-month__day--selected .v-btn) {
   background-color: rgb(var(--v-theme-primary)) !important;
   color: white !important;
 }
+
 .staff-name {
   color: rgb(var(--v-theme-primary));
 }
+
 ::v-deep(.v-table .v-table__wrapper table tbody tr td) {
   font-size: 0.75rem !important;
 }
+
 ::v-deep(.circle-btn .v-btn__content) {
   color: white !important;
 }
+
 ::v-deep(.v-window__left) {
   position: absolute !important;
   top: 15px !important;
   left: 15px !important;
   color: rgb(var(--v-theme-primary));
 }
+
 ::v-deep(.v-window__right) {
   position: absolute;
   top: 15px !important;
   right: 15px !important;
   color: rgb(var(--v-theme-primary));
 }
+
 /* .v-tooltip > ::v-deep(.v-overlay__content) {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
   color: rgb(var(--v-theme-primary)) !important;

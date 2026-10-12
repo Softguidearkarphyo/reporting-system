@@ -14,6 +14,7 @@
     <template v-slot:prepend>
       <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
     </template>
+
     <template #selection="{ item, index }">
       <v-chip
         v-if="index === 0 && items.length !== modelValue.length"
@@ -32,12 +33,15 @@
         ーー {{ t('common.all') }} ーー
       </v-chip>
     </template>
-    <slot />
+
+    <template v-for="(_, name) in $slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData || {}" />
+    </template>
   </v-autocomplete>
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue';
+import { useAttrs, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
@@ -69,8 +73,10 @@ const props = defineProps({
     default: undefined,
   },
 });
+
 const attrs = useAttrs();
 const { t } = useI18n();
+
 const chipResizeWidth = computed(() => {
   if (props.modelValue?.length > 1 && props.chipWidth) {
     const selectCount = props.modelValue.length;

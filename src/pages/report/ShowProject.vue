@@ -4,10 +4,8 @@
     <v-row>
       <v-col cols="12" sm="11" md="10" class="mx-auto">
         <Form ref="formRef" :validation-schema="projectSchema" @submit="submit">
-          <!-- Responsive Grid Layout for Form Controls -->
           <v-row class="align-center justify-center">
             
-            <!-- Start / Week Date Selection + Checkbox -->
             <v-col cols="12" md="5" class="d-flex align-center">
               <div class="flex-grow-1">
                 <Field name="start_date" v-slot="{ field, errorMessage }" v-if="checkboxFlg">
@@ -45,7 +43,6 @@
               </div>
             </v-col>
 
-            <!-- End Date Selection -->
             <v-col cols="12" md="4">
               <Field name="end_date" v-slot="{ field, errorMessage }">
                 <BaseDatePicker
@@ -59,7 +56,6 @@
               </Field>
             </v-col>
 
-            <!-- Action Buttons -->
             <v-col cols="12" md="3" class="d-flex justify-space-between justify-md-end ga-2">
               <BaseButton type="submit" class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;">
                 {{ t('common.search') }}
@@ -76,7 +72,6 @@
   </ParentCard>
 
   <div v-if="initialData">
-    <!-- Search & Export Header Section -->
     <v-row class="align-center mb-2">
       <v-col cols="12" sm="6" md="7" lg="8" class="d-flex justify-start">
         <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
@@ -104,7 +99,6 @@
       </v-col>
     </v-row>
 
-    <!-- Project Cards Grid -->
     <div v-for="week in items" :key="week.weekLabel" class="mb-3">
       <h2 class="ms-3">{{ week.weekLabel }}</h2>
       <v-card class="mb-2 pa-3 pa-md-5">
@@ -186,12 +180,18 @@ const submit = async (values) => {
 
   const weekRangeMap = getWeekRangeMap(values.end_date, values.week_date);
   const weekGroups = {};
+  
+  const totalGroups = {
+    weekLabel: 'total hours',
+    projects: {}
+  };
 
   projectWorkHour.data.forEach((entry) => {
     const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
     const hours = 0.5;
 
     const weekLabel = checkboxFlg.value == true ? getMonth(date) : weekRangeMap[date];
+    
     if (!weekGroups[weekLabel]) {
       weekGroups[weekLabel] = { weekLabel, projects: {} };
     }
@@ -213,8 +213,26 @@ const submit = async (values) => {
         totalHour: 0
       };
     }
-
     weekGroups[weekLabel].projects[project_id].staffMap[staff_id].totalHour += hours;
+
+    if (!totalGroups.projects[project_id]) {
+      totalGroups.projects[project_id] = {
+        project_id,
+        project_eng,
+        project_jp,
+        staffMap: {}
+      };
+    }
+
+    if (!totalGroups.projects[project_id].staffMap[staff_id]) {
+      totalGroups.projects[project_id].staffMap[staff_id] = {
+        staff_id,
+        eng_name,
+        jp_name,
+        totalHour: 0
+      };
+    }
+    totalGroups.projects[project_id].staffMap[staff_id].totalHour += hours;
   });
 
   const groupedResult = Object.values(weekGroups).map(week => ({
@@ -232,8 +250,27 @@ const submit = async (values) => {
     }))
   }));
 
-  items.value = groupedResult;
-  originalItems = [...groupedResult];
+  if (!checkboxFlg.value && Number(values.week_date) > 1 && groupedResult.length > 1) {
+    const combinedTotalResult = {
+      weekLabel: 'total hours',
+      projects: Object.values(totalGroups.projects).map(project => ({
+        project_id: project.project_id,
+        project_eng: project.project_eng,
+        project_jp: project.project_jp,
+        project_info: Object.values(project.staffMap).map(staff => ({
+          staff_id: staff.staff_id,
+          eng_name: staff.eng_name,
+          jp_name: staff.jp_name,
+          periods: hourMinConvert(staff.totalHour)
+        }))
+      }))
+    };
+    items.value = [...groupedResult, combinedTotalResult];
+  } else {
+    items.value = groupedResult;
+  }
+
+  originalItems = [...items.value];
 };
 
 function hourMinConvert(hour) {
@@ -254,7 +291,7 @@ function getWeekRangeMap(inputDate, weeks) {
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6); 
 
-        const rangeLabel = `${format(endDate)} ~ ${format(startDate)}`;
+        const rangeLabel = `${format(startDate)} ~ ${format(endDate)}`;
 
         let loopDate = new Date(endDate);
         while (loopDate >= startDate) {
