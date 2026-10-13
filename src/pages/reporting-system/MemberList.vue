@@ -15,7 +15,8 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :density="true">
+    <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
+    <BaseTable :headers="headers" :items="items" :loading="isLoading" :density="true">
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
@@ -84,6 +85,9 @@ const width = '10px';
 const fallbackColor = { id: undefined, name: 'others', color: '#B7410E50' };
 let originalItems = [];
 const isJapanese = computed(() => locale.value === 'ja');
+
+// Loading state
+const isLoading = ref(false);
 
 const currentStaffId = computed(() => {
   const staffData = authStore.staff || authStore.loginStaff;
@@ -160,20 +164,27 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  await memberStore.fetchMember({ leave: {}, over_time: {} });
-  const tmpMembers = memberStore.getMembers?.map((member) => ({
-    ...member,
-    position:
-      position.value?.find((pos) => pos.id === member.position) ||
-      fallbackColor,
-  }));
-  tmpMembers?.sort((a, b) => {
-    if (!a.sort_key) return 1;
-    if (!b.sort_key) return -1;
-    return a.sort_key - b.sort_key;
-  });
-  items.value = [...tmpMembers];
-  originalItems = [...items.value];
+  isLoading.value = true;
+  try {
+    await memberStore.fetchMember({ leave: {}, over_time: {} });
+    const tmpMembers = memberStore.getMembers?.map((member) => ({
+      ...member,
+      position:
+        position.value?.find((pos) => pos.id === member.position) ||
+        fallbackColor,
+    }));
+    tmpMembers?.sort((a, b) => {
+      if (!a.sort_key) return 1;
+      if (!b.sort_key) return -1;
+      return a.sort_key - b.sort_key;
+    });
+    items.value = [...tmpMembers];
+    originalItems = [...items.value];
+  } catch (error) {
+    console.error('Error fetching members:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -189,9 +200,16 @@ const showConfirmDelete = (id) => {
 };
 
 const deleteMember = async () => {
-  await memberStore.deleteMember({ id: deleteTarget.value });
-  deleteTarget.value = undefined;
-  fetch();
+  isLoading.value = true;
+  try {
+    await memberStore.deleteMember({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    await fetch();
+  } catch (error) {
+    console.error('Error deleting member:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const pushToEdit = (id) => {

@@ -22,6 +22,7 @@
               prependIcon="mdi-pound-box"
               :error-messages="errorMessage"
               class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
             ></BaseTextField>
           </Field>
         </v-col>
@@ -38,6 +39,7 @@
               prependIcon="mdi-format-letter-case"
               :error-messages="errorMessage"
               class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
             ></BaseTextField>
           </Field>
         </v-col>
@@ -55,6 +57,7 @@
               prependIcon="mdi-ideogram-cjk"
               :error-messages="errorMessage"
               class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
             ></BaseTextField>
           </Field>
         </v-col>
@@ -62,7 +65,12 @@
         <!-- Form Action Buttons -->
         <v-col cols="12" sm="6" md="4" lg="3">
           <div class="d-flex ga-2 align-center">
-            <BaseButton type="submit" class="w-100">
+            <BaseButton 
+              type="submit" 
+              class="w-100" 
+              :loading="isSubmitting"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
               {{ t('common.submit') }}
             </BaseButton>
             <BaseButton
@@ -70,6 +78,7 @@
               type="button"
               class="w-100"
               @click="resetToCreateMode"
+              :disabled="isLoading || isSubmitting || isDeleting"
             >
               {{ t('common.cancel') }}
             </BaseButton>
@@ -94,12 +103,14 @@
           prepend-icon="mdi-magnify"
           hide-details
           class="w-100"
+          :disabled="isLoading || isSubmitting || isDeleting"
         ></BaseTextField>
       </v-col>
     </v-row>
 
+    <!-- Table with :loading="isLoading || isDeleting" -->
     <ParentCard>
-      <BaseTable :headers="headers" :items="items">
+      <BaseTable :headers="headers" :items="items" :loading="isLoading || isDeleting">
         <template #[`item.position`]="{ item }">
           <div
             class="rounded-pill py-1 px-1 text-center mx-auto"
@@ -123,6 +134,7 @@
               color=""
               class="edit-btn"
               size="small"
+              :disabled="isLoading || isSubmitting || isDeleting"
             >
               <v-icon icon="tabler:IconEdit" size="15" />
             </BaseButton>
@@ -132,6 +144,7 @@
               color=""
               class="delete-btn"
               size="small"
+              :disabled="isLoading || isSubmitting || isDeleting"
             >
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
@@ -181,6 +194,11 @@ const checkPrjCds = ref([]);
 let originalItems = [];
 const items = ref([]);
 const hasInitialData = ref(false);
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
 
 const projectCreateSchema = computed(() =>
   getProjectCreateSchema(t, checkPrjCds.value)
@@ -233,6 +251,7 @@ const resetToCreateMode = () => {
 };
 
 const fetch = async () => {
+  isLoading.value = true;
   if (!authStore.staff) {
     try {
       await authStore.fetchStaff();
@@ -243,36 +262,49 @@ const fetch = async () => {
 
   resetToCreateMode();
 
-  await projectStore.fetchProject();
-  items.value = [...projectStore.getProjects];
-  originalItems = [...items.value];
-  checkPrjCds.value = originalItems?.map((prj) => prj.cd) || [];
-  hasInitialData.value = originalItems.length > 0;
+  try {
+    await projectStore.fetchProject();
+    items.value = [...projectStore.getProjects];
+    originalItems = [...items.value];
+    checkPrjCds.value = originalItems?.map((prj) => prj.cd) || [];
+    hasInitialData.value = originalItems.length > 0;
+  } catch (error) {
+    console.error('Fetch project error:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 fetch();
 
 const scrollToEdit = async (id) => {
-  await projectStore.fetchProject({ id });
-  const data = projectStore.getProjects?.[0];
-  if (data) {
-    isEditMode.value = true;
-    updateTarget.value = data.id;
-    
-    checkPrjCds.value = originalItems
-      ?.filter((prj) => prj.id !== id)
-      ?.map((prj) => prj.cd) || [];
+  isLoading.value = true;
+  try {
+    await projectStore.fetchProject({ id });
+    const data = projectStore.getProjects?.[0];
+    if (data) {
+      isEditMode.value = true;
+      updateTarget.value = data.id;
+      
+      checkPrjCds.value = originalItems
+        ?.filter((prj) => prj.id !== id)
+        ?.map((prj) => prj.cd) || [];
 
-    formRef.value?.setValues({
-      cd: data.cd,
-      eng_name: data.eng_name,
-      jp_name: data.jp_name,
+      formRef.value?.setValues({
+        cd: data.cd,
+        eng_name: data.eng_name,
+        jp_name: data.jp_name,
+      });
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
     });
+  } catch (error) {
+    console.error('Error fetching single project for edit:', error);
+  } finally {
+    isLoading.value = false;
   }
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
 };
 
 const showConfirmDelete = (id) => {
@@ -282,16 +314,20 @@ const showConfirmDelete = (id) => {
 
 const deleteProject = async () => {
   if (!deleteTarget.value) return;
+  isDeleting.value = true;
   try {
     await projectStore.deleteProject({ id: deleteTarget.value });
     deleteTarget.value = undefined;
     await fetch();
   } catch (error) {
     console.error('Delete Project Error:', error);
+  } finally {
+    isDeleting.value = false;
   }
 };
 
 const submit = async (values, { setErrors }) => {
+  isSubmitting.value = true;
   try {
     if (isEditMode.value) {
       await projectStore.updateProject({ id: updateTarget.value, ...values });
@@ -305,6 +341,8 @@ const submit = async (values, { setErrors }) => {
     } else {
       console.error('Submit Error:', error);
     }
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

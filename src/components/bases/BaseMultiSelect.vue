@@ -17,6 +17,11 @@
         <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
       </template>
 
+      <!-- 👇 Parent component ကနေ ပို့လိုက်သော slot များကို လက်ခံရန် -->
+      <template v-for="(_, name) in $slots" #[name]="slotData">
+        <slot :name="name" v-bind="slotData || {}" />
+      </template>
+
       <template #selection="{ item, index }">
         <v-chip
           v-if="index === 0 && items.length !== modelValue.length"
@@ -40,7 +45,7 @@
 </template>
 
 <script setup>
-import { useAttrs } from 'vue';
+import { computed, useAttrs } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -96,6 +101,7 @@ const chipResizeWidth = computed(() => {
   return undefined;
 });
 </script>
+
 <style scoped>
 ::v-deep(.v-field-label) {
   text-transform: uppercase !important;

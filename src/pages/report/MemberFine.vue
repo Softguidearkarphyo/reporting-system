@@ -29,7 +29,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="3" class="mt-2 mt-md-0">
           <BaseButton type="submit" block color="primary" class="submit-btn text-none font-weight-bold"
-            style="height: 40px;">
+            style="height: 40px;" :loading="isSubmitting">
             {{ t('common.submit') }}
           </BaseButton>
         </v-col>
@@ -65,7 +65,7 @@
         </v-menu>
       </div>
 
-      <BaseTable :headers="headers" :items="finesWithStatusAndTotal">
+      <BaseTable :headers="headers" :items="finesWithStatusAndTotal" :loading="isLoading">
         <template #[`item.time`]="{ item }">
           <span class="time-box d-inline-flex justify-center align-center">
             <v-icon size="16" class="mr-1">
@@ -132,6 +132,7 @@
         <template #[`item.action`]="{ item }">
           <span class="d-flex justify-start align-center p-0">
             <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+              :loading="isSubmitting"
               @click.stop="showConfirmDelete(item.id)">
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
@@ -218,7 +219,8 @@ const lang = ref(locale.value);
 const dialog = ref(false);
 
 const formRef = ref(null);
-
+const isLoading = ref(false);
+const isSubmitting = ref(false);
 
 const memberFineValidation = computed(() =>
   getMemberFineValidation(t)
@@ -324,6 +326,7 @@ const fetchData = async () => {
 
 
 const fetchMemberFines = async () => {
+  isLoading.value = true;
   try {
     const AllFine =
       await memberFineStore.fetchMemberFine();
@@ -367,11 +370,14 @@ const fetchMemberFines = async () => {
       'Error fetching members fines:',
       error
     );
+  } finally {
+    isLoading.value = false;
   }
 };
 
 
 const submit = async (values) => {
+  isSubmitting.value = true;
   try {
     let formattedTime = values.time;
     if (formattedTime && formattedTime.split(':').length > 3) {
@@ -388,6 +394,8 @@ const submit = async (values) => {
     await fetchMemberFines();
   } catch (error) {
     console.error('Error creating member fine:', error);
+  }finally {
+    isSubmitting.value = false;
   }
 };
 
@@ -553,8 +561,8 @@ const changeStatus = async (item) => {
   try {
     const newStatus =
       item.switchValue
-        ? 0
-        : 1;
+        ? 1
+        : 0;
 
     await memberFineStore.updateMemberFineStatus({
       id: item.id,

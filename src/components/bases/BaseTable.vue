@@ -1,10 +1,21 @@
 <template>
   <div>
     <!-- Data Table -->
-    <v-data-table v-model:page="page" :headers="headers" :items="items"
-      :items-per-page="pagination ? itemsPerPage : items?.length" fixed-header v-bind="$attrs" :show-select="checkbox"
-      :no-data-text="noDataMessageText" class="custom-header-bg" :density="!density ? 'compact' : 'default'"
-      hide-default-footer>
+    <v-data-table 
+      v-model:page="page" 
+      :headers="headers" 
+      :items="items"
+      :loading="loading"
+      :loading-text="loadingText"
+      :items-per-page="pagination ? itemsPerPage : items?.length" 
+      fixed-header 
+      v-bind="$attrs" 
+      :show-select="checkbox"
+      :no-data-text="noDataMessageText" 
+      class="custom-header-bg" 
+      :density="!density ? 'compact' : 'default'"
+      hide-default-footer
+    >
       <template v-for="header in headers" v-slot:[`item.${header.key}`]="{ item }">
         <slot :name="`item.${header.key}`" :item="item">
           {{ item[header.key] }}
@@ -16,9 +27,18 @@
     <div v-if="showPagination" class="mt-4">
       <v-row class="d-flex justify-space-between align-center">
         <v-col>
-          <BaseSelect :model-value="itemsPerPage" :items="itemsPerPageSelectItems" :attr-name="{ title: '', value: 0 }"
-            variant="filled" density="comfortable" dense class="mb-n3 ml-n3" width="200px" label=""
-            @update:model-value="itemsPerPage = parseInt($event, 10)" />
+          <BaseSelect 
+            :model-value="itemsPerPage" 
+            :items="itemsPerPageSelectItems" 
+            :attr-name="{ title: '', value: 0 }"
+            variant="filled" 
+            density="comfortable" 
+            dense 
+            class="mb-n3 ml-n3" 
+            width="200px" 
+            label=""
+            @update:model-value="itemsPerPage = parseInt($event, 10)" 
+          />
         </v-col>
         <v-col>
           <div class="text-subtitle-2">
@@ -33,8 +53,13 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-end">
-            <v-pagination v-model="page" :length="pageCount" :total-visible="6" next-icon="mdi-menu-right"
-              prev-icon="mdi-menu-left" />
+            <v-pagination 
+              v-model="page" 
+              :length="pageCount" 
+              :total-visible="6" 
+              next-icon="mdi-menu-right"
+              prev-icon="mdi-menu-left" 
+            />
           </div>
         </v-col>
       </v-row>
@@ -72,7 +97,15 @@ const props = defineProps({
   },
   density: {
     type: [String, Boolean],
-    default: 'compact' // or 'default'
+    default: 'compact'
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  loadingText: {
+    type: String,
+    default: () => 'Loading...'
   }
 });
 
@@ -84,6 +117,7 @@ const itemsPerPageSelectItems = ref([
   { title: '15', value: 15 },
   { title: '20', value: 20 },
 ]);
+
 const showPagination = computed(
   () => props.pagination && props.items?.length > 10
 );
@@ -120,7 +154,6 @@ const noDataMessageText = computed(() => {
 /* This targets all table data cells inside v-data-table */
 ::v-deep(.v-data-table td) {
   color: #8c8ea1;
-  /* change to your desired color */
 }
 
 ::v-deep(.v-data-table td:first-child) {

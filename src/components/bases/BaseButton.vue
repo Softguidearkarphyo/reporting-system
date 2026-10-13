@@ -3,19 +3,22 @@
     :class="addClass"
     :color="color"
     :variant="variant"
-    :disabled="disabled"
+    :disabled="disabled || loading"
+    :loading="loading"
     v-bind="attrs"
     :rounded="round"
     :width="width"
   >
-    <template v-if="icon" #prepend>
+    <template v-if="icon && !loading" #prepend>
       <v-icon dark left>{{ icon }}</v-icon>
     </template>
     <slot />
   </v-btn>
 </template>
+
 <script setup>
 import { useAttrs } from 'vue';
+
 defineProps({
   color: {
     type: String,
@@ -37,6 +40,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
   round: {
     type: String,
     default: 'xs',
@@ -46,8 +53,10 @@ defineProps({
     default: undefined,
   },
 });
+
 const attrs = useAttrs();
 </script>
+
 <style scoped>
 ::v-deep(.v-btn__content) {
   color: white !important;

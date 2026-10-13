@@ -24,18 +24,6 @@
               </v-btn>
             </div>
           </div>
-
-          <!-- <v-alert
-            v-if="statusMessage.text"
-            :type="statusMessage.type"
-            variant="tonal"
-            density="compact"
-            closable
-            class="mt-3"
-            @click:close="statusMessage.text = ''"
-          >
-            {{ statusMessage.text }}
-          </v-alert> -->
         </v-card>
       </v-col>
     </v-row>
@@ -63,7 +51,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -91,7 +79,7 @@
             </template>
           </BaseTable>
 
-          <v-card-text v-else class="text-center pa-8 text-grey">
+          <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
             <div class="text-body-1">No leave records found</div>
           </v-card-text>
@@ -104,7 +92,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -132,8 +120,7 @@
             </template>
           </BaseTable>
 
-          <!-- Empty State -->
-          <v-card-text v-else class="text-center pa-8 text-grey">
+          <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
             <div class="text-body-1">No fine records found</div>
           </v-card-text>
@@ -144,7 +131,6 @@
 
   <!-- Admin Dashboard -->
   <v-main v-else class="pa-6 pt-4">
-    <!-- Charts Row -->
     <v-row class="mb-6">
       <v-col cols="12" md="4">
         <v-card outlined class="h-100">
@@ -183,16 +169,14 @@
       </v-col>
     </v-row>
 
-    <!-- Records Row -->
     <v-row>
-      <!-- Leave Record (2/3 Width) -->
       <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -220,22 +204,20 @@
             </template>
           </BaseTable>
 
-          <!-- Empty State -->
-          <v-card-text v-else class="text-center pa-8 text-grey">
+          <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
             <div class="text-body-1">No leave records found</div>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <!-- Fine Record (1/3 Width) -->
       <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="1">
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('common.fineRecord') }}</v-card-title>
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -257,8 +239,7 @@
             </template>
           </BaseTable>
 
-          <!-- Empty State -->
-          <v-card-text v-else class="text-center pa-8 text-grey">
+          <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
             <div class="text-body-1">No fine records found</div>
           </v-card-text>
@@ -309,14 +290,11 @@ const memberFine = ref([]);
 const menPower = ref({});
 
 const isCheckingIn = ref(false);
+const isLoading = ref(false);
 const currentTime = ref('');
 let timer = null;
-// const statusMessage = reactive({ type: '', text: '' });
 
 const chartInstances = {};
-
-
-
 
 const updateClock = () => {
   const now = new Date();
@@ -374,7 +352,6 @@ const getCoordinates = () => {
 };
 
 const handleCheckIn = async () => {
-  // statusMessage.text = '';
   isCheckingIn.value = true;
 
   try {
@@ -382,10 +359,6 @@ const handleCheckIn = async () => {
     const isLaptop = await detectLaptopDevice();
     const coords = await getCoordinates();
 
-
-    // console.log('Device Data:', deviceData);
-    // console.log('Is Laptop:', isLaptop);
-    // console.log('Coordinates:', coords);
     const res = await authStore.checkIn({
       latitude: coords.latitude,
       longitude: coords.longitude,
@@ -394,12 +367,9 @@ const handleCheckIn = async () => {
       device_uuid: deviceData?.deviceUUID || '',
     });
 
-    console.log('Check-In Response:', res);
     if (res.status === 'success') {
       router.push({ name: 'attendance' });
     }
-    // statusMessage.type = 'success';
-    // statusMessage.text = res.message;
   } catch (err) {
     console.error('Check-In Error:', err);
   } finally {
@@ -448,112 +418,119 @@ const fineHeader = computed(() => {
 });
 
 const fetchData = async () => {
-  if (!staff.value) {
-    await authStore.fetchStaff();
-  }
-
-  const payload = { leave: {}, over_time: {}, fine: {} };
-
-  if (!isAdmin.value) {
-    payload.id = staffId.value;
-  } else {
-    payload.skill_sheet = {};
-  }
-
-  await leaveStore.fetchLeaveRecord();
-  const allLeaveRecords = leaveStore.getLeaveRecords || [];
-
-  const groupedLeaveMap = allLeaveRecords.reduce((acc, record) => {
-    const staffId = record.staff_id || record.id;
-    const name = record.eng_name || '-';
-
-    if (!acc[staffId]) {
-      acc[staffId] = {
-        staff_id: staffId,
-        eng_name: name,
-        total_paid_days: 0,
-        total_unpaid_days: 0,
-        total_days: 0,
-        total_records: 0,
-      };
+  isLoading.value = true;
+  try {
+    if (!staff.value) {
+      await authStore.fetchStaff();
     }
 
-    (record.leaves || []).forEach((item) => {
-      const dayCount = Number(item.day_count || 0);
-      const isPaid = Number(item.leave_type) === 1;
+    const payload = { leave: {}, over_time: {}, fine: {} };
 
-      if (isPaid) {
-        acc[staffId].total_paid_days += dayCount;
-      } else {
-        acc[staffId].total_unpaid_days += dayCount;
+    if (!isAdmin.value) {
+      payload.id = staffId.value;
+    } else {
+      payload.skill_sheet = {};
+    }
+
+    await leaveStore.fetchLeaveRecord();
+    const allLeaveRecords = leaveStore.getLeaveRecords || [];
+
+    const groupedLeaveMap = allLeaveRecords.reduce((acc, record) => {
+      const staffId = record.staff_id || record.id;
+      const name = record.eng_name || '-';
+
+      if (!acc[staffId]) {
+        acc[staffId] = {
+          staff_id: staffId,
+          eng_name: name,
+          total_paid_days: 0,
+          total_unpaid_days: 0,
+          total_days: 0,
+          total_records: 0,
+        };
       }
 
-      acc[staffId].total_days += dayCount;
-      acc[staffId].total_records += 1;
+      (record.leaves || []).forEach((item) => {
+        const dayCount = Number(item.day_count || 0);
+        const isPaid = Number(item.leave_type) === 1;
+
+        if (isPaid) {
+          acc[staffId].total_paid_days += dayCount;
+        } else {
+          acc[staffId].total_unpaid_days += dayCount;
+        }
+
+        acc[staffId].total_days += dayCount;
+        acc[staffId].total_records += 1;
+      });
+
+      return acc;
+    }, {});
+
+    memberLeave.value = Object.values(groupedLeaveMap);
+
+    const fineRes = await fineStore.fetchMemberFine();
+    const fineList = Array.isArray(fineRes?.data?.data)
+      ? fineRes.data.data
+      : Array.isArray(fineRes?.data)
+        ? fineRes.data
+        : [];
+
+    const groupedFineMap = fineList.reduce((acc, item) => {
+      if (Number(item.status) === 1) return acc;
+
+      const sId = item.staff_id || item.staff?.id;
+      const name = item.staff?.eng_name || item.eng_name || '-';
+      const amount = Number(item.amount || item.fine || 0);
+
+      if (!acc[sId]) {
+        acc[sId] = {
+          staff_id: sId,
+          eng_name: name,
+          total_fines_amount: 0,
+          total_fine_records: 0,
+        };
+      }
+
+      acc[sId].total_fines_amount += amount;
+      acc[sId].total_fine_records += 1;
+
+      return acc;
+    }, {});
+
+    memberFine.value = Object.values(groupedFineMap);
+
+    await memberStore.fetchMember(payload);
+
+    const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
+      id: item.skill_sheet?.japanese_level?.id,
+      name: item.skill_sheet?.japanese_level?.name,
+    }));
+
+    japaneseLevel.value = tmpArr1.reduce((acc, item) => {
+      if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
+      return acc;
+    }, {});
+
+    const tmpArr2 = (memberStore.getMembers || []).map((item) => ({
+      id: item.skill_sheet?.major_tech_stack?.id,
+      name: item.skill_sheet?.major_tech_stack?.name,
+    }));
+
+    majorSkill.value = tmpArr2.reduce((acc, item) => {
+      if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
+      return acc;
+    }, {});
+
+    await menPowerStore.fetchMenPower();
+    (menPowerStore.getMenPower || []).forEach((mp) => {
+      menPower.value[mp.eng_name] = mp.hours;
     });
-
-    return acc;
-  }, {});
-
-  memberLeave.value = Object.values(groupedLeaveMap);
-
-  const fineRes = await fineStore.fetchMemberFine();
-  const fineList = Array.isArray(fineRes?.data?.data)
-    ? fineRes.data.data
-    : Array.isArray(fineRes?.data)
-      ? fineRes.data
-      : [];
-
-  const groupedFineMap = fineList.reduce((acc, item) => {
-    if (Number(item.status) === 1) return acc;
-
-    const sId = item.staff_id || item.staff?.id;
-    const name = item.staff?.eng_name || item.eng_name || '-';
-    const amount = Number(item.amount || item.fine || 0);
-
-    if (!acc[sId]) {
-      acc[sId] = {
-        staff_id: sId,
-        eng_name: name,
-        total_fines_amount: 0,
-        total_fine_records: 0,
-      };
-    }
-
-    acc[sId].total_fines_amount += amount;
-    acc[sId].total_fine_records += 1;
-
-    return acc;
-  }, {});
-
-  memberFine.value = Object.values(groupedFineMap);
-
-  await memberStore.fetchMember(payload);
-
-  const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
-    id: item.skill_sheet?.japanese_level?.id,
-    name: item.skill_sheet?.japanese_level?.name,
-  }));
-
-  japaneseLevel.value = tmpArr1.reduce((acc, item) => {
-    if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
-    return acc;
-  }, {});
-
-  const tmpArr2 = (memberStore.getMembers || []).map((item) => ({
-    id: item.skill_sheet?.major_tech_stack?.id,
-    name: item.skill_sheet?.major_tech_stack?.name,
-  }));
-
-  majorSkill.value = tmpArr2.reduce((acc, item) => {
-    if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
-    return acc;
-  }, {});
-
-  await menPowerStore.fetchMenPower();
-  (menPowerStore.getMenPower || []).forEach((mp) => {
-    menPower.value[mp.eng_name] = mp.hours;
-  });
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const createOrUpdateChart = (canvasId, config) => {

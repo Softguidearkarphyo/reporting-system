@@ -16,6 +16,7 @@
                   :error-messages="errorMessage"
                   prependIcon="mdi-calendar-month"
                   class="w-100"
+                  :disabled="isSubmitting || isLoading"
                 ></BaseDatePicker>
               </Field>
             </v-col>
@@ -30,6 +31,7 @@
                   :error-messages="errorMessage"
                   prependIcon="mdi-calendar-month"
                   class="w-100"
+                  :disabled="isSubmitting || isLoading"
                 ></BaseDatePicker>
               </Field>
             </v-col>
@@ -37,18 +39,36 @@
             <!-- Action Buttons Group -->
             <v-col cols="12" md="4">
               <v-row density="compact">
+                <!-- Search Button -->
                 <v-col cols="12" sm="4" md="4">
-                  <BaseButton type="submit" class="w-100">
+                  <BaseButton 
+                    type="submit" 
+                    class="w-100" 
+                    :loading="isSubmitting"
+                    :disabled="isSubmitting || isLoading"
+                  >
                     {{ t('common.search') }}
                   </BaseButton>
                 </v-col>
+
+                <!-- Clear Button -->
                 <v-col cols="12" sm="4" md="4">
-                  <BaseButton class="w-100" @click="clearFormTable()">
+                  <BaseButton 
+                    class="w-100" 
+                    @click="clearFormTable()"
+                    :disabled="isSubmitting || isLoading"
+                  >
                     {{ t('common.clear') }}
                   </BaseButton>
                 </v-col>
+
+                <!-- Excel Export Button -->
                 <v-col cols="12" sm="4" md="4">
-                  <BaseButton class="w-100" @click="excelExport()">
+                  <BaseButton 
+                    class="w-100" 
+                    @click="excelExport()"
+                    :disabled="!items?.length || isSubmitting || isLoading"
+                  >
                     {{ t('common.excel') }}
                   </BaseButton>
                 </v-col>
@@ -74,13 +94,14 @@
           prepend-icon="mdi-magnify"
           hide-details
           class="w-100"
+          :disabled="isSubmitting || isLoading"
         ></BaseTextField>
       </div>
     </div>
 
-    <!-- Table Wrapper -->
+    <!-- Table Wrapper with :loading="isLoading" -->
     <ParentCard>
-      <BaseTable :headers="headers" :items="items">
+      <BaseTable :headers="headers" :items="items" :loading="isLoading">
         <template #[`item.periods`]="{ item }">
           <span>
             {{ item.periods[0] }} {{ t('workingTime.hour') }}
@@ -109,6 +130,10 @@ const search = ref('');
 const initialData = ref(false);
 const items = ref([]);
 let originalItems = [];
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
 
 const searchWithDateSchema = computed(() => getMenPowerSchema(t));
 
@@ -139,6 +164,8 @@ const headers = computed(() => {
 });
 
 const filterByDate = async (values) => {
+  isSubmitting.value = true;
+  isLoading.value = true;
   try {
     const memberPayload = {
       start_date: values.start_date,
@@ -250,6 +277,9 @@ const filterByDate = async (values) => {
     originalItems = [...taskDetails];
   } catch (error) {
     console.error('Error fetching member task performances:', error);
+  } finally {
+    isSubmitting.value = false;
+    isLoading.value = false;
   }
 };
 

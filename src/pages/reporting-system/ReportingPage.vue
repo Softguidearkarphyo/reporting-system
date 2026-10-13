@@ -196,7 +196,7 @@
                 <!-- Submit Button -->
                 <v-row>
                   <v-col cols="12">
-                    <BaseButton type="submit" class="w-100 mt-2">
+                    <BaseButton type="submit" class="w-100 mt-2" :loading="isSubmitting">
                       {{ t('common.submit') }}
                     </BaseButton>
                   </v-col>
@@ -207,17 +207,22 @@
         </ParentCard>
       </v-col>
 
-      <!-- Preview Carousel Section -->
+      <!-- Preview Section: ဒေတာမရှိလည်း Table အမြဲပေါ်ပြီး Loading အလုပ်လုပ်မည် -->
       <v-col cols="12" lg="6">
-        <v-carousel v-if="selectedIsoDates.length > 0" v-model="carouselIndex" hide-delimiters
-          :show-arrows="isDayMultiple ? 'hover' : false" height="auto">
-          <v-carousel-item v-for="(selectedIsoDate, index) in selectedIsoDates" :key="selectedIsoDate" :value="index">
+        <ParentCard v-if="displayIsoDates.length === 0">
+          <BaseTable :headers="headers" :items="[]" :loading="isLoading" :pagination="false"
+            class="w-100 dense-table" />
+        </ParentCard>
+
+        <v-carousel v-else v-model="carouselIndex" hide-delimiters
+          :show-arrows="isDayMultiple && displayIsoDates.length > 1 ? 'hover' : false" height="auto">
+          <v-carousel-item v-for="(selectedIsoDate, index) in displayIsoDates" :key="selectedIsoDate" :value="index">
             <ParentCard>
               <h3 class="color-primary text-center mb-4">
                 {{ selectedIsoDate }}
               </h3>
 
-              <BaseTable :headers="headers" :items="dateTaskGroups?.[selectedIsoDate]" :pagination="false"
+              <BaseTable :headers="headers" :items="dateTaskGroups?.[selectedIsoDate] || []" :loading="isLoading" :pagination="false"
                 class="w-100 dense-table">
                 <template #[`item.period`]="{ item }">
                   <span class="period-box">
@@ -237,6 +242,7 @@
       @no="warnDateSelection = false"></BaseConfirmDelete>
   </div>
 </template>
+
 <script setup>
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
@@ -244,7 +250,7 @@ import { useReportingStore } from '@/stores/reporting/reporting.js';
 import { getReportingSchema } from '@/plugins/validations/reporting.js';
 import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { toast } from '@/utils/toast';
 import {
   changeDateTimeZone,
@@ -259,6 +265,11 @@ const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const reportingStore = useReportingStore();
 const router = useRouter();
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
 const role = computed(() => {
   const staffRole = authStore.staffRole;
   if (staffRole !== undefined && staffRole !== null && staffRole !== '') {
@@ -317,7 +328,11 @@ const tasks = computed(() => {
     name: `${item.cd} : ${isJapanese.value ? item.jp_name : item.eng_name}`,
   }));
 });
+
 const selectedIsoDates = computed(() => {
+  if (!selectedDates.value || (Array.isArray(selectedDates.value) && selectedDates.value.length === 0)) {
+    return [];
+  }
   if (isDayMultiple.value) {
     return selectedDates.value
       ?.map((date) => changeDateTimeZone(date))
@@ -326,6 +341,9 @@ const selectedIsoDates = computed(() => {
     return [changeDateTimeZone(selectedDates.value)];
   }
 });
+
+const displayIsoDates = computed(() => selectedIsoDates.value);
+
 const isAllSelected = computed(() => {
   return employees.value?.length > 0 && selectedEmployee.value?.length === employees.value?.length;
 });
@@ -367,20 +385,27 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  formRef.value?.resetForm();
+  isLoading.value = true;
+  try {
+    formRef.value?.resetForm();
 
-  if (!authStore.staff) {
-    await authStore.fetchStaff();
+    if (!authStore.staff) {
+      await authStore.fetchStaff();
+    }
+
+    await reportingStore.fetchProject();
+    projectItems.value = [...reportingStore.getProjects];
+
+    await reportingStore.fetchTask();
+    taskItems.value = [...reportingStore.getTasks];
+
+    await getList();
+    selectPreviousOfficeDays();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  } finally {
+    isLoading.value = false;
   }
-
-  await reportingStore.fetchProject();
-  projectItems.value = [...reportingStore.getProjects];
-
-  await reportingStore.fetchTask();
-  taskItems.value = [...reportingStore.getTasks];
-
-  await getList();
-  selectPreviousOfficeDays();
 };
 
 fetch();
@@ -459,7 +484,12 @@ const getList = async () => {
 const submit = async (values) => {
   if (selectedIsoDates.value?.length === 0) {
     warnDateSelection.value = true;
-  } else {
+    return;
+  }
+
+  isSubmitting.value = true;
+  isLoading.value = true;
+  try {
     let data = [];
     let totalPeriods = [];
     const totalDates = selectedIsoDates.value;
@@ -519,9 +549,15 @@ const submit = async (values) => {
       });
       await reportingStore.deleteTaskPerformance({ delete_array: data });
     }
+    await getList();
+  } catch (error) {
+    console.error('Error submitting report:', error);
+  } finally {
+    isSubmitting.value = false;
+    isLoading.value = false;
   }
-  await getList();
 };
+
 const groupDates = () => {
   if (String(role.value) !== String(ADMIN)) {
     currentEmployee.value = employeeItems.value?.[0];
@@ -566,6 +602,7 @@ const groupDates = () => {
     }
   }
 };
+
 const applySetting = async () => {
   if (!selectedIsoDates.value || selectedIsoDates.value.length === 0) {
     warnDateSelection.value = true;
@@ -579,13 +616,12 @@ const applySetting = async () => {
     if (rawSettings.length === 0) return;
 
     selectedIsoDates.value?.forEach((dateStr) => {
-      // Safe local date parsing to prevent UTC day-shift
       const parts = dateStr.split('-');
       const date = parts.length === 3
         ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
         : new Date(dateStr);
 
-      const day = date.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
+      const day = date.getDay();
 
       const matchedSettings = rawSettings
         .filter((setting) => Number(setting.day) === day)
@@ -608,50 +644,21 @@ const applySetting = async () => {
     return;
   }
 
-  await reportingStore.createTaskPerformance({ create_array: settings });
-  await getList();
-};
-const saveSetting = async () => {
-  if (dateTaskGroups.value) {
-    const latestByWeekday = {};
-    Object.entries(dateTaskGroups.value)?.forEach(([dateStr, data]) => {
-      const date = new Date(dateStr);
-      const weekday = date.getDay();
-      if (
-        !latestByWeekday?.[weekday] ||
-        new Date(dateStr) > new Date(latestByWeekday?.[weekday]?.date)
-      ) {
-        latestByWeekday[weekday] = {
-          date: dateStr,
-          data: data,
-        };
-      }
-    });
-    const settingItems = [];
-    Object.entries(latestByWeekday)?.forEach(([weekday, obj]) => {
-      const items = obj.data?.map((item) => ({
-        day: weekday,
-        staff_id: item.staff_id,
-        project_id: item.project_id,
-        task_id: item.task_id,
-        period: item.period,
-      }));
-      settingItems.push(...items);
-    });
-    settingItems.sort((a, b) => a.day - b.day);
-    await reportingStore.saveSetting({ create_array: settingItems });
+  isLoading.value = true;
+  try {
+    await reportingStore.createTaskPerformance({ create_array: settings });
     await getList();
+  } catch (error) {
+    console.error('Error applying setting:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
-// const discardSetting = async () => {
-//   await reportingStore.discardSetting({
-//     delete_array: String(role.value) === String(ADMIN) ? selectedEmployee.value : [staff.id],
-//   });
-//   await getList();
-// };
+
 const viewSetting = async () => {
   router.push({ name: 'reporting-setting' });
 };
+
 watch(
   () => formRef.value?.values?.project,
   (val) => {
@@ -664,10 +671,10 @@ watch(
   () => isDayMultiple.value,
   (val) => {
     if (!val) {
-      const lastDay = selectedDates.value.pop();
+      const lastDay = Array.isArray(selectedDates.value) ? selectedDates.value[selectedDates.value.length - 1] : selectedDates.value;
       selectedDates.value = lastDay;
     } else {
-      selectedDates.value = [selectedDates.value];
+      selectedDates.value = selectedDates.value ? [selectedDates.value] : [];
     }
   }
 );
@@ -712,9 +719,4 @@ watch([() => selectedIsoDates.value, () => selectedEmployee.value], () => {
   right: 15px !important;
   color: rgb(var(--v-theme-primary));
 }
-
-/* .v-tooltip > ::v-deep(.v-overlay__content) {
-  background-color: rgba(var(--v-theme-primary), 0.2) !important;
-  color: rgb(var(--v-theme-primary)) !important;
-} */
 </style>

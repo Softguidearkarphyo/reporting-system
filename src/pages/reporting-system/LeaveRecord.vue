@@ -13,6 +13,7 @@
             prepend-icon="mdi-magnify"
             density="compact"
             hide-details
+            :disabled="loading || isActionLoading"
           />
         </v-col>
       </v-row>
@@ -22,7 +23,7 @@
           v-if="filteredAdminLeaveList && filteredAdminLeaveList.length"
           :headers="adminHeaders"
           :items="filteredAdminLeaveList"
-          :loading="loading"
+          :loading="loading || isActionLoading"
         >
           <template #[`item.name`]="{ item }">
             <div>
@@ -66,7 +67,7 @@
 
           <template #[`item.action`]="{ item }">
             <div class="d-flex justify-end">
-              <v-btn icon size="small" variant="text" color="primary" @click.stop="pushToView(item.rec_id)">
+              <v-btn icon size="small" variant="text" color="primary" :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id)">
                 <v-icon icon="tabler:IconEye" size="18" />
               </v-btn>
             </div>
@@ -143,51 +144,51 @@
       </v-row>
 
       <v-row dense class="mb-3">
-      <v-col cols="12" md="9">
-        <v-row dense>
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
-                {{ t('common.carryLeaves') || 'CARRY LEAVES' }}
-              </div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-indigo me-2">
-                  {{ leaveSummary.carry_leaves ?? 0 }}
-                </span>
-                <span class="text-body-2 text-gray-500">Days</span>
-              </div>
-            </v-card>
-          </v-col>
+        <v-col cols="12" md="9">
+          <v-row dense>
+            <v-col cols="12" sm="4">
+              <v-card class="pa-4 rounded-lg h-100" elevation="1">
+                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+                  {{ t('common.carryLeaves') || 'CARRY LEAVES' }}
+                </div>
+                <div class="d-flex align-baseline">
+                  <span class="text-h4 font-weight-bold text-indigo me-2">
+                    {{ leaveSummary.carry_leaves ?? 0 }}
+                  </span>
+                  <span class="text-body-2 text-gray-500">Days</span>
+                </div>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">ACCUMULATED HOURS</div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-teal me-2">
-                  {{ accumulatedHoursFormatted }}
-                </span>
-                <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
-              </div>
-            </v-card>
-          </v-col>
+            <v-col cols="12" sm="4">
+              <v-card class="pa-4 rounded-lg h-100" elevation="1">
+                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">ACCUMULATED HOURS</div>
+                <div class="d-flex align-baseline">
+                  <span class="text-h4 font-weight-bold text-teal me-2">
+                    {{ accumulatedHoursFormatted }}
+                  </span>
+                  <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
+                </div>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-purple me-2">
-                  {{ totalOvertimeFormatted }}
-                </span>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+            <v-col cols="12" sm="4">
+              <v-card class="pa-4 rounded-lg h-100" elevation="1">
+                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
+                <div class="d-flex align-baseline">
+                  <span class="text-h4 font-weight-bold text-purple me-2">
+                    {{ totalOvertimeFormatted }}
+                  </span>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
 
-      <v-row>
+      <v-row class="align-start">
         <v-col cols="12" md="8">
-          <ParentCard class="elevation-1 rounded-lg h-100">
+          <ParentCard class="elevation-1 rounded-lg">
             <v-row class="align-center mb-3">
               <v-col cols="6" md="7">
                 <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
@@ -204,6 +205,7 @@
                   variant="outlined"
                   hide-details
                   class="rounded-lg"
+                  :disabled="loading || isActionLoading"
                 />
               </v-col>
             </v-row>
@@ -212,7 +214,7 @@
               v-if="filteredUserLeaveList && filteredUserLeaveList.length"
               :headers="userHeaders"
               :items="filteredUserLeaveList"
-              :loading="loading"
+              :loading="loading || isActionLoading"
             >
               <template #[`item.leave_date`]="{ item }">
                 <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
@@ -265,7 +267,6 @@
               </template>
             </BaseTable>
 
-            <!-- User Leave Records Empty State -->
             <div v-else class="text-center pa-8 text-gray-500">
               <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
               <div class="text-body-1">No leave records found</div>
@@ -275,7 +276,7 @@
 
         <!-- 1/3 Width Space: OVERTIME RECORDS -->
         <v-col cols="12" md="4">
-          <ParentCard class="elevation-1 rounded-lg h-100">
+          <ParentCard class="elevation-1 rounded-lg">
             <v-row class="align-center mb-3">
               <v-col cols="12">
                 <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
@@ -288,6 +289,7 @@
               v-if="overtimes && overtimes.length"
               :headers="multiHeaders3"
               :items="overtimes"
+              :loading="loading || isActionLoading"
               items-per-page="10"
             >
               <template #[`item.ot_time`]="{ item }">
@@ -325,6 +327,7 @@
                       density="compact"
                       :hide-details="true"
                       :model-value="item.isComplete"
+                      :disabled="loading || isActionLoading"
                       @update:model-value="onSwitchChange(item)"
                       style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
                     />
@@ -333,7 +336,6 @@
               </template>
             </BaseTable>
 
-            <!-- Overtime Records Empty State -->
             <div v-else class="text-center pa-8 text-gray-500">
               <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
               <div class="text-body-1">No overtime records found</div>
@@ -379,20 +381,21 @@ const router = useRouter();
 
 const search = ref('');
 const loading = ref(false);
+const isActionLoading = ref(false);
 const memberRecord = ref(null);
 const overTimeRecords = ref([]);
 const confirmChange = ref(undefined);
 const switchTarget = ref(null);
 
 const otHoursMap = {
-  1: 8,     // Full day
-  2: 4,     // Half day
+  1: 8,    // Full day
+  2: 4,    // Half day
   3: 3.5,   // 3 Hrs 30 Min
-  4: 3,     // 3 Hrs
+  4: 3,    // 3 Hrs
   5: 2.5,   // 2 Hrs 30 Min
-  6: 2,     // 2 Hrs
+  6: 2,    // 2 Hrs
   7: 1.5,   // 1 Hr 30 Min
-  8: 1,     // 1 Hr
+  8: 1,    // 1 Hr
   9: 0.5    // 30 Min
 };
 
@@ -534,6 +537,7 @@ const overtimes = computed(() => {
 const onStatusSwitchChange = async (item) => {
   if (!item || !item.id) return;
 
+  isActionLoading.value = true;
   try {
     await overTimeStore.updateOverTimeStatus({
       id: item.id,
@@ -542,6 +546,8 @@ const onStatusSwitchChange = async (item) => {
     await fetchData();
   } catch (error) {
     console.error('Failed to change status:', error);
+  } finally {
+    isActionLoading.value = false;
   }
 };
 
@@ -651,6 +657,5 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: #1e88e5;
-  /* text-transform: uppercase; */
 }
 </style>

@@ -17,6 +17,7 @@
             item-title="name"
             prependIcon="tabler:IconUserCog"
             class="w-100"
+            :disabled="isLoading || isSubmitting || isDeleting"
             @update:modelValue="selectMember"
           />
 
@@ -27,6 +28,7 @@
             hide-details
             color="primary"
             class="custom-checkbox"
+            :disabled="isLoading || isSubmitting || isDeleting"
             @update:modelValue="onCheckboxChange"
           />
         </v-col>
@@ -34,8 +36,18 @@
         <!-- Latitude -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="lat" v-slot="{ field, errorMessage }">
-            <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.lat')" type="number" step="any"
-              variant="plain" prependIcon="tabler:IconWorldLatitude" :error-messages="errorMessage" class="w-100">
+            <BaseTextField 
+              v-model="field.value" 
+              v-bind="field" 
+              :label="t('location.form.lat')" 
+              type="number" 
+              step="any"
+              variant="plain" 
+              prependIcon="tabler:IconWorldLatitude" 
+              :error-messages="errorMessage" 
+              class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
             </BaseTextField>
           </Field>
         </v-col>
@@ -43,8 +55,18 @@
         <!-- Longitude -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="lon" v-slot="{ field, errorMessage }">
-            <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.lon')" type="number" step="any"
-              variant="plain" prependIcon="tabler:IconWorldLongitude" :error-messages="errorMessage" class="w-100">
+            <BaseTextField 
+              v-model="field.value" 
+              v-bind="field" 
+              :label="t('location.form.lon')" 
+              type="number" 
+              step="any"
+              variant="plain" 
+              prependIcon="tabler:IconWorldLongitude" 
+              :error-messages="errorMessage" 
+              class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
             </BaseTextField>
           </Field>
         </v-col>
@@ -52,8 +74,17 @@
         <!-- Allow Meter -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="allow_meter" v-slot="{ field, errorMessage }">
-            <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.allow_meter')" type="number"
-              variant="plain" prependIcon="tabler:IconRuler2" :error-messages="errorMessage" class="w-100">
+            <BaseTextField 
+              v-model="field.value" 
+              v-bind="field" 
+              :label="t('location.form.allow_meter')" 
+              type="number"
+              variant="plain" 
+              prependIcon="tabler:IconRuler2" 
+              :error-messages="errorMessage" 
+              class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
             </BaseTextField>
           </Field>
         </v-col>
@@ -61,8 +92,17 @@
         <!-- Device UUID -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="device_uuid" v-slot="{ field, errorMessage }">
-            <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.device_uuid')" type="text"
-              variant="plain" prependIcon="tabler:IconDeviceImacCode" :error-messages="errorMessage" class="w-100">
+            <BaseTextField 
+              v-model="field.value" 
+              v-bind="field" 
+              :label="t('location.form.device_uuid')" 
+              type="text"
+              variant="plain" 
+              prependIcon="tabler:IconDeviceImacCode" 
+              :error-messages="errorMessage" 
+              class="w-100"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
             </BaseTextField>
           </Field>
         </v-col>
@@ -70,10 +110,21 @@
         <!-- Buttons -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <div class="d-flex ga-2 align-center">
-            <BaseButton type="submit" class="w-100">
+            <BaseButton 
+              type="submit" 
+              class="w-100" 
+              :loading="isSubmitting"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
               {{ t('common.submit') }}
             </BaseButton>
-            <BaseButton v-if="isEditMode" type="button" class="w-100" @click="resetFormMode">
+            <BaseButton 
+              v-if="isEditMode" 
+              type="button" 
+              class="w-100" 
+              @click="resetFormMode"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
               {{ t('common.cancel') }}
             </BaseButton>
           </div>
@@ -88,13 +139,21 @@
         <BaseTitle>{{ t('location.title2') }}</BaseTitle>
       </v-col>
       <v-col cols="12" sm="5" lg="3">
-        <BaseTextField v-model="search" :label="t('common.search')" color="primary" prependIcon="tabler:IconSearch"
-          hide-details class="w-100"></BaseTextField>
+        <BaseTextField 
+          v-model="search" 
+          :label="t('common.search')" 
+          color="primary" 
+          prependIcon="tabler:IconSearch"
+          hide-details 
+          class="w-100"
+          :disabled="isLoading || isSubmitting || isDeleting"
+        ></BaseTextField>
       </v-col>
     </v-row>
 
+    <!-- Table Wrapper with :loading="isLoading || isDeleting" -->
     <ParentCard>
-      <BaseTable :headers="headers" :items="formattedItems">
+      <BaseTable :headers="headers" :items="formattedItems" :loading="isLoading || isDeleting">
         <template #[`item.work_type`]="{ item }">
           <v-chip size="small" :color="item.work_type === 1 ? 'success' : item.work_type === 2 ? 'info' : 'grey'"
             variant="tonal">
@@ -103,11 +162,25 @@
         </template>
         <template #[`item.action`]="{ item }">
           <div class="d-flex justify-end ga-1">
-            <BaseButton elevation="0" @click.stop="scrollToEdit(item)" color="" class="edit-btn" size="small">
+            <BaseButton 
+              elevation="0" 
+              @click.stop="scrollToEdit(item)" 
+              color="" 
+              class="edit-btn" 
+              size="small"
+              :disabled="isLoading || isSubmitting || isDeleting"
+            >
               <v-icon icon="tabler:IconEdit" size="15" />
             </BaseButton>
-            <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
-              @click.stop="showConfirmDelete(item.id)">
+            <BaseButton 
+              elevation="0" 
+              color="" 
+              class="delete-btn" 
+              size="small" 
+              :add-class="['ma-1']"
+              :disabled="isLoading || isSubmitting || isDeleting"
+              @click.stop="showConfirmDelete(item.id)"
+            >
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
           </div>
@@ -148,6 +221,11 @@ const search = ref('');
 const originalItems = ref([]);
 const items = ref([]);
 const hasInitialData = ref(false);
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
 
 const selectedMemberId = ref(null);
 const isChecked = ref(true);
@@ -191,6 +269,7 @@ const resetFormMode = () => {
 };
 
 const fetch = async () => {
+  isLoading.value = true;
   resetFormMode();
   try {
     await memberStore.fetchMember();
@@ -202,6 +281,8 @@ const fetch = async () => {
     hasInitialData.value = list.length > 0;
   } catch (e) {
     console.error('Fetch Location Staffs Error:', e);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -303,12 +384,20 @@ const showConfirmDelete = (id) => {
 };
 
 const deleteLocation = async () => {
-  await authStore.deleteLocation({ id: deleteTarget.value });
-  deleteTarget.value = undefined;
-  fetch();
+  isDeleting.value = true;
+  try {
+    await authStore.deleteLocation({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    await fetch();
+  } catch (error) {
+    console.error('Delete Location Error:', error);
+  } finally {
+    isDeleting.value = false;
+  }
 };
 
 const submit = async (values, { setErrors }) => {
+  isSubmitting.value = true;
   const payload = {
     ...values,
     staff_id: selectedMemberId.value || values.staff_id,
@@ -323,6 +412,8 @@ const submit = async (values, { setErrors }) => {
     } else {
       console.error('Submit Location Error:', error);
     }
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

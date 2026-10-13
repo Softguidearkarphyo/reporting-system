@@ -19,6 +19,7 @@
             :error-messages="errorMessage"
             prependIcon="mdi-calendar-month"
             class="w-100"
+            :disabled="isLoading"
             @update:model-value="getList()"
           ></BaseDatePicker>
         </Field>
@@ -35,6 +36,7 @@
             :error-messages="errorMessage"
             prependIcon="mdi-calendar-month"
             class="w-100"
+            :disabled="isLoading"
             @update:model-value="getList()"
           ></BaseDatePicker>
         </Field>
@@ -44,7 +46,7 @@
       <v-col cols="12" sm="4" md="2">
         <BaseButton
           @click="exportFile"
-          :disabled="!items.length"
+          :disabled="!items.length || isLoading"
           class="w-100"
         >
           Export
@@ -53,13 +55,15 @@
     </v-row>
   </Form>
 
-  <!-- Data Table Container -->
+  <!-- Data Table Container with :loading="isLoading" -->
   <ParentCard>
-    <BaseTable :headers="headers" :items="items" :pagination="false">
+    <BaseTable :headers="headers" :items="items" :pagination="false" :loading="isLoading">
     </BaseTable>
   </ParentCard>
 </template>
+
 <script setup>
+import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useMenPowerStoreStore } from '@/stores/menpower/menpower.js';
 import { getMenPowerSchema } from '@/plugins/validations/menpower.js';
@@ -67,16 +71,17 @@ import { changeDateTimeZone } from '@/utils/helper';
 import { exportExcel } from '@/excel-export/menpower/excel';
 
 const menPowerStore = useMenPowerStoreStore();
-const menPowerSchema = computed(() => getMenPowerSchema(t));
 const { t, locale } = useI18n();
+
 const formRef = ref(null);
 const items = ref([]);
-const formData = ref({
-  start_date: null,
-  end_date: null,
-});
+const isLoading = ref(false);
+
+const menPowerSchema = computed(() => getMenPowerSchema(t));
+
 const startDate = computed(() => formRef.value?.values?.start_date);
 const endDate = computed(() => formRef.value?.values?.end_date);
+
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
@@ -126,13 +131,21 @@ onMounted(() => {
 const getList = async () => {
   const { valid } = await formRef.value?.validate();
   if (valid) {
-    await menPowerStore.fetchMenPower({
-      start_date: startDate.value,
-      end_date: endDate.value,
-    });
-    items.value = [...menPowerStore.getMenPower];
+    isLoading.value = true;
+    try {
+      await menPowerStore.fetchMenPower({
+        start_date: startDate.value,
+        end_date: endDate.value,
+      });
+      items.value = [...menPowerStore.getMenPower];
+    } catch (error) {
+      console.error('Error fetching man power list:', error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 };
+
 const exportFile = () => {
   exportExcel(startDate.value, endDate.value, menPowerStore.getMenPower);
 };

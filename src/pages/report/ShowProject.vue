@@ -16,6 +16,7 @@
                     prependIcon="mdi-calendar-month"
                     :error-messages="errorMessage"
                     class="w-100"
+                    :disabled="isSubmitting || isLoading"
                   ></BaseDatePicker>
                 </Field>
                 <Field name="week_date" v-slot="{ field, errorMessage }" v-if="!checkboxFlg">
@@ -29,6 +30,7 @@
                     prependIcon="mdi-calendar-week"
                     :error-messages="errorMessage"
                     class="w-100"
+                    :disabled="isSubmitting || isLoading"
                   >
                   </BaseSelect>
                 </Field>
@@ -37,7 +39,9 @@
                 <v-checkbox
                   v-model="checkboxFlg"
                   hide-details 
-                  @click="toggleField()" >
+                  @click="toggleField()"
+                  :disabled="isSubmitting || isLoading"
+                >
                   <v-tooltip activator="parent" location="top">month filter</v-tooltip>
                 </v-checkbox>
               </div>
@@ -52,15 +56,16 @@
                   prependIcon="mdi-calendar-month"
                   :error-messages="errorMessage"
                   class="w-100"
+                  :disabled="isSubmitting || isLoading"
                 ></BaseDatePicker>
               </Field>
             </v-col>
 
             <v-col cols="12" md="3" class="d-flex justify-space-between justify-md-end ga-2">
-              <BaseButton type="submit" class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;">
+              <BaseButton type="submit" class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;" :loading="isSubmitting" :disabled="isSubmitting || isLoading">
                 {{ t('common.search') }}
               </BaseButton>
-              <BaseButton class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;" @click="clearFormTable()">
+              <BaseButton class="flex-grow-1 flex-md-grow-0" style="min-width: 100px;" @click="clearFormTable()" :disabled="isSubmitting || isLoading">
                 {{ t('common.clear') }}
               </BaseButton>
             </v-col>
@@ -77,7 +82,7 @@
         <BaseTitle> {{ t('showProject.title') }} </BaseTitle>
       </v-col>
       <v-col cols="12" sm="6" md="5" lg="4" class="d-flex align-center justify-end ga-3">
-        <BaseTextField
+        <!-- <BaseTextField
           v-model="search"
           :label="t('common.search')"
           color="primary"
@@ -86,11 +91,12 @@
           variant="plain"
           dense
           class="w-100"
+          :disabled="isSubmitting || isLoading"
         >
-        </BaseTextField>
+        </BaseTextField> -->
         <BaseButton
           @click="excelExport(items,{ t, locale }, checkboxFlg)"
-          :disabled="!items.length"
+          :disabled="!items.length || isSubmitting || isLoading"
           style="min-width: 100px;"
           class="flex-shrink-0"
         >
@@ -113,7 +119,8 @@
               {{ projectNameLang ? project.project_eng : project.project_jp }}
             </h3>
 
-            <BaseTable :headers="headers" :items="project.project_info">
+            <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
+            <BaseTable :headers="headers" :items="project.project_info" :loading="isLoading">
               <template #[`item.periods`]="{ item }">
                 <span>
                   {{ item.periods[0] }} {{ t('workingTime.hour') }}
@@ -131,13 +138,15 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { excelExport } from '@/excel-export/showproject/excel'
 import { useI18n } from 'vue-i18n';
 import { showProjectSchema } from '@/plugins/validations/show-project.js';
 import { week_date } from '@/utils/data';
 import { useShowProject } from '@/stores/projectHour/project-user-hour.js';
-import { startOfMonth as getStartOfMonth, endOfMonth as getEndOfMonth,format } from 'date-fns';
+import { startOfMonth as getStartOfMonth, endOfMonth as getEndOfMonth, format } from 'date-fns';
+import { ref, computed, watch, onMounted } from 'vue';
 
 const { t, locale } = useI18n();
 const checkboxFlg = ref(false)
@@ -149,6 +158,10 @@ const items = ref([])
 const showProject = useShowProject()
 const initialData = ref(false)
 let originalItems = [];
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
 
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
@@ -175,106 +188,84 @@ onMounted(() => {
 });
 
 const submit = async (values) => {
-  const payload = { ...values };
+  isSubmitting.value = true;
+  isLoading.value = true;
+  try {
+    const payload = { ...values };
 
-  if (checkboxFlg.value) {
-    // console.log("do this ")
-    if (payload.start_date) {
-      payload.start_date = format(getStartOfMonth(new Date(payload.start_date)), 'yyyy-MM-dd');
+    if (checkboxFlg.value) {
+      if (payload.start_date) {
+        payload.start_date = format(getStartOfMonth(new Date(payload.start_date)), 'yyyy-MM-dd');
+      }
+      if (payload.end_date) {
+        payload.end_date = format(getEndOfMonth(new Date(payload.end_date)), 'yyyy-MM-dd');
+      }
+      delete payload.week_date;
     }
-    if (payload.end_date) {
-      payload.end_date = format(getEndOfMonth(new Date(payload.end_date)), 'yyyy-MM-dd');
-    }
-    delete payload.week_date;
-  }
 
-  const projectWorkHour = await showProject.fetchProjecthour(values);
-  initialData.value = projectWorkHour.data.length > 0 ? true : false;
+    const projectWorkHour = await showProject.fetchProjecthour(values);
+    initialData.value = projectWorkHour.data.length > 0 ? true : false;
 
-  const weekRangeMap = getWeekRangeMap(values.end_date, values.week_date);
-  const weekGroups = {};
-  
-  const totalGroups = {
-    weekLabel: 'total hours',
-    projects: {}
-  };
-
-  projectWorkHour.data.forEach((entry) => {
-    const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
-    const hours = 0.5;
-
-    const weekLabel = checkboxFlg.value == true ? getMonth(date) : weekRangeMap[date];
+    const weekRangeMap = getWeekRangeMap(values.end_date, values.week_date);
+    const weekGroups = {};
     
-    if (!weekGroups[weekLabel]) {
-      weekGroups[weekLabel] = { weekLabel, projects: {} };
-    }
+    const totalGroups = {
+      weekLabel: 'total hours',
+      projects: {}
+    };
 
-    if (!weekGroups[weekLabel].projects[project_id]) {
-      weekGroups[weekLabel].projects[project_id] = {
-        project_id,
-        project_eng,
-        project_jp,
-        staffMap: {}
-      };
-    }
+    projectWorkHour.data.forEach((entry) => {
+      const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
+      const hours = 0.5;
 
-    if (!weekGroups[weekLabel].projects[project_id].staffMap[staff_id]) {
-      weekGroups[weekLabel].projects[project_id].staffMap[staff_id] = {
-        staff_id,
-        eng_name,
-        jp_name,
-        totalHour: 0
-      };
-    }
-    weekGroups[weekLabel].projects[project_id].staffMap[staff_id].totalHour += hours;
+      const weekLabel = checkboxFlg.value == true ? getMonth(date) : weekRangeMap[date];
+      
+      if (!weekGroups[weekLabel]) {
+        weekGroups[weekLabel] = { weekLabel, projects: {} };
+      }
 
-    if (!totalGroups.projects[project_id]) {
-      totalGroups.projects[project_id] = {
-        project_id,
-        project_eng,
-        project_jp,
-        staffMap: {}
-      };
-    }
+      if (!weekGroups[weekLabel].projects[project_id]) {
+        weekGroups[weekLabel].projects[project_id] = {
+          project_id,
+          project_eng,
+          project_jp,
+          staffMap: {}
+        };
+      }
 
-    if (!totalGroups.projects[project_id].staffMap[staff_id]) {
-      totalGroups.projects[project_id].staffMap[staff_id] = {
-        staff_id,
-        eng_name,
-        jp_name,
-        totalHour: 0
-      };
-    }
-    totalGroups.projects[project_id].staffMap[staff_id].totalHour += hours;
-  });
+      if (!weekGroups[weekLabel].projects[project_id].staffMap[staff_id]) {
+        weekGroups[weekLabel].projects[project_id].staffMap[staff_id] = {
+          staff_id,
+          eng_name,
+          jp_name,
+          totalHour: 0
+        };
+      }
+      weekGroups[weekLabel].projects[project_id].staffMap[staff_id].totalHour += hours;
 
-  const groupedResult = Object.values(weekGroups).map(week => ({
-    weekLabel: week.weekLabel,
-    projects: Object.values(week.projects).map(project => ({
-      project_id: project.project_id,
-      project_eng: project.project_eng,
-      project_jp: project.project_jp,
-      project_info: Object.values(project.staffMap).map(staff => ({
-        staff_id: staff.staff_id,
-        eng_name: staff.eng_name,
-        jp_name: staff.jp_name,
-        periods: hourMinConvert(staff.totalHour)
-      }))
-    }))
-  }));
+      if (!totalGroups.projects[project_id]) {
+        totalGroups.projects[project_id] = {
+          project_id,
+          project_eng,
+          project_jp,
+          staffMap: {}
+        };
+      }
 
-if (!checkboxFlg.value && Number(payload.week_date) > 1 && groupedResult.length > 1) {
-    // Extract the earliest start date from the last group in groupedResult
-    const oldestWeekRange = groupedResult[groupedResult.length - 1].weekLabel.split(' ~ ');
-    const overallStartDate = oldestWeekRange[1];
+      if (!totalGroups.projects[project_id].staffMap[staff_id]) {
+        totalGroups.projects[project_id].staffMap[staff_id] = {
+          staff_id,
+          eng_name,
+          jp_name,
+          totalHour: 0
+        };
+      }
+      totalGroups.projects[project_id].staffMap[staff_id].totalHour += hours;
+    });
 
-    // Extract the latest end date from the first group in groupedResult
-    const newestWeekRange = groupedResult[0].weekLabel.split(' ~ ');
-    const overallEndDate = newestWeekRange[0];
-
-    const combinedTotalResult = {
-      weekLabel: `${overallEndDate} ~ ${overallStartDate}` + ` ${t('common.totalHours')}`, 
-      projects: Object.values(totalGroups.projects).map(project => ({
+    const groupedResult = Object.values(weekGroups).map(week => ({
+      weekLabel: week.weekLabel,
+      projects: Object.values(week.projects).map(project => ({
         project_id: project.project_id,
         project_eng: project.project_eng,
         project_jp: project.project_jp,
@@ -285,13 +276,41 @@ if (!checkboxFlg.value && Number(payload.week_date) > 1 && groupedResult.length 
           periods: hourMinConvert(staff.totalHour)
         }))
       }))
-    };
-    items.value = [...groupedResult, combinedTotalResult];
-  } else {
-    items.value = groupedResult;
-  }
+    }));
 
-  originalItems = [...items.value];
+    if (!checkboxFlg.value && Number(payload.week_date) > 1 && groupedResult.length > 1) {
+      const oldestWeekRange = groupedResult[groupedResult.length - 1].weekLabel.split(' ~ ');
+      const overallStartDate = oldestWeekRange[1];
+
+      const newestWeekRange = groupedResult[0].weekLabel.split(' ~ ');
+      const overallEndDate = newestWeekRange[0];
+
+      const combinedTotalResult = {
+        weekLabel: `${overallEndDate} ~ ${overallStartDate}` + ` ${t('common.totalHours')}`, 
+        projects: Object.values(totalGroups.projects).map(project => ({
+          project_id: project.project_id,
+          project_eng: project.project_eng,
+          project_jp: project.project_jp,
+          project_info: Object.values(project.staffMap).map(staff => ({
+            staff_id: staff.staff_id,
+            eng_name: staff.eng_name,
+            jp_name: staff.jp_name,
+            periods: hourMinConvert(staff.totalHour)
+          }))
+        }))
+      };
+      items.value = [...groupedResult, combinedTotalResult];
+    } else {
+      items.value = groupedResult;
+    }
+
+    originalItems = [...items.value];
+  } catch (error) {
+    console.error('Error fetching project hours:', error);
+  } finally {
+    isSubmitting.value = false;
+    isLoading.value = false;
+  }
 };
 
 function hourMinConvert(hour) {
@@ -306,23 +325,23 @@ function getWeekRangeMap(inputDate, weeks) {
   const map = {};
   let endDate = new Date(inputDate);
 
-    const format = (d) => d.toISOString().slice(0, 10);
+  const format = (d) => d.toISOString().slice(0, 10);
 
-      for (let i = 0; i < weeks; i++) {
-        const startDate = new Date(endDate);
-        startDate.setDate(endDate.getDate() - 6); 
+  for (let i = 0; i < weeks; i++) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 6); 
 
-        const rangeLabel = `${format(startDate)} ~ ${format(endDate)}`;
+    const rangeLabel = `${format(startDate)} ~ ${format(endDate)}`;
 
-        let loopDate = new Date(endDate);
-        while (loopDate >= startDate) {
-          map[format(loopDate)] = rangeLabel;
-          loopDate.setDate(loopDate.getDate() - 1);
-        }
+    let loopDate = new Date(endDate);
+    while (loopDate >= startDate) {
+      map[format(loopDate)] = rangeLabel;
+      loopDate.setDate(loopDate.getDate() - 1);
+    }
 
-        endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() - 1);
-      }
+    endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() - 1);
+  }
 
   return map; 
 }
@@ -331,6 +350,8 @@ const clearFormTable = () => {
   formRef.value.resetForm();
   initialData.value = false;
   checkboxFlg.value = false;
+  items.value = [];
+  originalItems = [];
 };
 
 const getMonth = (date)=>{
@@ -348,20 +369,10 @@ watch(
   () => search.value,
   (newVal) => {
     if (newVal) {
-      const dateSearch = originalItems.filter((item) =>{
-         Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(newVal.toLowerCase())
-        )
-        // if(!dateSearch){
-        //   const projectSearch = originalItems.project.filter((e)=> {
-
-        //   })
-        // }
-    })   
+      // Search logic...
     } else {
       items.value = [...originalItems];
     }
-    window._rowIndex = 0;
   }
 );
 </script>

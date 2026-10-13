@@ -20,6 +20,7 @@
                   :error-messages="errorMessage"
                   prependIcon="mdi-calendar-month"
                   class="w-100"
+                  :disabled="isSubmitting || isLoading"
                 ></BaseDatePicker>
               </Field>
             </v-col>
@@ -34,6 +35,7 @@
                   :error-messages="errorMessage"
                   prependIcon="mdi-calendar-month"
                   class="w-100"
+                  :disabled="isSubmitting || isLoading"
                 ></BaseDatePicker>
               </Field>
             </v-col>
@@ -42,17 +44,30 @@
             <v-col cols="12" md="4">
               <v-row density="compact">
                 <v-col cols="12" sm="4">
-                  <BaseButton type="submit" class="w-100">
+                  <BaseButton 
+                    type="submit" 
+                    class="w-100" 
+                    :loading="isSubmitting"
+                    :disabled="isSubmitting || isLoading"
+                  >
                     {{ t('common.search') }}
                   </BaseButton>
                 </v-col>
                 <v-col cols="12" sm="4">
-                  <BaseButton class="w-100" @click="clearFormTable()">
+                  <BaseButton 
+                    class="w-100" 
+                    @click="clearFormTable()"
+                    :disabled="isSubmitting || isLoading"
+                  >
                     {{ t('common.clear') }}
                   </BaseButton>
                 </v-col>
                 <v-col cols="12" sm="4">
-                  <BaseButton class="w-100" @click="excelExport()">
+                  <BaseButton 
+                    class="w-100" 
+                    @click="excelExport()"
+                    :disabled="!items?.length || isSubmitting || isLoading"
+                  >
                     {{ t('common.excel') }}
                   </BaseButton>
                 </v-col>
@@ -80,13 +95,14 @@
           prepend-icon="mdi-magnify"
           hide-details
           class="w-100"
+          :disabled="isSubmitting || isLoading"
         ></BaseTextField>
       </div>
     </div>
 
-    <!-- Data Table Container -->
+    <!-- Data Table Container with :loading="isLoading" -->
     <ParentCard>
-      <BaseTable :headers="headers" :items="items">
+      <BaseTable :headers="headers" :items="items" :loading="isLoading">
         <template #[`item.periods`]="{ item }">
           <span>
             {{ item.periods[0] }} {{ t('workingTime.hour') }}
@@ -97,11 +113,11 @@
     </ParentCard>
   </div>
 </template>
+
 <script setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Form, Field } from 'vee-validate';
-// import { dateSchema } from '@/plugins/validations/working-time.js';
 import { useReportingStore } from '@/stores/reporting/reporting.js';
 import XlsxPopulate from 'xlsx-populate/browser/xlsx-populate';
 import { getMenPowerSchema } from '@/plugins/validations/menpower.js';
@@ -113,6 +129,11 @@ const search = ref('');
 const initialData = ref(false);
 let originalItems = [];
 const items = ref(null);
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
 const searchWithDateSchema = computed(() => getMenPowerSchema(t));
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
@@ -130,6 +151,8 @@ const headers = computed(() => {
 });
 
 const filterByDate = async (values) => {
+  isSubmitting.value = true;
+  isLoading.value = true;
   try {
     const workTimes = await reportingStore.fetchWorkTime(values);
     initialData.value = workTimes.data.length === 0 ? false : true;
@@ -159,11 +182,13 @@ const filterByDate = async (values) => {
       periods: hourMinConvert(staff.totalHour),
     }));
 
-
     items.value = result;
     originalItems = [...result];
   } catch (error) {
     console.error('Error fetching members:', error);
+  } finally {
+    isSubmitting.value = false;
+    isLoading.value = false;
   }
 };
 
@@ -178,9 +203,13 @@ function hourMinConvert(hour) {
 const clearFormTable = () => {
   formRef.value.resetForm();
   initialData.value = false;
+  items.value = [];
+  originalItems = [];
 };
 
 const excelExport = () => {
+  if (!items.value?.length) return;
+  
   XlsxPopulate.fromBlankAsync().then((workbook) => {
     const sheet = workbook.sheet(0);
     const isENglish = locale.value === 'en';

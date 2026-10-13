@@ -36,6 +36,8 @@ export default {
     daily_attendance_check_in: '日次出勤チェックイン',
     check_in: 'チェックイン',
     checking_in: 'チェックイン中...',
+    loadingText: '読み込み中...',
+    totalHours: '総時間',
   },
   sidebar: {
     dashboard: 'ダッシュボード',
@@ -57,7 +59,7 @@ export default {
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
-    timesheets: '作業時間',
+    timesheets: 'プロジェクト作業時間',
     theme: 'テーマカラー',
     attendanceAccess: '出勤アクセス',
     attendanceList: '出勤リスト',

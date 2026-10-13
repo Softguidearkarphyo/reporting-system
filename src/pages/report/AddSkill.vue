@@ -17,7 +17,7 @@
               class="w-100"
               :items="memberList"
               prependIcon="mdi-account"
-              :disabled="!!parseInt(skillSheetId)"
+              :disabled="!!parseInt(skillSheetId) || isLoading || isSubmitting"
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
@@ -40,6 +40,7 @@
               item-value="id"
               :chip-width="140"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseMultiSelect>
           </Field>
@@ -58,6 +59,7 @@
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseSelect>
           </Field>
@@ -76,6 +78,7 @@
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseSelect>
           </Field>
@@ -91,6 +94,7 @@
               class="w-100"
               prependIcon="mdi-calendar-month"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             ></BaseDatePicker>
           </Field>
         </v-col>
@@ -108,6 +112,7 @@
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseSelect>
           </Field>
@@ -123,6 +128,7 @@
               class="w-100"
               type="number"
               prependIcon="mdi-weather-cloudy-clock"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseTextField>
           </Field>
@@ -138,6 +144,7 @@
               class="w-100"
               type="number"
               prependIcon="mdi-history"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseTextField>
           </Field>
@@ -153,6 +160,7 @@
               class="w-100"
               prependIcon="mdi-clock-time-twelve"
               :readonly="true"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseTextField>
           </Field>
@@ -171,6 +179,7 @@
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseMultiSelect>
           </Field>
@@ -189,17 +198,19 @@
               item-title="name"
               item-value="id"
               :error-messages="errorMessage"
+              :disabled="isLoading || isSubmitting"
             >
             </BaseSelect>
           </Field>
         </v-col>
       </v-row>
 
-      <!-- Skill Table Wrapper for Horizontal Scroll -->
+      <!-- Skill Table Wrapper for Horizontal Scroll with :loading="isLoading" -->
       <div class="my-6 overflow-x-auto">
         <v-data-table
           hide-default-footer
           class="skill-table min-w-100"
+          :loading="isLoading"
         >
           <template #body>
             <tbody class="table-center">
@@ -224,6 +235,7 @@
                             v-bind="props"
                             elevation="0"
                             class="mt-2 d-flex justify-center mx-auto"
+                            :disabled="isLoading || isSubmitting"
                             :style="{
                               backgroundColor: buttonBgColor,
                               padding: '5px',
@@ -267,7 +279,7 @@
 
       <!-- Action Footer -->
       <div class="d-flex justify-center mt-6">
-        <BaseButton type="submit" class=" max-w-sm">
+        <BaseButton type="submit" class="max-w-sm" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
           {{ t('common.submit') }}
         </BaseButton>
       </div>
@@ -285,6 +297,8 @@ import { useSystemStore } from '@/stores/system/system';
 import { useProjectStore } from '@/stores/project/project.js';
 import { skillSheetSchema } from '@/plugins/validations/skill-sheet-create';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
+import { ref, computed, watch, nextTick, onMounted, watchEffect } from 'vue';
+
 const route = useRoute();
 const router = useRouter();
 const { lgAndUp, mdAndUp } = useDisplay();
@@ -294,6 +308,7 @@ const systemStore = useSystemStore();
 const projectStore = useProjectStore();
 const skillSheetStore = useSkillSheetStore();
 const { t } = useI18n();
+
 const formRef = ref(null);
 const openMenus = ref([]);
 const memberList = ref([]);
@@ -306,36 +321,50 @@ const responsibilityList = ref([]);
 const fetchedSkillSheet = ref(null);
 const skillSheetId = route.params.skillSheetId;
 const techStackList = ref([]);
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
 const skillSheetCreateSchema = computed(() => skillSheetSchema(t));
 
 watch(
   () => route.params.skillSheetId,
   async (id) => {
     if (id) {
-      const res = await skillSheetStore.fetchSkillSheet({
-        id: parseInt(id),
-        staff: {},
-        staff_project: {},
-        staff_responsibility: {},
-        tech_stack_proficiencies: {},
-      });
-      fetchedSkillSheet.value = res?.data?.[0] ?? null;
-      await nextTick();
-      const data = fetchedSkillSheet.value;
-      formRef.value.setValues({
-        staff_id: data.staff?.id,
-        project: data.staff_project?.map((p) => p.project.id) || [],
-        position: data.position?.id,
-        grade: data.grade?.id,
-        join_date: data.join_date,
-        japanese_level: data.japanese_level?.id,
-        sg_experience: data.sg_experience,
-        prev_experience: data.prev_experience,
-        total_experience: data.total_experience,
-        responsibility:
-          data.staff_responsibility?.map((r) => r.responsibility.id) || [],
-        major_tech_stack_id: data.major_tech_stack?.id,
-      });
+      isLoading.value = true;
+      try {
+        const res = await skillSheetStore.fetchSkillSheet({
+          id: parseInt(id),
+          staff: {},
+          staff_project: {},
+          staff_responsibility: {},
+          tech_stack_proficiencies: {},
+        });
+        fetchedSkillSheet.value = res?.data?.[0] ?? null;
+        await nextTick();
+        const data = fetchedSkillSheet.value;
+        if (data) {
+          formRef.value.setValues({
+            staff_id: data.staff?.id,
+            project: data.staff_project?.map((p) => p.project.id) || [],
+            position: data.position?.id,
+            grade: data.grade?.id,
+            join_date: data.join_date,
+            japanese_level: data.japanese_level?.id,
+            sg_experience: data.sg_experience,
+            prev_experience: data.prev_experience,
+            total_experience: data.total_experience,
+            responsibility:
+              data.staff_responsibility?.map((r) => r.responsibility.id) || [],
+            major_tech_stack_id: data.major_tech_stack?.id,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching skill sheet details:', error);
+      } finally {
+        isLoading.value = false;
+      }
     } else {
       formRef.value?.resetForm();
       fetchedSkillSheet.value = null;
@@ -406,46 +435,46 @@ const cols = computed(() =>
 );
 
 const fetch = async () => {
-  await Promise.all([
-    memberStore.fetchMember({ skill_sheet: {} }),
-    systemStore.fetchTechStacks(),
-    systemStore.fetchResponsibilities(),
-    systemStore.fetchProficiencyLevels(),
-    systemStore.fetchGrade(),
-    systemStore.fetchPosition(),
-    systemStore.fetchJapaneseLevel(),
-    projectStore.fetchProject(),
-  ]);
-  memberList.value = memberStore.getMembers.map((item)=> ({id: item.id, name: item.eng_name})) ?? [];
-    // (skillSheetId
-    //   ? memberStore.getMembers
-    //   : memberStore.getMembers?.filter((member) => !member.skill_sheet)
-    // )?.map((item) => ({
-    //   id: item.id,
-    //   name: item.eng_name,
-    // })) ?? [];
-  projectList.value =
-    projectStore.getProjects?.map((item) => ({
-      id: item.id,
-      name: item.eng_name,
-    })) ?? [];
-  gradeList.value = systemStore.getGrade ?? [];
-  positionList.value = systemStore.getPosition ?? [];
-  japaneseLevelList.value = systemStore.getJapaneseLevel ?? [];
-  responsibilityList.value = systemStore.getResponsibilities ?? [];
+  isLoading.value = true;
+  try {
+    await Promise.all([
+      memberStore.fetchMember({ skill_sheet: {} }),
+      systemStore.fetchTechStacks(),
+      systemStore.fetchResponsibilities(),
+      systemStore.fetchProficiencyLevels(),
+      systemStore.fetchGrade(),
+      systemStore.fetchPosition(),
+      systemStore.fetchJapaneseLevel(),
+      projectStore.fetchProject(),
+    ]);
+    memberList.value = memberStore.getMembers.map((item) => ({ id: item.id, name: item.eng_name })) ?? [];
+    projectList.value =
+      projectStore.getProjects?.map((item) => ({
+        id: item.id,
+        name: item.eng_name,
+      })) ?? [];
+    gradeList.value = systemStore.getGrade ?? [];
+    positionList.value = systemStore.getPosition ?? [];
+    japaneseLevelList.value = systemStore.getJapaneseLevel ?? [];
+    responsibilityList.value = systemStore.getResponsibilities ?? [];
 
-  symbolLists.value =
-    systemStore.getProficiencyLevels?.map((item) => ({
-      id: item.id,
-      abbv: item.abbv,
-    })) ?? [];
+    symbolLists.value =
+      systemStore.getProficiencyLevels?.map((item) => ({
+        id: item.id,
+        abbv: item.abbv,
+      })) ?? [];
 
-  const techStacks = systemStore.getTechStacks;
-  if (Array.isArray(techStacks)) {
-    techStackList.value = techStacks.map((item) => ({
-      id: item.id,
-      name: item.name,
-    }));
+    const techStacks = systemStore.getTechStacks;
+    if (Array.isArray(techStacks)) {
+      techStackList.value = techStacks.map((item) => ({
+        id: item.id,
+        name: item.name,
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching dependency data:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -454,26 +483,33 @@ onMounted(async () => {
 });
 
 const submit = async (values) => {
-  const skills = skillSets.value.map(({ id, symbolId }) => ({
-    tech_stack_id: id,
-    proficiency_level_id: symbolId,
-  }));
+  isSubmitting.value = true;
+  try {
+    const skills = skillSets.value.map(({ id, symbolId }) => ({
+      tech_stack_id: id,
+      proficiency_level_id: symbolId,
+    }));
 
-  const payload = {
-    ...values,
-    skills,
-  };
+    const payload = {
+      ...values,
+      skills,
+    };
 
-  let res;
-  if (skillSheetId) {
-    const payloadd = { ...payload, id: skillSheetId };
-    res = await skillSheetStore.updateSkillSheet(payloadd);
-  } else {
-    res = await skillSheetStore.createSkillSheet(payload);
-  }
+    let res;
+    if (skillSheetId) {
+      const payloadd = { ...payload, id: skillSheetId };
+      res = await skillSheetStore.updateSkillSheet(payloadd);
+    } else {
+      res = await skillSheetStore.createSkillSheet(payload);
+    }
 
-  if (res?.data?.status === 200) {
-    router.push({ name: 'member-skill' });
+    if (res?.data?.status === 200) {
+      router.push({ name: 'member-skill' });
+    }
+  } catch (error) {
+    console.error('Error submitting skill sheet:', error);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>

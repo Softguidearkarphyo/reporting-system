@@ -54,6 +54,7 @@
               <BaseTable
                 :headers="headers"
                 :items="dateTaskGroups?.[dayOfTheWeek.id]"
+                :loading="isLoading"
                 :pagination="false"
                 class="mx-auto dense-table mt-6"
               >
@@ -110,6 +111,20 @@
                       style="margin-left: 4px"
                       :error-messages="errorMessage"
                     >
+                      <template #prepend-item>
+                        <v-list-item @click="toggleSelectAllDays">
+                          <template #prepend>
+                            <v-checkbox-btn
+                              :indeterminate="isSomeDaysSelected && !isAllDaysSelected"
+                              :model-value="isAllDaysSelected"
+                            ></v-checkbox-btn>
+                          </template>
+                          <v-list-item-title>
+                            {{ isAllDaysSelected ? 'Deselect All' : 'Select All' }}
+                          </v-list-item-title>
+                        </v-list-item>
+                        <v-divider class="mt-2"></v-divider>
+                      </template>
                     </BaseMultiSelect>
                   </Field>
                 </v-col>
@@ -270,7 +285,7 @@
               <v-row
                 ><v-col cols="12">
                   <div class="mt-2 mb-2" style="margin-left: 1px">
-                    <BaseButton type="submit" style="width: 95%">
+                    <BaseButton type="submit" style="width: 95%" :loading="isSubmitting">
                       {{ t('common.submit') }}
                     </BaseButton>
                   </div>
@@ -283,6 +298,7 @@
     </v-dialog>
   </div>
 </template>
+
 <script setup>
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth/auth.js';
@@ -290,6 +306,7 @@ import { useReportingStore } from '@/stores/reporting/reporting.js';
 import { getReportingSettingSchema } from '@/plugins/validations/reporting-setting.js';
 import { ADMIN } from '@/utils/constant';
 import { timeSlots, periods } from '@/utils/data';
+import { ref, computed, watch, nextTick } from 'vue';
 import {
   changeDateTimeZone,
   generatePeriods,
@@ -303,6 +320,11 @@ const { t, locale } = useI18n();
 const authStore = useAuthStore();
 const reportingStore = useReportingStore();
 const router = useRouter();
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
 const role = authStore.staffRole;
 const staff = authStore.loginStaff;
 const employeeName = computed(() =>
@@ -349,11 +371,6 @@ const formRef = ref(null);
 const timeSelectionMode = ref(0);
 const selectedDates = ref([]);
 const selectedDay = ref([]);
-const search = ref('');
-const deleteTarget = ref(undefined);
-const updateTarget = ref(undefined);
-const checkPrjCds = ref([]);
-let originalItems = [];
 const showEditForm = ref(false);
 const employeeItems = ref([]);
 const selectedEmployee = ref([]);
@@ -366,20 +383,24 @@ const selectedEmployeeInfo = computed(() => {
     return employeeItems.value?.[0];
   }
 });
-const showSavedBookmark = computed(() => {
-  if (role === String(ADMIN)) {
-    return (
-      selectedEmployeeInfo.value?.length > 0 &&
-      selectedEmployeeInfo.value?.every(
-        (employee) => employee.task_performance_setting?.length > 0
-      )
-    );
-  }
-  return selectedEmployeeInfo.value?.[0]?.task_performance_setting?.length > 0;
+
+const isAllDaysSelected = computed(() => {
+  return daysOfTheWeek.value?.length > 0 && selectedDay.value?.length === daysOfTheWeek.value?.length;
 });
+
+const isSomeDaysSelected = computed(() => {
+  return selectedDay.value?.length > 0 && selectedDay.value?.length < daysOfTheWeek.value?.length;
+});
+
+const toggleSelectAllDays = () => {
+  if (isAllDaysSelected.value) {
+    selectedDay.value = [];
+  } else {
+    selectedDay.value = daysOfTheWeek.value?.map((day) => day.id) || [];
+  }
+};
+
 const selectedPeriod = ref([1, 2]);
-const isDayMultiple = ref(true);
-const currentEmployee = ref();
 const dateTaskGroups = computed(() => {
   return selectedEmployeeInfo.value?.task_performance_setting;
 });
@@ -405,15 +426,6 @@ const tasks = computed(() => {
     ...item,
     name: `${item.cd} : ${isJapanese.value ? item.jp_name : item.eng_name}`,
   }));
-});
-const selectedIsoDates = computed(() => {
-  if (isDayMultiple.value) {
-    return selectedDates.value
-      ?.map((date) => changeDateTimeZone(date))
-      ?.sort((a, b) => new Date(a) - new Date(b));
-  } else {
-    return [changeDateTimeZone(selectedDates.value)];
-  }
 });
 const headers = computed(() => {
   return [
@@ -441,13 +453,20 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  formRef.value?.resetForm();
-  await reportingStore.fetchProject();
-  projectItems.value = [...reportingStore.getProjects];
-  await reportingStore.fetchTask();
-  taskItems.value = [...reportingStore.getTasks];
-  await getList();
-  selectedEmployee.value = employeeItems.value?.[0]?.id;
+  isLoading.value = true;
+  try {
+    formRef.value?.resetForm();
+    await reportingStore.fetchProject();
+    projectItems.value = [...reportingStore.getProjects];
+    await reportingStore.fetchTask();
+    taskItems.value = [...reportingStore.getTasks];
+    await getList();
+    selectedEmployee.value = employeeItems.value?.[0]?.id;
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 fetch();
@@ -461,9 +480,7 @@ const openDialog = async () => {
     period: selectedPeriod.value,
   });
 };
-const clearDates = () => {
-  selectedDates.value = [];
-};
+
 const getList = async () => {
   const memberPayload = {
     project: {},
@@ -516,62 +533,68 @@ const getList = async () => {
     );
   });
 };
+
 const submit = async (values) => {
-  let data = [];
-  let totalPeriods = [];
-  if (timeSelectionMode.value === 0) {
-    selectedPeriod.value?.forEach((selectedPeriod) => {
-      const currentPeriod = periods.value?.find(
-        (period) => period.id === selectedPeriod
-      );
-      if (currentPeriod) {
-        totalPeriods.push(
-          ...generatePeriods(currentPeriod.startTime, currentPeriod.finishTime)
+  isSubmitting.value = true;
+  try {
+    let data = [];
+    let totalPeriods = [];
+    if (timeSelectionMode.value === 0) {
+      selectedPeriod.value?.forEach((selectedPeriod) => {
+        const currentPeriod = periods.value?.find(
+          (period) => period.id === selectedPeriod
         );
-      }
-    });
-  } else {
-    totalPeriods = generatePeriods(values.startTime, values.finishTime);
-  }
-  if (overTime.value > 0) {
-    totalPeriods.push(
-      ...generateExtraPeriods(
-        totalPeriods[totalPeriods.length - 1],
-        overTime.value
-      )
-    );
-  }
-  if (values.project) {
-    selectedDay.value?.forEach((day) => {
-      totalPeriods?.forEach((period) => {
-        data.push({
-          day: day,
-          staff_id: selectedEmployee.value,
-          project_id: values.project,
-          task_id: values.task,
-          period: period,
+        if (currentPeriod) {
+          totalPeriods.push(
+            ...generatePeriods(currentPeriod.startTime, currentPeriod.finishTime)
+          );
+        }
+      });
+    } else {
+      totalPeriods = generatePeriods(values.startTime, values.finishTime);
+    }
+    if (overTime.value > 0) {
+      totalPeriods.push(
+        ...generateExtraPeriods(
+          totalPeriods[totalPeriods.length - 1],
+          overTime.value
+        )
+      );
+    }
+    if (values.project) {
+      selectedDay.value?.forEach((day) => {
+        totalPeriods?.forEach((period) => {
+          data.push({
+            day: day,
+            staff_id: selectedEmployee.value,
+            project_id: values.project,
+            task_id: values.task,
+            period: period,
+          });
         });
       });
-    });
-    await reportingStore.saveSetting({ create_array: data });
-  } else {
-    selectedDay.value?.forEach((day) => {
-      totalPeriods?.forEach((period) => {
-        data.push({
-          day: day,
-          staff_id: selectedEmployee.value,
-          period: period,
+      await reportingStore.saveSetting({ create_array: data });
+    } else {
+      selectedDay.value?.forEach((day) => {
+        totalPeriods?.forEach((period) => {
+          data.push({
+            day: day,
+            staff_id: selectedEmployee.value,
+            period: period,
+          });
         });
       });
-    });
-    await reportingStore.discardSetting({ delete_array: data });
+      await reportingStore.discardSetting({ delete_array: data });
+    }
+    showEditForm.value = false;
+    await getList();
+  } catch (error) {
+    console.error('Error saving setting:', error);
+  } finally {
+    isSubmitting.value = false;
   }
-  showEditForm.value = false;
-  await getList();
 };
-const goToReporting = () => {
-  router.push({ name: 'reporting' });
-};
+
 watch(
   () => carouselIndex.value,
   (val) => {

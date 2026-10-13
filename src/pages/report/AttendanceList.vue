@@ -8,8 +8,9 @@
     </v-col>
   </v-row>
 
+  <!-- ParentCard with :loading="isLoading || isDeleting" -->
   <ParentCard class="mt-4">
-    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true">
+    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true" :loading="isLoading || isDeleting">
       <template #[`item.staff`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
@@ -75,6 +76,7 @@
             class="delete-btn"
             size="small"
             :style="{ width }"
+            :disabled="isLoading || isDeleting"
             :add-class="['ma-1']"
           >
             <v-icon icon="tabler:IconTrash" size="15" />
@@ -124,6 +126,10 @@ const search = ref('');
 const items = ref([]);
 const width = '10px';
 let originalItems = [];
+
+// Loading states
+const isLoading = ref(false);
+const isDeleting = ref(false);
 
 const todayFormatted = computed(() => {
   const options = {
@@ -235,9 +241,16 @@ const getDeviceIcon = (deviceType) => {
 };
 
 const fetch = async () => {
-  await attendanceStore.fetchAttendances();
-  items.value = [...(attendanceStore.getAttendances || [])];
-  originalItems = [...items.value];
+  isLoading.value = true;
+  try {
+    await attendanceStore.fetchAttendances();
+    items.value = [...(attendanceStore.getAttendances || [])];
+    originalItems = [...items.value];
+  } catch (error) {
+    console.error('Error fetching attendances:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -253,9 +266,16 @@ const showConfirmDelete = (id) => {
 };
 
 const deleteRecord = async () => {
-  await attendanceStore.deleteAttendance({ id: deleteTarget.value });
-  deleteTarget.value = undefined;
-  fetch();
+  isDeleting.value = true;
+  try {
+    await attendanceStore.deleteAttendance({ id: deleteTarget.value });
+    deleteTarget.value = undefined;
+    await fetch();
+  } catch (error) {
+    console.error('Error deleting attendance record:', error);
+  } finally {
+    isDeleting.value = false;
+  }
 };
 
 watch(

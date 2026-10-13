@@ -3,7 +3,7 @@
     <!-- Header -->
     <v-row class="mb-2">
       <v-col cols="12" class="d-flex align-center">
-        <v-btn icon variant="text" color="primary" class="me-2" @click="goBack">
+        <v-btn icon variant="text" color="primary" class="me-2" @click="goBack" :disabled="loading || isActionLoading">
           <v-icon icon="tabler:IconArrowLeft" size="22" />
         </v-btn>
 
@@ -111,11 +111,11 @@
       </v-col>
     </v-row>
 
-    <!-- Main Content Tables -->
-    <v-row>
+    <!-- Main Content Tables Row (Align Start for Auto Content Height) -->
+    <v-row class="align-start">
       <!-- Leave Records Table -->
       <v-col cols="12" md="8">
-        <ParentCard class="elevation-1 rounded-lg h-100">
+        <ParentCard class="elevation-1 rounded-lg pa-4">
           <v-row class="align-center mb-3">
             <v-col cols="6" md="7">
               <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
@@ -132,77 +132,80 @@
                 variant="outlined"
                 hide-details
                 class="rounded-lg"
+                :disabled="loading || isActionLoading"
               />
             </v-col>
           </v-row>
 
-          <BaseTable
-            v-if="filteredMemberLeaves && filteredMemberLeaves.length"
-            :headers="headers"
-            :items="filteredMemberLeaves"
-            :loading="loading"
-          >
-            <template #[`item.leave_date`]="{ item }">
-              <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
-            </template>
+          <div>
+            <BaseTable
+              v-if="filteredMemberLeaves && filteredMemberLeaves.length"
+              :headers="headers"
+              :items="filteredMemberLeaves"
+              :loading="loading || isActionLoading"
+            >
+              <template #[`item.leave_date`]="{ item }">
+                <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
+              </template>
 
-            <template #[`item.leave_type`]="{ item }">
-              <span
-                v-if="item.leave_type === 1"
-                class="status d-inline-flex justify-center align-center"
-              >
-                paid
-              </span>
-              <span
-                v-else-if="item.leave_type === 3"
-                class="status-short d-inline-flex justify-center align-center"
-              >
-                short 
-              </span>
-              <span
-                v-else
-                class="status1 d-inline-flex justify-center align-center"
-              >
-                unpaid
-              </span>
-            </template>
+              <template #[`item.leave_type`]="{ item }">
+                <span
+                  v-if="item.leave_type === 1"
+                  class="status d-inline-flex justify-center align-center"
+                >
+                  paid
+                </span>
+                <span
+                  v-else-if="item.leave_type === 3"
+                  class="status-short d-inline-flex justify-center align-center"
+                >
+                  short 
+                </span>
+                <span
+                  v-else
+                  class="status1 d-inline-flex justify-center align-center"
+                >
+                  unpaid
+                </span>
+              </template>
 
-            <template #[`item.duration`]="{ item }">
-              <span class="text-body-2 text-medium-emphasis">
-                <span v-if="item.duration == 1">Full day</span>
-                <span v-else-if="item.duration == 2">Half day</span>
-                <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
-                <span v-else-if="item.duration == 4">3 Hrs</span>
-                <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
-                <span v-else-if="item.duration == 6">2 Hrs</span>
-                <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
-                <span v-else-if="item.duration == 8">1 Hrs</span>
-                <span v-else-if="item.duration == 9">30 Min</span>
-                <span v-else>{{ item.duration }}</span>
-              </span>
-            </template>
+              <template #[`item.duration`]="{ item }">
+                <span class="text-body-2 text-medium-emphasis">
+                  <span v-if="item.duration == 1">Full day</span>
+                  <span v-else-if="item.duration == 2">Half day</span>
+                  <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+                  <span v-else-if="item.duration == 4">3 Hrs</span>
+                  <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+                  <span v-else-if="item.duration == 6">2 Hrs</span>
+                  <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+                  <span v-else-if="item.duration == 8">1 Hrs</span>
+                  <span v-else-if="item.duration == 9">30 Min</span>
+                  <span v-else>{{ item.duration }}</span>
+                </span>
+              </template>
 
-            <template #[`item.day_count`]="{ item }">
-              <span class="font-weight-medium text-body-2">{{ item.day_count }} Day(s)</span>
-            </template>
+              <template #[`item.day_count`]="{ item }">
+                <span class="font-weight-medium text-body-2">{{ item.day_count }} Day(s)</span>
+              </template>
 
-            <template #[`item.reason`]="{ item }">
-              <span class="text-body-2 text-medium-emphasis">
-                {{ item.reason || '-' }}
-              </span>
-            </template>
-          </BaseTable>
+              <template #[`item.reason`]="{ item }">
+                <span class="text-body-2 text-medium-emphasis">
+                  {{ item.reason || '-' }}
+                </span>
+              </template>
+            </BaseTable>
 
-          <div v-else class="text-center pa-8 text-gray-500">
-            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-            <div class="text-body-1">No leave records found</div>
+            <div v-else class="text-center pa-8 text-gray-500">
+              <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
+              <div class="text-body-1">No leave records found</div>
+            </div>
           </div>
         </ParentCard>
       </v-col>
 
-      <!-- Overtime Records Table -->
+      <!-- Overtime Records Table (Auto Height based on Row Count) -->
       <v-col cols="12" md="4">
-        <ParentCard class="elevation-1 rounded-lg h-100">
+        <ParentCard class="elevation-1 rounded-lg pa-4">
           <v-row class="align-center mb-3">
             <v-col cols="12">
               <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
@@ -211,74 +214,78 @@
             </v-col>
           </v-row>
 
-          <BaseTable
-            v-if="overtimes && overtimes.length"
-            :headers="multiHeaders3"
-            :items="overtimes"
-            :loading="loading"
-            items-per-page="10"
-          >
-            <template #[`item.ot_time`]="{ item }">
-              <span v-if="item.ot_time == 1">Full day</span>
-              <span v-else-if="item.ot_time == 2">Half day</span>
-              <span v-else-if="item.ot_time == 3">3 Hrs : 30 Min</span>
-              <span v-else-if="item.ot_time == 4">3 Hrs</span>
-              <span v-else-if="item.ot_time == 5">2 Hrs : 30 Min</span>
-              <span v-else-if="item.ot_time == 6">2 Hrs</span>
-              <span v-else-if="item.ot_time == 7">1 Hrs : 30 Min</span>
-              <span v-else-if="item.ot_time == 8">1 Hrs</span>
-              <span v-else-if="item.ot_time == 9">30 Min</span>
-              <span v-else>{{ item.ot_time }}</span>
-            </template>
+          <div>
+            <BaseTable
+              v-if="overtimes && overtimes.length"
+              :headers="multiHeaders3"
+              :items="overtimes"
+              :loading="loading || isActionLoading"
+              items-per-page="10"
+            >
+              <template #[`item.ot_time`]="{ item }">
+                <span v-if="item.ot_time == 1">Full day</span>
+                <span v-else-if="item.ot_time == 2">Half day</span>
+                <span v-else-if="item.ot_time == 3">3 Hrs : 30 Min</span>
+                <span v-else-if="item.ot_time == 4">3 Hrs</span>
+                <span v-else-if="item.ot_time == 5">2 Hrs : 30 Min</span>
+                <span v-else-if="item.ot_time == 6">2 Hrs</span>
+                <span v-else-if="item.ot_time == 7">1 Hrs : 30 Min</span>
+                <span v-else-if="item.ot_time == 8">1 Hrs</span>
+                <span v-else-if="item.ot_time == 9">30 Min</span>
+                <span v-else>{{ item.ot_time }}</span>
+              </template>
 
-            <template #[`item.status`]="{ item }">
-              <span class="d-inline-flex align-center py-1">
-                <span
-                  class="status-label d-inline-flex align-center px-3 py-1 mr-2 rounded-pill text-caption font-weight-medium"
-                  :style="{
-                    backgroundColor: item.statusBg,
-                    color: item.statusColor,
-                    lineHeight: 1.2
-                  }"
-                >
-                  <v-icon size="16" class="mr-1" :color="item.statusColor">
-                    {{ item.statusIcon }}
-                  </v-icon>
-                  {{ item.statusLabel }}
+              <template #[`item.status`]="{ item }">
+                <span class="d-inline-flex align-center py-1">
+                  <span
+                    class="status-label d-inline-flex align-center px-3 py-1 mr-2 rounded-pill text-caption font-weight-medium"
+                    :style="{
+                      backgroundColor: item.statusBg,
+                      color: item.statusColor,
+                      lineHeight: 1.2
+                    }"
+                  >
+                    <v-icon size="16" class="mr-1" :color="item.statusColor">
+                      {{ item.statusIcon }}
+                    </v-icon>
+                    {{ item.statusLabel }}
+                  </span>
+
+                  <span v-if="item.status === 2 || item.status === 3" class="d-inline-flex align-center">
+                    <v-switch
+                      color="primary"
+                      density="compact"
+                      :hide-details="true"
+                      :model-value="item.isComplete"
+                      :disabled="loading || isActionLoading"
+                      @update:model-value="onSwitchChange(item)"
+                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
+                    />
+                  </span>
                 </span>
+              </template>
 
-                <span v-if="item.status === 2" class="d-inline-flex align-center">
-                  <v-switch
-                    color="primary"
-                    density="compact"
-                    :hide-details="true"
-                    :model-value="item.isComplete"
-                    @update:model-value="onSwitchChange(item)"
-                    style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
-                  />
+              <template #[`item.action`]="{ item }">
+                <span class="d-flex justify-left align-center p-0">
+                  <BaseButton
+                    elevation="0"
+                    color=""
+                    class="delete-btn"
+                    size="small"
+                    :disabled="loading || isActionLoading"
+                    :add-class="['ma-1']"
+                    @click.stop="showConfirmDelete(item.id)"
+                  >
+                    <v-icon icon="tabler:IconTrash" size="15" />
+                  </BaseButton>
                 </span>
-              </span>
-            </template>
+              </template>
+            </BaseTable>
 
-            <template #[`item.action`]="{ item }">
-              <span class="d-flex justify-left align-center p-0">
-                <BaseButton
-                  elevation="0"
-                  color=""
-                  class="delete-btn"
-                  size="small"
-                  :add-class="['ma-1']"
-                  @click.stop="showConfirmDelete(item.id)"
-                >
-                  <v-icon icon="tabler:IconTrash" size="15" />
-                </BaseButton>
-              </span>
-            </template>
-          </BaseTable>
-
-          <div v-else class="text-center pa-8 text-gray-500">
-            <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
-            <div class="text-body-1">No overtime records found</div>
+            <div v-else class="text-center pa-8 text-gray-500">
+              <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
+              <div class="text-body-1">No overtime records found</div>
+            </div>
           </div>
         </ParentCard>
       </v-col>
@@ -336,6 +343,8 @@ const overTimeStore = useOverTimeStore();
 
 const search = ref('');
 const loading = ref(false);
+const isActionLoading = ref(false);
+
 const memberLeaves = ref([]);
 const overTimeRecords = ref([]);
 
@@ -372,7 +381,6 @@ const leaveSummary = computed(() => {
 });
 
 const accumulatedHoursFormatted = computed(() => {
-  console.log("leave ", JSON.stringify(leaveSummary.value))
   const total = parseFloat(leaveSummary.value.accumulated_hours || 0);
   const hours = Math.floor(total);
   const minutes = Math.round((total - hours) * 60);
@@ -508,24 +516,30 @@ const onStatusSwitchChange = async (item) => {
   if (!item || !item.id) return;
   const newStatus = item.status === 3 ? 2 : 3;
 
+  isActionLoading.value = true;
   try {
     await overTimeStore.updateOverTimeStatus({
       id: item.id,
       status: newStatus
     });
-    fetchOvertimeData(route.params.recId);
+    await fetchOvertimeData(route.params.recId);
   } catch (error) {
     console.error('Failed to change overtime status:', error);
+  } finally {
+    isActionLoading.value = false;
   }
 };
 
 const deleteOvertime = async () => {
+  isActionLoading.value = true;
   try {
     await overTimeStore.deleteOvertime({ id: deleteTarget.value });
     deleteTarget.value = undefined;
-    fetchOvertimeData(route.params.recId);
+    await fetchOvertimeData(route.params.recId);
   } catch (error) {
     console.error('Error deleting member overtime:', error);
+  } finally {
+    isActionLoading.value = false;
   }
 };
 
@@ -599,6 +613,5 @@ const goBack = () => {
   font-size: 10px;
   font-weight: 800;
   color: #1e88e5;
-  /* text-transform: uppercase; */
 }
 </style>

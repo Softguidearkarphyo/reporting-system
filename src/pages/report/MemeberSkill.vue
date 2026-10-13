@@ -13,11 +13,12 @@
         type="text"
         variant="plain"
         dense
+        :disabled="isLoading || isSheetLoading"
       >
       </BaseTextField>
       <BaseButton
         @click="exportFile"
-        :disabled="!items.length"
+        :disabled="!items.length || isLoading || isSheetLoading"
         style="width: 100px"
       >
         Export
@@ -25,7 +26,8 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <BaseTable :headers="headers" :items="items">
+    <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
+    <BaseTable :headers="headers" :items="items" :loading="isLoading">
       <template #[`item.position`]="{ item }">
         <span class="time-box d-inline-flex justify-center align-center">
           {{ item.position }}
@@ -55,6 +57,7 @@
             class="edit-btn"
             size="small"
             :style="{ width }"
+            :disabled="isLoading || isSheetLoading"
           >
             <v-icon icon="tabler:IconTarget" size="15" />
           </BaseButton>
@@ -65,6 +68,7 @@
             class="edit-btn"
             size="small"
             :style="{ width }"
+            :disabled="isLoading || isSheetLoading"
           >
             <v-icon icon="tabler:IconEdit" size="15" />
           </BaseButton>
@@ -94,6 +98,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSkillSheetStore } from '@/stores/skillSheet/skillSheet';
 import { useSystemStore } from '@/stores/system/system';
+import { ref, computed, watch, onMounted } from 'vue';
+
 const { t, locale } = useI18n();
 const skillSheetStore = useSkillSheetStore();
 const router = useRouter();
@@ -106,6 +112,11 @@ const staffName = ref('');
 const techStackList = ref([]);
 const systemStore = useSystemStore();
 let originalItems = [];
+
+// Loading states
+const isLoading = ref(false);
+const isSheetLoading = ref(false);
+
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
   const tmpHeaders = [
@@ -113,7 +124,6 @@ const headers = computed(() => {
       title: t('addMemberSkill.table.staff').toUpperCase(),
       key: 'staff',
     },
-
     {
       title: t('addMemberSkill.table.position'),
       key: 'position',
@@ -159,7 +169,9 @@ const headers = computed(() => {
 });
 
 const fetch = async () => {
-  await systemStore.fetchTechStacks(),
+  isLoading.value = true;
+  try {
+    await systemStore.fetchTechStacks();
     await skillSheetStore.fetchSkillSheet({
       staff: {},
       staff_project: {},
@@ -167,30 +179,35 @@ const fetch = async () => {
       tech_stack_proficiencies: {},
     });
 
-  const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
-    id: item.id,
-    staff: item?.staff?.username,
-    project:
-      item?.staff_project.map((p) => p.project?.eng_name).join(', ') ?? [],
-    position: item?.position?.name,
-    grade: item?.grade?.name,
-    join_date: item?.join_date,
-    sg_experience: item?.sg_experience,
-    prev_experience: item?.prev_experience,
-    total_experience: item?.total_experience,
-    japanese_level: item?.japanese_level?.name,
-    responsibility:
-      item?.staff_responsibility
-        .map((p) => p.responsibility?.name)
-        .join(', ') ?? [],
-    major_tech_stack: item?.major_tech_stack?.name,
-  }));
+    const tmpArr = skillSheetStore.getSkillSheets?.map((item) => ({
+      id: item.id,
+      staff: item?.staff?.username,
+      project:
+        item?.staff_project.map((p) => p.project?.eng_name).join(', ') ?? [],
+      position: item?.position?.name,
+      grade: item?.grade?.name,
+      join_date: item?.join_date,
+      sg_experience: item?.sg_experience,
+      prev_experience: item?.prev_experience,
+      total_experience: item?.total_experience,
+      japanese_level: item?.japanese_level?.name,
+      responsibility:
+        item?.staff_responsibility
+          .map((p) => p.responsibility?.name)
+          .join(', ') ?? [],
+      major_tech_stack: item?.major_tech_stack?.name,
+    }));
 
-  items.value = [...tmpArr];
-  originalItems = [...items.value];
+    items.value = [...tmpArr];
+    originalItems = [...items.value];
 
-  techStackList.value =
-    systemStore?.getTechStacks?.map((item) => item?.name) ?? [];
+    techStackList.value =
+      systemStore?.getTechStacks?.map((item) => item?.name) ?? [];
+  } catch (error) {
+    console.error('Error fetching skill sheets:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -198,22 +215,31 @@ onMounted(async () => {
 });
 
 const viewSkillSheet = async (id) => {
-  const res = await skillSheetStore.fetchSkillSheet({
-    id,
-    tech_stack_proficiencies: {},
-  });
-  fetchedSkillSheet.value = res?.data?.[0] ?? null;
-  const data = fetchedSkillSheet.value;
-  staffName.value = data?.staff?.eng_name ?? '';
-  showSheet.value = true;
+  isSheetLoading.value = true;
+  try {
+    const res = await skillSheetStore.fetchSkillSheet({
+      id,
+      tech_stack_proficiencies: {},
+    });
+    fetchedSkillSheet.value = res?.data?.[0] ?? null;
+    const data = fetchedSkillSheet.value;
+    staffName.value = data?.staff?.eng_name ?? '';
+    showSheet.value = true;
+  } catch (error) {
+    console.error('Error fetching individual skill sheet:', error);
+  } finally {
+    isSheetLoading.value = false;
+  }
 };
 
 const pushToEdit = (id) => {
   router.push({ name: 'edit-employee-skill', params: { skillSheetId: id } });
 };
+
 const exportFile = () => {
   exportExcel(skillSheetStore.getSkillSheets, techStackList.value);
 };
+
 watch(
   () => search.value,
   (newVal) => {

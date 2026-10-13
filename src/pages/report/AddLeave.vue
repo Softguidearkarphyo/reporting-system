@@ -13,6 +13,7 @@
           item-title="name"
           prependIcon="tabler:IconUserCog"
           class="w-100"
+          :disabled="isLoading || isSubmitting"
           @update:modelValue="selectMember"
         />
 
@@ -23,6 +24,7 @@
           hide-details
           color="primary"
           class="custom-checkbox"
+          :disabled="isLoading || isSubmitting"
           @update:modelValue="onCheckboxChange"
         />
       </v-col>
@@ -35,6 +37,7 @@
           value="potions1"
           hide-details
           class="custom-checkbox"
+          :disabled="isLoading || isSubmitting"
         />
 
         <v-checkbox
@@ -45,6 +48,7 @@
           value="potions2"
           hide-details
           class="custom-checkbox"
+          :disabled="isLoading || isSubmitting"
         />
 
         <v-checkbox
@@ -54,6 +58,7 @@
           value="potions3"
           hide-details
           class="custom-checkbox"
+          :disabled="isLoading || isSubmitting"
         />
       </v-col>
     </v-row>
@@ -101,6 +106,7 @@
                   class="w-100"
                   :error-messages="errorMessage"
                   clearable
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (date) => {
                       handleChange(date);
@@ -122,6 +128,7 @@
                   class="w-100"
                   :multiple="true"
                   :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (dates) => {
                       const selectedDates = Array.isArray(dates) ? dates : [];
@@ -143,6 +150,7 @@
                   class="w-100"
                   :error-messages="errorMessage"
                   readonly
+                  :disabled="isLoading || isSubmitting"
                 />
               </Field>
 
@@ -160,6 +168,7 @@
                   item-title="name"
                   prependIcon="tabler:IconClockQuestion"
                   :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (duration) => {
                       handleChange(duration);
@@ -188,6 +197,7 @@
                   variant="plain"
                   prependIcon="tabler:IconHelpCircle"
                   :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (reason) => {
                       handleChange(reason);
@@ -205,13 +215,13 @@
                 :label="t('creatLeave.form.multiple_leave')"
                 color="primary"
                 hide-details
-                :disabled="isShortLeaveSelected"
+                :disabled="isShortLeaveSelected || isLoading || isSubmitting"
                 @update:modelValue="changeMultipleLeave"
               />
             </v-col>
 
             <v-col cols="12" class="d-flex justify-center mt-3">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
                 {{ t('common.submit') }}
               </BaseButton>
             </v-col>
@@ -236,12 +246,13 @@
                   prependIcon="tabler:IconCalendarPin"
                   :error-messages="errorMessage"
                   readonly
+                  :disabled="isLoading || isSubmitting"
                 />
               </Field>
             </v-col>
 
             <v-col cols="12" sm="6" class="d-flex align-center justify-center mt-2 mt-sm-0">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
                 {{ t('creatLeave.form.calculate') }}
               </BaseButton>
             </v-col>
@@ -269,6 +280,7 @@
                   prependIcon="tabler:IconCalendarPin"
                   :error-messages="errorMessage"
                   clearable
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (date) => {
                       handleChange(date);
@@ -293,6 +305,7 @@
                   item-title="name"
                   prependIcon="tabler:IconAlarm"
                   :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting"
                   @update:modelValue="
                     (time) => {
                       handleChange(time);
@@ -306,7 +319,7 @@
 
           <v-row dense>
             <v-col cols="12" class="d-flex justify-center mt-3">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
                 {{ t('common.submit') }}
               </BaseButton>
             </v-col>
@@ -330,15 +343,15 @@
           {{ t('creatLeave.title3') }}
         </BaseTitle>
 
-        <!-- Leave Requests Table -->
+        <!-- Leave Requests Table with :loading="isLoading" -->
         <BaseTable
           v-if="selectedPotion === 'potions1'"
           :headers="multiHeaders1"
           :items="leaveRequests"
           items-per-page="10"
           class="elevation-1"
+          :loading="isLoading"
         >
-          <!-- Leave Type (Paid / Unpaid / Short Leave) -->
           <template #[`item.leave_type`]="{ item }">
             <span
               v-if="item.leave_type === 1"
@@ -374,22 +387,24 @@
           </template>
         </BaseTable>
 
-        <!-- Leave Records Table -->
+        <!-- Leave Records Table with :loading="isLoading" -->
         <BaseTable
           v-if="selectedPotion === 'potions2'"
           :headers="multiHeaders2"
           :items="leaveRecords"
           items-per-page="10"
           class="elevation-1"
+          :loading="isLoading"
         />
 
-        <!-- Overtime Table -->
+        <!-- Overtime Table with :loading="isLoading || isDeleting" -->
         <BaseTable
           v-if="selectedPotion === 'potions3'"
           :headers="multiHeaders3"
           :items="overtimes"
           items-per-page="10"
           class="elevation-1"
+          :loading="isLoading || isDeleting"
         >
           <template #[`item.ot_time`]="{ item }">
             <span v-if="item.ot_time == 1">Full day</span>
@@ -426,6 +441,7 @@
                   density="compact"
                   :hide-details="true"
                   :model-value="item.isComplete"
+                  :disabled="isLoading || isDeleting || isSubmitting"
                   @update:model-value="onSwitchChange(item)"
                   style="transform: scale(0.75);"
                 />
@@ -442,6 +458,7 @@
                 class="delete-btn"
                 size="small"
                 :add-class="['ma-1']"
+                :disabled="isLoading || isDeleting || isSubmitting"
                 @click.stop="showConfirmDelete(item.id)"
               >
                 <v-icon icon="tabler:IconTrash" size="15" />
@@ -533,6 +550,11 @@ const switchTarget = ref(null);
 const deleteTarget = ref(undefined);
 const confirmDelete = ref(undefined);
 const confirmChange = ref(undefined);
+
+// Loading states
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
 
 const formData = ref({
   staff_id: '',
@@ -639,8 +661,8 @@ const overtimes = computed(() => {
   const isJapanese = locale.value === 'ja';
 
   const statusMap = {
-    0: { text: 'Pending', icon: 'mdi-timer-sand', color: '#ff9800', bg: 'rgba(var(--v-theme-pending), 0.2)' },
-    1: { text: 'Reject', icon: 'mdi-close-circle-outline', color: '#d00000', bg: 'rgba(208, 0, 0, 0.2)' },
+    0: { text: 'Pending', icon: 'mdi-timer-sand', color: 'status' },
+    1: { text: 'Reject', icon: 'mdi-close-circle-outline', color: 'status1' },
     2: { text: 'Accept', icon: 'mdi-checkbox-marked-circle-outline', color: '#1e88e5', bg: 'rgba(30, 136, 229, 0.2)' },
     3: { text: 'Complete', icon: 'mdi-check-circle-outline', color: '#789f00ff', bg: 'rgba(var(--v-theme-complete), 0.2)' }
   };
@@ -670,12 +692,15 @@ const showConfirmDelete = (id) => {
 };
 
 const deleteOvertime = async () => {
+  isDeleting.value = true;
   try {
     await overTimeStore.deleteOvertime({ id: deleteTarget.value });
     deleteTarget.value = undefined;
     await overTimeStore.fetchOverTime();
   } catch (error) {
     console.error('Error deleting member overtime:', error);
+  } finally {
+    isDeleting.value = false;
   }
 };
 
@@ -688,6 +713,7 @@ const onStatusSwitchChange = async (item, newValue) => {
   if (!item || !item.id) return;
   const updatedStatus = newValue ? 3 : 2;
 
+  isDeleting.value = true;
   try {
     await overTimeStore.updateOverTimeStatus({
       id: item.id,
@@ -696,6 +722,8 @@ const onStatusSwitchChange = async (item, newValue) => {
     await overTimeStore.fetchOverTime();
   } catch (error) {
     console.error('Failed to update status:', error);
+  } finally {
+    isDeleting.value = false;
   }
 };
 
@@ -780,6 +808,7 @@ function resetAllForms() {
 }
 
 const fetchData = async () => {
+  isLoading.value = true;
   try {
     await Promise.all([
       memberStore.fetchMember(),
@@ -787,7 +816,11 @@ const fetchData = async () => {
       leaveRecordStore.fetchLeaveRecord(),
       overTimeStore.fetchOverTime(),
     ]);
-  } catch (error) {}
+  } catch (error) {
+    console.error('Fetch error:', error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const selectMember = async (id) => {
@@ -807,10 +840,13 @@ const selectMember = async (id) => {
     formData.value.staff_id = id;
     formData.value.permanent_date = member.permanent_date;
     showNewEmployee.value = true;
-  } catch (error) {}
+  } catch (error) {
+    console.error('Select member error:', error);
+  }
 };
 
 async function submitLeave(values, { resetForm }) {
+  isSubmitting.value = true;
   try {
     if (!selectedMemberId.value) return;
 
@@ -836,7 +872,6 @@ async function submitLeave(values, { resetForm }) {
     }
 
     await leaveStore.createLeave(payload);
-
     await fetchData();
 
     resetForm({
@@ -852,10 +887,15 @@ async function submitLeave(values, { resetForm }) {
     formData.value.multi_date = [];
     formData.value.duration = '';
     formData.value.reason = '';
-  } catch (error) {}
+  } catch (error) {
+    console.error('Submit leave error:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 
 async function submitLeaveRecord(values, { resetForm }) {
+  isSubmitting.value = true;
   try {
     if (!selectedMemberId.value) return;
 
@@ -867,10 +907,15 @@ async function submitLeaveRecord(values, { resetForm }) {
     await leaveRecordStore.createLeaveRecord(payload);
     await fetchData();
     resetForm();
-  } catch (error) {}
+  } catch (error) {
+    console.error('Submit leave record error:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 
 async function submitOt(values, { resetForm }) {
+  isSubmitting.value = true;
   try {
     if (!selectedMemberId.value) return;
 
@@ -886,7 +931,11 @@ async function submitOt(values, { resetForm }) {
     resetForm();
     formData.value.ot_date = null;
     formData.value.ot_time = null;
-  } catch (error) {}
+  } catch (error) {
+    console.error('Submit OT error:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 
 onMounted(async () => {
@@ -947,6 +996,5 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: #1e88e5;
-  /* text-transform: uppercase; */
 }
 </style>

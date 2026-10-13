@@ -36,6 +36,8 @@ export default {
     daily_attendance_check_in: 'Daily Attendance Check-In',
     check_in: 'Check-In',
     checking_in: 'Checking In...',
+    loadingText: 'Loading...',
+    totalHours: 'Total Hours',
   },
   sidebar: {
     dashboard: 'dashboard',
@@ -57,7 +59,7 @@ export default {
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
     theme: 'Theme',
-    timesheets: 'Project Hours',
+    timesheets: 'Project Working Hours',
     theme: 'Theme Color',
     attendanceAccess: 'Attendance Access',
     attendanceList: 'Attendance List',
