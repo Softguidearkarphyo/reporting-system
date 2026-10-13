@@ -5,23 +5,42 @@
 
   <ParentCard>
     <Form ref="formRef" :validation-schema="locationSchema" @submit="submit">
-      <v-row align="center">
+      <v-row align="center" justify="start" class="py-1 ga-2 ga-md-0">
+        <!-- Employee Select Box / Checkbox Toggle View -->
         <v-col cols="12" sm="6" md="4" lg="2">
-          <Field name="staff_id" v-slot="{ field, errorMessage }">
-            <v-select v-model="field.value" v-bind="field" :items="staffOptions" item-title="label" item-value="id"
-              :label="t('location.form.staff').toUpperCase()" variant="plain" prepend-inner-icon="tabler:IconUser"
-              :error-messages="errorMessage" class="w-100" @update:model-value="onStaffSelect"></v-select>
-          </Field>
+          <BaseSelect
+            v-if="!selectedMember"
+            v-model="selectedMemberId"
+            :label="t('creatLeave.options.employee')"
+            :items="memberList"
+            item-value="id"
+            item-title="name"
+            prependIcon="tabler:IconUserCog"
+            class="w-100"
+            @update:modelValue="selectMember"
+          />
+
+          <v-checkbox
+            v-else
+            v-model="isChecked"
+            :label="t('creatLeave.options.selected_name') + selectName"
+            hide-details
+            color="primary"
+            class="custom-checkbox"
+            @update:modelValue="onCheckboxChange"
+          />
         </v-col>
 
+        <!-- Latitude -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="lat" v-slot="{ field, errorMessage }">
             <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.lat')" type="number" step="any"
-              variant="plain" prependIcon="tabler:IconWorldLatitude"" :error-messages="errorMessage" class="w-100">
+              variant="plain" prependIcon="tabler:IconWorldLatitude" :error-messages="errorMessage" class="w-100">
             </BaseTextField>
           </Field>
         </v-col>
 
+        <!-- Longitude -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="lon" v-slot="{ field, errorMessage }">
             <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.lon')" type="number" step="any"
@@ -30,6 +49,7 @@
           </Field>
         </v-col>
 
+        <!-- Allow Meter -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="allow_meter" v-slot="{ field, errorMessage }">
             <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.allow_meter')" type="number"
@@ -38,6 +58,7 @@
           </Field>
         </v-col>
 
+        <!-- Device UUID -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <Field name="device_uuid" v-slot="{ field, errorMessage }">
             <BaseTextField v-model="field.value" v-bind="field" :label="t('location.form.device_uuid')" type="text"
@@ -46,6 +67,7 @@
           </Field>
         </v-col>
 
+        <!-- Buttons -->
         <v-col cols="12" sm="6" md="4" lg="2">
           <div class="d-flex ga-2 align-center">
             <BaseButton type="submit" class="w-100">
@@ -109,11 +131,13 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Form, Field } from 'vee-validate';
 import { useAuthStore } from '@/stores/auth/auth.js';
+import { useMemberStore } from '@/stores/member/member.js';
 import { getLocationSchema } from '@/plugins/validations/location.js';
 import { ADMIN } from '@/utils/constant';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const authStore = useAuthStore();
+const memberStore = useMemberStore();
 
 const role = computed(() => authStore.staffRole || localStorage.getItem('staff-role'));
 const deleteTarget = ref(undefined);
@@ -125,23 +149,51 @@ const originalItems = ref([]);
 const items = ref([]);
 const hasInitialData = ref(false);
 
+const selectedMemberId = ref(null);
+const isChecked = ref(true);
+
 const locationSchema = computed(() => getLocationSchema(t));
 
-const staffOptions = computed(() =>
-  originalItems.value.map((item) => ({
-    id: item.id,
-    label: `${item.eng_name}`,
-  }))
-);
+const memberList = computed(() => {
+  const isJapanese = locale.value === 'ja';
+
+  return (
+    memberStore.getMembers
+      ?.map((member) => ({
+        id: member.id,
+        name: isJapanese ? member.jp_name : member.eng_name,
+        sort_key: member.sort_key,
+      }))
+      ?.sort((a, b) => {
+        if (!a.sort_key) return 1;
+        if (!b.sort_key) return -1;
+        return a.sort_key - b.sort_key;
+      }) || []
+  );
+});
+
+const selectedMember = computed(() => {
+  if (!memberList.value || !selectedMemberId.value) {
+    return null;
+  }
+  return memberList.value.find((member) => member.id === selectedMemberId.value);
+});
+
+const selectName = computed(() => {
+  return selectedMember.value ? selectedMember.value.name : '';
+});
 
 const resetFormMode = () => {
   isEditMode.value = false;
+  selectedMemberId.value = null;
+  isChecked.value = true;
   formRef.value?.resetForm();
 };
 
 const fetch = async () => {
   resetFormMode();
   try {
+    await memberStore.fetchMember();
     const data = await authStore.fetchLocationStaffs();
 
     const list = Array.isArray(data) ? data : (data?.data || []);
@@ -153,21 +205,40 @@ const fetch = async () => {
   }
 };
 
-// Call on mounted hook
 onMounted(() => {
   fetch();
 });
 
-const onStaffSelect = (staffId) => {
-  const target = originalItems.value.find((item) => item.id === staffId);
-  if (target) {
-    formRef.value?.setValues({
-      staff_id: target.id,
-      lat: target.lat,
-      lon: target.lon,
-      allow_meter: target.allow_meter,
-      device_uuid: target.device_uuid,
-    });
+const selectMember = async (id) => {
+  try {
+    if (!memberStore.getMembers?.length) {
+      await memberStore.fetchMember();
+    }
+
+    const member = originalItems.value.find((item) => item.id === id);
+
+    if (member) {
+      formRef.value?.setValues({
+        staff_id: member.id,
+        lat: member.lat,
+        lon: member.lon,
+        allow_meter: member.allow_meter,
+        device_uuid: member.device_uuid,
+      });
+    } else {
+      formRef.value?.setFieldValue('staff_id', id);
+    }
+  } catch (error) {
+    console.error('Select Member Error:', error);
+  }
+};
+
+const onCheckboxChange = (val) => {
+  if (!val) {
+    selectedMemberId.value = null;
+    isChecked.value = true;
+    formRef.value?.setFieldValue('staff_id', null);
+    formRef.value?.resetForm();
   }
 };
 
@@ -209,6 +280,9 @@ const formattedItems = computed(() => {
 
 const scrollToEdit = (item) => {
   isEditMode.value = true;
+  selectedMemberId.value = item.id;
+  isChecked.value = true;
+
   formRef.value?.setValues({
     staff_id: item.id,
     lat: item.lat,
@@ -234,11 +308,14 @@ const deleteLocation = async () => {
   fetch();
 };
 
-
 const submit = async (values, { setErrors }) => {
-  console.log("values", values);
+  const payload = {
+    ...values,
+    staff_id: selectedMemberId.value || values.staff_id,
+  };
+  
   try {
-    await authStore.saveStaffLocation(values);
+    await authStore.saveStaffLocation(payload);
     await fetch();
   } catch (error) {
     if (error.response?.status === 422 && error.response?.data?.errors) {

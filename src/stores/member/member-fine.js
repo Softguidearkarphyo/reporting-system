@@ -10,6 +10,7 @@ export const useMemberFineStore = defineStore('memberFine', () => {
     }
 
   const createMemberFine = async (payload) => {
+    // console.log('payload 2', payload);
     try {
       const response = await api.post(
         '/reporting-system/fines/create',

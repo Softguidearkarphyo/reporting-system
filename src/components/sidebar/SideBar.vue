@@ -149,11 +149,11 @@ const settings = computed(() => [
     path: '/reporting-system/new-employee-skills',
     icon: 'tabler:IconCubePlus',
   },
-  {
-    title: t('sidebar.show_project'),
-    path: '/reporting-system/show-project-search',
-    icon: 'mdi-account-details-outline',
-  },
+{
+  title: t('sidebar.timesheets'),
+  path: '/reporting-system/show-project-search',
+  icon: 'mdi-clipboard-text-clock-outline',
+},
 ]);
 </script>
 

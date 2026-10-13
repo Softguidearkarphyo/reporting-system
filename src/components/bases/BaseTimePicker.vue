@@ -1,5 +1,5 @@
 <template>
- <v-menu
+  <v-menu
     v-model="menu"
     min-width="auto"
     :close-on-content-click="false"
@@ -9,23 +9,23 @@
   >
     <template v-slot:activator="{ props: activatorProps }">
       <v-text-field
-          v-bind="{ ...activatorProps, ...$attrs }"
-          :model-value="formattedValue"
-          @update:model-value="$emit('update:modelValue', $event)"
-          :style="{ width }"
-          :label="label"
-          readonly
-          variant="underlined"
-          @click="menu = true"
-        >
-          <template v-slot:prepend>
-            <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
-          </template>
-        </v-text-field>
+        v-bind="{ ...activatorProps, ...$attrs }"
+        :model-value="formattedValue"
+        :style="{ width: textFieldWidth }"
+        :label="label"
+        readonly
+        :disabled="disabled"
+        variant="underlined"
+        @click="menu = true"
+      >
+        <template v-slot:prepend>
+          <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
+        </template>
+      </v-text-field>
     </template>
 
     <VueDatePicker
-     :model-value="internalTime"
+      :model-value="internalTime"
       @update:model-value="onSelect"
       time-picker
       inline
@@ -50,21 +50,34 @@ const props = defineProps({
     type: [String, null],
     default: null,
   },
-   width: {
-    type: String,
-    default: '400px',
+  label: { 
+    type: String, 
+    default: 'Time' 
   },
-  label: { type: String, default: 'Time' },
- prependIcon: [String, Object],
+  width: { 
+    type: String, 
+    default: '400px' 
+  },
+  textWidth: {
+    type: String,
+    default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  prependIcon: [String, Object],
   prependIconColor: {
     type: String,
     default: 'primary',
   },
-  width: { type: String, default: '100%' },
 });
+
 const emit = defineEmits(['update:modelValue', 'input', 'change']);
 const menu = ref(false);
 const internalTime = ref(null);
+
+const textFieldWidth = computed(() => props.textWidth || props.width);
 
 watch(
   () => props.modelValue,
@@ -89,13 +102,12 @@ const formattedValue = computed(() => {
   if (!(internalTime.value instanceof Date) || isNaN(internalTime.value)) {
     return '';
   }
-   return internalTime.value.toLocaleTimeString([], {
+  return internalTime.value.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
   });
 });
-
 
 const formatTime = (date) => {
   if (!(date instanceof Date) || isNaN(date)) return null;
@@ -107,25 +119,18 @@ const formatTime = (date) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
-
 const onSelect = (val) => {
   let date;
   if (val && typeof val === 'object' && 'hours' in val) {
     date = new Date();
     date.setHours(val.hours, val.minutes, val.seconds || 0);
-  }
-  else if (val instanceof Date) {
+  } else if (val instanceof Date) {
     date = val;
-  }
-  else {
-    console.warn('Invalid time selected:', val);
+  } else {
     return;
   }
 
-  if (isNaN(date.getTime())) {
-    console.warn('Invalid date created from input:', val);
-    return;
-  }
+  if (isNaN(date.getTime())) return;
 
   internalTime.value = date;
 
@@ -135,9 +140,8 @@ const onSelect = (val) => {
   emit('change', formatted);
   menu.value = false;
 };
-
-
 </script>
+
 <style scoped>
 :deep(.dp__outer_menu_wrap) {
   background: rgb(var(--v-theme-surface));
@@ -149,13 +153,11 @@ const onSelect = (val) => {
   z-index: 9999 !important;
 }
 
-/* Time columns */
 :deep(.dp__time_col) {
   width: 48px;
   margin: 0 6px;
 }
 
-/* Time options */
 :deep(.dp__time_col_reg) {
   height: 36px;
   line-height: 36px;
@@ -164,13 +166,10 @@ const onSelect = (val) => {
   transition: background 0.2s;
 }
 
-/* Active (selected) time */
 :deep(.dp__active_time) {
   color: rgb(var(--v-theme-primary));
   background: rgba(var(--v-theme-primary), 0.1);
   border-radius: 6px;
   font-weight: 500;
 }
-
 </style>
-

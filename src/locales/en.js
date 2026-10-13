@@ -57,7 +57,7 @@ export default {
     newemployeeskills: 'new employee skills',
     employeecompetency: 'employee competency',
     theme: 'Theme',
-    show_project: 'Show Project',
+    timesheets: 'Project Hours',
     theme: 'Theme Color',
     attendanceAccess: 'Attendance Access',
     attendanceList: 'Attendance List',

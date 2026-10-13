@@ -57,7 +57,7 @@ export default {
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
-    show_project: 'プロジェクトを表示',
+    timesheets: '作業時間',
     theme: 'テーマカラー',
     attendanceAccess: '出勤アクセス',
     attendanceList: '出勤リスト',

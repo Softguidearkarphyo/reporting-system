@@ -27,7 +27,6 @@
         />
       </v-col>
 
-      <!-- Option Checkboxes -->
       <v-col cols="12" sm="auto" class="d-flex flex-wrap align-center ga-3">
         <v-checkbox
           v-model="selectedPotion"
@@ -60,9 +59,7 @@
     </v-row>
   </ParentCard>
 
-  <!-- Main Content Layout -->
   <v-row v-if="selectedMember && selectedPotion" class="mt-2">
-    <!-- Form Side -->
     <v-col cols="12" lg="5">
       <ParentCard>
         <v-row dense>

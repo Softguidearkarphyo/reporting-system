@@ -175,6 +175,19 @@ onMounted(() => {
 });
 
 const submit = async (values) => {
+  const payload = { ...values };
+
+  if (checkboxFlg.value) {
+    // console.log("do this ")
+    if (payload.start_date) {
+      payload.start_date = format(getStartOfMonth(new Date(payload.start_date)), 'yyyy-MM-dd');
+    }
+    if (payload.end_date) {
+      payload.end_date = format(getEndOfMonth(new Date(payload.end_date)), 'yyyy-MM-dd');
+    }
+    delete payload.week_date;
+  }
+
   const projectWorkHour = await showProject.fetchProjecthour(values);
   initialData.value = projectWorkHour.data.length > 0 ? true : false;
 
@@ -250,9 +263,17 @@ const submit = async (values) => {
     }))
   }));
 
-  if (!checkboxFlg.value && Number(values.week_date) > 1 && groupedResult.length > 1) {
+if (!checkboxFlg.value && Number(payload.week_date) > 1 && groupedResult.length > 1) {
+    // Extract the earliest start date from the last group in groupedResult
+    const oldestWeekRange = groupedResult[groupedResult.length - 1].weekLabel.split(' ~ ');
+    const overallStartDate = oldestWeekRange[1];
+
+    // Extract the latest end date from the first group in groupedResult
+    const newestWeekRange = groupedResult[0].weekLabel.split(' ~ ');
+    const overallEndDate = newestWeekRange[0];
+
     const combinedTotalResult = {
-      weekLabel: 'total hours',
+      weekLabel: `${overallEndDate} ~ ${overallStartDate}` + ` ${t('common.totalHours')}`, 
       projects: Object.values(totalGroups.projects).map(project => ({
         project_id: project.project_id,
         project_eng: project.project_eng,
@@ -331,11 +352,11 @@ watch(
          Object.values(item).some((val) =>
           String(val).toLowerCase().includes(newVal.toLowerCase())
         )
-        if(!dateSearch){
-          const projectSearch = originalItems.project.filter((e)=> {
+        // if(!dateSearch){
+        //   const projectSearch = originalItems.project.filter((e)=> {
 
-          })
-        }
+        //   })
+        // }
     })   
     } else {
       items.value = [...originalItems];
