@@ -129,11 +129,11 @@
                 {{ t('creatLeave.title4') || 'ON LEAVE RECORDS' }}
               </h3>
             </v-col>
-            <v-col cols="6" md="5" class="d-flex justify-end">
+            <!-- <v-col cols="6" md="5" class="d-flex justify-end">
               <BaseTextField v-model="search" :label="t('common.search')" color="primary"
                 prepend-inner-icon="mdi-magnify" density="compact" variant="outlined" hide-details class="rounded-lg"
                 :disabled="loading || isActionLoading" />
-            </v-col>
+            </v-col> -->
           </v-row>
 
           <div>
