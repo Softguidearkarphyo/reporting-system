@@ -62,7 +62,7 @@ export default {
     employeecompetency: 'メンバースキル',
     newemployeeskills: 'スキルを追加',
     theme: 'テーマ',
-    timesheets: 'プロジェクト作業時間',
+    timesheets: '業務遂行能力',
     theme: 'テーマカラー',
     attendanceAccess: '出勤アクセス',
     attendanceList: '出勤リスト',
