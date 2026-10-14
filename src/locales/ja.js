@@ -41,6 +41,8 @@ export default {
     noattendance: '本日の出席記録が見つかりませんでした',
     noleave: '休暇の記録は見つかりませんでした。',
     nofine: '罰金の記録は見つかりませんでした。',
+    noovertime: '残業の記録は見つかりませんでした。',
+    otrecord: '時間外労働の記録',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

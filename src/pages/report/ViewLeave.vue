@@ -194,7 +194,7 @@
           <v-row class="align-center mb-3">
             <v-col cols="12">
               <h3 class="text-subtitle-1 font-weight-bold text-uppercase tracking-wide">
-                {{ t('creatLeave.title3') || 'OVERTIME RECORDS' }}
+                {{ t('common.otrecord') }}
               </h3>
             </v-col>
           </v-row>
@@ -247,7 +247,7 @@
 
             <div v-else class="text-center pa-8 text-gray-500">
               <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-clock-outline</v-icon>
-              <div class="text-body-1">No overtime records found</div>
+              <div class="text-body-1">{{ t('common.noovertime') }}</div>
             </div>
           </div>
         </ParentCard>

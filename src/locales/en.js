@@ -41,6 +41,8 @@ export default {
     noattendance: 'No attendance records found for today',
     noleave: 'No leave records found',
     nofine: 'No fine records found',
+    noovertime: 'No overtime records found',
+    otrecord: 'overtime records',
   },
   sidebar: {
     dashboard: 'dashboard',
