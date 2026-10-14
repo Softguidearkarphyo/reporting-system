@@ -68,7 +68,7 @@
     <div v-else class="text-center py-10 my-4">
       <v-icon icon="tabler:IconCalendarX" size="56" color="grey-lighten-1" class="mb-3" />
       <div class="text-h6 text-grey-darken-1 font-weight-medium">
-        No attendance records found for today
+        {{t('common.noattendance')}}
       </div>
     </div>
   </ParentCard>

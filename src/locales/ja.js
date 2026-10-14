@@ -38,6 +38,9 @@ export default {
     checking_in: 'チェックイン中...',
     loadingText: '読み込み中...',
     totalHours: '総時間',
+    noattendance: '本日の出席記録が見つかりませんでした',
+    noleave: '休暇の記録は見つかりませんでした。',
+    nofine: '罰金の記録は見つかりませんでした。',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

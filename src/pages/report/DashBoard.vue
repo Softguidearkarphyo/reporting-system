@@ -81,7 +81,7 @@
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-            <div class="text-body-1">No leave records found</div>
+            <div class="text-body-1">{{ t('common.noleave') }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -122,7 +122,7 @@
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
-            <div class="text-body-1">No fine records found</div>
+            <div class="text-body-1">{{ t('common.nofine') }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -206,7 +206,7 @@
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-            <div class="text-body-1">No leave records found</div>
+            <div class="text-body-1">{{ t('common.noleave') }}</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -241,7 +241,7 @@
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
             <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-file-document-outline</v-icon>
-            <div class="text-body-1">No fine records found</div>
+            <div class="text-body-1">{{ t('common.nofine') }}</div>
           </v-card-text>
         </v-card>
       </v-col>

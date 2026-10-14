@@ -38,6 +38,9 @@ export default {
     checking_in: 'Checking In...',
     loadingText: 'Loading...',
     totalHours: 'Total Hours',
+    noattendance: 'No attendance records found for today',
+    noleave: 'No leave records found',
+    nofine: 'No fine records found',
   },
   sidebar: {
     dashboard: 'dashboard',

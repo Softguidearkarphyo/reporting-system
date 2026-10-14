@@ -76,7 +76,7 @@
 
         <div v-else class="text-center pa-8 text-gray-500">
           <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-          <div class="text-body-1">No leave records found</div>
+          <div class="text-body-1">{{t('common.noleave')}}</div>
         </div>
       </ParentCard> 
     </template>
@@ -269,7 +269,7 @@
 
             <div v-else class="text-center pa-8 text-gray-500">
               <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-              <div class="text-body-1">No leave records found</div>
+              <div class="text-body-1">{{ t('common.noleave') }}</div>
             </div>
           </ParentCard>
         </v-col>
