@@ -8,21 +8,16 @@
     </v-col>
   </v-row>
 
-  <!-- ParentCard with :loading="isLoading || isDeleting" -->
   <ParentCard class="mt-4">
-    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true" :loading="isLoading || isDeleting">
+    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true"
+      :loading="isLoading || isDeleting">
       <template #[`item.staff`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
-            <v-img
-              v-if="item.staff?.staff_image_url && item.staff?.staff_image_url !== 'undefined'"
-              :src="item.staff.staff_image_url"
-            />
-            <v-img
-              v-else
-              class="profileImage"
-              :src="profileImgPath(isJapanese ? item.staff?.jp_name : item.staff?.eng_name)"
-            />
+            <v-img v-if="item.staff?.staff_image_url && item.staff?.staff_image_url !== 'undefined'"
+              :src="item.staff.staff_image_url" />
+            <v-img v-else class="profileImage"
+              :src="profileImgPath(isJapanese ? item.staff?.jp_name : item.staff?.eng_name)" />
           </v-avatar>
           <div>
             <div class="font-weight-medium">
@@ -42,19 +37,13 @@
       <template #[`item.check_in_time`]="{ item }">
         <span class="font-weight-medium">{{ formatTime(item.check_in_time) }}</span>
       </template>
-
       <template #[`item.status`]="{ item }">
-        <v-chip
-          :color="isLate(item.check_in_time) ? 'warning' : 'success'"
-          size="small"
-          label
-          class="font-weight-medium"
-        >
-          <v-icon
-            start
-            size="14"
-            :icon="isLate(item.check_in_time) ? 'mdi-clock-alert-outline' : 'mdi-check-circle-outline'"
-          />
+        <v-chip :color="isLate(item.check_in_time) ? 'warning' : 'success'" size="small" label :class="[
+          'font-weight-medium',
+          isLate(item.check_in_time) ? 'status2' : 'status'
+        ]">
+          <v-icon start size="14"
+            :icon="isLate(item.check_in_time) ? 'mdi-clock-alert-outline' : 'mdi-check-circle-outline'" />
           {{ getStatusText(item.check_in_time) }}
         </v-chip>
       </template>
@@ -68,17 +57,8 @@
 
       <template #[`item.action`]="{ item }">
         <span class="d-flex justify-center p-0">
-          <BaseButton
-            v-if="isAdmin"
-            elevation="0"
-            @click.stop="showConfirmDelete(item.id)"
-            color=""
-            class="delete-btn"
-            size="small"
-            :style="{ width }"
-            :disabled="isLoading || isDeleting"
-            :add-class="['ma-1']"
-          >
+          <BaseButton v-if="isAdmin" elevation="0" @click.stop="showConfirmDelete(item.id)" color="" class="delete-btn"
+            size="small" :style="{ width }" :disabled="isLoading || isDeleting" :add-class="['ma-1']">
             <v-icon icon="tabler:IconTrash" size="15" />
           </BaseButton>
         </span>
@@ -93,13 +73,9 @@
     </div>
   </ParentCard>
 
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('attendance.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="confirmDelete = false; deleteRecord();"
-    @no="confirmDelete = false; deleteTarget = undefined;"
-  />
+  <BaseConfirmDelete v-model="confirmDelete" :text="t('attendance.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }" @yes="confirmDelete = false; deleteRecord();"
+    @no="confirmDelete = false; deleteTarget = undefined;" />
 </template>
 
 <script setup>
@@ -299,6 +275,25 @@ watch(
 </script>
 
 <style scoped>
+:deep(.v-chip.status2) {
+  background-color: rgba(var(--v-theme-warning), 0.2) !important;
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-warning)) !important;
+}
+
+:deep(.v-chip.status) {
+  background-color: rgba(var(--v-theme-complete), 0.2) !important;
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-complete)) !important;
+  text-transform: uppercase;
+}
+
 .font-mono {
   font-family: monospace;
 }

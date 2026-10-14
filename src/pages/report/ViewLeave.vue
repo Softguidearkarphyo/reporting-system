@@ -20,7 +20,8 @@
     <v-row dense class="mb-2">
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}</div>
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}
+          </div>
           <div class="d-flex align-baseline">
             <span class="text-h4 font-weight-bold text-primary me-2">
               {{ leaveSummary.total_used ?? 0 }}
@@ -32,7 +33,8 @@
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}</div>
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}
+          </div>
           <div class="d-flex align-baseline">
             <span class="text-h4 font-weight-bold text-info me-2">
               {{ leaveSummary.remain_leaves ?? 0 }}
@@ -44,7 +46,8 @@
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}</div>
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
+          </div>
           <div class="d-flex align-baseline">
             <span class="text-h4 font-weight-bold text-warning me-2">
               {{ leaveSummary.first_annual ?? 0 }}
@@ -56,7 +59,8 @@
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
-          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}</div>
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}
+          </div>
           <div class="d-flex align-baseline">
             <span class="text-h4 font-weight-bold text-success me-2">
               {{ leaveSummary.second_annual ?? 0 }}
@@ -87,19 +91,22 @@
 
           <v-col cols="12" sm="4">
             <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{ t('common.accumulatedHours') || 'Accumulated Hours' }}</div>
+              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{
+                t('common.accumulatedHours') || 'Accumulated Hours' }}</div>
               <div class="d-flex align-baseline">
                 <span class="text-h4 font-weight-bold text-teal me-2">
                   {{ accumulatedHoursFormatted }}
                 </span>
-                <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
+                <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5
+                  Day)</span>
               </div>
             </v-card>
           </v-col>
 
           <v-col cols="12" sm="4">
             <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
+              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
+                t('common.totalOvertime') }}</div>
               <div class="d-flex align-baseline">
                 <span class="text-h4 font-weight-bold text-purple me-2">
                   {{ totalOvertimeFormatted }}
@@ -123,48 +130,27 @@
               </h3>
             </v-col>
             <v-col cols="6" md="5" class="d-flex justify-end">
-              <BaseTextField
-                v-model="search"
-                :label="t('common.search')"
-                color="primary"
-                prepend-inner-icon="mdi-magnify"
-                density="compact"
-                variant="outlined"
-                hide-details
-                class="rounded-lg"
-                :disabled="loading || isActionLoading"
-              />
+              <BaseTextField v-model="search" :label="t('common.search')" color="primary"
+                prepend-inner-icon="mdi-magnify" density="compact" variant="outlined" hide-details class="rounded-lg"
+                :disabled="loading || isActionLoading" />
             </v-col>
           </v-row>
 
           <div>
-            <BaseTable
-              v-if="filteredMemberLeaves && filteredMemberLeaves.length"
-              :headers="headers"
-              :items="filteredMemberLeaves"
-              :loading="loading || isActionLoading"
-            >
+            <BaseTable v-if="filteredMemberLeaves && filteredMemberLeaves.length" :headers="headers"
+              :items="filteredMemberLeaves" :loading="loading || isActionLoading">
               <template #[`item.leave_date`]="{ item }">
                 <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
               </template>
 
               <template #[`item.leave_type`]="{ item }">
-                <span
-                  v-if="item.leave_type === 1"
-                  class="status d-inline-flex justify-center align-center"
-                >
+                <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
                   paid
                 </span>
-                <span
-                  v-else-if="item.leave_type === 3"
-                  class="status-short d-inline-flex justify-center align-center"
-                >
-                  short 
+                <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
+                  short
                 </span>
-                <span
-                  v-else
-                  class="status1 d-inline-flex justify-center align-center"
-                >
+                <span v-else class="status1 d-inline-flex justify-center align-center">
                   unpaid
                 </span>
               </template>
@@ -203,7 +189,6 @@
         </ParentCard>
       </v-col>
 
-      <!-- Overtime Records Table (Auto Height based on Row Count) -->
       <v-col cols="12" md="4">
         <ParentCard class="elevation-1 rounded-lg pa-4">
           <v-row class="align-center mb-3">
@@ -215,13 +200,8 @@
           </v-row>
 
           <div>
-            <BaseTable
-              v-if="overtimes && overtimes.length"
-              :headers="multiHeaders3"
-              :items="overtimes"
-              :loading="loading || isActionLoading"
-              items-per-page="10"
-            >
+            <BaseTable v-if="overtimes && overtimes.length" :headers="multiHeaders3" :items="overtimes"
+              :loading="loading || isActionLoading" items-per-page="10">
               <template #[`item.ot_time`]="{ item }">
                 <span v-if="item.ot_time == 1">Full day</span>
                 <span v-else-if="item.ot_time == 2">Half day</span>
@@ -238,13 +218,8 @@
               <template #[`item.status`]="{ item }">
                 <span class="d-inline-flex align-center py-1">
                   <span
-                    class="status-label d-inline-flex align-center px-3 py-1 mr-2 rounded-pill text-caption font-weight-medium"
-                    :style="{
-                      backgroundColor: item.statusBg,
-                      color: item.statusColor,
-                      lineHeight: 1.2
-                    }"
-                  >
+                    :class="['status-label', 'd-inline-flex', 'align-center', 'px-3', 'py-1', 'mr-2', 'text-caption', 'font-weight-medium', item.statusColor]"
+                    :style="{ lineHeight: 1.2 }">
                     <v-icon size="16" class="mr-1" :color="item.statusColor">
                       {{ item.statusIcon }}
                     </v-icon>
@@ -252,30 +227,18 @@
                   </span>
 
                   <span v-if="item.status === 2 || item.status === 3" class="d-inline-flex align-center">
-                    <v-switch
-                      color="primary"
-                      density="compact"
-                      :hide-details="true"
-                      :model-value="item.isComplete"
-                      :disabled="loading || isActionLoading"
-                      @update:model-value="onSwitchChange(item)"
-                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
-                    />
+                    <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                      :disabled="loading || isActionLoading" @update:model-value="onSwitchChange(item)"
+                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
                   </span>
                 </span>
               </template>
 
               <template #[`item.action`]="{ item }">
                 <span class="d-flex justify-left align-center p-0">
-                  <BaseButton
-                    elevation="0"
-                    color=""
-                    class="delete-btn"
-                    size="small"
-                    :disabled="loading || isActionLoading"
-                    :add-class="['ma-1']"
-                    @click.stop="showConfirmDelete(item.id)"
-                  >
+                  <BaseButton elevation="0" color="" class="delete-btn" size="small"
+                    :disabled="loading || isActionLoading" :add-class="['ma-1']"
+                    @click.stop="showConfirmDelete(item.id)">
                     <v-icon icon="tabler:IconTrash" size="15" />
                   </BaseButton>
                 </span>
@@ -293,51 +256,39 @@
   </div>
 
   <!-- Delete Modal -->
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('memberFine.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmDelete" :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }" @yes="
       confirmDelete = false;
-      deleteOvertime();
-    "
-    @no="
+    deleteOvertime();
+    " @no="
       confirmDelete = false;
-      deleteTarget = undefined;
-    "
-  />
+    deleteTarget = undefined;
+    " />
 
   <!-- Status Switch Modal -->
-  <BaseConfirmDelete
-    v-model="confirmChange"
-    :text="t('memberFine.statusConfirmText')"
-    :class="{ 'd-none': !confirmChange }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }" @yes="
       confirmChange = false;
-      if (switchTarget) {
-        onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
-        switchTarget = null;
-      }
-    "
-    @no="
-      confirmChange = false;
+    if (switchTarget) {
+      onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
       switchTarget = null;
-    "
-  />
+    }
+    " @no="
+      confirmChange = false;
+    switchTarget = null;
+    " />
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'; 
+import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useLeaveStore } from '@/stores/leave/leave.js';
 import { useOverTimeStore } from '@/stores/overtime/overtime.js';
-import { useAuthStore } from '@/stores/auth/auth.js';
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const authStore = useAuthStore();
 const leaveStore = useLeaveStore();
 const overTimeStore = useOverTimeStore();
 
@@ -425,17 +376,8 @@ const multiHeaders3 = computed(() => [
   },
 ]);
 
-const getStoredStaffId = () => {
-  return localStorage.getItem('staff-id');
-};
-
 const staffId = computed(() => {
-  return (
-    authStore.staff?.staff_id ||
-    authStore.staff?.rec_id ||
-    authStore.staff?.id ||
-    getStoredStaffId()
-  );
+  return route.query.staffId;
 });
 
 const showConfirmDelete = (id) => {
@@ -456,23 +398,23 @@ const filteredMemberLeaves = computed(() => {
 const overtimes = computed(() => {
   return overTimeRecords.value.map((item) => {
     let statusLabel = 'Pending';
-    let statusColor = '#E6A23C';
+    let statusColor = 'status2';
     let statusBg = '#FDF6EC';
     let statusIcon = 'mdi-clock-outline';
 
     if (item.status === 2) {
       statusLabel = 'Approved';
-      statusColor = '#409EFF';
+      statusColor = 'status3';
       statusBg = '#ECF5FF';
       statusIcon = 'mdi-check-circle-outline';
     } else if (item.status === 3) {
       statusLabel = 'Completed';
-      statusColor = '#67C23A';
+      statusColor = 'status';
       statusBg = '#F0F9EB';
       statusIcon = 'mdi-checkbox-marked-circle-outline';
     } else if (item.status === 4) {
       statusLabel = 'Rejected';
-      statusColor = '#F56C6C';
+      statusColor = 'status1';
       statusBg = '#FEF0F0';
       statusIcon = 'mdi-close-circle-outline';
     }
@@ -522,7 +464,9 @@ const onStatusSwitchChange = async (item) => {
       id: item.id,
       status: newStatus
     });
-    await fetchOvertimeData(route.params.recId);
+    if (staffId.value) {
+      await fetchOvertimeData(staffId.value);
+    }
   } catch (error) {
     console.error('Failed to change overtime status:', error);
   } finally {
@@ -535,7 +479,9 @@ const deleteOvertime = async () => {
   try {
     await overTimeStore.deleteOvertime({ id: deleteTarget.value });
     deleteTarget.value = undefined;
-    await fetchOvertimeData(route.params.recId);
+    if (staffId.value) {
+      await fetchOvertimeData(staffId.value);
+    }
   } catch (error) {
     console.error('Error deleting member overtime:', error);
   } finally {
@@ -545,7 +491,10 @@ const deleteOvertime = async () => {
 
 const fetchOvertimeData = async (staffIdParam) => {
   try {
-    const res = await overTimeStore.fetchOverTime({ staff_id: parseInt(staffIdParam) });
+    const targetId = staffIdParam || staffId.value;
+    if (!targetId) return;
+
+    const res = await overTimeStore.fetchOverTime({ staff_id: parseInt(targetId) });
     const data = res?.data || res || [];
     overTimeRecords.value = Array.isArray(data) ? data : [];
   } catch (e) {
@@ -555,26 +504,29 @@ const fetchOvertimeData = async (staffIdParam) => {
 };
 
 watch(
-  () => route.params.recId,
-  async (recId) => {
-    if (recId) {
-      loading.value = true;
-      try {
+  () => [route.params.recId, route.query.staffId],
+  async ([recId, currentStaffId]) => {
+    loading.value = true;
+    try {
+      if (recId) {
         const parsedId = parseInt(recId);
-        const [leaveRes] = await Promise.all([
-          leaveStore.fetchLeave({ rec_id: parsedId }),
-          fetchOvertimeData(parsedId)
-        ]);
+        const leaveRes = await leaveStore.fetchLeave({ rec_id: parsedId });
         memberLeaves.value = leaveRes?.data || leaveRes || [];
-      } catch (e) {
-        console.error('Error fetching member details:', e);
+      } else {
         memberLeaves.value = [];
-      } finally {
-        loading.value = false;
       }
-    } else {
+
+      if (currentStaffId) {
+        await fetchOvertimeData(currentStaffId);
+      } else {
+        overTimeRecords.value = [];
+      }
+    } catch (e) {
+      console.error('Error fetching details:', e);
       memberLeaves.value = [];
       overTimeRecords.value = [];
+    } finally {
+      loading.value = false;
     }
   },
   { immediate: true }
@@ -604,6 +556,25 @@ const goBack = () => {
   font-weight: 800;
   color: rgba(var(--v-theme-error));
   text-transform: uppercase;
+}
+
+
+.status2 {
+  background-color: rgba(var(--v-theme-warning), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-warning));
+}
+
+.status3 {
+  background-color: rgba(var(--v-theme-info), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-info));
 }
 
 .status-short {

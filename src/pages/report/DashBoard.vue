@@ -432,40 +432,43 @@ const fetchData = async () => {
       payload.skill_sheet = {};
     }
 
+
     await leaveStore.fetchLeaveRecord();
-    const allLeaveRecords = leaveStore.getLeaveRecords || [];
+const allLeaveRecords = leaveStore.getLeaveRecords || [];
 
-    const groupedLeaveMap = allLeaveRecords.reduce((acc, record) => {
-      const staffId = record.staff_id || record.id;
-      const name = record.eng_name || '-';
+const groupedLeaveMap = allLeaveRecords
+  .filter((record) => Array.isArray(record.leaves) && record.leaves.length > 0)
+  .reduce((acc, record) => {
+    const staffId = record.staff_id || record.id;
+    const name = record.eng_name || '-';
 
-      if (!acc[staffId]) {
-        acc[staffId] = {
-          staff_id: staffId,
-          eng_name: name,
-          total_paid_days: 0,
-          total_unpaid_days: 0,
-          total_days: 0,
-          total_records: 0,
-        };
+    if (!acc[staffId]) {
+      acc[staffId] = {
+        staff_id: staffId,
+        eng_name: name,
+        total_paid_days: 0,
+        total_unpaid_days: 0,
+        total_days: 0,
+        total_records: 0,
+      };
+    }
+
+    record.leaves.forEach((item) => {
+      const dayCount = Number(item.day_count || 0);
+      const isPaid = Number(item.leave_type) === 1;
+
+      if (isPaid) {
+        acc[staffId].total_paid_days += dayCount;
+      } else {
+        acc[staffId].total_unpaid_days += dayCount;
       }
 
-      (record.leaves || []).forEach((item) => {
-        const dayCount = Number(item.day_count || 0);
-        const isPaid = Number(item.leave_type) === 1;
+      acc[staffId].total_days += dayCount;
+      acc[staffId].total_records += 1;
+    });
 
-        if (isPaid) {
-          acc[staffId].total_paid_days += dayCount;
-        } else {
-          acc[staffId].total_unpaid_days += dayCount;
-        }
-
-        acc[staffId].total_days += dayCount;
-        acc[staffId].total_records += 1;
-      });
-
-      return acc;
-    }, {});
+    return acc;
+  }, {});
 
     memberLeave.value = Object.values(groupedLeaveMap);
 

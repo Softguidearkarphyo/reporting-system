@@ -4,62 +4,24 @@
   <ParentCard>
     <v-row align="center" justify="start" class="py-1 ga-2 ga-md-4">
       <v-col cols="12" sm="6" md="4" lg="3">
-        <BaseSelect
-          v-if="!selectedMember"
-          v-model="selectedMemberId"
-          :label="t('creatLeave.options.employee')"
-          :items="memberList"
-          item-value="id"
-          item-title="name"
-          prependIcon="tabler:IconUserCog"
-          class="w-100"
-          :disabled="isLoading || isSubmitting"
-          @update:modelValue="selectMember"
-        />
+        <BaseSelect v-if="!selectedMember" v-model="selectedMemberId" :label="t('creatLeave.options.employee')"
+          :items="memberList" item-value="id" item-title="name" prependIcon="tabler:IconUserCog" class="w-100"
+          :disabled="isLoading || isSubmitting" @update:modelValue="selectMember" />
 
-        <v-checkbox
-          v-else
-          v-model="isChecked"
-          :label="t('creatLeave.options.selected_name') + selectName"
-          hide-details
-          color="primary"
-          class="custom-checkbox"
-          :disabled="isLoading || isSubmitting"
-          @update:modelValue="onCheckboxChange"
-        />
+        <v-checkbox v-else v-model="isChecked" :label="t('creatLeave.options.selected_name') + selectName" hide-details
+          color="primary" class="custom-checkbox" :disabled="isLoading || isSubmitting"
+          @update:modelValue="onCheckboxChange" />
       </v-col>
 
       <v-col cols="12" sm="auto" class="d-flex flex-wrap align-center ga-3">
-        <v-checkbox
-          v-model="selectedPotion"
-          color="primary"
-          :label="t('creatLeave.options.existing')"
-          value="potions1"
-          hide-details
-          class="custom-checkbox"
-          :disabled="isLoading || isSubmitting"
-        />
+        <v-checkbox v-model="selectedPotion" color="primary" :label="t('creatLeave.options.existing')" value="potions1"
+          hide-details class="custom-checkbox" :disabled="isLoading || isSubmitting" />
 
-        <v-checkbox
-          v-if="showNewEmployee"
-          v-model="selectedPotion"
-          color="primary"
-          :label="t('creatLeave.options.new')"
-          value="potions2"
-          hide-details
-          class="custom-checkbox"
-          :disabled="isLoading || isSubmitting"
-        />
+        <v-checkbox v-if="showNewEmployee" v-model="selectedPotion" color="primary" :label="t('creatLeave.options.new')"
+          value="potions2" hide-details class="custom-checkbox" :disabled="isLoading || isSubmitting" />
 
-        <v-checkbox
-          v-model="selectedPotion"
-          color="primary"
-          :label="t('creatLeave.options.ot')"
-          value="potions3"
-          hide-details
-          class="custom-checkbox"
-          :disabled="isLoading || isSubmitting"
-        />
+        <v-checkbox v-model="selectedPotion" color="primary" :label="t('creatLeave.options.ot')" value="potions3"
+          hide-details class="custom-checkbox" :disabled="isLoading || isSubmitting" />
       </v-col>
     </v-row>
   </ParentCard>
@@ -84,92 +46,46 @@
         </v-row>
 
         <!-- Form 1: Leave Creation -->
-        <Form
-          v-if="selectedPotion === 'potions1'"
-          ref="LeaveFormRef"
-          :key="`leave-form-${multipleLeave}`"
-          :validation-schema="LeaveFormSchema"
-          :initial-values="leaveInitialValues"
-          @submit="submitLeave"
-        >
+        <Form v-if="selectedPotion === 'potions1'" ref="LeaveFormRef" :key="`leave-form-${multipleLeave}`"
+          :validation-schema="LeaveFormSchema" :initial-values="leaveInitialValues" @submit="submitLeave">
           <v-row dense>
             <v-col cols="12" sm="6">
-              <Field
-                v-if="!multipleLeave"
-                name="leave_date"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseDatePicker
-                  :model-value="value"
-                  :label="t('creatLeave.form.leave_date')"
-                  prependIcon="tabler:IconCalendarPin"
-                  class="w-100"
-                  :error-messages="errorMessage"
-                  clearable
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field v-if="!multipleLeave" name="leave_date" v-slot="{ value, handleChange, errorMessage }">
+                <BaseDatePicker :model-value="value" :label="t('creatLeave.form.leave_date')"
+                  prependIcon="tabler:IconCalendarPin" class="w-100" :error-messages="errorMessage" clearable
+                  :disabled="isLoading || isSubmitting" @update:modelValue="
                     (date) => {
                       handleChange(date);
                       formData.leave_date = date;
                     }
-                  "
-                />
+                  " />
               </Field>
 
-              <Field
-                v-else
-                name="multi_date"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseMultDate
-                  :model-value="value || []"
-                  :label="t('creatLeave.form.leave_date')"
-                  prependIcon="tabler:IconCalendarPin"
-                  class="w-100"
-                  :multiple="true"
-                  :error-messages="errorMessage"
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field v-else name="multi_date" v-slot="{ value, handleChange, errorMessage }">
+                <BaseMultDate :model-value="value || []" :label="t('creatLeave.form.leave_date')"
+                  prependIcon="tabler:IconCalendarPin" class="w-100" :multiple="true" :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting" @update:modelValue="
                     (dates) => {
                       const selectedDates = Array.isArray(dates) ? dates : [];
                       handleChange(selectedDates);
                       formData.multi_date = selectedDates;
                       updateMultipleDuration(selectedDates);
                     }
-                  "
-                />
+                  " />
               </Field>
             </v-col>
 
             <v-col cols="12" sm="6">
               <Field v-if="multipleLeave" name="duration" v-slot="{ errorMessage }">
-                <BaseTextField
-                  :model-value="durationCount"
-                  :label="t('creatLeave.form.duration')"
-                  prependIcon="tabler:IconClockQuestion"
-                  class="w-100"
-                  :error-messages="errorMessage"
-                  readonly
-                  :disabled="isLoading || isSubmitting"
-                />
+                <BaseTextField :model-value="durationCount" :label="t('creatLeave.form.duration')"
+                  prependIcon="tabler:IconClockQuestion" class="w-100" :error-messages="errorMessage" readonly
+                  :disabled="isLoading || isSubmitting" />
               </Field>
 
-              <Field
-                v-else
-                name="duration"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseSelect
-                  :model-value="value"
-                  :label="t('creatLeave.form.duration')"
-                  class="w-100"
-                  :items="durationHour"
-                  item-value="id"
-                  item-title="name"
-                  prependIcon="tabler:IconClockQuestion"
-                  :error-messages="errorMessage"
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field v-else name="duration" v-slot="{ value, handleChange, errorMessage }">
+                <BaseSelect :model-value="value" :label="t('creatLeave.form.duration')" class="w-100"
+                  :items="durationHour" item-value="id" item-title="name" prependIcon="tabler:IconClockQuestion"
+                  :error-messages="errorMessage" :disabled="isLoading || isSubmitting" @update:modelValue="
                     (duration) => {
                       handleChange(duration);
                       formData.duration = duration;
@@ -177,51 +93,34 @@
                         multipleLeave = false;
                       }
                     }
-                  "
-                />
+                  " />
               </Field>
             </v-col>
           </v-row>
 
           <v-row dense align="center">
             <v-col cols="12" sm="6">
-              <Field
-                name="reason"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseTextField
-                  :model-value="value"
-                  :label="t('creatLeave.form.reason')"
-                  class="w-100"
-                  type="text"
-                  variant="plain"
-                  prependIcon="tabler:IconHelpCircle"
-                  :error-messages="errorMessage"
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field name="reason" v-slot="{ value, handleChange, errorMessage }">
+                <BaseTextField :model-value="value" :label="t('creatLeave.form.reason')" class="w-100" type="text"
+                  variant="plain" prependIcon="tabler:IconHelpCircle" :error-messages="errorMessage"
+                  :disabled="isLoading || isSubmitting" @update:modelValue="
                     (reason) => {
                       handleChange(reason);
                       formData.reason = reason;
                     }
-                  "
-                />
+                  " />
               </Field>
             </v-col>
 
             <v-col cols="12" sm="6" class="d-flex justify-start align-center my-2 my-sm-0">
-              <v-switch
-                v-model="multipleLeave"
-                class="custom-switch-label"
-                :label="t('creatLeave.form.multiple_leave')"
-                color="primary"
-                hide-details
-                :disabled="isShortLeaveSelected || isLoading || isSubmitting"
-                @update:modelValue="changeMultipleLeave"
-              />
+              <v-switch v-model="multipleLeave" class="custom-switch-label" :label="t('creatLeave.form.multiple_leave')"
+                color="primary" hide-details :disabled="isShortLeaveSelected || isLoading || isSubmitting"
+                @update:modelValue="changeMultipleLeave" />
             </v-col>
 
             <v-col cols="12" class="d-flex justify-center mt-3">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting"
+                :disabled="isLoading || isSubmitting">
                 {{ t('common.submit') }}
               </BaseButton>
             </v-col>
@@ -229,30 +128,20 @@
         </Form>
 
         <!-- Form 2: Permanent Leave Calculation -->
-        <Form
-          v-if="selectedPotion === 'potions2'"
-          ref="LeaveRecordFormRef"
-          :validation-schema="LeaveRecordFormSchema"
-          :initial-values="leaveRecordInitialValues"
-          @submit="submitLeaveRecord"
-        >
+        <Form v-if="selectedPotion === 'potions2'" ref="LeaveRecordFormRef" :validation-schema="LeaveRecordFormSchema"
+          :initial-values="leaveRecordInitialValues" @submit="submitLeaveRecord">
           <v-row dense align="center">
             <v-col cols="12" sm="6">
               <Field name="permanent_date" v-slot="{ value, errorMessage }">
-                <BaseDatePicker
-                  :model-value="value"
-                  :label="t('creatLeave.form.permanent_date')"
-                  class="w-100"
-                  prependIcon="tabler:IconCalendarPin"
-                  :error-messages="errorMessage"
-                  readonly
-                  :disabled="isLoading || isSubmitting"
-                />
+                <BaseDatePicker :model-value="value" :label="t('creatLeave.form.permanent_date')" class="w-100"
+                  prependIcon="tabler:IconCalendarPin" :error-messages="errorMessage" readonly
+                  :disabled="isLoading || isSubmitting" />
               </Field>
             </v-col>
 
             <v-col cols="12" sm="6" class="d-flex align-center justify-center mt-2 mt-sm-0">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting"
+                :disabled="isLoading || isSubmitting">
                 {{ t('creatLeave.form.calculate') }}
               </BaseButton>
             </v-col>
@@ -260,66 +149,40 @@
         </Form>
 
         <!-- Form 3: Overtime Creation -->
-        <Form
-          v-if="selectedPotion === 'potions3'"
-          ref="OtFormRef"
-          :validation-schema="OtFormSchema"
-          :initial-values="otInitialValues"
-          @submit="submitOt"
-        >
+        <Form v-if="selectedPotion === 'potions3'" ref="OtFormRef" :validation-schema="OtFormSchema"
+          :initial-values="otInitialValues" @submit="submitOt">
           <v-row dense>
             <v-col cols="12" sm="6">
-              <Field
-                name="ot_date"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseDatePicker
-                  :model-value="value"
-                  :label="t('creatLeave.form.ot_date')"
-                  class="w-100"
-                  prependIcon="tabler:IconCalendarPin"
-                  :error-messages="errorMessage"
-                  clearable
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field name="ot_date" v-slot="{ value, handleChange, errorMessage }">
+                <BaseDatePicker :model-value="value" :label="t('creatLeave.form.ot_date')" class="w-100"
+                  prependIcon="tabler:IconCalendarPin" :error-messages="errorMessage" clearable
+                  :disabled="isLoading || isSubmitting" @update:modelValue="
                     (date) => {
                       handleChange(date);
                       formData.ot_date = date;
                     }
-                  "
-                />
+                  " />
               </Field>
             </v-col>
 
             <v-col cols="12" sm="6">
-              <Field
-                name="ot_time"
-                v-slot="{ value, handleChange, errorMessage }"
-              >
-                <BaseSelect
-                  :model-value="value"
-                  :label="t('creatLeave.form.ot_time')"
-                  class="w-100"
-                  :items="durationHour"
-                  item-value="id"
-                  item-title="name"
-                  prependIcon="tabler:IconAlarm"
-                  :error-messages="errorMessage"
-                  :disabled="isLoading || isSubmitting"
-                  @update:modelValue="
+              <Field name="ot_time" v-slot="{ value, handleChange, errorMessage }">
+                <BaseSelect :model-value="value" :label="t('creatLeave.form.ot_time')" class="w-100"
+                  :items="durationHour" item-value="id" item-title="name" prependIcon="tabler:IconAlarm"
+                  :error-messages="errorMessage" :disabled="isLoading || isSubmitting" @update:modelValue="
                     (time) => {
                       handleChange(time);
                       formData.ot_time = time;
                     }
-                  "
-                />
+                  " />
               </Field>
             </v-col>
           </v-row>
 
           <v-row dense>
             <v-col cols="12" class="d-flex justify-center mt-3">
-              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting" :disabled="isLoading || isSubmitting">
+              <BaseButton type="submit" class="w-100" style="max-width: 200px" :loading="isSubmitting"
+                :disabled="isLoading || isSubmitting">
                 {{ t('common.submit') }}
               </BaseButton>
             </v-col>
@@ -344,31 +207,16 @@
         </BaseTitle>
 
         <!-- Leave Requests Table with :loading="isLoading" -->
-        <BaseTable
-          v-if="selectedPotion === 'potions1'"
-          :headers="multiHeaders1"
-          :items="leaveRequests"
-          items-per-page="10"
-          class="elevation-1"
-          :loading="isLoading"
-        >
+        <BaseTable v-if="selectedPotion === 'potions1'" :headers="multiHeaders1" :items="leaveRequests"
+          items-per-page="10" class="elevation-1" :loading="isLoading">
           <template #[`item.leave_type`]="{ item }">
-            <span
-              v-if="item.leave_type === 1"
-              class="status d-inline-flex justify-center align-center"
-            >
+            <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
               paid
             </span>
-            <span
-              v-else-if="item.leave_type === 3"
-              class="status-short d-inline-flex justify-center align-center"
-            >
-              short 
+            <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
+              short
             </span>
-            <span
-              v-else
-              class="status1 d-inline-flex justify-center align-center"
-            >
+            <span v-else class="status1 d-inline-flex justify-center align-center">
               unpaid
             </span>
           </template>
@@ -387,25 +235,11 @@
           </template>
         </BaseTable>
 
-        <!-- Leave Records Table with :loading="isLoading" -->
-        <BaseTable
-          v-if="selectedPotion === 'potions2'"
-          :headers="multiHeaders2"
-          :items="leaveRecords"
-          items-per-page="10"
-          class="elevation-1"
-          :loading="isLoading"
-        />
+        <BaseTable v-if="selectedPotion === 'potions2'" :headers="multiHeaders2" :items="leaveRecords"
+          items-per-page="10" class="elevation-1" :loading="isLoading" />
 
-        <!-- Overtime Table with :loading="isLoading || isDeleting" -->
-        <BaseTable
-          v-if="selectedPotion === 'potions3'"
-          :headers="multiHeaders3"
-          :items="overtimes"
-          items-per-page="10"
-          class="elevation-1"
-          :loading="isLoading || isDeleting"
-        >
+        <BaseTable v-if="selectedPotion === 'potions3'" :headers="multiHeaders3" :items="overtimes" items-per-page="10"
+          class="elevation-1" :loading="isLoading || isDeleting">
           <template #[`item.ot_time`]="{ item }">
             <span v-if="item.ot_time == 1">Full day</span>
             <span v-else-if="item.ot_time == 2">Half day</span>
@@ -421,30 +255,21 @@
 
           <template #[`item.status`]="{ item }">
             <span class="d-inline-flex align-center flex-wrap ga-2 py-1">
-              <span
-                class="status-label d-inline-flex align-center px-3 py-1 rounded-pill text-caption font-weight-medium"
-                :style="{
-                  backgroundColor: item.statusBg,
-                  color: item.statusColor,
-                  lineHeight: 1.2
-                }"
-              >
+              <span :class="[
+                'status-label d-inline-flex align-center px-3 py-1 text-caption font-weight-medium',
+                item.color
+              ]" :style="{
+    lineHeight: 1.2
+  }">
                 <v-icon size="16" class="mr-1" :color="item.statusColor">
                   {{ item.statusIcon }}
                 </v-icon>
                 {{ item.statusLabel }}
               </span>
-
               <span v-if="item.status === 2 || item.status === 3" class="d-inline-flex align-center">
-                <v-switch
-                  color="primary"
-                  density="compact"
-                  :hide-details="true"
-                  :model-value="item.isComplete"
-                  :disabled="isLoading || isDeleting || isSubmitting"
-                  @update:model-value="onSwitchChange(item)"
-                  style="transform: scale(0.75);"
-                />
+                <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                  :disabled="isLoading || isDeleting || isSubmitting" @update:model-value="onSwitchChange(item)"
+                  style="transform: scale(0.75);" />
               </span>
             </span>
           </template>
@@ -452,15 +277,8 @@
           <!-- Action Column Slot -->
           <template #[`item.action`]="{ item }">
             <span class="d-flex justify-start align-center p-0">
-              <BaseButton
-                elevation="0"
-                color=""
-                class="delete-btn"
-                size="small"
-                :add-class="['ma-1']"
-                :disabled="isLoading || isDeleting || isSubmitting"
-                @click.stop="showConfirmDelete(item.id)"
-              >
+              <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+                :disabled="isLoading || isDeleting || isSubmitting" @click.stop="showConfirmDelete(item.id)">
                 <v-icon icon="tabler:IconTrash" size="15" />
               </BaseButton>
             </span>
@@ -471,36 +289,26 @@
   </v-row>
 
   <!-- Confirmation Dialogs -->
-  <BaseConfirmDelete
-    v-model="confirmDelete"
-    :text="t('memberFine.deleteConfirmText')"
-    :class="{ 'd-none': !confirmDelete }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmDelete" :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDelete }" @yes="
       confirmDelete = false;
-      deleteOvertime();
-    "
-    @no="
+    deleteOvertime();
+    " @no="
       confirmDelete = false;
-      deleteTarget = undefined;
-    "
-  />
+    deleteTarget = undefined;
+    " />
 
-  <BaseConfirmDelete
-    v-model="confirmChange"
-    :text="t('memberFine.statusConfirmText')"
-    :class="{ 'd-none': !confirmChange }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }" @yes="
       confirmChange = false;
-      if (switchTarget) {
-        onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
-        switchTarget = null;
-      }
-    "
-    @no="
-      confirmChange = false;
+    if (switchTarget) {
+      onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
       switchTarget = null;
-    "
-  />
+    }
+    " @no="
+      confirmChange = false;
+    switchTarget = null;
+    " />
 </template>
 
 <script setup>
@@ -661,10 +469,10 @@ const overtimes = computed(() => {
   const isJapanese = locale.value === 'ja';
 
   const statusMap = {
-    0: { text: 'Pending', icon: 'mdi-timer-sand', color: 'status' },
+    0: { text: 'Pending', icon: 'mdi-timer-sand', color: 'status2' },
     1: { text: 'Reject', icon: 'mdi-close-circle-outline', color: 'status1' },
-    2: { text: 'Accept', icon: 'mdi-checkbox-marked-circle-outline', color: '#1e88e5', bg: 'rgba(30, 136, 229, 0.2)' },
-    3: { text: 'Complete', icon: 'mdi-check-circle-outline', color: '#789f00ff', bg: 'rgba(var(--v-theme-complete), 0.2)' }
+    2: { text: 'Accept', icon: 'mdi-checkbox-marked-circle-outline', color: 'status3' },
+    3: { text: 'Complete', icon: 'mdi-check-circle-outline', color: 'status' },
   };
 
   return (overTimeStore.getOverTime ?? []).map((ot) => {
@@ -679,8 +487,9 @@ const overtimes = computed(() => {
       status: rawStatus,
       statusLabel: meta.text,
       statusIcon: meta.icon,
-      statusColor: meta.color,
+      color: meta.color,
       statusBg: meta.bg,
+      class: ot.status,
       isComplete: rawStatus === 3
     };
   });
@@ -987,6 +796,24 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: rgba(var(--v-theme-error));
+}
+
+.status2 {
+  background-color: rgba(var(--v-theme-warning), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-warning));
+}
+
+.status3 {
+  background-color: rgba(var(--v-theme-info), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-info));
 }
 
 .status-short {

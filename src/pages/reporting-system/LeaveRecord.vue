@@ -62,12 +62,12 @@
           </template>
 
           <template #[`item.reason`]="{ item }">
-            {{ item.reason || '-' }}
+                 {{ item.reason || '-' }}
           </template>
 
           <template #[`item.action`]="{ item }">
             <div class="d-flex justify-end">
-              <v-btn icon size="small" variant="text" color="primary" :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id)">
+              <v-btn icon size="small" variant="text" color="primary" :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id,item.staff_id)">
                 <v-icon icon="tabler:IconEye" size="18" />
               </v-btn>
             </div>
@@ -78,7 +78,7 @@
           <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
           <div class="text-body-1">No leave records found</div>
         </div>
-      </ParentCard>
+      </ParentCard> 
     </template>
 
     <template v-else>
@@ -308,10 +308,9 @@
               <template #[`item.status`]="{ item }">
                 <span class="d-inline-flex align-center py-1">
                   <span
-                    class="status-label d-inline-flex align-center px-3 py-1 mr-2 rounded-pill text-caption font-weight-medium"
+                   :class="['status-label', 'd-inline-flex', 'align-center', 'px-3', 'py-1', 'mr-2', 'text-caption', 'font-weight-medium', item.statusColor]"
                     :style="{
-                      backgroundColor: item.statusBg,
-                      color: item.statusColor,
+                      
                       lineHeight: 1.2
                     }"
                   >
@@ -384,19 +383,20 @@ const loading = ref(false);
 const isActionLoading = ref(false);
 const memberRecord = ref(null);
 const overTimeRecords = ref([]);
+const leaveTimeRecords = ref([]); // Added reactive ref for admin leave data
 const confirmChange = ref(undefined);
 const switchTarget = ref(null);
 
 const otHoursMap = {
   1: 8,    // Full day
   2: 4,    // Half day
-  3: 3.5,   // 3 Hrs 30 Min
+  3: 3.5,  // 3 Hrs 30 Min
   4: 3,    // 3 Hrs
-  5: 2.5,   // 2 Hrs 30 Min
+  5: 2.5,  // 2 Hrs 30 Min
   6: 2,    // 2 Hrs
-  7: 1.5,   // 1 Hr 30 Min
+  7: 1.5,  // 1 Hr 30 Min
   8: 1,    // 1 Hr
-  9: 0.5    // 30 Min
+  9: 0.5   // 30 Min
 };
 
 const getStoredStaffId = () => {
@@ -468,7 +468,13 @@ const accumulatedHoursFormatted = computed(() => {
   return `${hours} Hrs`;
 });
 
-const adminLeaveList = computed(() => leaveStore.leaves || leaveStore.getLeaves || []);
+// Priority given to local state leaveTimeRecords.value
+const adminLeaveList = computed(() => {
+  if (leaveTimeRecords.value && leaveTimeRecords.value.length > 0) {
+    return leaveTimeRecords.value;
+  }
+  return leaveStore.leaves || leaveStore.getLeaves || [];
+});
 
 const filteredAdminLeaveList = computed(() => {
   if (!search.value) return adminLeaveList.value;
@@ -502,23 +508,23 @@ const filteredUserLeaveList = computed(() => {
 const overtimes = computed(() => {
   return overTimeRecords.value.map((item) => {
     let statusLabel = 'Pending';
-    let statusColor = '#E6A23C';
+    let statusColor = 'status2';
     let statusBg = '#FDF6EC';
     let statusIcon = 'mdi-clock-outline';
 
     if (item.status === 2) {
       statusLabel = 'Accept';
-      statusColor = '#409EFF';
+      statusColor = 'status3';
       statusBg = '#ECF5FF';
       statusIcon = 'mdi-check-circle-outline';
     } else if (item.status === 3) {
       statusLabel = 'Completed';
-      statusColor = '#67C23A';
+      statusColor = 'status';
       statusBg = '#F0F9EB';
       statusIcon = 'mdi-checkbox-marked-circle-outline';
     } else if (item.status === 4) {
       statusLabel = 'Rejected';
-      statusColor = '#F56C6C';
+      statusColor = 'status1';
       statusBg = '#FEF0F0';
       statusIcon = 'mdi-close-circle-outline';
     }
@@ -570,8 +576,8 @@ const totalOvertimeFormatted = computed(() => {
   return `${hours} Hrs`;
 });
 
-const pushToView = (id) => {
-  router.push({ name: 'view-leaves', params: { recId: id } });
+const pushToView = (id,staffid) => {
+  router.push({ name: 'view-leaves', params: { recId: id }, query: { staffId: staffid } });
 };
 
 const fetchData = async () => {
@@ -589,6 +595,10 @@ const fetchData = async () => {
 
       const otData = otRes?.data || otRes || [];
       overTimeRecords.value = Array.isArray(otData) ? otData : [];
+
+      const leaveData = leaveRes?.data || leaveRes || [];
+      leaveTimeRecords.value = Array.isArray(leaveData) ? leaveData : [];
+      // console.log("this is ", leaveTimeRecords.value)
     } else {
       const staffId =
         authStore.staff?.staff_id ||
@@ -649,7 +659,23 @@ onMounted(async () => {
   color: rgba(var(--v-theme-error));
   text-transform: uppercase;
 }
+.status2 {
+  background-color: rgba(var(--v-theme-warning), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-warning));
+}
 
+.status3 {
+  background-color: rgba(var(--v-theme-info), 0.2);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(var(--v-theme-info));
+}
 .status-short {
   background-color: rgba(30, 136, 229, 0.2);
   border-radius: 4px;
