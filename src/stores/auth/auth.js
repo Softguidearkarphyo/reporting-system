@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staff-id', String(staff.value.id));
       localStorage.setItem('staff-role', String(staff.value.role));
-      sessionStorage.setItem('profileImg', profileImg);
+      localStorage.setItem('profileImg', profileImg);
 
       return staff.value;
     } catch (error) {
@@ -139,7 +139,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('token');
         localStorage.removeItem('staff-role');
         localStorage.removeItem('staff-id');
-        sessionStorage.removeItem('profileImg');
+        localStorage.removeItem('profileImg');
 
         if (router) {
           router.push('/login');
@@ -154,7 +154,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token');
     localStorage.removeItem('staff-role');
     localStorage.removeItem('staff-id');
-    sessionStorage.removeItem('profileImg');
+    localStorage.removeItem('profileImg');
     if (router) {
       router.push('/login');
     }

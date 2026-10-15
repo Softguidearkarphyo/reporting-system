@@ -49,12 +49,12 @@ const profileImage = computed(() => {
     return authStore.staff.staff_image_url;
   }
 
-  const storedImg = sessionStorage.getItem('profileImg');
+  const storedImg = localStorage.getItem('profileImg');
   if (storedImg && !storedImg.startsWith('data:image/svg')) {
     return storedImg;
   }
 
-  const staffName = sessionStorage.getItem('staffname');
+  const staffName = localStorage.getItem('staffname');
   if (staffName) {
     return profileImgPath(staffName);
   }

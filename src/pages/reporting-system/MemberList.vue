@@ -97,7 +97,7 @@ const currentStaffId = computed(() => {
   }
 
   if (Array.isArray(staffData) && staffData.length > 0) {
-    const savedImg = sessionStorage.getItem('profileImg');
+    const savedImg = localStorage.getItem('profileImg');
 
     if (savedImg) {
       const match = staffData.find((s) => {

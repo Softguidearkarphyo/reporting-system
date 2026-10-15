@@ -324,7 +324,7 @@ const submit = async (values) => {
       const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
       if (Number(memberId) === Number(loggedInId) && memberId) {
         const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
-        sessionStorage.setItem('profileImg', fullImageUrl);
+        localStorage.setItem('profileImg', fullImageUrl);
         if (updatedMember.role !== undefined) {
           localStorage.setItem('staff-role', String(updatedMember.role));
         }
