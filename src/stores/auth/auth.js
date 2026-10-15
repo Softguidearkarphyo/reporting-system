@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import api from '@/plugins/axios';
 import { profileImgPath } from '@/utils/helper';
-import { useRouter } from 'vue-router'; 
+import { useRouter } from 'vue-router';
 import { toast } from '@/utils/toast';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -13,22 +13,24 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoggedIn = computed(() => !!staff.value);
   const staffName = computed(() => (staff.value ? staff.value.eng_name : ''));
   const staffRole = computed(() => (staff.value ? String(staff.value.role) : localStorage.getItem('staff-role')));
-  const workType = computed(() => staff.value?.work_type || 'onsite'); 
+  const workType = computed(() => staff.value?.work_type || 'onsite');
 
   async function login(username, password) {
     try {
       await api.get('../sanctum/csrf-cookie');
-      const res = await api.post('/login', { 
-        username, 
+      const res = await api.post('/login', {
+        username,
         password,
         // latitude: lat,
         // longitude: lon
       });
 
       staff.value = res.data.staff;
-      const profileImg = staff.value?.staff_image_url 
-        || (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null) 
-        || profileImgPath(staff.value.eng_name);
+      // const profileImg = (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null)
+      //   || profileImgPath(staff.value?.eng_name);
+      const profileImg = staff.value?.staff_image
+        ? `http://localhost:8080/images/staffs/${staff.value.staff_image}`
+        : profileImgPath(staff.value?.eng_name);
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staff-id', String(staff.value.id));
@@ -42,54 +44,54 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-async function checkIn(payload = {}) {
-  try {
-    const staffId = staff.value?.id || localStorage.getItem('staff-id');
-    
-    const response = await api.post('/reporting-system/attendance/check-in', {
-      staff_id: staffId,
-      latitude: payload.latitude ?? null,
-      longitude: payload.longitude ?? null,
-      accuracy: payload.accuracy ?? null,
-      is_laptop: payload.is_laptop ?? false,
-      device_uuid: payload.device_uuid ?? null,
-    });
+  async function checkIn(payload = {}) {
+    try {
+      const staffId = staff.value?.id || localStorage.getItem('staff-id');
 
-    // console.log('Check-In Response:', response.data);
-    toast.success(response.data?.message || 'Check-in successful.');
-    return response.data;
-    
-  } catch (error) {
-    toast.error(error.response?.data?.message || 'Check-in failed. Please try again.');
-    console.error('Check-In Error:', error);
-    throw error;
+      const response = await api.post('/reporting-system/attendance/check-in', {
+        staff_id: staffId,
+        latitude: payload.latitude ?? null,
+        longitude: payload.longitude ?? null,
+        accuracy: payload.accuracy ?? null,
+        is_laptop: payload.is_laptop ?? false,
+        device_uuid: payload.device_uuid ?? null,
+      });
+
+      // console.log('Check-In Response:', response.data);
+      toast.success(response.data?.message || 'Check-in successful.');
+      return response.data;
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Check-in failed. Please try again.');
+      console.error('Check-In Error:', error);
+      throw error;
+    }
   }
-}
 
-async function fetchLocationStaffs() {
-  try {
-    const res = await api.post('/reporting-system/location/staff-location');
-    return res.data;
-  } catch (error) {
-    toast.error('Failed to fetch location staffs.');
-    console.error('Fetch Location Staffs Error:', error);
-    throw error;
+  async function fetchLocationStaffs() {
+    try {
+      const res = await api.post('/reporting-system/location/staff-location');
+      return res.data;
+    } catch (error) {
+      toast.error('Failed to fetch location staffs.');
+      console.error('Fetch Location Staffs Error:', error);
+      throw error;
+    }
   }
-}
 
-async function saveStaffLocation(payload) {
-  try {
-    const res = await api.post('/reporting-system/location/save-location', payload);
-    toast.success('Location Updated Successfully.');
-    return res.data;
-  } catch (error) {
-    toast.error('Failed to save staff location.');
-    console.error('Save Staff Location Error:', error);
-    throw error;
+  async function saveStaffLocation(payload) {
+    try {
+      const res = await api.post('/reporting-system/location/save-location', payload);
+      toast.success('Location Updated Successfully.');
+      return res.data;
+    } catch (error) {
+      toast.error('Failed to save staff location.');
+      console.error('Save Staff Location Error:', error);
+      throw error;
+    }
   }
-}
 
- const deleteLocation = async (payload) => {
+  const deleteLocation = async (payload) => {
     try {
       const response = await api.post('/reporting-system/location/delete', payload);
       toast.success('Location deleted successfully.');
