@@ -559,14 +559,15 @@ const changeStatus = async (item) => {
   }
 
   try {
-    const newStatus =
-      item.switchValue
-        ? 1
-        : 0;
+    const status = item.status == 'Pending' ? 0 : 1
+    // const newStatus =
+    //     status
+    //     ? 1
+    //     : 0;
 
     await memberFineStore.updateMemberFineStatus({
       id: item.id,
-      status: newStatus,
+      status: status,
     });
 
     await fetchMemberFines();

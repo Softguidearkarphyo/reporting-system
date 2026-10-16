@@ -104,16 +104,13 @@ export const useLeaveStore = defineStore('leave', () => {
 
       let response;
 
-      console.log('in this :');  
       if (isShortLeave) {
-        console.log('Short Leave is:', payload); 
         response = await api.post(
           '/reporting-system/leave-record/add-short-leave',
           payload
         );
         toast.success('Short Leave Created Successfully.');
       } else {
-        console.log('else:'); 
         response = await api.post(
           '/reporting-system/leave/create',
           payload

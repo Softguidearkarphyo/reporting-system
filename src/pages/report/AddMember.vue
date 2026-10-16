@@ -136,12 +136,12 @@
           </Field>
         </v-col>
 
-        <v-col cols="12" md="6" lg="4">
+        <!-- <v-col cols="12" md="6" lg="4">
           <BaseTextField v-model="displayedFileName" :label="t('addMember.form.staff_image')" class="mx-auto"
             prependIcon="tabler:IconPhotoCheck" :width="'320px'" readonly @click="!isLoading && !isSubmitting && triggerFileInput()" :disabled="isLoading || isSubmitting">
           </BaseTextField>
           <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" style="display: none" />
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" md="6" lg="4">
           <Field name="work_type" v-slot="{ field, errorMessage }">
