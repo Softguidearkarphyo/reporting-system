@@ -14,9 +14,14 @@
 
         <v-col cols="12" sm="6" md="3">
           <Field name="date" v-slot="{ field, errorMessage }">
-            <BaseDatePicker v-model="field.value" v-bind="field" :label="t('memberFine.form.date')"
-              prependIcon="mdi-calendar-month" variant="outlined" density="compact" :error-messages="errorMessage"
-              hide-details="auto" class="w-100" />
+            <BaseGoogleCalendar :model-value="field.value" v-bind="field" :label="t('memberFine.form.date')"
+              prependIcon="mdi-calendar-month" class="w-100" :error-messages="errorMessage" clearable
+              :disabled="isLoading || isSubmitting" @update:modelValue="
+                (date) => {
+                  field.onChange(date);
+                  formData.leave_date = date;
+                }
+              " />
           </Field>
         </v-col>
 
@@ -132,8 +137,7 @@
         <template #[`item.action`]="{ item }">
           <span class="d-flex justify-start align-center p-0">
             <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
-              :loading="isSubmitting"
-              @click.stop="showConfirmDelete(item.id)">
+              :loading="isSubmitting" @click.stop="showConfirmDelete(item.id)">
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
           </span>
@@ -394,7 +398,7 @@ const submit = async (values) => {
     await fetchMemberFines();
   } catch (error) {
     console.error('Error creating member fine:', error);
-  }finally {
+  } finally {
     isSubmitting.value = false;
   }
 };

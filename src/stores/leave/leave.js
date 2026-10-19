@@ -67,7 +67,6 @@ export const useLeaveStore = defineStore('leave', () => {
   // Fetch Leaves API Call
 const fetchLeave = async (payload = {}) => {
 
-  console.log("payload is ", payload)
   try {
     const response = await api.post('/reporting-system/leave/get', payload);
     setLeaves(response.data);
