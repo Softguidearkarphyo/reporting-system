@@ -283,7 +283,6 @@
             </span>
           </template>
 
-          <!-- Action Column Slot -->
           <template #[`item.action`]="{ item }">
             <span class="d-flex justify-start align-center p-0">
               <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
