@@ -55,13 +55,20 @@
           </template>
 
           <template #[`item.action`]="{ item }">
-            <div class="d-flex justify-end">
-              <v-btn icon size="small" variant="text" color="primary" :disabled="loading || isActionLoading"
-                @click.stop="pushToView(item.rec_id, item.staff_id)">
-                <v-icon icon="tabler:IconEye" size="18" />
-              </v-btn>
+            <div class="d-flex justify-end align-center">
+              <BaseButton elevation="0" variant="outlined" class="view-btn border" size="small" :add-class="['ma-1']"
+                :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id, item.staff_id)">
+                <v-icon icon="tabler:IconEye" size="15" color="grey-darken-3" />
+              </BaseButton>
+
+              <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+                :disabled="isLoading || isDeleting || isSubmitting"
+                @click.stop="showConfirmDeleteLeave(item.id || item.rec_id)">
+                <v-icon icon="tabler:IconTrash" size="15" />
+              </BaseButton>
             </div>
           </template>
+
         </BaseTable>
 
         <div v-else class="text-center pa-8 text-gray-500">
@@ -86,7 +93,8 @@
       <v-row dense class="mb-2">
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-primary me-2">
                 {{ leaveSummary.total_used ?? 0 }}
@@ -98,7 +106,8 @@
 
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-info me-2">
                 {{ leaveSummary.remain_leaves ?? 0 }}
@@ -107,7 +116,7 @@
             </div>
           </v-card>
         </v-col>
-        
+
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
@@ -126,7 +135,7 @@
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
-              {{ t('common.unpaid')  }}
+              {{ t('common.unpaid') }}
             </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-error me-2">
@@ -142,7 +151,7 @@
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
-          </div>
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-warning me-2">
                 {{ leaveSummary.first_annual ?? 0 }}
@@ -154,7 +163,8 @@
 
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual')
+            }}</div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-success me-2">
                 {{ leaveSummary.second_annual ?? 0 }}
@@ -167,7 +177,7 @@
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
-            t('common.accumulatedHours')  }}</div>
+              t('common.accumulatedHours') }}</div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-teal me-2">
                 {{ accumulatedHoursFormatted }}
@@ -336,6 +346,15 @@
       confirmChange = false;
     switchTarget = null;
     " />
+
+  <BaseConfirmDelete v-model="confirmDeleteLeave" :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDeleteLeave }" @yes="
+      confirmDeleteLeave = false;
+    deleteLeave();
+    " @no="
+      confirmDeleteLeave = false;
+    deleteTargetLeave = undefined;
+    " />
 </template>
 
 <script setup>
@@ -358,9 +377,21 @@ const loading = ref(false);
 const isActionLoading = ref(false);
 const memberRecord = ref(null);
 const overTimeRecords = ref([]);
-const leaveTimeRecords = ref([]); // Added reactive ref for admin leave data
+const leaveTimeRecords = ref([]);
 const confirmChange = ref(undefined);
 const switchTarget = ref(null);
+const deleteTargetLeave = ref(undefined);
+const confirmDeleteLeave = ref(undefined);
+
+
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
+
+const showConfirmDeleteLeave = (id) => {
+  deleteTargetLeave.value = id;
+  confirmDeleteLeave.value = true;
+};
 
 const otHoursMap = {
   1: 8,    // Full day
@@ -461,6 +492,31 @@ const filteredAdminLeaveList = computed(() => {
       item.reason?.toLowerCase().includes(q)
   );
 });
+
+const deleteLeave = async () => {
+  if (!deleteTargetLeave.value) return;
+
+  const targetId = deleteTargetLeave.value;
+  isDeleting.value = true;
+
+  try {
+    await leaveStore.deleteLeave({ id: targetId });
+
+    if (leaveTimeRecords.value && leaveTimeRecords.value.length > 0) {
+      leaveTimeRecords.value = leaveTimeRecords.value.filter(
+        (item) => item.id !== targetId && item.rec_id !== targetId
+      );
+    }
+
+    deleteTargetLeave.value = undefined;
+    await fetchData();
+  } catch (error) {
+    console.error('Error deleting member leave:', error);
+  } finally {
+    isDeleting.value = false;
+  }
+};
+
 
 const onSwitchChange = (item) => {
   switchTarget.value = item;
@@ -660,5 +716,21 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: #1e88e5;
+}
+
+.view-btn,
+.delete-btn {
+  background-color: transparent !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px;
+}
+
+.view-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
 }
 </style>
