@@ -129,6 +129,18 @@ export const useLeaveStore = defineStore('leave', () => {
     }
   };
 
+  
+  const deleteLeave = async (payload) => {
+    try {
+      const response = await api.post('/reporting-system/leave/delete', payload);
+      toast.success('Leave Deleted Successfully.');
+      return response;
+    } catch (error) {
+      toast.success('Fail to Delete Overtime');
+      return error;
+    }
+  }
+
   return {
     leaves,
     leaveRecords,
@@ -139,5 +151,6 @@ export const useLeaveStore = defineStore('leave', () => {
     fetchLeave,
     fetchLeaveRecord,
     createLeave,
+    deleteLeave
   };
 });

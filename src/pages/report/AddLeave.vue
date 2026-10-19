@@ -233,6 +233,15 @@
             <span v-else-if="item.duration == 9">30 Min</span>
             <span v-else>{{ item.duration }}</span>
           </template>
+
+           <template #[`item.action`]="{ item }">
+            <span class="d-flex justify-start align-center p-0">
+              <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+                :disabled="isLoading || isDeleting || isSubmitting" @click.stop="showConfirmDeleteLeave(item.id)">
+                <v-icon icon="tabler:IconTrash" size="15" />
+              </BaseButton>
+            </span>
+          </template>
         </BaseTable>
 
         <BaseTable v-if="selectedPotion === 'potions2'" :headers="multiHeaders2" :items="leaveRecords"
@@ -309,6 +318,16 @@
       confirmChange = false;
     switchTarget = null;
     " />
+
+  <!-- for leave -->
+    <BaseConfirmDelete v-model="confirmDeleteLeave" :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDeleteLeave }" @yes="
+      confirmDeleteLeave = false;
+    deleteLeave();
+    " @no="
+      confirmDeleteLeave = false;
+    deleteTargetLeave = undefined;
+    " />
 </template>
 
 <script setup>
@@ -357,6 +376,8 @@ const showNewEmployee = ref(false);
 const switchTarget = ref(null);
 const deleteTarget = ref(undefined);
 const confirmDelete = ref(undefined);
+const deleteTargetLeave = ref(undefined);
+const confirmDeleteLeave = ref(undefined);
 const confirmChange = ref(undefined);
 
 // Loading states
@@ -499,6 +520,10 @@ const showConfirmDelete = (id) => {
   deleteTarget.value = id;
   confirmDelete.value = true;
 };
+const showConfirmDeleteLeave = (id) => {
+  deleteTargetLeave.value = id;
+  confirmDeleteLeave.value = true;
+};
 
 const deleteOvertime = async () => {
   isDeleting.value = true;
@@ -508,6 +533,18 @@ const deleteOvertime = async () => {
     await overTimeStore.fetchOverTime();
   } catch (error) {
     console.error('Error deleting member overtime:', error);
+  } finally {
+    isDeleting.value = false;
+  }
+};
+const deleteLeave = async () => {
+  isDeleting.value = true;
+  try {
+    await leaveStore.deleteLeave({ id: deleteTargetLeave.value });
+    deleteTargetLeave.value = undefined;
+    await leaveStore.fetchLeave();
+  } catch (error) {
+    console.error('Error deleting member leave:', error);
   } finally {
     isDeleting.value = false;
   }
@@ -543,6 +580,7 @@ const multiHeaders1 = computed(() => [
   { title: t('creatLeave.form.total_days'), key: 'day_count' },
   { title: t('creatLeave.form.duration'), key: 'duration' },
   { title: t('creatLeave.form.reason'), key: 'reason' },
+  { title: t('memberFine.form.action'), key: 'action' },
 ]);
 
 const multiHeaders2 = computed(() => [
