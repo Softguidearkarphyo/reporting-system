@@ -53,11 +53,11 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-list-subheader class="mx-4">
+    <!-- <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Button Layout
-    </v-list-subheader>
-    <div class="d-flex align-center pa-6">
+    </v-list-subheader> -->
+    <!-- <div class="d-flex align-center pa-6">
       <v-btn
         prepend-icon="tabler:IconLayoutSidebarInactive"
         class="ma-2 setIcon"
@@ -70,7 +70,7 @@
       >
         End
       </v-btn>
-    </div>
+    </div> -->
     <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Card Border with
@@ -93,7 +93,7 @@
         RGB
       </v-btn>
     </div>
-    <v-list-subheader class="mx-4">
+    <!-- <v-list-subheader class="mx-4">
       <v-icon left color="primary">mdi-palette</v-icon>
       Card with
     </v-list-subheader>
@@ -110,7 +110,7 @@
       >
         None
       </v-btn>
-    </div>
+    </div> -->
   </v-navigation-drawer>
 </template>
 <script setup>
