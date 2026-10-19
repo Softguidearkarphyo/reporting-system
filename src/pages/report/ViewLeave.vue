@@ -43,7 +43,37 @@
           </div>
         </v-card>
       </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+            {{ t('common.carryLeaves') }}
+          </div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-indigo me-2">
+              {{ leaveSummary.carry_leaves ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">Days</span>
+          </div>
+        </v-card>
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+            {{ t('common.unpaid') || 'UNPAID LEAVES' }}
+          </div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-error me-2">
+              {{ leaveSummary.unpaid ?? 0 }}
+            </span>
+            <span class="text-body-2 text-gray-500">Days</span>
+          </div>
+        </v-card>
+      </v-col>
 
+    </v-row>
+
+    <!-- Second Summary Cards Row (3/4 Width - cols="12" md="9") -->
+    <v-row dense class="mb-3">
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 rounded-lg h-100" elevation="1">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
@@ -69,54 +99,34 @@
           </div>
         </v-card>
       </v-col>
-    </v-row>
 
-    <!-- Second Summary Cards Row (3/4 Width - cols="12" md="9") -->
-    <v-row dense class="mb-3">
-      <v-col cols="12" md="9">
-        <v-row dense>
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
-                {{ t('common.carryLeaves') || 'CARRY LEAVES' }}
-              </div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-indigo me-2">
-                  {{ leaveSummary.carry_leaves ?? 0 }}
-                </span>
-                <span class="text-body-2 text-gray-500">Days</span>
-              </div>
-            </v-card>
-          </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{
+            t('common.accumulatedHours')  }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-teal me-2">
+              {{ accumulatedHoursFormatted }}
+            </span>
+            <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5
+              Day)</span>
+          </div>
+        </v-card>
+      </v-col>
 
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{
-                t('common.accumulatedHours') || 'Accumulated Hours' }}</div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-teal me-2">
-                  {{ accumulatedHoursFormatted }}
-                </span>
-                <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5
-                  Day)</span>
-              </div>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" sm="4">
-            <v-card class="pa-4 rounded-lg h-100" elevation="1">
-              <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
-                t('common.totalOvertime') }}</div>
-              <div class="d-flex align-baseline">
-                <span class="text-h4 font-weight-bold text-purple me-2">
-                  {{ totalOvertimeFormatted }}
-                </span>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
+      <v-col cols="12" sm="6" md="3">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
+            t('common.totalOvertime') }}</div>
+          <div class="d-flex align-baseline">
+            <span class="text-h4 font-weight-bold text-purple me-2">
+              {{ totalOvertimeFormatted }}
+            </span>
+          </div>
+        </v-card>
       </v-col>
     </v-row>
+
 
     <!-- Main Content Tables Row (Align Start for Auto Content Height) -->
     <v-row class="align-start">

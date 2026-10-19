@@ -65,21 +65,22 @@ export const useLeaveStore = defineStore('leave', () => {
   };
 
   // Fetch Leaves API Call
-  const fetchLeave = async (payload = {}) => {
-    // console.log("thsi is ", payload)
-    try {
-      const response = await api.post('/reporting-system/leave/get', payload);
-      setLeaves(response.data);
-      return response.data;
-    } catch (error) {
-      const errorMsg =
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        'Fail to Fetch Leaves';
-      toast.error(errorMsg);
-      throw error;
-    }
-  };
+const fetchLeave = async (payload = {}) => {
+
+  console.log("payload is ", payload)
+  try {
+    const response = await api.post('/reporting-system/leave/get', payload);
+    setLeaves(response.data);
+    return response.data;
+  } catch (error) {
+    const errorMsg =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      'Fail to Fetch Leaves';
+    toast.error(errorMsg);
+    throw error;
+  }
+};
 
   const fetchLeaveRecord = async (payload = {}) => {
     // console.log("user ", JSON.stringify(payload))

@@ -51,7 +51,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -103,7 +103,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -187,7 +187,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -239,7 +239,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -454,11 +454,18 @@ const fetchData = async () => {
       payload.skill_sheet = {};
     }
 
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
 
-    await leaveStore.fetchLeave();
+    await leaveStore.fetchLeave({
+      month: currentMonth,
+      year: currentYear
+    });
+
+
     const allLeaveRecords = leaveStore.getLeaves || [];
 
-    console.log("leave ", allLeaveRecords)
     // const groupedLeaveMap = allLeaveRecords
     //   .filter((record) => Array.isArray(record.leaves) && record.leaves.length > 0)
     //   .reduce((acc, record) => {

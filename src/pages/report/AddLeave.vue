@@ -51,7 +51,7 @@
           <v-row dense>
             <v-col cols="12" sm="6">
               <Field v-if="!multipleLeave" name="leave_date" v-slot="{ value, handleChange, errorMessage }">
-                <BaseDatePicker :model-value="value" :label="t('creatLeave.form.leave_date')"
+                <BaseGoogleCalendar :model-value="value" :label="t('creatLeave.form.leave_date')"
                   prependIcon="tabler:IconCalendarPin" class="w-100" :error-messages="errorMessage" clearable
                   :disabled="isLoading || isSubmitting" @update:modelValue="
                     (date) => {
@@ -234,7 +234,7 @@
             <span v-else>{{ item.duration }}</span>
           </template>
 
-           <template #[`item.action`]="{ item }">
+          <template #[`item.action`]="{ item }">
             <span class="d-flex justify-start align-center p-0">
               <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
                 :disabled="isLoading || isDeleting || isSubmitting" @click.stop="showConfirmDeleteLeave(item.id)">
@@ -268,8 +268,8 @@
                 'status-label d-inline-flex align-center px-3 py-1 text-caption font-weight-medium',
                 item.color
               ]" :style="{
-    lineHeight: 1.2
-  }">
+                lineHeight: 1.2
+              }">
                 <v-icon size="16" class="mr-1" :color="item.statusColor">
                   {{ item.statusIcon }}
                 </v-icon>
@@ -320,7 +320,7 @@
     " />
 
   <!-- for leave -->
-    <BaseConfirmDelete v-model="confirmDeleteLeave" :text="t('memberFine.deleteConfirmText')"
+  <BaseConfirmDelete v-model="confirmDeleteLeave" :text="t('memberFine.deleteConfirmText')"
     :class="{ 'd-none': !confirmDeleteLeave }" @yes="
       confirmDeleteLeave = false;
     deleteLeave();
