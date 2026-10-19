@@ -23,7 +23,6 @@ export const useOverTimeStore = defineStore('overTime', () => {
     }
   };
   const createOverTime = async (payload) => {
-    console.log("this is payload", payload)
     try {
       const response = await api.post(
         '/reporting-system/over-time/create',

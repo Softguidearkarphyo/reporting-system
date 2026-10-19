@@ -19,7 +19,6 @@ export const useMemberStore = defineStore('member', () => {
   };
 
   const createMember = async (payload) => {
-    console.log('payload', payload);  
     try {
       const response = await api.post(
         '/reporting-system/staff/create',

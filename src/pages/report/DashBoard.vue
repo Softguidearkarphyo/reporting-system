@@ -108,25 +108,19 @@
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.time`]="{ item }">
-              <span class="time-box d-inline-flex justify-center align-center">
-                <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                {{ item.time }}
+              <template #[`item.total_fines_amount`]="{ item }">
+              <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
+                {{ item.total_fines_amount ? item.total_fines_amount.toLocaleString() : 0 }} Ks
               </span>
             </template>
 
-            <template #[`item.fine`]="{ item }">
-              <span class="money-box d-inline-flex justify-center align-center">
-                {{ item.fine + ' Ks' }}
-              </span>
-            </template>
-
-            <template #[`item.count`]="{ item }">
+            <template #[`item.total_fine_records`]="{ item }">
               <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-                {{ item.count }}
+                {{ item.total_fine_records }}
               </span>
-              <v-icon v-if="item.count > 2" :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
-                {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+              <v-icon v-if="item.total_fine_records > 2"
+                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
               </v-icon>
             </template>
           </BaseTable>
