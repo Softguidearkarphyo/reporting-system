@@ -149,14 +149,14 @@ import { startOfMonth as getStartOfMonth, endOfMonth as getEndOfMonth, format } 
 import { ref, computed, watch, onMounted } from 'vue';
 
 const { t, locale } = useI18n();
-const checkboxFlg = ref(false)
+const checkboxFlg = ref(false);
 const projectSchema = computed(() => showProjectSchema(t, checkboxFlg));
-const search = ref('')
-const searchFlg = ref(false)
-const formRef = ref(null)
-const items = ref([]) 
-const showProject = useShowProject()
-const initialData = ref(false)
+const search = ref('');
+const searchFlg = ref(false);
+const formRef = ref(null);
+const items = ref([]); 
+const showProject = useShowProject();
+const initialData = ref(false);
 let originalItems = [];
 
 // Loading states
@@ -165,7 +165,7 @@ const isSubmitting = ref(false);
 
 const headers = computed(() => {
   const isJapanese = locale.value === 'ja';
-  const tmpHeaders = [
+  return [
     {
       title: t('workingTime.staffName'),
       key: isJapanese ? 'jp_name' : 'eng_name',
@@ -175,13 +175,9 @@ const headers = computed(() => {
       key: 'periods',
     },
   ];
-  return tmpHeaders;
 });
 
-const projectNameLang = computed(()=>{
-  const currentLang = locale.value === 'en';
-  return currentLang 
-})
+const projectNameLang = computed(() => locale.value === 'en');
 
 onMounted(() => {
   searchFlg.value = true;
@@ -203,10 +199,10 @@ const submit = async (values) => {
       delete payload.week_date;
     }
 
-    const projectWorkHour = await showProject.fetchProjecthour(values);
-    initialData.value = projectWorkHour.data.length > 0 ? true : false;
+    const projectWorkHour = await showProject.fetchProjecthour(payload);
+    initialData.value = projectWorkHour.data.length > 0;
 
-    const weekRangeMap = getWeekRangeMap(values.end_date, values.week_date);
+    const weekRangeMap = getWeekRangeMap(payload.end_date, payload.week_date);
     const weekGroups = {};
     
     const totalGroups = {
@@ -218,8 +214,10 @@ const submit = async (values) => {
       const { date, staff_id, jp_name, eng_name, project_id, project_eng, project_jp } = entry;
       const hours = 0.5;
 
-      const weekLabel = checkboxFlg.value == true ? getMonth(date) : weekRangeMap[date];
+      const weekLabel = checkboxFlg.value === true ? getMonth(date) : weekRangeMap[date];
       
+      if (!weekLabel) return; 
+
       if (!weekGroups[weekLabel]) {
         weekGroups[weekLabel] = { weekLabel, projects: {} };
       }
@@ -279,14 +277,17 @@ const submit = async (values) => {
     }));
 
     if (!checkboxFlg.value && Number(payload.week_date) > 1 && groupedResult.length > 1) {
-      const oldestWeekRange = groupedResult[groupedResult.length - 1].weekLabel.split(' ~ ');
-      const overallStartDate = oldestWeekRange[1];
+      const oldestWeekLabel = groupedResult[groupedResult.length - 1].weekLabel || '';
+      const newestWeekLabel = groupedResult[0].weekLabel || '';
 
-      const newestWeekRange = groupedResult[0].weekLabel.split(' ~ ');
-      const overallEndDate = newestWeekRange[0];
+      const oldestWeekRange = oldestWeekLabel.split(' ~ ');
+      const newestWeekRange = newestWeekLabel.split(' ~ ');
+
+      const overallStartDate = oldestWeekRange[0] || '';
+      const overallEndDate = newestWeekRange[1] || newestWeekRange[0] || '';
 
       const combinedTotalResult = {
-        weekLabel: `${overallEndDate} ~ ${overallStartDate}` + ` ${t('common.totalHours')}`, 
+        weekLabel: `${overallStartDate} ~ ${overallEndDate} (${t('common.totalHours')})`,
         projects: Object.values(totalGroups.projects).map(project => ({
           project_id: project.project_id,
           project_eng: project.project_eng,
@@ -315,27 +316,27 @@ const submit = async (values) => {
 
 function hourMinConvert(hour) {
   if (hour.toString().includes('.')) {
-    const arr = hour.toString().split('.');
-    return arr;
+    return hour.toString().split('.');
   }
   return [hour];
 }
 
 function getWeekRangeMap(inputDate, weeks) {
   const map = {};
-  let endDate = new Date(inputDate);
+  if (!inputDate || !weeks) return map;
 
-  const format = (d) => d.toISOString().slice(0, 10);
+  let endDate = new Date(inputDate);
+  const formatDate = (d) => format(d, 'yyyy-MM-dd');
 
   for (let i = 0; i < weeks; i++) {
     const startDate = new Date(endDate);
     startDate.setDate(endDate.getDate() - 6); 
 
-    const rangeLabel = `${format(startDate)} ~ ${format(endDate)}`;
+    const rangeLabel = `${formatDate(startDate)} ~ ${formatDate(endDate)}`;
 
     let loopDate = new Date(endDate);
     while (loopDate >= startDate) {
-      map[format(loopDate)] = rangeLabel;
+      map[formatDate(loopDate)] = rangeLabel;
       loopDate.setDate(loopDate.getDate() - 1);
     }
 
@@ -347,23 +348,25 @@ function getWeekRangeMap(inputDate, weeks) {
 }
 
 const clearFormTable = () => {
-  formRef.value.resetForm();
+  if (formRef.value) {
+    formRef.value.resetForm();
+  }
   initialData.value = false;
   checkboxFlg.value = false;
   items.value = [];
   originalItems = [];
 };
 
-const getMonth = (date)=>{
-  const dateChange = new Date(date)
+const getMonth = (date) => {
+  const dateChange = new Date(date);
   const startOfMonth = format(getStartOfMonth(dateChange), 'yyyy-MM-dd');
   const lastOfMonth = format(getEndOfMonth(dateChange), 'yyyy-MM-dd');
   return `${startOfMonth} ~ ${lastOfMonth}`;
-}
+};
 
-const toggleField = ()=>{
+const toggleField = () => {
   checkboxFlg.value = !checkboxFlg.value;
-}
+};
 
 watch(
   () => search.value,
