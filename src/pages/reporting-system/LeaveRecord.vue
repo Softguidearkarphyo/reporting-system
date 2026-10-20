@@ -6,25 +6,14 @@
           <BaseTitle>{{ t('creatLeave.title') }}</BaseTitle>
         </v-col>
         <v-col cols="6" md="5" lg="3" class="d-flex justify-end">
-          <BaseTextField
-            v-model="search"
-            :label="t('common.search')"
-            color="primary"
-            prepend-icon="mdi-magnify"
-            density="compact"
-            hide-details
-            :disabled="loading || isActionLoading"
-          />
+          <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-icon="mdi-magnify"
+            density="compact" hide-details :disabled="loading || isActionLoading" />
         </v-col>
       </v-row>
 
       <ParentCard>
-        <BaseTable
-          v-if="filteredAdminLeaveList && filteredAdminLeaveList.length"
-          :headers="adminHeaders"
-          :items="filteredAdminLeaveList"
-          :loading="loading || isActionLoading"
-        >
+        <BaseTable v-if="filteredAdminLeaveList && filteredAdminLeaveList.length" :headers="adminHeaders"
+          :items="filteredAdminLeaveList" :loading="loading || isActionLoading">
           <template #[`item.name`]="{ item }">
             <div>
               <div class="font-weight-medium text-gray-900">{{ item.eng_name || '-' }}</div>
@@ -37,7 +26,7 @@
               paid
             </span>
             <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
-              short 
+              short
             </span>
             <span v-else class="status1 d-inline-flex justify-center align-center">
               unpaid
@@ -62,23 +51,31 @@
           </template>
 
           <template #[`item.reason`]="{ item }">
-                 {{ item.reason || '-' }}
+            {{ item.reason || '-' }}
           </template>
 
           <template #[`item.action`]="{ item }">
-            <div class="d-flex justify-end">
-              <v-btn icon size="small" variant="text" color="primary" :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id,item.staff_id)">
-                <v-icon icon="tabler:IconEye" size="18" />
-              </v-btn>
+            <div class="d-flex justify-end align-center">
+              <BaseButton elevation="0" variant="outlined" class="view-btn border" size="small" :add-class="['ma-1']"
+                :disabled="loading || isActionLoading" @click.stop="pushToView(item.rec_id, item.staff_id)">
+                <v-icon icon="tabler:IconEye" size="15" color="grey-darken-3" />
+              </BaseButton>
+
+              <BaseButton elevation="0" color="" class="delete-btn" size="small" :add-class="['ma-1']"
+                :disabled="isLoading || isDeleting || isSubmitting"
+                @click.stop="showConfirmDeleteLeave(item.id || item.rec_id)">
+                <v-icon icon="tabler:IconTrash" size="15" />
+              </BaseButton>
             </div>
           </template>
+
         </BaseTable>
 
         <div v-else class="text-center pa-8 text-gray-500">
           <v-icon size="48" class="mb-2" color="grey-lighten-1">mdi-calendar-blank-outline</v-icon>
-          <div class="text-body-1">{{t('common.noleave')}}</div>
+          <div class="text-body-1">{{ t('common.noleave') }}</div>
         </div>
-      </ParentCard> 
+      </ParentCard>
     </template>
 
     <template v-else>
@@ -96,7 +93,8 @@
       <v-row dense class="mb-2">
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1">TOTAL USED</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-primary me-2">
                 {{ leaveSummary.total_used ?? 0 }}
@@ -108,7 +106,8 @@
 
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1">REMAIN LEAVES</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-info me-2">
                 {{ leaveSummary.remain_leaves ?? 0 }}
@@ -120,7 +119,39 @@
 
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1">FIRST ANNUAL</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+              {{ t('common.carryLeaves') }}
+            </div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-indigo me-2">
+                {{ leaveSummary.carry_leaves ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
+
+
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
+              {{ t('common.unpaid') }}
+            </div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-error me-2">
+                {{ leaveSummary.unpaid ?? 0 }}
+              </span>
+              <span class="text-body-2 text-gray-500">Days</span>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-row dense class="mb-3">
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
+            </div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-warning me-2">
                 {{ leaveSummary.first_annual ?? 0 }}
@@ -132,7 +163,8 @@
 
         <v-col cols="12" sm="6" md="3">
           <v-card class="pa-4 rounded-lg h-100" elevation="1">
-            <div class="text-caption font-weight-medium text-gray-500 mb-1">SECOND ANNUAL</div>
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual')
+            }}</div>
             <div class="d-flex align-baseline">
               <span class="text-h4 font-weight-bold text-success me-2">
                 {{ leaveSummary.second_annual ?? 0 }}
@@ -141,48 +173,31 @@
             </div>
           </v-card>
         </v-col>
-      </v-row>
 
-      <v-row dense class="mb-3">
-        <v-col cols="12" md="9">
-          <v-row dense>
-            <v-col cols="12" sm="4">
-              <v-card class="pa-4 rounded-lg h-100" elevation="1">
-                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
-                  {{ t('common.carryLeaves') || 'CARRY LEAVES' }}
-                </div>
-                <div class="d-flex align-baseline">
-                  <span class="text-h4 font-weight-bold text-indigo me-2">
-                    {{ leaveSummary.carry_leaves ?? 0 }}
-                  </span>
-                  <span class="text-body-2 text-gray-500">Days</span>
-                </div>
-              </v-card>
-            </v-col>
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
+              t('common.accumulatedHours') }}</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-teal me-2">
+                {{ accumulatedHoursFormatted }}
+              </span>
+              <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5
+                Day)</span>
+            </div>
+          </v-card>
+        </v-col>
 
-            <v-col cols="12" sm="4">
-              <v-card class="pa-4 rounded-lg h-100" elevation="1">
-                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">ACCUMULATED HOURS</div>
-                <div class="d-flex align-baseline">
-                  <span class="text-h4 font-weight-bold text-teal me-2">
-                    {{ accumulatedHoursFormatted }}
-                  </span>
-                  <span class="text-body-2 text-gray-500">({{ leaveSummary.accumulated_hours ?? 0 }} / 4.0 Hrs to 0.5 Day)</span>
-                </div>
-              </v-card>
-            </v-col>
-
-            <v-col cols="12" sm="4">
-              <v-card class="pa-4 rounded-lg h-100" elevation="1">
-                <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime') }}</div>
-                <div class="d-flex align-baseline">
-                  <span class="text-h4 font-weight-bold text-purple me-2">
-                    {{ totalOvertimeFormatted }}
-                  </span>
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
+        <v-col cols="12" sm="6" md="3">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+            <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime')
+            }}</div>
+            <div class="d-flex align-baseline">
+              <span class="text-h4 font-weight-bold text-purple me-2">
+                {{ totalOvertimeFormatted }}
+              </span>
+            </div>
+          </v-card>
         </v-col>
       </v-row>
 
@@ -210,33 +225,20 @@
               </v-col> -->
             </v-row>
 
-            <BaseTable
-              v-if="filteredUserLeaveList && filteredUserLeaveList.length"
-              :headers="userHeaders"
-              :items="filteredUserLeaveList"
-              :loading="loading || isActionLoading"
-            >
+            <BaseTable v-if="filteredUserLeaveList && filteredUserLeaveList.length" :headers="userHeaders"
+              :items="filteredUserLeaveList" :loading="loading || isActionLoading">
               <template #[`item.leave_date`]="{ item }">
                 <span class="font-weight-medium text-body-2">{{ item.leave_date }}</span>
               </template>
 
               <template #[`item.leave_type`]="{ item }">
-                <span
-                  v-if="item.leave_type === 1"
-                  class="status d-inline-flex justify-center align-center"
-                >
+                <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
                   paid
                 </span>
-                <span
-                  v-else-if="item.leave_type === 3"
-                  class="status-short d-inline-flex justify-center align-center"
-                >
+                <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
                   short leave
                 </span>
-                <span
-                  v-else
-                  class="status1 d-inline-flex justify-center align-center"
-                >
+                <span v-else class="status1 d-inline-flex justify-center align-center">
                   unpaid
                 </span>
               </template>
@@ -285,13 +287,8 @@
               </v-col>
             </v-row>
 
-            <BaseTable
-              v-if="overtimes && overtimes.length"
-              :headers="multiHeaders3"
-              :items="overtimes"
-              :loading="loading || isActionLoading"
-              items-per-page="10"
-            >
+            <BaseTable v-if="overtimes && overtimes.length" :headers="multiHeaders3" :items="overtimes"
+              :loading="loading || isActionLoading" items-per-page="10">
               <template #[`item.ot_time`]="{ item }">
                 <span v-if="item.ot_time == 1">Full day</span>
                 <span v-else-if="item.ot_time == 2">Half day</span>
@@ -308,12 +305,11 @@
               <template #[`item.status`]="{ item }">
                 <span class="d-inline-flex align-center py-1">
                   <span
-                   :class="['status-label', 'd-inline-flex', 'align-center', 'px-3', 'py-1', 'mr-2', 'text-caption', 'font-weight-medium', item.statusColor]"
+                    :class="['status-label', 'd-inline-flex', 'align-center', 'px-3', 'py-1', 'mr-2', 'text-caption', 'font-weight-medium', item.statusColor]"
                     :style="{
-                      
+
                       lineHeight: 1.2
-                    }"
-                  >
+                    }">
                     <v-icon size="16" class="mr-1" :color="item.statusColor">
                       {{ item.statusIcon }}
                     </v-icon>
@@ -321,15 +317,9 @@
                   </span>
 
                   <span v-if="item.status === 0" class="d-inline-flex align-center">
-                    <v-switch
-                      color="primary"
-                      density="compact"
-                      :hide-details="true"
-                      :model-value="item.isComplete"
-                      :disabled="loading || isActionLoading"
-                      @update:model-value="onSwitchChange(item)"
-                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;"
-                    />
+                    <v-switch color="primary" density="compact" :hide-details="true" :model-value="item.isComplete"
+                      :disabled="loading || isActionLoading" @update:model-value="onSwitchChange(item)"
+                      style="transform: scale(0.75); margin-top: 0; margin-bottom: 0;" />
                   </span>
                 </span>
               </template>
@@ -345,22 +335,26 @@
     </template>
   </div>
 
-  <BaseConfirmDelete
-    v-model="confirmChange"
-    :text="t('memberFine.statusConfirmText')"
-    :class="{ 'd-none': !confirmChange }"
-    @yes="
+  <BaseConfirmDelete v-model="confirmChange" :text="t('memberFine.statusConfirmText')"
+    :class="{ 'd-none': !confirmChange }" @yes="
       confirmChange = false;
-      if (switchTarget) {
-        onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
-        switchTarget = null;
-      }
-    "
-    @no="
-      confirmChange = false;
+    if (switchTarget) {
+      onStatusSwitchChange(switchTarget, !switchTarget.isComplete);
       switchTarget = null;
-    "
-  />
+    }
+    " @no="
+      confirmChange = false;
+    switchTarget = null;
+    " />
+
+  <BaseConfirmDelete v-model="confirmDeleteLeave" :text="t('memberFine.deleteConfirmText')"
+    :class="{ 'd-none': !confirmDeleteLeave }" @yes="
+      confirmDeleteLeave = false;
+    deleteLeave();
+    " @no="
+      confirmDeleteLeave = false;
+    deleteTargetLeave = undefined;
+    " />
 </template>
 
 <script setup>
@@ -383,9 +377,21 @@ const loading = ref(false);
 const isActionLoading = ref(false);
 const memberRecord = ref(null);
 const overTimeRecords = ref([]);
-const leaveTimeRecords = ref([]); // Added reactive ref for admin leave data
+const leaveTimeRecords = ref([]);
 const confirmChange = ref(undefined);
 const switchTarget = ref(null);
+const deleteTargetLeave = ref(undefined);
+const confirmDeleteLeave = ref(undefined);
+
+
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
+
+const showConfirmDeleteLeave = (id) => {
+  deleteTargetLeave.value = id;
+  confirmDeleteLeave.value = true;
+};
 
 const otHoursMap = {
   1: 8,    // Full day
@@ -447,6 +453,7 @@ const multiHeaders3 = computed(() => [
     title: t('memberFine.form.status'),
     key: 'status',
   },
+  
 ]);
 
 const employeeInfo = computed(() => ({
@@ -486,6 +493,31 @@ const filteredAdminLeaveList = computed(() => {
       item.reason?.toLowerCase().includes(q)
   );
 });
+
+const deleteLeave = async () => {
+  if (!deleteTargetLeave.value) return;
+
+  const targetId = deleteTargetLeave.value;
+  isDeleting.value = true;
+
+  try {
+    await leaveStore.deleteLeave({ id: targetId });
+
+    if (leaveTimeRecords.value && leaveTimeRecords.value.length > 0) {
+      leaveTimeRecords.value = leaveTimeRecords.value.filter(
+        (item) => item.id !== targetId && item.rec_id !== targetId
+      );
+    }
+
+    deleteTargetLeave.value = undefined;
+    await fetchData();
+  } catch (error) {
+    console.error('Error deleting member leave:', error);
+  } finally {
+    isDeleting.value = false;
+  }
+};
+
 
 const onSwitchChange = (item) => {
   switchTarget.value = item;
@@ -576,7 +608,7 @@ const totalOvertimeFormatted = computed(() => {
   return `${hours} Hrs`;
 });
 
-const pushToView = (id,staffid) => {
+const pushToView = (id, staffid) => {
   router.push({ name: 'view-leaves', params: { recId: id }, query: { staffId: staffid } });
 };
 
@@ -659,6 +691,7 @@ onMounted(async () => {
   color: rgba(var(--v-theme-error));
   text-transform: uppercase;
 }
+
 .status2 {
   background-color: rgba(var(--v-theme-warning), 0.2);
   border-radius: 4px;
@@ -676,6 +709,7 @@ onMounted(async () => {
   font-weight: 800;
   color: rgba(var(--v-theme-info));
 }
+
 .status-short {
   background-color: rgba(30, 136, 229, 0.2);
   border-radius: 4px;
@@ -683,5 +717,21 @@ onMounted(async () => {
   font-size: 10px;
   font-weight: 800;
   color: #1e88e5;
+}
+
+.view-btn,
+.delete-btn {
+  background-color: transparent !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px;
+}
+
+.view-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
 }
 </style>

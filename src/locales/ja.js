@@ -43,6 +43,7 @@ export default {
     nofine: '罰金の記録は見つかりませんでした。',
     noovertime: '残業の記録は見つかりませんでした。',
     otrecord: '時間外労働の記録',
+    unpaid: '無給休暇',
   },
   sidebar: {
     dashboard: 'ダッシュボード',

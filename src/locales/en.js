@@ -43,6 +43,7 @@ export default {
     nofine: 'No fine records found',
     noovertime: 'No overtime records found',
     otrecord: 'overtime records',
+    unpaid: 'Unpaid Leaves',
   },
   sidebar: {
     dashboard: 'dashboard',

@@ -205,9 +205,9 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login' && !isLoggedIn) {
     next('/');
   }
-  // else if ((to.path === '/' || to.path === '/login') && isLoggedIn) {
-  //   next('/reporting-system/dashboard');
-  // }
+  else if ((to.path === '/' || to.path === '/login') && isLoggedIn) {
+    next('/reporting-system/dashboard');
+  }
   else if (to.meta.requiresAuth && !isLoggedIn) {
     next('/');
   } else {

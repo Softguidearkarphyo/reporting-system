@@ -51,32 +51,43 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.total_paid_days`]="{ item }">
-              <span class="status d-inline-flex justify-center align-center">
-                {{ item.total_paid_days }} {{ item.total_paid_days === 1 ? 'day' : 'days' }}
+            <template #[`item.leave_type`]="{ item }">
+              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+                paid
+              </span>
+              <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
+                short
+              </span>
+              <span v-else class="status1 d-inline-flex justify-center align-center">
+                unpaid
               </span>
             </template>
 
-            <template #[`item.total_unpaid_days`]="{ item }">
-              <span class="status1 d-inline-flex justify-center align-center">
-                {{ item.total_unpaid_days }} {{ item.total_unpaid_days === 1 ? 'day' : 'days' }}
+
+            <template #[`item.leave_date`]="{ item }">
+              <span class="d-inline-flex justify-center align-center">
+                {{ item.leave_date }}
               </span>
             </template>
 
-            <template #[`item.total_days`]="{ item }">
-              <span class="font-weight-bold">{{ item.total_days }}</span>
+            <template #[`item.duration`]="{ item }">
+              <span v-if="item.duration == 1">Full day</span>
+              <span v-else-if="item.duration == 2">Half day</span>
+              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 4">3 Hrs</span>
+              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 6">2 Hrs</span>
+              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 8">1 Hrs</span>
+              <span v-else-if="item.duration == 9">30 Min</span>
+              <span v-else>{{ item.duration }}</span>
             </template>
 
-            <template #[`item.total_records`]="{ item }">
-              <span class="time-box d-inline-flex justify-center align-center px-2 py-1 rounded-pill">
-                {{ item.total_records }}
-              </span>
-            </template>
           </BaseTable>
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
@@ -92,30 +103,24 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.time`]="{ item }">
-              <span class="time-box d-inline-flex justify-center align-center">
-                <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                {{ item.time }}
+              <template #[`item.total_fines_amount`]="{ item }">
+              <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
+                {{ item.total_fines_amount ? item.total_fines_amount.toLocaleString() : 0 }} Ks
               </span>
             </template>
 
-            <template #[`item.fine`]="{ item }">
-              <span class="money-box d-inline-flex justify-center align-center">
-                {{ item.fine + ' Ks' }}
-              </span>
-            </template>
-
-            <template #[`item.count`]="{ item }">
+            <template #[`item.total_fine_records`]="{ item }">
               <span class="time-box d-inline-flex justify-center align-center p-2 rounded-pill">
-                {{ item.count }}
+                {{ item.total_fine_records }}
               </span>
-              <v-icon v-if="item.count > 2" :style="{ color: item.count > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
-                {{ item.count > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
+              <v-icon v-if="item.total_fine_records > 2"
+                :style="{ color: item.total_fine_records > 3 ? '#d00000' : '#ffba08' }" class="ms-1">
+                {{ item.total_fine_records > 3 ? 'mdi-fire-alert' : 'mdi-alert-decagram-outline' }}
               </v-icon>
             </template>
           </BaseTable>
@@ -176,32 +181,43 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-            <template #[`item.total_paid_days`]="{ item }">
-              <span class="status d-inline-flex justify-center align-center">
-                {{ item.total_paid_days }} {{ item.total_paid_days === 1 ? 'day' : 'days' }}
+            <template #[`item.leave_type`]="{ item }">
+              <span v-if="item.leave_type === 1" class="status d-inline-flex justify-center align-center">
+                paid
+              </span>
+              <span v-else-if="item.leave_type === 3" class="status-short d-inline-flex justify-center align-center">
+                short
+              </span>
+              <span v-else class="status1 d-inline-flex justify-center align-center">
+                unpaid
               </span>
             </template>
 
-            <template #[`item.total_unpaid_days`]="{ item }">
-              <span class="status1 d-inline-flex justify-center align-center">
-                {{ item.total_unpaid_days }} {{ item.total_unpaid_days === 1 ? 'day' : 'days' }}
+
+            <template #[`item.leave_date`]="{ item }">
+              <span class=" d-inline-flex justify-center align-center">
+                {{ item.leave_date }}
               </span>
             </template>
 
-            <template #[`item.total_days`]="{ item }">
-              <span class="font-weight-bold">{{ item.total_days }}</span>
+            <template #[`item.duration`]="{ item }">
+              <span v-if="item.duration == 1">Full day</span>
+              <span v-else-if="item.duration == 2">Half day</span>
+              <span v-else-if="item.duration == 3">3 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 4">3 Hrs</span>
+              <span v-else-if="item.duration == 5">2 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 6">2 Hrs</span>
+              <span v-else-if="item.duration == 7">1 Hrs : 30 Min</span>
+              <span v-else-if="item.duration == 8">1 Hrs</span>
+              <span v-else-if="item.duration == 9">30 Min</span>
+              <span v-else>{{ item.duration }}</span>
             </template>
 
-            <template #[`item.total_records`]="{ item }">
-              <span class="time-box d-inline-flex justify-center align-center px-2 py-1 rounded-pill">
-                {{ item.total_records }}
-              </span>
-            </template>
           </BaseTable>
 
           <v-card-text v-else-if="!isLoading" class="text-center pa-8 text-grey">
@@ -217,7 +233,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-per-page="-1" hide-default-footer class="elevation-0 pa-2 no-scroll-table">
+            :loading="isLoading" items-per-page="10" class="elevation-1" >
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -380,9 +396,9 @@ const handleCheckIn = async () => {
 const leaveHeader = computed(() => {
   const tmpHeaders = [
     { title: t('creatLeave.table.name'), key: 'eng_name', sortable: true },
-    { title: t('creatLeave.table.paidDays'), key: 'total_paid_days' },
-    { title: t('creatLeave.table.unpaidDays'), key: 'total_unpaid_days' },
-    { title: t('creatLeave.form.total_days'), key: 'total_days' },
+    { title: t('creatLeave.table.leave_type'), key: 'leave_type' },
+    { title: t('creatLeave.form.leave_date'), key: 'leave_date' },
+    { title: t('creatLeave.table.duration'), key: 'duration' },
   ];
   return tmpHeaders.map((header) => ({
     ...header,
@@ -432,45 +448,53 @@ const fetchData = async () => {
       payload.skill_sheet = {};
     }
 
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
 
-    await leaveStore.fetchLeaveRecord();
-const allLeaveRecords = leaveStore.getLeaveRecords || [];
-
-const groupedLeaveMap = allLeaveRecords
-  .filter((record) => Array.isArray(record.leaves) && record.leaves.length > 0)
-  .reduce((acc, record) => {
-    const staffId = record.staff_id || record.id;
-    const name = record.eng_name || '-';
-
-    if (!acc[staffId]) {
-      acc[staffId] = {
-        staff_id: staffId,
-        eng_name: name,
-        total_paid_days: 0,
-        total_unpaid_days: 0,
-        total_days: 0,
-        total_records: 0,
-      };
-    }
-
-    record.leaves.forEach((item) => {
-      const dayCount = Number(item.day_count || 0);
-      const isPaid = Number(item.leave_type) === 1;
-
-      if (isPaid) {
-        acc[staffId].total_paid_days += dayCount;
-      } else {
-        acc[staffId].total_unpaid_days += dayCount;
-      }
-
-      acc[staffId].total_days += dayCount;
-      acc[staffId].total_records += 1;
+    await leaveStore.fetchLeave({
+      month: currentMonth,
+      year: currentYear
     });
 
-    return acc;
-  }, {});
 
-    memberLeave.value = Object.values(groupedLeaveMap);
+    const allLeaveRecords = leaveStore.getLeaves || [];
+
+    // const groupedLeaveMap = allLeaveRecords
+    //   .filter((record) => Array.isArray(record.leaves) && record.leaves.length > 0)
+    //   .reduce((acc, record) => {
+    //     const staffId = record.staff_id || record.id;
+    //     const name = record.eng_name || '-';
+
+    //     if (!acc[staffId]) {
+    //       acc[staffId] = {
+    //         staff_id: staffId,
+    //         eng_name: name,
+    //         total_paid_days: 0,
+    //         total_unpaid_days: 0,
+    //         total_days: 0,
+    //         total_records: 0,
+    //       };
+    //     }
+
+    //     record.leaves.forEach((item) => {
+    //       const dayCount = Number(item.day_count || 0);
+    //       const isPaid = Number(item.leave_type) === 1;
+
+    //       if (isPaid) {
+    //         acc[staffId].total_paid_days += dayCount;
+    //       } else {
+    //         acc[staffId].total_unpaid_days += dayCount;
+    //       }
+
+    //       acc[staffId].total_days += dayCount;
+    //       acc[staffId].total_records += 1;
+    //     });
+
+    //     return acc;
+    //   }, {});
+
+    memberLeave.value = Object.values(allLeaveRecords);
 
     const fineRes = await fineStore.fetchMemberFine();
     const fineList = Array.isArray(fineRes?.data?.data)

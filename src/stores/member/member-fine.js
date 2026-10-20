@@ -47,6 +47,7 @@ export const useMemberFineStore = defineStore('memberFine', () => {
   }
 
   const updateMemberFineStatus =  async (payload) => {
+
     try {
       const response = await api.post('/reporting-system/fines/status-change', payload);
       toast.success('Fine status Change Successfully.');

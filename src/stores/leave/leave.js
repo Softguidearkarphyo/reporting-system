@@ -65,21 +65,21 @@ export const useLeaveStore = defineStore('leave', () => {
   };
 
   // Fetch Leaves API Call
-  const fetchLeave = async (payload = {}) => {
-    // console.log("thsi is ", payload)
-    try {
-      const response = await api.post('/reporting-system/leave/get', payload);
-      setLeaves(response.data);
-      return response.data;
-    } catch (error) {
-      const errorMsg =
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        'Fail to Fetch Leaves';
-      toast.error(errorMsg);
-      throw error;
-    }
-  };
+const fetchLeave = async (payload = {}) => {
+
+  try {
+    const response = await api.post('/reporting-system/leave/get', payload);
+    setLeaves(response.data);
+    return response.data;
+  } catch (error) {
+    const errorMsg =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      'Fail to Fetch Leaves';
+    toast.error(errorMsg);
+    throw error;
+  }
+};
 
   const fetchLeaveRecord = async (payload = {}) => {
     // console.log("user ", JSON.stringify(payload))
@@ -104,16 +104,13 @@ export const useLeaveStore = defineStore('leave', () => {
 
       let response;
 
-      console.log('in this :');  
       if (isShortLeave) {
-        console.log('Short Leave is:', payload); 
         response = await api.post(
           '/reporting-system/leave-record/add-short-leave',
           payload
         );
         toast.success('Short Leave Created Successfully.');
       } else {
-        console.log('else:'); 
         response = await api.post(
           '/reporting-system/leave/create',
           payload
@@ -132,6 +129,18 @@ export const useLeaveStore = defineStore('leave', () => {
     }
   };
 
+  
+  const deleteLeave = async (payload) => {
+    try {
+      const response = await api.post('/reporting-system/leave/delete', payload);
+      toast.success('Leave Deleted Successfully.');
+      return response;
+    } catch (error) {
+      toast.success('Fail to Delete Overtime');
+      return error;
+    }
+  }
+
   return {
     leaves,
     leaveRecords,
@@ -142,5 +151,6 @@ export const useLeaveStore = defineStore('leave', () => {
     fetchLeave,
     fetchLeaveRecord,
     createLeave,
+    deleteLeave
   };
 });

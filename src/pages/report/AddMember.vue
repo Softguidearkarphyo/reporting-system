@@ -136,12 +136,12 @@
           </Field>
         </v-col>
 
-        <v-col cols="12" md="6" lg="4">
+        <!-- <v-col cols="12" md="6" lg="4">
           <BaseTextField v-model="displayedFileName" :label="t('addMember.form.staff_image')" class="mx-auto"
             prependIcon="tabler:IconPhotoCheck" :width="'320px'" readonly @click="!isLoading && !isSubmitting && triggerFileInput()" :disabled="isLoading || isSubmitting">
           </BaseTextField>
           <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" style="display: none" />
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" md="6" lg="4">
           <Field name="work_type" v-slot="{ field, errorMessage }">
@@ -324,7 +324,7 @@ const submit = async (values) => {
       const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
       if (Number(memberId) === Number(loggedInId) && memberId) {
         const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
-        sessionStorage.setItem('profileImg', fullImageUrl);
+        localStorage.setItem('profileImg', fullImageUrl);
         if (updatedMember.role !== undefined) {
           localStorage.setItem('staff-role', String(updatedMember.role));
         }
