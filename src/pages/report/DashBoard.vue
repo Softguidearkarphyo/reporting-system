@@ -51,7 +51,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" items-per-page="10" class="elevation-1" >
+            :loading="isLoading" items-per-page="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -103,12 +103,12 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" items-per-page="10" class="elevation-1" >
+            :loading="isLoading" items-per-page="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
 
-              <template #[`item.total_fines_amount`]="{ item }">
+            <template #[`item.total_fines_amount`]="{ item }">
               <span class="money-box d-inline-flex justify-center align-center font-weight-bold">
                 {{ item.total_fines_amount ? item.total_fines_amount.toLocaleString() : 0 }} Ks
               </span>
@@ -181,7 +181,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" items-per-page="10" class="elevation-1" >
+            :loading="isLoading" items-per-page="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -233,7 +233,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" items-per-page="10" class="elevation-1" >
+            :loading="isLoading" items-per-page="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -496,12 +496,18 @@ const fetchData = async () => {
 
     memberLeave.value = Object.values(allLeaveRecords);
 
-    const fineRes = await fineStore.fetchMemberFine();
+    const fineRes = await fineStore.fetchMemberFine({
+      month: currentMonth,
+      year: currentYear
+    });
+
     const fineList = Array.isArray(fineRes?.data?.data)
       ? fineRes.data.data
       : Array.isArray(fineRes?.data)
         ? fineRes.data
-        : [];
+        : Array.isArray(fineStore.getMemberFine?.data)
+          ? fineStore.getMemberFine.data
+          : [];
 
     const groupedFineMap = fineList.reduce((acc, item) => {
       if (Number(item.status) === 1) return acc;

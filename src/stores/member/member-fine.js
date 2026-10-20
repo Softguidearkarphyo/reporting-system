@@ -3,11 +3,11 @@ import api from '@/plugins/axios';
 import { toast } from '@/utils/toast';
 
 export const useMemberFineStore = defineStore('memberFine', () => {
-    const memberFine = ref([]);
-    const getMemberFine = computed(() => memberFine.value);
-    const setMemberFine = (data)=>{
-        memberFine.value = data;
-    }
+  const memberFine = ref([]);
+  const getMemberFine = computed(() => memberFine.value);
+  const setMemberFine = (data) => {
+    memberFine.value = data;
+  }
 
   const createMemberFine = async (payload) => {
     // console.log('payload 2', payload);
@@ -24,14 +24,19 @@ export const useMemberFineStore = defineStore('memberFine', () => {
     }
   };
 
-  const fetchMemberFine = async () => {
+  const fetchMemberFine = async (payload) => {
+    console.log("payload ", payload)
     try {
-      const response = await api.post('/reporting-system/fines/get');
-      setMemberFine(response.data)
-      return response;
+      const response = await api.post('/reporting-system/fines/get', payload);
+      setMemberFine(response.data);
+      return response.data;
     } catch (error) {
-      toast.error('Fail to Fetch Fines');
-      return error;
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Fail to Fetch Fines';
+      toast.error(errorMsg);
+      throw error;
     }
   };
 
@@ -46,7 +51,7 @@ export const useMemberFineStore = defineStore('memberFine', () => {
     }
   }
 
-  const updateMemberFineStatus =  async (payload) => {
+  const updateMemberFineStatus = async (payload) => {
 
     try {
       const response = await api.post('/reporting-system/fines/status-change', payload);
