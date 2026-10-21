@@ -9,7 +9,13 @@
   </v-row>
 
   <ParentCard class="mt-4">
-    <BaseTable :headers="headers" :items="items" :density="true" :loading="isLoading || isDeleting">
+    <BaseTable 
+      v-if="items.length > 0 || isLoading" 
+      :headers="headers" 
+      :items="items" 
+      :density="true" 
+      :loading="isLoading || isDeleting"
+    >
       <template #[`item.staff`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
