@@ -25,7 +25,6 @@ export const useMemberFineStore = defineStore('memberFine', () => {
   };
 
   const fetchMemberFine = async (payload) => {
-    console.log("payload ", payload)
     try {
       const response = await api.post('/reporting-system/fines/get', payload);
       setMemberFine(response.data);
