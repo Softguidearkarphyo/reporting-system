@@ -62,9 +62,9 @@
               </Field>
 
               <Field v-else name="multi_date" v-slot="{ value, handleChange, errorMessage }">
-                <BaseMultDate :model-value="value || []" :label="t('creatLeave.form.leave_date')"
+                <BaseMultGoogleCalendar :model-value="value || []" :label="t('creatLeave.form.leave_date')"
                   prependIcon="tabler:IconCalendarPin" class="w-100" :multiple="true" :error-messages="errorMessage"
-                  :disabled="isLoading || isSubmitting" @update:modelValue="
+                  clearable :disabled="isLoading || isSubmitting" @update:modelValue="
                     (dates) => {
                       const selectedDates = Array.isArray(dates) ? dates : [];
                       handleChange(selectedDates);

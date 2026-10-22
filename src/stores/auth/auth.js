@@ -97,7 +97,7 @@ export const useAuthStore = defineStore('auth', () => {
       toast.success('Location deleted successfully.');
       return response;
     } catch (error) {
-      toast.error('Failed to delete location.');
+      toast.error('Already deleted location.');
       return error;
     }
   };

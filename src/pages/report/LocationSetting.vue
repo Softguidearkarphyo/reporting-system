@@ -5,135 +5,123 @@
 
   <ParentCard>
     <Form ref="formRef" :validation-schema="locationSchema" @submit="submit">
-      <v-row align="center" justify="start" class="py-1 ga-2 ga-md-0">
-        <!-- Employee Select Box / Checkbox Toggle View -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <BaseSelect
-            v-if="!selectedMember"
-            v-model="selectedMemberId"
-            :label="t('creatLeave.options.employee')"
-            :items="memberList"
-            item-value="id"
-            item-title="name"
-            prependIcon="tabler:IconUserCog"
-            class="w-100"
-            :disabled="isLoading || isSubmitting || isDeleting"
-            @update:modelValue="selectMember"
-          />
-
-          <v-checkbox
-            v-else
-            v-model="isChecked"
-            :label="t('creatLeave.options.selected_name') + selectName"
-            hide-details
-            color="primary"
-            class="custom-checkbox"
-            :disabled="isLoading || isSubmitting || isDeleting"
-            @update:modelValue="onCheckboxChange"
-          />
-        </v-col>
-
-        <!-- Latitude -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <Field name="lat" v-slot="{ field, errorMessage }">
-            <BaseTextField 
-              v-model="field.value" 
-              v-bind="field" 
-              :label="t('location.form.lat')" 
-              type="number" 
-              step="any"
-              variant="plain" 
-              prependIcon="tabler:IconWorldLatitude" 
-              :error-messages="errorMessage" 
+      <fieldset :disabled="isLoading || isSubmitting" class="border-0 p-0 m-0">
+        <v-row align="center" justify="start" class="py-1 ga-2 ga-md-0">
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <BaseSelect
+              v-if="!selectedMember"
+              v-model="selectedMemberId"
+              :label="t('creatLeave.options.employee')"
+              :items="memberList"
+              item-value="id"
+              item-title="name"
+              prependIcon="tabler:IconUserCog"
               class="w-100"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
+              @update:modelValue="selectMember"
+            />
 
-        <!-- Longitude -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <Field name="lon" v-slot="{ field, errorMessage }">
-            <BaseTextField 
-              v-model="field.value" 
-              v-bind="field" 
-              :label="t('location.form.lon')" 
-              type="number" 
-              step="any"
-              variant="plain" 
-              prependIcon="tabler:IconWorldLongitude" 
-              :error-messages="errorMessage" 
-              class="w-100"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
+            <v-checkbox
+              v-else
+              v-model="isChecked"
+              :label="t('creatLeave.options.selected_name') + selectName"
+              hide-details
+              color="primary"
+              class="custom-checkbox"
+              @update:modelValue="onCheckboxChange"
+            />
+          </v-col>
 
-        <!-- Allow Meter -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <Field name="allow_meter" v-slot="{ field, errorMessage }">
-            <BaseTextField 
-              v-model="field.value" 
-              v-bind="field" 
-              :label="t('location.form.allow_meter')" 
-              type="number"
-              variant="plain" 
-              prependIcon="tabler:IconRuler2" 
-              :error-messages="errorMessage" 
-              class="w-100"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <Field name="lat" v-slot="{ field, errorMessage }">
+              <BaseTextField 
+                v-model="field.value" 
+                v-bind="field" 
+                :label="t('location.form.lat')" 
+                type="number" 
+                step="any"
+                variant="plain" 
+                prependIcon="tabler:IconWorldLatitude" 
+                :error-messages="errorMessage" 
+                class="w-100"
+              />
+            </Field>
+          </v-col>
 
-        <!-- Device UUID -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <Field name="device_uuid" v-slot="{ field, errorMessage }">
-            <BaseTextField 
-              v-model="field.value" 
-              v-bind="field" 
-              :label="t('location.form.device_uuid')" 
-              type="text"
-              variant="plain" 
-              prependIcon="tabler:IconDeviceImacCode" 
-              :error-messages="errorMessage" 
-              class="w-100"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-            </BaseTextField>
-          </Field>
-        </v-col>
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <Field name="lon" v-slot="{ field, errorMessage }">
+              <BaseTextField 
+                v-model="field.value" 
+                v-bind="field" 
+                :label="t('location.form.lon')" 
+                type="number" 
+                step="any"
+                variant="plain" 
+                prependIcon="tabler:IconWorldLongitude" 
+                :error-messages="errorMessage" 
+                class="w-100"
+              />
+            </Field>
+          </v-col>
 
-        <!-- Buttons -->
-        <v-col cols="12" sm="6" md="4" lg="2">
-          <div class="d-flex ga-2 align-center">
-            <BaseButton 
-              type="submit" 
-              class="w-100" 
-              :loading="isSubmitting"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-              {{ t('common.submit') }}
-            </BaseButton>
-            <BaseButton 
-              v-if="isEditMode" 
-              type="button" 
-              class="w-100" 
-              @click="resetFormMode"
-              :disabled="isLoading || isSubmitting || isDeleting"
-            >
-              {{ t('common.cancel') }}
-            </BaseButton>
-          </div>
-        </v-col>
-      </v-row>
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <Field name="allow_meter" v-slot="{ field, errorMessage }">
+              <BaseTextField 
+                v-model="field.value" 
+                v-bind="field" 
+                :label="t('location.form.allow_meter')" 
+                type="number"
+                variant="plain" 
+                prependIcon="tabler:IconRuler2" 
+                :error-messages="errorMessage" 
+                class="w-100"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <Field name="device_uuid" v-slot="{ field, errorMessage }">
+              <BaseTextField 
+                v-model="field.value" 
+                v-bind="field" 
+                :label="t('location.form.device_uuid')" 
+                type="text"
+                variant="plain" 
+                prependIcon="tabler:IconDeviceImacCode" 
+                :error-messages="errorMessage" 
+                class="w-100"
+              />
+            </Field>
+          </v-col>
+
+          <v-col cols="12" sm="6" md="4" lg="2">
+            <div class="d-flex ga-2 align-center">
+              <BaseButton 
+                type="submit" 
+                class="w-100 text-none font-weight-bold" 
+                style="height: 40px;"
+                :loading="isSubmitting"
+                :disabled="isLoading"
+              >
+                {{ t('common.submit') }}
+              </BaseButton>
+              <BaseButton 
+                v-if="isEditMode" 
+                type="button" 
+                class="w-100 text-none font-weight-bold" 
+                style="height: 40px;"
+                :disabled="isLoading || isSubmitting"
+                @click="resetFormMode"
+              >
+                {{ t('common.cancel') }}
+              </BaseButton>
+            </div>
+          </v-col>
+        </v-row>
+      </fieldset>
     </Form>
   </ParentCard>
 
-  <div v-if="hasInitialData" class="mt-4">
+  <div v-if="hasInitialData || isLoading" class="mt-4">
     <v-row align="center" class="mb-3">
       <v-col cols="12" sm="7" lg="9">
         <BaseTitle>{{ t('location.title2') }}</BaseTitle>
@@ -146,12 +134,11 @@
           prependIcon="tabler:IconSearch"
           hide-details 
           class="w-100"
-          :disabled="isLoading || isSubmitting || isDeleting"
-        ></BaseTextField>
+          :disabled="isLoading"
+        />
       </v-col>
     </v-row>
 
-    <!-- Table Wrapper with :loading="isLoading || isDeleting" -->
     <ParentCard>
       <BaseTable :headers="headers" :items="formattedItems" :loading="isLoading || isDeleting">
         <template #[`item.work_type`]="{ item }">
@@ -179,7 +166,7 @@
               size="small" 
               :add-class="['ma-1']"
               :disabled="isLoading || isSubmitting || isDeleting"
-              @click.stop="showConfirmDelete(item.id)"
+              @click.stop="showConfirmDelete(item.loc_id)"
             >
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
@@ -220,7 +207,7 @@ const isEditMode = ref(false);
 const search = ref('');
 const originalItems = ref([]);
 const items = ref([]);
-const hasInitialData = ref(false);
+const hasInitialData = ref(true);
 
 // Loading states
 const isLoading = ref(false);
@@ -301,6 +288,7 @@ const selectMember = async (id) => {
     if (member) {
       formRef.value?.setValues({
         staff_id: member.id,
+        loc_id : member.loc_id,
         lat: member.lat,
         lon: member.lon,
         allow_meter: member.allow_meter,
@@ -352,6 +340,7 @@ const headers = computed(() => {
 const formattedItems = computed(() => {
   return items.value.map((item) => ({
     ...item,
+    loc_id: item.loc_id || '-',
     lat: item.lat || '-',
     lon: item.lon || '-',
     allow_meter: item.allow_meter ?? '-',
@@ -366,6 +355,7 @@ const scrollToEdit = (item) => {
 
   formRef.value?.setValues({
     staff_id: item.id,
+    loc_id: item.loc_id,
     lat: item.lat,
     lon: item.lon,
     allow_meter: item.allow_meter,

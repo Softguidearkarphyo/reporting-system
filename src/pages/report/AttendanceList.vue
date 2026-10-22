@@ -9,8 +9,13 @@
   </v-row>
 
   <ParentCard class="mt-4">
-    <BaseTable v-if="items.length > 0" :headers="headers" :items="items" :density="true"
-      :loading="isLoading || isDeleting">
+    <BaseTable 
+      v-if="items.length > 0 || isLoading" 
+      :headers="headers" 
+      :items="items" 
+      :density="true" 
+      :loading="isLoading || isDeleting"
+    >
       <template #[`item.staff`]="{ item }">
         <div class="d-flex align-center">
           <v-avatar size="37" class="mr-3">
@@ -65,10 +70,10 @@
       </template>
     </BaseTable>
 
-    <div v-else class="text-center py-10 my-4">
+    <div v-if="!isLoading && items.length === 0" class="text-center py-10 my-4">
       <v-icon icon="tabler:IconCalendarX" size="56" color="grey-lighten-1" class="mb-3" />
       <div class="text-h6 text-grey-darken-1 font-weight-medium">
-        {{t('common.noattendance')}}
+        {{ t('common.noattendance') }}
       </div>
     </div>
   </ParentCard>
