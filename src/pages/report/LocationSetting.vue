@@ -166,7 +166,7 @@
               size="small" 
               :add-class="['ma-1']"
               :disabled="isLoading || isSubmitting || isDeleting"
-              @click.stop="showConfirmDelete(item.id)"
+              @click.stop="showConfirmDelete(item.loc_id)"
             >
               <v-icon icon="tabler:IconTrash" size="15" />
             </BaseButton>
@@ -288,6 +288,7 @@ const selectMember = async (id) => {
     if (member) {
       formRef.value?.setValues({
         staff_id: member.id,
+        loc_id : member.loc_id,
         lat: member.lat,
         lon: member.lon,
         allow_meter: member.allow_meter,
@@ -339,6 +340,7 @@ const headers = computed(() => {
 const formattedItems = computed(() => {
   return items.value.map((item) => ({
     ...item,
+    loc_id: item.loc_id || '-',
     lat: item.lat || '-',
     lon: item.lon || '-',
     allow_meter: item.allow_meter ?? '-',
@@ -353,6 +355,7 @@ const scrollToEdit = (item) => {
 
   formRef.value?.setValues({
     staff_id: item.id,
+    loc_id: item.loc_id,
     lat: item.lat,
     lon: item.lon,
     allow_meter: item.allow_meter,
