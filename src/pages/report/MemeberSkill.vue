@@ -26,7 +26,6 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
     <BaseTable :headers="headers" :items="items" :loading="isLoading">
       <template #[`item.position`]="{ item }">
         <span class="time-box d-inline-flex justify-center align-center">

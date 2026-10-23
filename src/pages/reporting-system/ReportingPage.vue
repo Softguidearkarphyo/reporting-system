@@ -207,7 +207,6 @@
         </ParentCard>
       </v-col>
 
-      <!-- Preview Section: ဒေတာမရှိလည်း Table အမြဲပေါ်ပြီး Loading အလုပ်လုပ်မည် -->
       <v-col cols="12" lg="6">
         <ParentCard v-if="displayIsoDates.length === 0">
           <BaseTable :headers="headers" :items="[]" :loading="isLoading" :pagination="false"
