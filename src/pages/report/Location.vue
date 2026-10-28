@@ -52,7 +52,16 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { profileImgPath } from '@/utils/helper';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerRetina,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 const { t, locale } = useI18n();
 const locationStore = useLocationStore();
 const staffs = ref([]);
