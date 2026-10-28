@@ -51,7 +51,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" items-per-page="10" class="elevation-1">
+            :loading="isLoading" :items-count="5" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -103,7 +103,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" items-per-page="10" class="elevation-1">
+            :loading="isLoading" :items-count="5" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -181,7 +181,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" items-per-page="10" class="elevation-1">
+            :loading="isLoading" :items-count="5" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -233,7 +233,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" items-per-page="10" class="elevation-1">
+            :loading="isLoading" :items-count="5" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -436,136 +436,115 @@ const fineHeader = computed(() => {
 const fetchData = async () => {
   isLoading.value = true;
   try {
-    if (!staff.value) {
+    if (!authStore.loginStaff || !authStore.staffRole) {
       await authStore.fetchStaff();
-    }
-
-    const payload = { leave: {}, over_time: {}, fine: {} };
-
-    if (!isAdmin.value) {
-      payload.id = staffId.value;
-    } else {
-      payload.skill_sheet = {};
     }
 
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
 
-    await leaveStore.fetchLeave({
+    const queryParams = {
       month: currentMonth,
-      year: currentYear
-    });
+      year: currentYear,
+    };
+
+    await leaveStore.fetchLeave(queryParams);
+    const rawLeaves = leaveStore.getLeaves;
+
+    let leaveArr = Array.isArray(rawLeaves)
+      ? rawLeaves
+      : Array.isArray(rawLeaves?.data)
+        ? rawLeaves.data
+        : Array.isArray(rawLeaves?.leaves)
+          ? rawLeaves.leaves
+          : [rawLeaves];
+
+    memberLeave.value = leaveArr.flatMap(record => {
+      if (Array.isArray(record.leaves)) {
+        return record.leaves.map(l => ({ ...l, eng_name: record.eng_name || staff.value?.eng_name }));
+      }
+      return record;
+    }).filter(Boolean);
+
+    console.log("data ", memberLeave.value);
+    
 
 
-    const allLeaveRecords = leaveStore.getLeaves || [];
-
-    // const groupedLeaveMap = allLeaveRecords
-    //   .filter((record) => Array.isArray(record.leaves) && record.leaves.length > 0)
-    //   .reduce((acc, record) => {
-    //     const staffId = record.staff_id || record.id;
-    //     const name = record.eng_name || '-';
-
-    //     if (!acc[staffId]) {
-    //       acc[staffId] = {
-    //         staff_id: staffId,
-    //         eng_name: name,
-    //         total_paid_days: 0,
-    //         total_unpaid_days: 0,
-    //         total_days: 0,
-    //         total_records: 0,
-    //       };
-    //     }
-
-    //     record.leaves.forEach((item) => {
-    //       const dayCount = Number(item.day_count || 0);
-    //       const isPaid = Number(item.leave_type) === 1;
-
-    //       if (isPaid) {
-    //         acc[staffId].total_paid_days += dayCount;
-    //       } else {
-    //         acc[staffId].total_unpaid_days += dayCount;
-    //       }
-
-    //       acc[staffId].total_days += dayCount;
-    //       acc[staffId].total_records += 1;
-    //     });
-
-    //     return acc;
-    //   }, {});
-
-    memberLeave.value = Object.values(allLeaveRecords);
-
-    const fineRes = await fineStore.fetchMemberFine({
-      month: currentMonth,
-      year: currentYear
-    });
-
+    const fineRes = await fineStore.fetchMemberFine(queryParams);
     const fineList = Array.isArray(fineRes?.data?.data)
       ? fineRes.data.data
       : Array.isArray(fineRes?.data)
         ? fineRes.data
         : Array.isArray(fineStore.getMemberFine?.data)
           ? fineStore.getMemberFine.data
-          : [];
+          : Array.isArray(fineStore.getMemberFine)
+            ? fineStore.getMemberFine
+            : [fineRes?.data].filter(Boolean);
 
-    const groupedFineMap = fineList.reduce((acc, item) => {
-      if (Number(item.status) === 1) return acc;
+    if (isAdmin.value) {
+      const groupedFineMap = fineList.reduce((acc, item) => {
+        if (Number(item.status) === 1) return acc;
+        const sId = item.staff_id || item.staff?.id;
+        const name = item.staff?.eng_name || item.eng_name || '-';
+        const amount = Number(item.amount || item.fine || 0);
 
-      const sId = item.staff_id || item.staff?.id;
-      const name = item.staff?.eng_name || item.eng_name || '-';
-      const amount = Number(item.amount || item.fine || 0);
+        if (!acc[sId]) {
+          acc[sId] = {
+            staff_id: sId,
+            eng_name: name,
+            total_fines_amount: 0,
+            total_fine_records: 0,
+          };
+        }
+        acc[sId].total_fines_amount += amount;
+        acc[sId].total_fine_records += 1;
+        return acc;
+      }, {});
+      memberFine.value = Object.values(groupedFineMap);
+    } else {
+      memberFine.value = fineList.map(item => ({
+        eng_name: staff.value?.eng_name || '-',
+        total_fines_amount: Number(item.amount || item.fine || item.total_fines_amount || 0),
+        total_fine_records: Number(item.total_fine_records || 1),
+      })).filter(item => item.total_fines_amount > 0 || item.total_fine_records > 0);
+    }
 
-      if (!acc[sId]) {
-        acc[sId] = {
-          staff_id: sId,
-          eng_name: name,
-          total_fines_amount: 0,
-          total_fine_records: 0,
-        };
-      }
+    if (isAdmin.value) {
+      const memberPayload = { leave: {}, over_time: {}, fine: {}, skill_sheet: {} };
+      await memberStore.fetchMember(memberPayload);
 
-      acc[sId].total_fines_amount += amount;
-      acc[sId].total_fine_records += 1;
+      const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
+        id: item.skill_sheet?.japanese_level?.id,
+        name: item.skill_sheet?.japanese_level?.name,
+      }));
 
-      return acc;
-    }, {});
+      japaneseLevel.value = tmpArr1.reduce((acc, item) => {
+        if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
+        return acc;
+      }, {});
 
-    memberFine.value = Object.values(groupedFineMap);
+      const tmpArr2 = (memberStore.getMembers || []).map((item) => ({
+        id: item.skill_sheet?.major_tech_stack?.id,
+        name: item.skill_sheet?.major_tech_stack?.name,
+      }));
 
-    await memberStore.fetchMember(payload);
+      majorSkill.value = tmpArr2.reduce((acc, item) => {
+        if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
+        return acc;
+      }, {});
 
-    const tmpArr1 = (memberStore.getMembers || []).map((item) => ({
-      id: item.skill_sheet?.japanese_level?.id,
-      name: item.skill_sheet?.japanese_level?.name,
-    }));
-
-    japaneseLevel.value = tmpArr1.reduce((acc, item) => {
-      if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
-      return acc;
-    }, {});
-
-    const tmpArr2 = (memberStore.getMembers || []).map((item) => ({
-      id: item.skill_sheet?.major_tech_stack?.id,
-      name: item.skill_sheet?.major_tech_stack?.name,
-    }));
-
-    majorSkill.value = tmpArr2.reduce((acc, item) => {
-      if (item.name) acc[item.name] = (acc[item.name] || 0) + 1;
-      return acc;
-    }, {});
-
-    await menPowerStore.fetchMenPower();
-    (menPowerStore.getMenPower || []).forEach((mp) => {
-      menPower.value[mp.eng_name] = mp.hours;
-    });
+      await menPowerStore.fetchMenPower();
+      (menPowerStore.getMenPower || []).forEach((mp) => {
+        menPower.value[mp.eng_name] = mp.hours;
+      });
+    }
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
   } finally {
     isLoading.value = false;
   }
 };
-
 const createOrUpdateChart = (canvasId, config) => {
   const el = document.getElementById(canvasId);
   if (!el) return;
