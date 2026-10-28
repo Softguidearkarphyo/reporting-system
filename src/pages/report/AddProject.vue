@@ -10,7 +10,6 @@
       @submit="submit"
     >
       <v-row align="center">
-        <!-- CD Input Field -->
         <v-col cols="12" sm="6" md="4" lg="3">
           <Field name="cd" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -27,7 +26,6 @@
           </Field>
         </v-col>
 
-        <!-- English Name Input Field -->
         <v-col cols="12" sm="6" md="4" lg="3">
           <Field name="eng_name" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -44,7 +42,6 @@
           </Field>
         </v-col>
 
-        <!-- Japanese Name Input Field -->
         <v-col cols="12" sm="6" md="4" lg="3">
           <Field name="jp_name" v-slot="{ field, errorMessage }">
             <BaseTextField
@@ -62,7 +59,6 @@
           </Field>
         </v-col>
 
-        <!-- Form Action Buttons -->
         <v-col cols="12" sm="6" md="4" lg="3">
           <div class="d-flex ga-2 align-center">
             <BaseButton 
@@ -88,9 +84,7 @@
     </Form>
   </ParentCard>
 
-  <!-- Project Table Container -->
-  <div v-if="hasInitialData" class="mt-4">
-    <!-- Header Title and Search Bar -->
+  <div v-if="hasInitialData || isLoading" class="mt-4">
     <v-row align="center" class="mb-3">
       <v-col cols="12" sm="7" lg="9">
         <BaseTitle>{{ t('addProject.title2') }}</BaseTitle>
@@ -108,7 +102,6 @@
       </v-col>
     </v-row>
 
-    <!-- Table with :loading="isLoading || isDeleting" -->
     <ParentCard>
       <BaseTable :headers="headers" :items="items" :loading="isLoading || isDeleting">
         <template #[`item.position`]="{ item }">
@@ -193,7 +186,7 @@ const updateTarget = ref(undefined);
 const checkPrjCds = ref([]);
 let originalItems = [];
 const items = ref([]);
-const hasInitialData = ref(false);
+const hasInitialData = ref(true);
 
 // Loading states
 const isLoading = ref(false);

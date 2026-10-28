@@ -119,7 +119,6 @@
               {{ projectNameLang ? project.project_eng : project.project_jp }}
             </h3>
 
-            <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
             <BaseTable :headers="headers" :items="project.project_info" :loading="isLoading">
               <template #[`item.periods`]="{ item }">
                 <span>

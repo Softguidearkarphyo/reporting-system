@@ -17,7 +17,6 @@
         <v-icon :color="prependIconColor">{{ prependIcon }}</v-icon>
       </template>
 
-      <!-- 👇 Parent component ကနေ ပို့လိုက်သော slot များကို လက်ခံရန် -->
       <template v-for="(_, name) in $slots" #[name]="slotData">
         <slot :name="name" v-bind="slotData || {}" />
       </template>

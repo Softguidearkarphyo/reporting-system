@@ -15,7 +15,6 @@
     </v-col>
   </v-row>
   <ParentCard>
-    <!-- Table တွင် :loading="isLoading" ထည့်သွင်းထားသည် -->
     <BaseTable :headers="headers" :items="items" :loading="isLoading" :density="true">
       <template #[`item.name`]="{ item }">
         <div class="d-flex align-center">

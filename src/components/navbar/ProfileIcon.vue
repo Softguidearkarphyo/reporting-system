@@ -45,9 +45,9 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const profileImage = computed(() => {
-  if (!Array.isArray(authStore.staff) && authStore.staff?.staff_image_url) {
-    return authStore.staff.staff_image_url;
-  }
+  // if (!Array.isArray(authStore.staff) && authStore.staff?.staff_image_url) {
+  //   return authStore.staff.staff_image_url;
+  // }
 
   const storedImg = localStorage.getItem('profileImg');
   if (storedImg && !storedImg.startsWith('data:image/svg')) {

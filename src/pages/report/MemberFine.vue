@@ -19,7 +19,6 @@
               :disabled="isLoading || isSubmitting" @update:modelValue="
                 (date) => {
                   field.onChange(date);
-                  formData.leave_date = date;
                 }
               " />
           </Field>
@@ -189,7 +188,6 @@ import {
 } from '@/plugins/validations/member-fine.js';
 
 import {
-  lateTimes,
   months,
 } from '@/utils/data';
 
@@ -200,7 +198,6 @@ const memberStore = useMemberStore();
 const memberFineStore = useMemberFineStore();
 
 
-const items = ref([]);
 
 const fines = ref([]);
 
@@ -222,7 +219,6 @@ const lang = ref(locale.value);
 
 const dialog = ref(false);
 
-const formRef = ref(null);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 
@@ -328,52 +324,32 @@ const fetchData = async () => {
   }
 };
 
-
 const fetchMemberFines = async () => {
   isLoading.value = true;
   try {
-    const AllFine =
-      await memberFineStore.fetchMemberFine();
+    const payload = {};
+    const response = await memberFineStore.fetchMemberFine(payload);
 
-    status.value =
-      AllFine.data.data.length === 0
-        ? false
-        : true;
+    const finesData = response?.data?.data || memberFineStore.getMemberFine?.data || [];
 
-    const tmpMembersFines =
-      memberFineStore.getMemberFine.data?.map(
-        (memberFine) => ({
-          id: memberFine.id,
+    status.value = finesData.length > 0;
 
-          eng_name:
-            memberFine.staff.eng_name,
+    const tmpMembersFines = finesData.map((memberFine) => ({
+      id: memberFine.id,
+      eng_name: memberFine.staff?.eng_name || '',
+      jp_name: memberFine.staff?.jp_name || '',
+      date: memberFine.date,
+      time: memberFine.time,
+      status: memberFine.status,
+      fine: parseInt(memberFine.amount || 0),
+      switchValue: memberFine.status === 1,
+    }));
 
-          jp_name:
-            memberFine.staff.jp_name,
-
-          date: memberFine.date,
-
-          time: memberFine.time,
-
-          status: memberFine.status,
-
-          fine: parseInt(
-            memberFine.amount
-          ),
-
-          switchValue:
-            memberFine.status === 1,
-        })
-      ) || [];
-
-    fines.value = [
-      ...tmpMembersFines,
-    ];
+    fines.value = [...tmpMembersFines];
   } catch (error) {
-    console.error(
-      'Error fetching members fines:',
-      error
-    );
+    console.error('Error fetching members fines:', error);
+    status.value = false;
+    fines.value = [];
   } finally {
     isLoading.value = false;
   }
@@ -409,119 +385,51 @@ const finesWithStatusAndTotal = computed(() => {
     JSON.stringify(fines.value)
   );
 
-  const now = new Date();
+  // Filter fines based on user selection; if no selection, return true for all items
+  const filteredFines = finesCopy.filter((fine) => {
+    const fineDate = new Date(fine.date);
+    const fineMonth = fineDate.getMonth() + 1;
 
-  const currentMonth =
-    now.getMonth() + 1;
+    const matchName = selectedName.value
+      ? fine.eng_name === selectedName.value
+      : true;
 
-  const currentYear =
-    now.getFullYear();
+    const matchMonth = selectedMonth.value
+      ? fineMonth === selectedMonth.value
+      : true;
 
-  const previousMonthDate =
-    new Date(
-      currentYear,
-      currentMonth - 2,
-      1
-    );
+    return matchName && matchMonth;
+  });
 
-  const previousMonth =
-    previousMonthDate.getMonth() + 1;
-
-  const previousYear =
-    previousMonthDate.getFullYear();
-
-  const filteredFines =
-    finesCopy.filter((fine) => {
-      const fineDate =
-        new Date(fine.date);
-
-      const fineMonth =
-        fineDate.getMonth() + 1;
-
-      const fineYear =
-        fineDate.getFullYear();
-
-      const matchName =
-        selectedName.value
-          ? fine.eng_name ===
-          selectedName.value
-          : true;
-
-      const matchMonth =
-        selectedMonth.value
-          ? fineMonth ===
-          selectedMonth.value
-          : true;
-
-      const noFiltersSelected =
-        !selectedName.value &&
-        !selectedMonth.value;
-
-      const matchRecentMonths =
-        (
-          fineMonth === currentMonth &&
-          fineYear === currentYear
-        ) ||
-        (
-          fineMonth === previousMonth &&
-          fineYear === previousYear
-        );
-
-      return noFiltersSelected
-        ? matchRecentMonths
-        : matchName && matchMonth;
-    });
-
+  // Grouping to calculate running total and fine counts per member/month
   const groupedByStaffAndMonth = {};
 
   filteredFines.forEach((fine) => {
-    const date = new Date(
-      fine.date
-    );
+    const date = new Date(fine.date);
+    const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    const key = `${fine.eng_name}-${monthYear}`;
 
-    const monthYear =
-      `${date.getFullYear()}-${date.getMonth() + 1}`;
-
-    const key =
-      `${fine.eng_name}-${monthYear}`;
-
-    if (
-      !groupedByStaffAndMonth[key]
-    ) {
+    if (!groupedByStaffAndMonth[key]) {
       groupedByStaffAndMonth[key] = [];
     }
 
-    groupedByStaffAndMonth[key].push(
-      fine
-    );
+    groupedByStaffAndMonth[key].push(fine);
   });
 
-  Object.values(
-    groupedByStaffAndMonth
-  ).forEach((group) => {
+  Object.values(groupedByStaffAndMonth).forEach((group) => {
     let runningTotal = 0;
 
     group.forEach((fine, i) => {
-      runningTotal += parseFloat(
-        fine.fine
-      );
+      runningTotal += parseFloat(fine.fine);
 
-      fine.total =
-        runningTotal;
-
-      fine.status =
-        fine.status === 0
-          ? 'Pending'
-          : 'Complete';
-
-      fine.count = ++i;
+      fine.total = runningTotal;
+      fine.status = fine.status === 0 ? 'Pending' : 'Complete';
+      fine.count = i + 1;
     });
   });
 
   return filteredFines.sort(
-    (a, b) =>
-      new Date(b.date) -
-      new Date(a.date)
+    (a, b) => new Date(b.date) - new Date(a.date)
   );
 });
 

@@ -199,12 +199,6 @@ const isAdmin = computed(() => {
   return String(currentRole) === String(ADMIN);
 });
 
-const isTargetAdmin = computed(() => String(targetMemberRole.value) === String(ADMIN));
-
-const targetRoleLabel = computed(() => {
-  if (targetMemberRole.value === null || targetMemberRole.value === undefined) return '';
-  return isTargetAdmin.value ? 'ADMIN' : 'STANDARD';
-});
 
 watch(
   () => route.params.memberId,
@@ -264,25 +258,25 @@ watch(
   { immediate: true }
 );
 
-const displayedFileName = computed(() => {
-  if (newImageSelected.value && fileName.value) {
-    return fileName.value;
-  }
-  return existingFileName.value || '';
-});
+// const displayedFileName = computed(() => {
+//   if (newImageSelected.value && fileName.value) {
+//     return fileName.value;
+//   }
+//   return existingFileName.value || '';
+// });
 
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
+// const triggerFileInput = () => {
+//   fileInput.value.click();
+// };
 
-const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    fileName.value = file.name;
-    selectedFile.value = file;
-    newImageSelected.value = true;
-  }
-};
+// const handleFileChange = (e) => {
+//   const file = e.target.files[0];
+//   if (file) {
+//     fileName.value = file.name;
+//     selectedFile.value = file;
+//     newImageSelected.value = true;
+//   }
+// };
 
 const submit = async (values) => {
   isSubmitting.value = true;
@@ -301,12 +295,12 @@ const submit = async (values) => {
       }
     }
 
-    formData.append(
-      'staff_image',
-      newImageSelected.value && selectedFile.value
-        ? selectedFile.value
-        : displayedFileName.value
-    );
+    // formData.append(
+    //   'staff_image',
+    //   newImageSelected.value && selectedFile.value
+    //     ? selectedFile.value
+    //     : displayedFileName.value
+    // );
 
     if (memberId) {
       formData.append('id', memberId);
@@ -323,8 +317,6 @@ const submit = async (values) => {
       const updatedMember = res.data.staff;
       const loggedInId = localStorage.getItem('staff-id') || authStore.staff?.id;
       if (Number(memberId) === Number(loggedInId) && memberId) {
-        const fullImageUrl = `http://localhost:8080/images/staffs/${updatedMember.staff_image}?t=${Date.now()}`;
-        localStorage.setItem('profileImg', fullImageUrl);
         if (updatedMember.role !== undefined) {
           localStorage.setItem('staff-role', String(updatedMember.role));
         }
@@ -332,13 +324,12 @@ const submit = async (values) => {
         if (Array.isArray(authStore.staff)) {
           const idx = authStore.staff.findIndex((s) => Number(s.id) === Number(updatedMember.id));
           if (idx !== -1) {
-            authStore.staff[idx] = { ...authStore.staff[idx], ...updatedMember, staff_image_url: fullImageUrl };
+            authStore.staff[idx] = { ...authStore.staff[idx], ...updatedMember };
           }
         } else {
           authStore.staff = {
             ...authStore.staff,
             ...updatedMember,
-            staff_image_url: fullImageUrl
           };
         }
       }

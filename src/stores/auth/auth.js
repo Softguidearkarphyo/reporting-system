@@ -26,11 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
       });
 
       staff.value = res.data.staff;
-      // const profileImg = (staff.value?.staff_image ? `http://localhost:8080/images/staffs/${staff.value.staff_image}` : null)
-      //   || profileImgPath(staff.value?.eng_name);
-      const profileImg = staff.value?.staff_image
-        ? `http://localhost:8080/images/staffs/${staff.value.staff_image}`
-        : profileImgPath(staff.value?.eng_name);
+      const profileImg = profileImgPath(staff.value?.eng_name);
 
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staff-id', String(staff.value.id));
@@ -97,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
       toast.success('Location deleted successfully.');
       return response;
     } catch (error) {
-      toast.error('Failed to delete location.');
+      toast.error('Already deleted location.');
       return error;
     }
   };
