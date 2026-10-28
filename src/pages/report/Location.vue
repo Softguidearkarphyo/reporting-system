@@ -3,67 +3,28 @@
     <BaseTitle class="mb-4"> {{ t('location.title') }} </BaseTitle>
     <div id="map" style="height: 600px; border-radius: 10px"></div>
     <div class="mt-3 mb-n2">
-      <BaseTextField
-        v-model="search"
-        :label="t('common.search')"
-        color="primary"
-        prepend-icon="mdi-magnify"
-      >
+      <BaseTextField v-model="search" :label="t('common.search')" color="primary" prepend-icon="mdi-magnify">
       </BaseTextField>
     </div>
     <!-- Active -->
     <div class="d-flex flex-wrap align-items-center">
       <!-- Individuals -->
       <div class="d-flex flex-wrap align-items-center">
-        <v-avatar
-          v-for="staff in individualStaffs"
-          :key="staff.id"
-          color="primary"
-          size="40"
-          class="cursor-pointer border-primary border-lg ma-2"
-          @click="goToStaff(staff.id)"
-        >
-          <v-img v-if="staff.staff_image_url" :src="staff.staff_image_url" />
-          <v-img
-            v-else
-            class="profileImage"
-            :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)"
-          />
-          <v-tooltip
-            color="primary"
-            activator="parent"
-            location="bottom"
-            transition="fade-transition"
-          >
+        <v-avatar v-for="staff in individualStaffs" :key="staff.id" color="primary" size="40"
+          class="cursor-pointer border-primary border-lg ma-2" @click="goToStaff(staff.id)">
+          <v-img class="profileImage" :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)" />
+          <v-tooltip color="primary" activator="parent" location="bottom" transition="fade-transition">
             {{ isJapanese ? staff.jp_name : staff.eng_name }}
           </v-tooltip>
         </v-avatar>
       </div>
       <!-- Groups -->
-      <div
-        v-for="(group, index) in groupedStaffs"
-        :key="index"
-        class="d-flex align-items-center bg-primary rounded-xl ma-2"
-      >
-        <v-avatar
-          v-for="staff in group"
-          :key="staff.id"
-          class="cursor-pointer pa-1"
-          size="40"
-          @click="goToStaff(staff.id)"
-        >
-          <v-img v-if="staff.staff_image_url" :src="staff.staff_image_url" />
-          <v-img
-            v-else
-            class="profileImage"
-            :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)"
-          />
-          <v-tooltip
-            color="primary"
-            activator="parent"
-            location="bottom"
-            transition="fade-transition"
-          >
+      <div v-for="(group, index) in groupedStaffs" :key="index"
+        class="d-flex align-items-center bg-primary rounded-xl ma-2">
+        <v-avatar v-for="staff in group" :key="staff.id" class="cursor-pointer pa-1" size="40"
+          @click="goToStaff(staff.id)">
+          <v-img class="profileImage" :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)" />
+          <v-tooltip color="primary" activator="parent" location="bottom" transition="fade-transition">
             {{ isJapanese ? staff.jp_name : staff.eng_name }}
           </v-tooltip>
         </v-avatar>
@@ -71,25 +32,10 @@
     </div>
     <!-- Inactive Staffs -->
     <div class="d-flex flex-wrap align-items-center">
-      <v-avatar
-        v-for="staff in inactiveStaffs"
-        :key="staff.id"
-        color="error"
-        size="40"
-        class="cursor-pointer border-error border-lg ma-2"
-      >
-        <v-img v-if="staff.staff_image_url" :src="staff.staff_image_url" />
-        <v-img
-          v-else
-          class="profileImage"
-          :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)"
-        />
-        <v-tooltip
-          color="error"
-          activator="parent"
-          location="bottom"
-          transition="fade-transition"
-        >
+      <v-avatar v-for="staff in inactiveStaffs" :key="staff.id" color="error" size="40"
+        class="cursor-pointer border-error border-lg ma-2">
+        <v-img class="profileImage" :src="profileImgPath(isJapanese ? staff.jp_name : staff.eng_name)" />
+        <v-tooltip color="error" activator="parent" location="bottom" transition="fade-transition">
           {{ isJapanese ? staff.jp_name : staff.eng_name }}
         </v-tooltip>
       </v-avatar>
@@ -161,9 +107,8 @@ const addMarkers = async () => {
       if (staff.staff_image_url) {
         popupContent = `
       <div style="text-align:center;">
-        <img src="${staff.staff_image_url}" alt="${
-          isJapanese.value ? staff.jp_name : staff.eng_name
-        }" style="width:50px;height:50px;border-radius:50%;">
+        <img src="${staff.staff_image_url}" alt="${isJapanese.value ? staff.jp_name : staff.eng_name
+          }" style="width:50px;height:50px;border-radius:50%;">
         <div>${isJapanese.value ? staff.jp_name : staff.eng_name}</div>
       </div>
     `;
@@ -247,7 +192,7 @@ watch(search, (val) => {
   staffs.value = originalStaffs.value?.filter((staff) => {
     const eng = staff.eng_name?.toLowerCase() || '';
     const jp = staff.jp_name?.toLowerCase() || '';
-    
+
     return eng.includes(searchVal) || jp.includes(searchVal);
   });
   addMarkers();
@@ -259,6 +204,7 @@ watch(search, (val) => {
   background-color: rgb(var(--v-theme-primary)) !important;
   color: white !important;
 }
+
 .marker-cluster-medium {
   background-color: rgba(var(--v-theme-primary), 0.2) !important;
 }
