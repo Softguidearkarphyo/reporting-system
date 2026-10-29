@@ -51,7 +51,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-count="5" class="elevation-1">
+            :loading="isLoading" :items-count="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -103,7 +103,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-count="5" class="elevation-1">
+            :loading="isLoading" :items-count="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -180,8 +180,8 @@
           <v-card-title class="text-h6 pa-4 text-uppercase">{{ t('sidebar.leaverecords') }}</v-card-title>
           <v-divider></v-divider>
 
-          <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
-            :loading="isLoading" :items-count="5" class="elevation-1">
+         <BaseTable v-if="memberLeave && memberLeave.length" :headers="leaveHeader" :items="memberLeave"
+  :loading="isLoading" :items-count="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -233,7 +233,7 @@
           <v-divider></v-divider>
 
           <BaseTable v-if="memberFine && memberFine.length" :headers="fineHeader" :items="memberFine"
-            :loading="isLoading" :items-count="5" class="elevation-1">
+            :loading="isLoading" :items-count="10" class="elevation-1">
             <template #[`item.eng_name`]="{ item }">
               <span class="font-weight-medium text-truncate d-block">{{ item.eng_name }}</span>
             </template>
@@ -460,16 +460,25 @@ const fetchData = async () => {
           ? rawLeaves.leaves
           : [rawLeaves];
 
-    memberLeave.value = leaveArr.flatMap(record => {
-      if (Array.isArray(record.leaves)) {
-        return record.leaves.map(l => ({ ...l, eng_name: record.eng_name || staff.value?.eng_name }));
+   let flatLeaves = [];
+    leaveArr.forEach(record => {
+      if (record && Array.isArray(record.leaves) && record.leaves.length > 0) {
+        record.leaves.forEach(l => {
+          flatLeaves.push({
+            ...l,
+            eng_name: record.eng_name || l.eng_name || staff.value?.eng_name
+          });
+        });
+      } else if (record && (record.leave_date || record.duration || record.leave_type !== undefined)) {
+        flatLeaves.push({
+          ...record,
+          eng_name: record.eng_name || staff.value?.eng_name
+        });
       }
-      return record;
-    }).filter(Boolean);
+    });
 
-    console.log("data ", memberLeave.value);
-    
-
+    memberLeave.value = flatLeaves;
+    console.log("Flattened leave data is:", memberLeave.value);
 
     const fineRes = await fineStore.fetchMemberFine(queryParams);
     const fineList = Array.isArray(fineRes?.data?.data)
