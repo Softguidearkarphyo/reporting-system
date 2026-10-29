@@ -478,7 +478,6 @@ const fetchData = async () => {
     });
 
     memberLeave.value = flatLeaves;
-    console.log("Flattened leave data is:", memberLeave.value);
 
     const fineRes = await fineStore.fetchMemberFine(queryParams);
     const fineList = Array.isArray(fineRes?.data?.data)
