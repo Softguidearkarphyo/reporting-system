@@ -92,7 +92,7 @@
 
       <v-row dense class="mb-2">
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}
             </div>
             <div class="d-flex align-baseline">
@@ -105,7 +105,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}
             </div>
             <div class="d-flex align-baseline">
@@ -118,7 +118,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
               {{ t('common.carryLeaves') }}
             </div>
@@ -133,7 +133,7 @@
 
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
               {{ t('common.unpaid') }}
             </div>
@@ -149,7 +149,7 @@
 
       <v-row dense class="mb-3">
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
             </div>
             <div class="d-flex align-baseline">
@@ -162,7 +162,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual')
             }}</div>
             <div class="d-flex align-baseline">
@@ -175,7 +175,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
               t('common.accumulatedHours') }}</div>
             <div class="d-flex align-baseline">
@@ -189,7 +189,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
-          <v-card class="pa-4 rounded-lg h-100" elevation="1">
+          <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
             <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalOvertime')
             }}</div>
             <div class="d-flex align-baseline">
@@ -210,19 +210,6 @@
                   {{ t('creatLeave.title4') || 'ON LEAVE RECORDS' }}
                 </h3>
               </v-col>
-              <!-- <v-col cols="6" md="5" class="d-flex justify-end">
-                <BaseTextField
-                  v-model="search"
-                  :label="t('common.search')"
-                  color="primary"
-                  prepend-inner-icon="mdi-magnify"
-                  density="compact"
-                  variant="outlined"
-                  hide-details
-                  class="rounded-lg"
-                  :disabled="loading || isActionLoading"
-                />
-              </v-col> -->
             </v-row>
 
             <BaseTable v-if="filteredUserLeaveList && filteredUserLeaveList.length" :headers="userHeaders"
@@ -276,7 +263,6 @@
           </ParentCard>
         </v-col>
 
-        <!-- 1/3 Width Space: OVERTIME RECORDS -->
         <v-col cols="12" md="4">
           <ParentCard class="elevation-1 rounded-lg">
             <v-row class="align-center mb-3">
@@ -307,7 +293,6 @@
                   <span
                     :class="['status-label', 'd-inline-flex', 'align-center', 'px-3', 'py-1', 'mr-2', 'text-caption', 'font-weight-medium', item.statusColor]"
                     :style="{
-
                       lineHeight: 1.2
                     }">
                     <v-icon size="16" class="mr-1" :color="item.statusColor">
