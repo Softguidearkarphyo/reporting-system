@@ -1,6 +1,5 @@
 <template>
   <div class="member-leave-detail p-6 bg-gray-50 min-h-screen">
-    <!-- Header -->
     <v-row class="mb-2">
       <v-col cols="12" class="d-flex align-center">
         <v-btn icon variant="text" color="primary" class="me-2" @click="goBack" :disabled="loading || isActionLoading">
@@ -16,10 +15,9 @@
       </v-col>
     </v-row>
 
-    <!-- First Summary Cards Row (Full Width - 4/4) -->
     <v-row dense class="mb-2">
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.totalUsed') }}
           </div>
           <div class="d-flex align-baseline">
@@ -32,7 +30,7 @@
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.remainleave') }}
           </div>
           <div class="d-flex align-baseline">
@@ -44,7 +42,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
             {{ t('common.carryLeaves') }}
           </div>
@@ -57,7 +55,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">
             {{ t('common.unpaid') || 'UNPAID LEAVES' }}
           </div>
@@ -72,10 +70,9 @@
 
     </v-row>
 
-    <!-- Second Summary Cards Row (3/4 Width - cols="12" md="9") -->
     <v-row dense class="mb-3">
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.firstAnnual') }}
           </div>
           <div class="d-flex align-baseline">
@@ -88,7 +85,7 @@
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{ t('common.secondAnnual') }}
           </div>
           <div class="d-flex align-baseline">
@@ -101,7 +98,7 @@
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase"> {{
             t('common.accumulatedHours')  }}</div>
           <div class="d-flex align-baseline">
@@ -115,7 +112,7 @@
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 rounded-lg h-100" elevation="1">
+        <v-card class="pa-4 rounded-lg h-100" elevation="1" :loading="loading">
           <div class="text-caption font-weight-medium text-gray-500 mb-1 text-uppercase">{{
             t('common.totalOvertime') }}</div>
           <div class="d-flex align-baseline">
@@ -127,10 +124,7 @@
       </v-col>
     </v-row>
 
-
-    <!-- Main Content Tables Row (Align Start for Auto Content Height) -->
     <v-row class="align-start">
-      <!-- Leave Records Table -->
       <v-col cols="12" md="8">
         <ParentCard class="elevation-1 rounded-lg pa-4">
           <v-row class="align-center mb-3">
@@ -139,11 +133,6 @@
                 {{ t('creatLeave.title4') || 'ON LEAVE RECORDS' }}
               </h3>
             </v-col>
-            <!-- <v-col cols="6" md="5" class="d-flex justify-end">
-              <BaseTextField v-model="search" :label="t('common.search')" color="primary"
-                prepend-inner-icon="mdi-magnify" density="compact" variant="outlined" hide-details class="rounded-lg"
-                :disabled="loading || isActionLoading" />
-            </v-col> -->
           </v-row>
 
           <div>
